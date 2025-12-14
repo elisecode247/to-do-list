@@ -22,9 +22,11 @@ export function usePersistedChecklist() {
     }
 
     const now = new Date();
+    console.log("%c Line:26 🍅 now", "color:#4fff4B", now);
 
     if (storedResetDate) {
       const lastReset = new Date(JSON.parse(storedResetDate));
+      console.log("%c Line:30 🍺 lastReset", "color:#b03734", lastReset);
 
       if (!isToday(lastReset)) {
         setInitialItems(prev =>
