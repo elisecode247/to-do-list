@@ -1,4 +1,4 @@
-import { useState, useEffect, useEffectEvent } from 'react';
+import { useState } from 'react';
 import type { FC } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
@@ -8,43 +8,15 @@ import {
 } from '@dnd-kit/sortable';
 import { SortableItem } from '../sortable-item/SortableItem.tsx';
 import { ListChecks } from 'lucide-react';
-import { isToday } from './utilities/is-today.ts';
-import type { ChecklistItem } from './types.ts';
 import './app.css';
+import { usePersistedChecklist } from './use-persisted-checklist.tsx';
 
 const App: FC = () => {
-    const [items, setItems] = useState<ChecklistItem[]>([]);
+  const [items, setItems] = usePersistedChecklist();
     const [inputText, setInputText] = useState<string>("");
-    const restoreItemsFromStorage = useEffectEvent(setItems);
     const resetChecked = (): void => {
         setItems(items.map(item => ({ ...item, done: false })))
     };
-    const resetAllChecked = useEffectEvent(resetChecked)
-    useEffect(() => {
-        const storedData = localStorage.getItem('checklist-items');
-        const resetDate = localStorage.getItem('reset-checklist-date');
-
-        if (storedData) {
-            restoreItemsFromStorage(JSON.parse(storedData));
-        }
-
-        if (resetDate) {
-            const lastResetDate = new Date(JSON.parse(resetDate));
-
-            if (!isToday(lastResetDate)) {
-                resetAllChecked();
-                localStorage.setItem('reset-checklist-date', JSON.stringify(new Date()));
-            }
-
-        } else {
-            localStorage.setItem('reset-checklist-date', JSON.stringify(new Date()));
-        }
-
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem("checklist-items", JSON.stringify(items));
-    }, [items]);
 
     const addItem = (): void => {
         if (!inputText.trim()) return;
