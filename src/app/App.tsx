@@ -7,14 +7,24 @@ import {
     SortableContext
 } from '@dnd-kit/sortable';
 import { SortableItem } from '../sortable-item/SortableItem.tsx';
-import { ListChecks, Download, Upload, Archive } from 'lucide-react';
+import { ListChecks, Download, Upload } from 'lucide-react';
 import './app.css';
 import { usePersistedChecklist } from './use-persisted-checklist.tsx';
 import { ITEMS_KEY } from './constants';
+import { ItemModal } from '../item-modal/ItemModal.tsx';
+import type { ChecklistItem } from './types.ts';
 
 const App: FC = () => {
-  const [items, setItems] = usePersistedChecklist();
+    const [items, setItems] = usePersistedChecklist();
     const [inputText, setInputText] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        id: '' as UniqueIdentifier,
+        text: '',
+        done: false,
+        lastCompleted: '',
+        note: ''
+    } as ChecklistItem);
     const resetChecked = (): void => {
         setItems(items.map(item => ({ ...item, done: false })))
     };
@@ -22,7 +32,7 @@ const App: FC = () => {
     const addItem = (): void => {
         if (!inputText.trim()) return;
         const id: UniqueIdentifier = crypto.randomUUID();
-        setItems(prev => [{ id, text: inputText, done: false }, ...prev]);
+        setItems(prev => [{ id, text: inputText, done: false, lastCompleted: '', note: '' }, ...prev]);
         setInputText("");
     };
 
@@ -55,7 +65,7 @@ const App: FC = () => {
         ));
     };
 
-    const copyData = async function copyData () {
+    const copyData = async function copyData() {
         const storedItems = localStorage.getItem(ITEMS_KEY);
         if (!storedItems) {
             alert('No data to copy');
@@ -83,13 +93,31 @@ const App: FC = () => {
         }
     }
 
+    const handleEdit = () => {
+        setFormData({
+            id: formData.id,
+            done: formData.done,
+            text: formData.text,
+            lastCompleted: formData.lastCompleted || '',
+            note: formData.note
+        });
+        setIsModalOpen(true);
+    };
     return (
-        <div className="app-root">
+        <>
+            {isModalOpen ? (
+                <ItemModal
+                    formData={formData}
+                    setFormData={setFormData}
+                    onSave={handleEdit}
+                    onClose={() => setIsModalOpen(false)}
+                />
+            ) : null}
             <header>
                 <h1 >My To Do List</h1>
             </header>
-            <div className="checklist">
-                <div >
+            <main className="checklist">
+                <div>
                     <button
 
                         onClick={resetChecked}
@@ -109,7 +137,6 @@ const App: FC = () => {
                     />
                     <button onClick={addItem}  >Add</button>
                 </div>
-
                 <DndContext id="dnd-context" onDragEnd={handleDragEnd}>
                     <div className="task-list-container">
                         <SortableContext id="sortable-context" items={items.map(i => i.id)}>
@@ -123,6 +150,7 @@ const App: FC = () => {
                                         deleteItem={deleteItem}
                                         toggleChecked={toggleChecked}
                                         updateItemText={updateItemText}
+                                        handleEdit={handleEdit}
                                     />
                                 )
                             })}
@@ -130,8 +158,8 @@ const App: FC = () => {
 
                     </div>
                 </DndContext>
-            </div>
-            <div className="footer-button-group">
+            </main>
+            <footer className="footer-button-group">
                 <button
                     id="download-data"
                     className="move-data"
@@ -140,7 +168,6 @@ const App: FC = () => {
                 >
                     <Download size={12} />
                 </button>
-
                 <button
                     id="upload-data"
                     className="move-data"
@@ -149,17 +176,8 @@ const App: FC = () => {
                 >
                     <Upload size={12} />
                 </button>
-
-                <button
-                    id="archive-data"
-                    className="move-data"
-                    onClick={uploadData}
-                    title="archive data"
-                >
-                    <Archive size={12} />
-                </button>
-            </div>
-        </div>
+            </footer>
+        </>
     );
 };
 

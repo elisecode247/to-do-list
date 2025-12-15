@@ -4,4 +4,6 @@ export interface ChecklistItem {
     id: UniqueIdentifier;
     text: string;
     done: boolean;
+    lastCompleted: string;
+    note: string;
 }

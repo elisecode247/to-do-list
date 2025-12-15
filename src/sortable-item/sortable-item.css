@@ -120,7 +120,7 @@
   color: #9ca3af;
 }
 
-.delete-button {
+.delete-button, .edit-button {
   background: transparent;
   border: none;
   padding: 8px;
@@ -140,7 +140,11 @@
   transform: scale(1.1);
 }
 
-.delete-button:active {
+.edit-button:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.delete-button:active, .edit-button {
   transform: scale(0.95);
 }
 
@@ -175,7 +179,4 @@
     border-color: #4b5563;
   }
 
-  .delete-button:hover {
-    background: rgba(239, 68, 68, 0.2);
-  }
 }

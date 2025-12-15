@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash } from 'lucide-react';
+import { GripVertical, Trash, Edit } from 'lucide-react';
 import './sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -12,6 +12,7 @@ interface SortableItemProps {
     text: string;
     toggleChecked: (id: UniqueIdentifier) => void;
     updateItemText: (id: UniqueIdentifier, newText: string) => void;
+    handleEdit: (id: UniqueIdentifier) => void;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -20,7 +21,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     deleteItem,
     text,
     toggleChecked,
-    updateItemText
+    updateItemText,
+    handleEdit,
 }) => {
     const {
         attributes,
@@ -64,7 +66,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
                 />
-
+                <button
+                    className='edit-button'
+                    onClick={handleEdit.bind(null, id)}
+                ><Edit size={12} /></button>
                 <button
                     className='delete-button'
                     onClick={(e) => {

@@ -1,8 +1,7 @@
 // usePersistedChecklist.ts
 import { useEffect, useEffectEvent, useState } from 'react';
 import type { ChecklistItem } from './types';
-import { isToday } from './utilities/is-today';
-import { ITEMS_KEY, RESET_DATE_KEY } from './constants';
+import { ITEMS_KEY } from './constants';
 
 export function usePersistedChecklist() {
   const [items, setItems] = useState<ChecklistItem[]>([]);
@@ -11,7 +10,6 @@ export function usePersistedChecklist() {
   // Restore + daily reset logic
   useEffect(() => {
     const storedItems = localStorage.getItem(ITEMS_KEY);
-    const storedResetDate = localStorage.getItem(RESET_DATE_KEY);
 
     if (storedItems) {
       setInitialItems(JSON.parse(storedItems));
@@ -19,31 +17,6 @@ export function usePersistedChecklist() {
       console.log('initial items set from local storage')
     }
 
-    const now = new Date();
-    console.log("%c Line:26 🍅 now", "color:#4fff4B", now);
-
-    if (storedResetDate) {
-      let lastReset = null;
-      try {
-        lastReset = new Date(JSON.parse(storedResetDate));
-        console.log("%c Line:30 🍺 lastReset", "color:#b03734", lastReset);
-      } catch (e) {
-        console.error('stored reset date did not work:' + storedResetDate);
-        console.error(e);
-        return;
-      }
-
-      if (!isToday(lastReset)) {
-        setInitialItems(prev =>
-          prev.map(item => ({ ...item, done: false }))
-        );
-        localStorage.setItem(RESET_DATE_KEY, JSON.stringify(now));
-        console.log('items checked reset for new day')
-      }
-    } else {
-      localStorage.setItem(RESET_DATE_KEY, JSON.stringify(now));
-      console.log('reset date set')
-    }
   }, []);
 
   // Persist on change
