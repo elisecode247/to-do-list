@@ -2,9 +2,7 @@
 import { useEffect, useEffectEvent, useState } from 'react';
 import type { ChecklistItem } from './types';
 import { isToday } from './utilities/is-today';
-
-const ITEMS_KEY = 'checklist-items';
-const RESET_DATE_KEY = 'reset-checklist-date';
+import { ITEMS_KEY, RESET_DATE_KEY } from './constants';
 
 export function usePersistedChecklist() {
   const [items, setItems] = useState<ChecklistItem[]>([]);

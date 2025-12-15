@@ -7,9 +7,10 @@ import {
     SortableContext
 } from '@dnd-kit/sortable';
 import { SortableItem } from '../sortable-item/SortableItem.tsx';
-import { ListChecks } from 'lucide-react';
+import { ListChecks, Download, Upload, Archive } from 'lucide-react';
 import './app.css';
 import { usePersistedChecklist } from './use-persisted-checklist.tsx';
+import { ITEMS_KEY } from './constants';
 
 const App: FC = () => {
   const [items, setItems] = usePersistedChecklist();
@@ -54,53 +55,109 @@ const App: FC = () => {
         ));
     };
 
+    const copyData = async function copyData () {
+        const storedItems = localStorage.getItem(ITEMS_KEY);
+        if (!storedItems) {
+            alert('No data to copy');
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(storedItems);
+            alert('data successfully copied to clipboard');
+        } catch (err) {
+            alert('Could not copy text: ' + err);
+        }
+    }
+
+    const uploadData = function () {
+        const data = prompt('Paste data here');
+        try {
+            if (!data) {
+                alert('No data was pasted');
+                return;
+            }
+            const parsedData = JSON.parse(data.trim());
+            setItems(parsedData);
+        } catch (e) {
+            alert('There was an error: ' + e);
+        }
+    }
+
     return (
         <div className="app-root">
             <header>
                 <h1 >My To Do List</h1>
             </header>
             <div className="checklist">
-            <div >
-                <button
+                <div >
+                    <button
 
-                    onClick={resetChecked}
-                >
-                    <ListChecks size={12} />
-                </button>
-                <input
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                        e.stopPropagation();
-                        if (e.key === 'Enter') {
-                            addItem();
-                        }
-                    }}
-                    placeholder="New item..."
-                />
-                <button onClick={addItem}  >Add</button>
-            </div>
-
-            <DndContext id="dnd-context" onDragEnd={handleDragEnd}>
-                <div className="task-list-container">
-                    <SortableContext id="sortable-context" items={items.map(i => i.id)}>
-                        {items.map(item => {
-                            return (
-                                <SortableItem
-                                    checked={item.done}
-                                    key={item.id}
-                                    id={item.id}
-                                    text={item.text}
-                                    deleteItem={deleteItem}
-                                    toggleChecked={toggleChecked}
-                                    updateItemText={updateItemText}
-                                />
-                            )
-                        })}
-                    </SortableContext>
-
+                        onClick={resetChecked}
+                    >
+                        <ListChecks size={12} />
+                    </button>
+                    <input
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                                addItem();
+                            }
+                        }}
+                        placeholder="New item..."
+                    />
+                    <button onClick={addItem}  >Add</button>
                 </div>
-            </DndContext>
+
+                <DndContext id="dnd-context" onDragEnd={handleDragEnd}>
+                    <div className="task-list-container">
+                        <SortableContext id="sortable-context" items={items.map(i => i.id)}>
+                            {items.map(item => {
+                                return (
+                                    <SortableItem
+                                        checked={item.done}
+                                        key={item.id}
+                                        id={item.id}
+                                        text={item.text}
+                                        deleteItem={deleteItem}
+                                        toggleChecked={toggleChecked}
+                                        updateItemText={updateItemText}
+                                    />
+                                )
+                            })}
+                        </SortableContext>
+
+                    </div>
+                </DndContext>
+            </div>
+            <div className="footer-button-group">
+                <button
+                    id="download-data"
+                    className="move-data"
+                    onClick={copyData}
+                    title="Copy Data"
+                >
+                    <Download size={12} />
+                </button>
+
+                <button
+                    id="upload-data"
+                    className="move-data"
+                    onClick={uploadData}
+                    title="upload JSON data into list"
+                >
+                    <Upload size={12} />
+                </button>
+
+                <button
+                    id="archive-data"
+                    className="move-data"
+                    onClick={uploadData}
+                    title="archive data"
+                >
+                    <Archive size={12} />
+                </button>
             </div>
         </div>
     );
