@@ -60,8 +60,17 @@ const App: FC = () => {
         }
     }
     const toggleChecked = (id: UniqueIdentifier): void => {
+        const now = new Date();
+        const formatted = now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0');
+
         setItems(items.map(item =>
-            item.id === id ? { ...item, done: !item.done } : item
+            item.id === id ? {
+                ...item,
+                done: !item.done,
+                lastCompleted: formatted
+            } : item
         ));
     };
 
@@ -93,23 +102,42 @@ const App: FC = () => {
         }
     }
 
-    const handleEdit = () => {
+    const handleEdit = (id: UniqueIdentifier) => {
+        const selectedItem = items.find(item => item.id === id);
+        if (!selectedItem) {
+            alert('task not found');
+            console.error('task id: ' + id);
+            return;
+        }
         setFormData({
-            id: formData.id,
-            done: formData.done,
-            text: formData.text,
-            lastCompleted: formData.lastCompleted || '',
-            note: formData.note
+            id: selectedItem.id,
+            done: selectedItem.done,
+            text: selectedItem.text,
+            lastCompleted: selectedItem.lastCompleted || '',
+            note: selectedItem.note
         });
         setIsModalOpen(true);
     };
+
+    const handleSave = () => {
+        console.log(formData)
+        setItems(items.map(item =>
+            item.id === formData.id ? {
+                ...item,
+                text: formData.text,
+                lastCompleted: formData.lastCompleted,
+                note: formData.note
+            } : item
+        ));
+        setIsModalOpen(false);
+    }
     return (
         <>
             {isModalOpen ? (
                 <ItemModal
                     formData={formData}
                     setFormData={setFormData}
-                    onSave={handleEdit}
+                    onSave={handleSave}
                     onClose={() => setIsModalOpen(false)}
                 />
             ) : null}
@@ -118,10 +146,7 @@ const App: FC = () => {
             </header>
             <main className="checklist">
                 <div>
-                    <button
-
-                        onClick={resetChecked}
-                    >
+                    <button onClick={resetChecked}>
                         <ListChecks size={12} />
                     </button>
                     <input
