@@ -1,5 +1,5 @@
 import './item-modal.css';
-import type { FC } from 'react';
+import { useEffect, useEffectEvent, useRef, type FC } from 'react';
 import type { ChecklistItem } from '../app/types';
 
 type ItemModalProps = {
@@ -15,10 +15,66 @@ export const ItemModal: FC<ItemModalProps> = ({
   onSave,
   onClose,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+
+  const closeModal = useEffectEvent(onClose);
+
+  useEffect(() => {
+    previouslyFocusedElement.current = document.activeElement as HTMLElement;
+
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const focusableElements = modal.querySelectorAll<HTMLElement>(
+      'input, textarea, button, [tabindex]:not([tabindex="-1"])'
+    );
+
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+
+    first?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previouslyFocusedElement?.current?.focus();
+    };
+  }, []);
+
   return (
     <div className="modal-overlay">
-      <div className="modal">
-        <h2>Edit Task</h2>
+      <div
+        className="modal"
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <h2 id="modal-title">Edit Task</h2>
 
         <div className="form-group">
           <label htmlFor="task-text">Task</label>
@@ -33,8 +89,9 @@ export const ItemModal: FC<ItemModalProps> = ({
         </div>
 
         <div className="form-group">
-          <label>Last Completed</label>
+          <label htmlFor="last-completed">Last Completed</label>
           <input
+            id="last-completed"
             type="date"
             value={formData.lastCompleted ?? ''}
             onChange={(e) =>
@@ -47,8 +104,9 @@ export const ItemModal: FC<ItemModalProps> = ({
         </div>
 
         <div className="form-group">
-          <label>Notes</label>
+          <label htmlFor="notes">Notes</label>
           <textarea
+            id="notes"
             value={formData.note}
             onChange={(e) =>
               setEditingItem({ ...formData, note: e.target.value })
@@ -58,10 +116,20 @@ export const ItemModal: FC<ItemModalProps> = ({
         </div>
 
         <div className="modal-actions">
-          <button className="btn-secondary" onClick={onClose} type="button" aria-label="Close modal">
+          <button
+            className="btn-secondary"
+            onClick={onClose}
+            type="button"
+            aria-label="Close modal"
+          >
             Cancel
           </button>
-          <button className="btn-primary" onClick={onSave} type="button" aria-label="Save changes">
+          <button
+            className="btn-primary"
+            onClick={onSave}
+            type="button"
+            aria-label="Save changes"
+          >
             Save
           </button>
         </div>
