@@ -21,8 +21,9 @@ export const ItemModal: FC<ItemModalProps> = ({
         <h2>Edit Task</h2>
 
         <div className="form-group">
-          <label>Task</label>
+          <label htmlFor="task-text">Task</label>
           <input
+            id="task-text"
             type="text"
             value={formData.text}
             onChange={(e) =>
@@ -48,7 +49,7 @@ export const ItemModal: FC<ItemModalProps> = ({
         <div className="form-group">
           <label>Notes</label>
           <textarea
-            value={formData.note ?? ''}
+            value={formData.note}
             onChange={(e) =>
               setEditingItem({ ...formData, note: e.target.value })
             }
@@ -57,10 +58,10 @@ export const ItemModal: FC<ItemModalProps> = ({
         </div>
 
         <div className="modal-actions">
-          <button className="btn-secondary" onClick={onClose}>
+          <button className="btn-secondary" onClick={onClose} type="button" aria-label="Close modal">
             Cancel
           </button>
-          <button className="btn-primary" onClick={onSave}>
+          <button className="btn-primary" onClick={onSave} type="button" aria-label="Save changes">
             Save
           </button>
         </div>
