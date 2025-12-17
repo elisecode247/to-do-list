@@ -39,7 +39,6 @@ export const SortableItem: FC<SortableItemProps> = ({
         transition,
         // Apply specific styles when dragging
         opacity: isDragging ? 0.5 : 1,
-        cursor: isDragging ? 'grabbing' : 'grab',
     }
     return (
         <div
@@ -48,36 +47,40 @@ export const SortableItem: FC<SortableItemProps> = ({
             style={style}
             {...attributes}
         >
-            <div className="task-item" key={id}>
+            <div className="task-item">
                 <GripVertical
                     {...listeners}
                     size={12}
+                    aria-label="Drag to reorder"
                 />
                 <input
                     className="task-checkbox"
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleChecked(id)}
+                    onPointerDown={(e) => e.stopPropagation()}
                 />
 
                 <input
                     type="text"
-                    style={{ width: '100%' }}
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
+                    onPointerDown={(e) => e.stopPropagation()}
                 />
                 <button
+                    aria-label="Edit item"
                     className='edit-button'
-                    onClick={handleEdit.bind(null, id)}
-                ><Edit size={12} /></button>
+                    onClick={() => handleEdit(id)}
+                    type="button"
+                >
+                    <Edit size={12} />
+                </button>
                 <button
+                    aria-label="Delete item"
                     className='delete-button'
-                    onClick={(e) => {
-                        console.log(id)
-                        e.stopPropagation();
-                        deleteItem(id)
-                    }
-                }>
+                    onClick={() => deleteItem(id)}
+                    type="button"
+                >
                     <Trash size={12} />
                 </button>
             </div>
