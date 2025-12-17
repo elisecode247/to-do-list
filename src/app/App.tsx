@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import {
@@ -13,20 +12,20 @@ import { usePersistedChecklist } from './use-persisted-checklist.tsx';
 import { ITEMS_KEY } from './constants';
 import { ItemModal } from '../item-modal/ItemModal.tsx';
 import type { ChecklistItem } from './types.ts';
+import { formatDate } from './utilities/format-date.ts'
 
 const App: FC = () => {
     const [items, setItems] = usePersistedChecklist();
     const [inputText, setInputText] = useState<string>("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        id: '' as UniqueIdentifier,
-        text: '',
-        done: false,
-        lastCompleted: '',
-        note: ''
-    } as ChecklistItem);
+    const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
+
+    const updateItemById = (
+        id: UniqueIdentifier,
+        updater: (item: ChecklistItem) => ChecklistItem
+    ) => setItems(prev => prev.map(item => (item.id === id ? updater(item) : item)));
+
     const resetChecked = (): void => {
-        setItems(items.map(item => ({ ...item, done: false })))
+        setItems(prev => prev.map(item => ({ ...item, done: false })))
     };
 
     const addItem = (): void => {
@@ -37,44 +36,34 @@ const App: FC = () => {
     };
 
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
-        setItems(items.map(item =>
-            item.id === id ? { ...item, text: newText } : item
-        ));
+        updateItemById(id, item => ({...item, text: newText }));
     };
 
     const deleteItem = (id: UniqueIdentifier): void => {
-        const newItems = items.filter(item => item.id !== id);
-        setItems(newItems);
+        setItems(prev => prev.filter(item => item.id !== id));
     };
 
-    function handleDragEnd(event: DragEndEvent) {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
+        if (!over || active.id === over.id) return;
 
-        if (over?.id && active.id !== over?.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex((item) => item.id === active.id);
-                const newIndex = items.findIndex((item) => item.id === over.id);
+        setItems((items) => {
+            const oldIndex = items.findIndex((item) => item.id === active.id);
+            const newIndex = items.findIndex((item) => item.id === over.id);
 
-                return arrayMove(items, oldIndex, newIndex);
-            });
-        }
+            return arrayMove(items, oldIndex, newIndex);
+        });
     }
-    const toggleChecked = (id: UniqueIdentifier): void => {
-        const now = new Date();
-        const formatted = now.getFullYear() + '-' +
-            String(now.getMonth() + 1).padStart(2, '0') + '-' +
-            String(now.getDate()).padStart(2, '0');
 
-        setItems(items.map(item =>
-            item.id === id ? {
-                ...item,
-                done: !item.done,
-                lastCompleted: formatted
-            } : item
-        ));
+    const toggleChecked = (id: UniqueIdentifier) => {
+        updateItemById(id, item => ({
+            ...item,
+            done: !item.done,
+            lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
+        }));
     };
 
-    const copyData = async function copyData() {
+    const copyData = async () => {
         const storedItems = localStorage.getItem(ITEMS_KEY);
         if (!storedItems) {
             alert('No data to copy');
@@ -82,13 +71,13 @@ const App: FC = () => {
         }
         try {
             await navigator.clipboard.writeText(storedItems);
-            alert('data successfully copied to clipboard');
+            alert('Data successfully copied to clipboard');
         } catch (err) {
             alert('Could not copy text: ' + err);
         }
     }
 
-    const uploadData = function () {
+    const uploadData = () => {
         const data = prompt('Paste data here');
         try {
             if (!data) {
@@ -96,6 +85,17 @@ const App: FC = () => {
                 return;
             }
             const parsedData = JSON.parse(data.trim());
+            if (!Array.isArray(parsedData) ||
+                !parsedData.every(
+                    item =>
+                    typeof item.id === 'string' &&
+                    typeof item.text === 'string' &&
+                    typeof item.done === 'boolean'
+                )
+            ){
+                alert('Invalid format');
+                return;
+            }
             setItems(parsedData);
         } catch (e) {
             alert('There was an error: ' + e);
@@ -109,36 +109,23 @@ const App: FC = () => {
             console.error('task id: ' + id);
             return;
         }
-        setFormData({
-            id: selectedItem.id,
-            done: selectedItem.done,
-            text: selectedItem.text,
-            lastCompleted: selectedItem.lastCompleted || '',
-            note: selectedItem.note
-        });
-        setIsModalOpen(true);
+
+        setEditingItem({ ...selectedItem });
     };
 
     const handleSave = () => {
-        console.log(formData)
-        setItems(items.map(item =>
-            item.id === formData.id ? {
-                ...item,
-                text: formData.text,
-                lastCompleted: formData.lastCompleted,
-                note: formData.note
-            } : item
-        ));
-        setIsModalOpen(false);
+        if (!editingItem) return;
+        updateItemById(editingItem.id, () => editingItem);
+        setEditingItem(null);
     }
     return (
         <>
-            {isModalOpen ? (
+            {editingItem ? (
                 <ItemModal
-                    formData={formData}
-                    setFormData={setFormData}
+                    formData={editingItem}
+                    setEditingItem={setEditingItem}
                     onSave={handleSave}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => setEditingItem(null)}
                 />
             ) : null}
             <header>
@@ -165,20 +152,18 @@ const App: FC = () => {
                 <DndContext id="dnd-context" onDragEnd={handleDragEnd}>
                     <div className="task-list-container">
                         <SortableContext id="sortable-context" items={items.map(i => i.id)}>
-                            {items.map(item => {
-                                return (
-                                    <SortableItem
-                                        checked={item.done}
-                                        key={item.id}
-                                        id={item.id}
-                                        text={item.text}
-                                        deleteItem={deleteItem}
-                                        toggleChecked={toggleChecked}
-                                        updateItemText={updateItemText}
-                                        handleEdit={handleEdit}
-                                    />
-                                )
-                            })}
+                            {items.map(item => (
+                                <SortableItem
+                                    checked={item.done}
+                                    key={item.id}
+                                    id={item.id}
+                                    text={item.text}
+                                    deleteItem={deleteItem}
+                                    toggleChecked={toggleChecked}
+                                    updateItemText={updateItemText}
+                                    handleEdit={handleEdit}
+                                />
+                            ))}
                         </SortableContext>
 
                     </div>

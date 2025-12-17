@@ -4,14 +4,14 @@ import type { ChecklistItem } from '../app/types';
 
 type ItemModalProps = {
   formData: ChecklistItem;
-  setFormData: (item: ChecklistItem) => void;
+  setEditingItem: (item: ChecklistItem) => void;
   onSave: () => void;
   onClose: () => void;
 };
 
 export const ItemModal: FC<ItemModalProps> = ({
   formData,
-  setFormData,
+  setEditingItem,
   onSave,
   onClose,
 }) => {
@@ -26,7 +26,7 @@ export const ItemModal: FC<ItemModalProps> = ({
             type="text"
             value={formData.text}
             onChange={(e) =>
-              setFormData({ ...formData, text: e.target.value })
+              setEditingItem({ ...formData, text: e.target.value })
             }
           />
         </div>
@@ -37,7 +37,7 @@ export const ItemModal: FC<ItemModalProps> = ({
             type="date"
             value={formData.lastCompleted ?? ''}
             onChange={(e) =>
-              setFormData({
+              setEditingItem({
                 ...formData,
                 lastCompleted: e.target.value || '',
               })
@@ -50,7 +50,7 @@ export const ItemModal: FC<ItemModalProps> = ({
           <textarea
             value={formData.note ?? ''}
             onChange={(e) =>
-              setFormData({ ...formData, note: e.target.value })
+              setEditingItem({ ...formData, note: e.target.value })
             }
             rows={4}
           />
