@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash, Edit } from 'lucide-react';
+import { GripVertical, Trash, Edit, Archive } from 'lucide-react';
 import './sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -13,6 +13,7 @@ interface SortableItemProps {
     toggleChecked: (id: UniqueIdentifier) => void;
     updateItemText: (id: UniqueIdentifier, newText: string) => void;
     handleEdit: (id: UniqueIdentifier) => void;
+    onArchive:(id: UniqueIdentifier) => void;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -23,6 +24,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     toggleChecked,
     updateItemText,
     handleEdit,
+    onArchive,
 }) => {
     const {
         attributes,
@@ -67,6 +69,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onChange={(e) => updateItemText(id, e.target.value)}
                     onPointerDown={(e) => e.stopPropagation()}
                 />
+                <button
+                    aria-label="Archive item"
+                    className='archive-button'
+                    onClick={() => onArchive(id)}
+                    type="button"
+                >
+                    <Archive size={12} />
+                </button>
                 <button
                     aria-label="Edit item"
                     className='edit-button'

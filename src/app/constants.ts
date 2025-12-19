@@ -1,2 +1,2 @@
 export const ITEMS_KEY = 'checklist-items';
-export const RESET_DATE_KEY = 'reset-checklist-date';
+export const ARCHIVED_KEY = 'archived-checklist-items';
