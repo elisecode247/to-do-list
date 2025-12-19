@@ -1,23 +1,26 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash, Edit, Archive } from 'lucide-react';
+import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
 import './sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 
 interface SortableItemProps {
     id: UniqueIdentifier;
+    isActive: boolean;
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     text: string;
     toggleChecked: (id: UniqueIdentifier) => void;
     updateItemText: (id: UniqueIdentifier, newText: string) => void;
     handleEdit: (id: UniqueIdentifier) => void;
-    onArchive:(id: UniqueIdentifier) => void;
+    onArchive: (id: UniqueIdentifier) => void;
+    onRestore: (id: UniqueIdentifier) => void;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
     id,
+    isActive,
     checked,
     deleteItem,
     text,
@@ -25,6 +28,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     updateItemText,
     handleEdit,
     onArchive,
+    onRestore,
 }) => {
     const {
         attributes,
@@ -69,14 +73,26 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onChange={(e) => updateItemText(id, e.target.value)}
                     onPointerDown={(e) => e.stopPropagation()}
                 />
+                {isActive ? (
                 <button
                     aria-label="Archive item"
                     className='archive-button'
                     onClick={() => onArchive(id)}
                     type="button"
+                    title="Archive item"
                 >
                     <Archive size={12} />
+                </button>) : (
+                <button
+                    aria-label="Restore Archived Item"
+                    className='restore-button'
+                    onClick={() => onRestore(id)}
+                    type="button"
+                    title="Restore Archived Item"
+                >
+                    <ListPlus size={12} />
                 </button>
+                )}
                 <button
                     aria-label="Edit item"
                     className='edit-button'

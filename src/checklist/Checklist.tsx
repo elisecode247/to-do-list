@@ -1,6 +1,5 @@
 import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from '../app/types.ts';
-import { ARCHIVED_KEY } from '../app/constants.ts';
 import { ListChecks } from 'lucide-react';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -9,23 +8,29 @@ import { SortableItem } from '../sortable-item/SortableItem.tsx';
 import { formatDate } from '../app/utilities/format-date.ts'
 
 interface ChecklistProps {
+    isActiveList: boolean;
     items: Array<ChecklistItem>;
     setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
+    setTargetItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setEditingItem: (checklistItem: ChecklistItem) => void;
     updateItemById: (
+        setList: Dispatch<SetStateAction<ChecklistItem[]>>,
         id: UniqueIdentifier,
         updater: (item: ChecklistItem) => ChecklistItem
-    ) => void;}
+    ) => void;
+}
 const Checklist: FC<ChecklistProps> = ({
-     items,
-     setItems,
-     setEditingItem,
-     updateItemById
+    isActiveList,
+    items,
+    setItems,
+    setTargetItems,
+    setEditingItem,
+    updateItemById
 }) => {
     const [inputText, setInputText] = useState<string>("");
 
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
-        updateItemById(id, (item: ChecklistItem) => ({ ...item, text: newText }));
+        updateItemById(setItems, id, (item: ChecklistItem) => ({ ...item, text: newText }));
     };
 
     const deleteItem = (id: UniqueIdentifier): void => {
@@ -45,7 +50,7 @@ const Checklist: FC<ChecklistProps> = ({
     }
 
     const toggleChecked = (id: UniqueIdentifier) => {
-        updateItemById(id, item => ({
+        updateItemById(setItems, id, item => ({
             ...item,
             done: !item.done,
             lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
@@ -63,25 +68,26 @@ const Checklist: FC<ChecklistProps> = ({
         setEditingItem({ ...selectedItem });
     };
 
-    const handleArchive = (id: UniqueIdentifier) => {
-        const item = items.find(item => item.id === id);
-        const storedItems = localStorage.getItem(ARCHIVED_KEY);
+    function moveItemBetweenLists(
+        id: UniqueIdentifier,
+        sourceItems: ChecklistItem[],
+        setSourceItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>,
+        setTargetItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>
+    ) {
+        const item = sourceItems.find(i => i.id === id);
+        if (!item) return;
 
-        if (storedItems) {
-            const items = JSON.parse(storedItems);
-            if (items.some((item: ChecklistItem) => item.id === id)) {
-                console.log('item already archived');
-                setItems((prev: ChecklistItem[]) => prev.filter(item => item.id !== id));
-                return;
-            }
-            items.push(item);
-            localStorage.setItem(ARCHIVED_KEY, JSON.stringify(items));
-            console.log('items saved to local storage')
-        } else {
-            localStorage.setItem(ARCHIVED_KEY, JSON.stringify([item]));
-        }
-        setItems(prev => prev.filter(item => item.id !== id));
+        // Remove from source
+        setSourceItems(prev => prev.filter(i => i.id !== id));
+
+        // Add to target
+        setTargetItems(prev => {
+            if (prev.some(i => i.id === id)) return prev;
+            return [...prev, item];
+        });
     }
+
+
 
     const resetChecked = (): void => {
         setItems(prev => prev.map(item => ({ ...item, done: false })))
@@ -94,9 +100,25 @@ const Checklist: FC<ChecklistProps> = ({
         setInputText("");
     };
 
+    const handleArchive = (id: UniqueIdentifier) =>
+        moveItemBetweenLists(
+            id,
+            items,
+            setItems,
+            setTargetItems
+        );
+
+    const handleRestore = (id: UniqueIdentifier) =>
+        moveItemBetweenLists(
+            id,
+            items,
+            setItems,
+            setTargetItems
+        );
+
     return (
         <>
-            <div>
+            <div data-items={JSON.stringify(items)}>
                 <button onClick={resetChecked}>
                     <ListChecks size={12} />
                 </button>
@@ -118,6 +140,7 @@ const Checklist: FC<ChecklistProps> = ({
                     <SortableContext id="sortable-context" items={items.map(i => i.id)}>
                         {items.map(item => (
                             <SortableItem
+                                isActive={isActiveList}
                                 checked={item.done}
                                 key={item.id}
                                 id={item.id}
@@ -127,6 +150,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 updateItemText={updateItemText}
                                 handleEdit={handleEdit}
                                 onArchive={handleArchive}
+                                onRestore={handleRestore}
                             />
                         ))}
                     </SortableContext>

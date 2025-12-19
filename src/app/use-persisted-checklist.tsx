@@ -1,29 +1,39 @@
 // usePersistedChecklist.ts
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { ChecklistItem } from './types';
-import { ITEMS_KEY } from './constants';
+import { type PersistedChecklistKey } from './constants';
 
-export function usePersistedChecklist() {
+export function usePersistedChecklist(KEY: PersistedChecklistKey) {
   const [items, setItems] = useState<ChecklistItem[]>([]);
-  const setInitialItems = useEffectEvent(setItems);
+  const initializedRef = useRef(false);
+  const updateItems = useEffectEvent(setItems);
+  const logInitialized = useEffectEvent(() => console.log(KEY + ': initial items set from local storage'));
 
-  // Restore + daily reset logic
+  // Load when KEY changes
   useEffect(() => {
-    const storedItems = localStorage.getItem(ITEMS_KEY);
+    initializedRef.current = false;
 
-    if (storedItems) {
-      setInitialItems(JSON.parse(storedItems));
-      console.log(storedItems)
-      console.log('initial items set from local storage')
+    const storedItems = localStorage.getItem(KEY);
+    console.log("%c Line:15 🥚 storedItems", "color:#ffdd4d", storedItems);
+    try {
+        if (storedItems) {
+            updateItems(JSON.parse(storedItems));
+            console.log(storedItems)
+            logInitialized();
+        }
+    } catch (e) {
+        console.error('JSON parsing error' + e)
     }
-
-  }, []);
+    initializedRef.current = true;
+    console.log(KEY + ': initialized from localStorage');
+  }, [KEY]);
 
   // Persist on change
   useEffect(() => {
-    localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-    console.log('items saved to local storage')
-  }, [items]);
+    if (!initializedRef.current) return;
+    localStorage.setItem(KEY, JSON.stringify(items));
+    console.log(KEY + ': items saved to local storage')
+  }, [items, KEY]);
 
   return [items, setItems] as const;
 }

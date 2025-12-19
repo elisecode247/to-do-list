@@ -1,22 +1,23 @@
-import { useState, type FC } from 'react';
+import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { Download, Upload, FolderArchive } from 'lucide-react';
 import './app.css';
 import { usePersistedChecklist } from './use-persisted-checklist.tsx';
-import { ITEMS_KEY } from './constants.ts';
+import { ITEMS_KEY, ARCHIVED_KEY } from './constants.ts';
 import { ItemModal } from '../item-modal/ItemModal.tsx';
 import type { ChecklistItem } from './types.ts';
 import Checklist from '../checklist/Checklist.tsx';
 
 const App: FC = () => {
     const [activeChecklist, setActiveChecklist] = useState(true);
-    const [items, setItems] = usePersistedChecklist();
+    const [items, setItems] = usePersistedChecklist(ITEMS_KEY);
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-
+    const [archivedItems, setArchivedItems] = usePersistedChecklist(ARCHIVED_KEY);
     const updateItemById = (
+        setList: Dispatch<SetStateAction<ChecklistItem[]>>,
         id: UniqueIdentifier,
         updater: (item: ChecklistItem) => ChecklistItem
-    ) => setItems(prev => prev.map(item => (item.id === id ? updater(item) : item)));
+    ) => setList(prev => prev.map(item => (item.id === id ? updater(item) : item)));
 
     const copyData = async () => {
         const storedItems = localStorage.getItem(ITEMS_KEY);
@@ -59,7 +60,7 @@ const App: FC = () => {
 
     const handleSave = () => {
         if (!editingItem) return;
-        updateItemById(editingItem.id, () => editingItem);
+        updateItemById(setItems, editingItem.id, () => editingItem);
         setEditingItem(null);
     }
 
@@ -120,17 +121,23 @@ const App: FC = () => {
                 <main className="checklist">
                     {activeChecklist ? (
                         <Checklist
+                            key="active-checklist"
+                            isActiveList={true}
                             items={items}
                             setItems={setItems}
+                            setTargetItems={setArchivedItems}
                             setEditingItem={setEditingItem}
                             updateItemById={updateItemById}
                         />
                     ) : (
                         <Checklist
-                            items={[]}
-                            setItems={() => {}}
-                            setEditingItem={() => {}}
-                            updateItemById={() => {}}
+                            key="archived-checklist"
+                            isActiveList={false}
+                            items={archivedItems}
+                            setItems={setArchivedItems}
+                            setTargetItems={setItems}
+                            setEditingItem={setEditingItem}
+                            updateItemById={updateItemById}
                         />
                     )}
                 </main>
