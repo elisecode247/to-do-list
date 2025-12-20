@@ -1,3 +1,5 @@
+import { type ChecklistItem } from '../types';
+
 export const starterItems: ChecklistItem[] = [
   { id: '1', text: 'Wake up and stretch', done: false, lastCompleted: '', note: '' },
   { id: '2', text: 'Drink a glass of water', done: false, lastCompleted: '', note: '' },
