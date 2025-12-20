@@ -17,12 +17,12 @@ const App: FC = () => {
     const setActiveItems = isDailyChecklist ? setItems : setArchivedItems;
     const activeChecklist = isDailyChecklist ? {
         items,
-        setItems,
+        setActiveItems: setItems,
         setTargetItems: setArchivedItems,
         isActiveList: true,
     } : {
             items: archivedItems,
-            setItems: setArchivedItems,
+            setActiveItems: setArchivedItems,
             setTargetItems: setItems,
             isActiveList: false,
     };

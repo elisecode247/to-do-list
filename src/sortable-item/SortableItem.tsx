@@ -14,8 +14,7 @@ interface SortableItemProps {
     toggleChecked: (id: UniqueIdentifier) => void;
     updateItemText: (id: UniqueIdentifier, newText: string) => void;
     handleEdit: (id: UniqueIdentifier) => void;
-    onArchive: (id: UniqueIdentifier) => void;
-    onRestore: (id: UniqueIdentifier) => void;
+    onMoveItem: (id: UniqueIdentifier) => void;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -27,8 +26,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     toggleChecked,
     updateItemText,
     handleEdit,
-    onArchive,
-    onRestore,
+    onMoveItem
 }) => {
     const {
         attributes,
@@ -77,7 +75,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <button
                     aria-label="Archive item"
                     className='archive-button'
-                    onClick={() => onArchive(id)}
+                    onClick={() => onMoveItem(id)}
                     type="button"
                     title="Archive item"
                 >
@@ -86,7 +84,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <button
                     aria-label="Restore Archived Item"
                     className='restore-button'
-                    onClick={() => onRestore(id)}
+                    onClick={() => onMoveItem(id)}
                     type="button"
                     title="Restore Archived Item"
                 >

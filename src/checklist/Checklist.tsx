@@ -11,41 +11,41 @@ import { updateItemById } from './update-item-by-id.ts';
 interface ChecklistProps {
     isActiveList: boolean;
     items: Array<ChecklistItem>;
-    setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
+    setActiveItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setTargetItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setEditingItem: (checklistItem: ChecklistItem) => void;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
-    setItems,
+    setActiveItems,
     setTargetItems,
     setEditingItem
 }) => {
     const [inputText, setInputText] = useState<string>("");
 
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
-        updateItemById(setItems, id, (item: ChecklistItem) => ({ ...item, text: newText }));
+        updateItemById(setActiveItems, id, (item: ChecklistItem) => ({ ...item, text: newText }));
     };
 
     const deleteItem = (id: UniqueIdentifier): void => {
-        setItems(prev => prev.filter(item => item.id !== id));
+        setActiveItems(prev => prev.filter(item => item.id !== id));
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        setItems((items) => {
+        setActiveItems((items) => {
             const oldIndex = items.findIndex((item) => item.id === active.id);
             const newIndex = items.findIndex((item) => item.id === over.id);
-
+            if (oldIndex === -1 || newIndex === -1) return items;
             return arrayMove(items, oldIndex, newIndex);
         });
     }
 
     const toggleChecked = (id: UniqueIdentifier) => {
-        updateItemById(setItems, id, item => ({
+        updateItemById(setActiveItems, id, item => ({
             ...item,
             done: !item.done,
             lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
@@ -65,56 +65,43 @@ const Checklist: FC<ChecklistProps> = ({
 
     function moveItemBetweenLists(
         id: UniqueIdentifier,
-        sourceItems: ChecklistItem[],
-        setSourceItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>,
+        setActiveItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>,
         setTargetItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>
     ) {
-        const item = sourceItems.find(i => i.id === id);
-        if (!item) return;
 
-        // Remove from source
-        setSourceItems(prev => prev.filter(i => i.id !== id));
-
-        // Add to target
-        setTargetItems(prev => {
-            if (prev.some(i => i.id === id)) return prev;
-            return [...prev, item];
+        // Remove from active checklist and add to other checklist
+        setActiveItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) return prev;
+            setTargetItems(target =>
+                target.some(i => i.id === id) ? target : [...target, item]
+            );
+            return prev.filter(i => i.id !== id)
         });
+
     }
 
 
 
-    const resetChecked = (): void => {
-        setItems(prev => prev.map(item => ({ ...item, done: false })))
+    const resetCheckboxes = (): void => {
+        setActiveItems(prev => prev.map(item => ({ ...item, done: false })))
     };
 
     const addItem = (): void => {
         if (!inputText.trim()) return;
-        const id: UniqueIdentifier = crypto.randomUUID();
-        setItems(prev => [{ id, text: inputText, done: false, lastCompleted: '', note: '' }, ...prev]);
+        const id = crypto?.randomUUID?.() ?? Date.now().toString();
+        setActiveItems(prev => [{ id, text: inputText, done: false, lastCompleted: '', note: '' }, ...prev]);
         setInputText("");
     };
 
-    const handleArchive = (id: UniqueIdentifier) =>
-        moveItemBetweenLists(
-            id,
-            items,
-            setItems,
-            setTargetItems
-        );
-
-    const handleRestore = (id: UniqueIdentifier) =>
-        moveItemBetweenLists(
-            id,
-            items,
-            setItems,
-            setTargetItems
-        );
+    const moveItem = (id: UniqueIdentifier) => {
+        moveItemBetweenLists(id, setActiveItems, setTargetItems);
+    };
 
     return (
         <>
-            <div data-items={JSON.stringify(items)}>
-                <button onClick={resetChecked}>
+            <div>
+                <button onClick={resetCheckboxes}>
                     <ListChecks size={12} />
                 </button>
                 <input
@@ -130,9 +117,9 @@ const Checklist: FC<ChecklistProps> = ({
                 />
                 <button onClick={addItem}  >Add</button>
             </div>
-            <DndContext id="dnd-context" onDragEnd={handleDragEnd}>
+            <DndContext onDragEnd={handleDragEnd}>
                 <div className="task-list-container">
-                    <SortableContext id="sortable-context" items={items.map(i => i.id)}>
+                    <SortableContext items={items.map(i => i.id)}>
                         {items.map(item => (
                             <SortableItem
                                 isActive={isActiveList}
@@ -144,8 +131,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 toggleChecked={toggleChecked}
                                 updateItemText={updateItemText}
                                 handleEdit={handleEdit}
-                                onArchive={handleArchive}
-                                onRestore={handleRestore}
+                                onMoveItem={moveItem}
                             />
                         ))}
                     </SortableContext>
