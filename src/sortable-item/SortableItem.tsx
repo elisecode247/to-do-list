@@ -63,6 +63,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     checked={checked}
                     onChange={() => toggleChecked(id)}
                     onPointerDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                 />
 
                 <input
@@ -70,26 +71,27 @@ export const SortableItem: FC<SortableItemProps> = ({
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
                     onPointerDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                 />
                 {isActive ? (
-                <button
-                    aria-label="Archive item"
-                    className='archive-button'
-                    onClick={() => onMoveItem(id)}
-                    type="button"
-                    title="Archive item"
-                >
-                    <Archive size={12} />
-                </button>) : (
-                <button
-                    aria-label="Restore Archived Item"
-                    className='restore-button'
-                    onClick={() => onMoveItem(id)}
-                    type="button"
-                    title="Restore Archived Item"
-                >
-                    <ListPlus size={12} />
-                </button>
+                    <button
+                        aria-label="Archive item"
+                        className='archive-button'
+                        onClick={() => onMoveItem(id)}
+                        type="button"
+                        title="Archive item"
+                    >
+                        <Archive size={12} />
+                    </button>) : (
+                    <button
+                        aria-label="Restore Archived Item"
+                        className='restore-button'
+                        onClick={() => onMoveItem(id)}
+                        type="button"
+                        title="Restore Archived Item"
+                    >
+                        <ListPlus size={12} />
+                    </button>
                 )}
                 <button
                     aria-label="Edit item"
