@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useState, useEffect, type FC } from 'react';
 import { Download, Upload, FolderArchive } from 'lucide-react';
 import './app.css';
 import { usePersistedChecklist } from './use-persisted-checklist.tsx';
@@ -7,6 +7,7 @@ import { ItemModal } from '../item-modal/ItemModal.tsx';
 import type { ChecklistItem } from './types.ts';
 import Checklist from '../checklist/Checklist.tsx';
 import { isChecklistItemArray } from './utilities/is-valid-item-array.ts';
+import { starterItems } from './utilities/starter-data.ts';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
@@ -21,12 +22,16 @@ const App: FC = () => {
         setTargetItems: setArchivedItems,
         isActiveList: true,
     } : {
-            items: archivedItems,
-            setActiveItems: setArchivedItems,
-            setTargetItems: setItems,
-            isActiveList: false,
+        items: archivedItems,
+        setActiveItems: setArchivedItems,
+        setTargetItems: setItems,
+        isActiveList: false,
     };
-
+    useEffect(() => {
+        if (items.length === 0) {
+            setItems(starterItems);
+        }
+    }, [items, setItems]);
     const copyData = async () => {
         const storedItems = localStorage.getItem(activeKey);
         if (!storedItems) {
