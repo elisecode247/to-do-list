@@ -70,7 +70,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
                     aria-label={`Edit task: ${text}`}
-                    title="Edit task"
+                    title={text}
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                     className="task-text-input"
