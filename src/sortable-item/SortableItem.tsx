@@ -28,22 +28,15 @@ export const SortableItem: FC<SortableItemProps> = ({
     handleEdit,
     onMoveItem
 }) => {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging
-    } = useSortable({ id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+        useSortable({ id });
 
     const style = {
-        // Use CSS utility for performant transforms
         transform: CSS.Transform.toString(transform),
         transition,
-        // Apply specific styles when dragging
         opacity: isDragging ? 0.5 : 1,
-    }
+    };
+
     return (
         <div
             className="task-container"
@@ -52,16 +45,22 @@ export const SortableItem: FC<SortableItemProps> = ({
             {...attributes}
         >
             <div className="task-item">
-                <GripVertical
+                <button
                     {...listeners}
-                    size={12}
-                    aria-label="Drag to reorder"
-                />
+                    className="drag-handle"
+                    aria-label="Drag to reorder task"
+                    title="Drag to reorder"
+                    type="button"
+                >
+                    <GripVertical size={16} />
+                </button>
                 <input
                     className="task-checkbox"
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleChecked(id)}
+                    aria-label={`Mark task "${text}" as done`}
+                    title={checked ? "Mark as not done" : "Mark as done"}
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                 />
@@ -70,41 +69,47 @@ export const SortableItem: FC<SortableItemProps> = ({
                     type="text"
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
+                    aria-label={`Edit task: ${text}`}
+                    title="Edit task"
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
+                    className="task-text-input"
                 />
                 {isActive ? (
                     <button
-                        aria-label="Archive item"
-                        className='archive-button'
+                        className="archive-button"
                         onClick={() => onMoveItem(id)}
+                        aria-label="Archive task"
+                        title="Archive task"
                         type="button"
-                        title="Archive item"
                     >
                         <Archive size={12} />
-                    </button>) : (
+                    </button>
+                ) : (
                     <button
-                        aria-label="Restore Archived Item"
-                        className='restore-button'
+                        className="restore-button"
                         onClick={() => onMoveItem(id)}
+                        aria-label="Restore archived task"
+                        title="Restore archived task"
                         type="button"
-                        title="Restore Archived Item"
                     >
                         <ListPlus size={12} />
                     </button>
                 )}
                 <button
-                    aria-label="Edit item"
-                    className='edit-button'
+                    className="edit-button"
                     onClick={() => handleEdit(id)}
+                    aria-label="Edit task"
+                    title="Edit task"
                     type="button"
                 >
                     <Edit size={12} />
                 </button>
                 <button
-                    aria-label="Delete item"
-                    className='delete-button'
+                    className="delete-button"
                     onClick={() => deleteItem(id)}
+                    aria-label="Delete task"
+                    title="Delete task"
                     type="button"
                 >
                     <Trash size={12} />
@@ -112,4 +117,4 @@ export const SortableItem: FC<SortableItemProps> = ({
             </div>
         </div>
     );
-}
+};
