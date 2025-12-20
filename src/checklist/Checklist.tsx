@@ -6,6 +6,7 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from '../sortable-item/SortableItem.tsx';
 import { formatDate } from '../app/utilities/format-date.ts'
+import { updateItemById } from './update-item-by-id.ts';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -13,19 +14,13 @@ interface ChecklistProps {
     setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setTargetItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setEditingItem: (checklistItem: ChecklistItem) => void;
-    updateItemById: (
-        setList: Dispatch<SetStateAction<ChecklistItem[]>>,
-        id: UniqueIdentifier,
-        updater: (item: ChecklistItem) => ChecklistItem
-    ) => void;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
     setItems,
     setTargetItems,
-    setEditingItem,
-    updateItemById
+    setEditingItem
 }) => {
     const [inputText, setInputText] = useState<string>("");
 

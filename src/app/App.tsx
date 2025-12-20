@@ -1,5 +1,4 @@
-import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
-import type { UniqueIdentifier } from '@dnd-kit/core';
+import { useState, type FC } from 'react';
 import { Download, Upload, FolderArchive } from 'lucide-react';
 import './app.css';
 import { usePersistedChecklist } from './use-persisted-checklist.tsx';
@@ -7,52 +6,55 @@ import { ITEMS_KEY, ARCHIVED_KEY } from './constants.ts';
 import { ItemModal } from '../item-modal/ItemModal.tsx';
 import type { ChecklistItem } from './types.ts';
 import Checklist from '../checklist/Checklist.tsx';
+import { isChecklistItemArray } from './utilities/is-valid-item-array.ts';
 
 const App: FC = () => {
-    const [activeChecklist, setActiveChecklist] = useState(true);
-    const [items, setItems] = usePersistedChecklist(ITEMS_KEY);
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
+    const [isDailyChecklist, setActiveChecklist] = useState(true);
+    const [items, setItems] = usePersistedChecklist(ITEMS_KEY);
     const [archivedItems, setArchivedItems] = usePersistedChecklist(ARCHIVED_KEY);
-    const updateItemById = (
-        setList: Dispatch<SetStateAction<ChecklistItem[]>>,
-        id: UniqueIdentifier,
-        updater: (item: ChecklistItem) => ChecklistItem
-    ) => setList(prev => prev.map(item => (item.id === id ? updater(item) : item)));
+    const activeKey = isDailyChecklist ? ITEMS_KEY : ARCHIVED_KEY;
+    const setActiveItems = isDailyChecklist ? setItems : setArchivedItems;
+    const activeChecklist = isDailyChecklist ? {
+        items,
+        setItems,
+        setTargetItems: setArchivedItems,
+        isActiveList: true,
+    } : {
+            items: archivedItems,
+            setItems: setArchivedItems,
+            setTargetItems: setItems,
+            isActiveList: false,
+    };
 
     const copyData = async () => {
-        const storedItems = localStorage.getItem(ITEMS_KEY);
+        const storedItems = localStorage.getItem(activeKey);
         if (!storedItems) {
             alert('No data to copy');
             return;
         }
         try {
             await navigator.clipboard.writeText(storedItems);
-            alert('Data successfully copied to clipboard');
+            alert(activeKey + ' successfully copied to clipboard');
         } catch (err) {
             alert('Could not copy text: ' + err);
         }
     }
 
     const uploadData = () => {
-        const data = prompt('Paste data here');
+        const data = prompt('Paste data here for ' + activeKey);
         try {
             if (!data) {
                 alert('No data was pasted');
                 return;
             }
             const parsedData = JSON.parse(data.trim());
-            if (!Array.isArray(parsedData) ||
-                !parsedData.every(
-                    item =>
-                        typeof item.id === 'string' &&
-                        typeof item.text === 'string' &&
-                        typeof item.done === 'boolean'
-                )
-            ) {
+            if (!isChecklistItemArray(parsedData)) {
                 alert('Invalid format');
                 return;
             }
-            setItems(parsedData);
+
+            setActiveItems(parsedData);
         } catch (e) {
             alert('There was an error: ' + e);
         }
@@ -60,13 +62,17 @@ const App: FC = () => {
 
     const handleSave = () => {
         if (!editingItem) return;
-        updateItemById(setItems, editingItem.id, () => editingItem);
+        setActiveItems(prev => {
+            return prev.map(item => item.id === editingItem.id ? editingItem : item);
+        });
         setEditingItem(null);
     }
 
-    function openArchivedList(isTrue: boolean) {
-        setActiveChecklist(!isTrue);
+    function toggleChecklist() {
+        setActiveChecklist(prev => !prev);
+        setEditingItem(null);
     }
+
     return (
         <>
             {editingItem ? (
@@ -81,11 +87,12 @@ const App: FC = () => {
                 <header>
                     <h1 >My To Do List</h1>
                     <div className="header-button-group">
-                        {activeChecklist ? (
+                        {isDailyChecklist ? (
                             <button
                                 id="see-archived-data"
                                 className="archived-data-button"
-                                onClick={() => openArchivedList(true)}
+                                disabled={!!editingItem}
+                                onClick={toggleChecklist}
                                 title="See Archived Items"
                             >
                                 <FolderArchive size={12} />
@@ -94,8 +101,9 @@ const App: FC = () => {
                             <button
                                 id="see-active-checklist"
                                 className="archived-data-button"
-                                onClick={() => openArchivedList(false)}
+                                onClick={toggleChecklist}
                                 title="See Active Checklist"
+                                disabled={!!editingItem}
                             >
                                 <FolderArchive size={12} />
                             </button>
@@ -103,6 +111,7 @@ const App: FC = () => {
                         <button
                             id="download-data"
                             className="move-data"
+                            disabled={!!editingItem}
                             onClick={copyData}
                             title="Copy Data"
                         >
@@ -111,6 +120,7 @@ const App: FC = () => {
                         <button
                             id="upload-data"
                             className="move-data"
+                            disabled={!!editingItem}
                             onClick={uploadData}
                             title="upload JSON data into list"
                         >
@@ -119,27 +129,10 @@ const App: FC = () => {
                     </div>
                 </header>
                 <main className="checklist">
-                    {activeChecklist ? (
-                        <Checklist
-                            key="active-checklist"
-                            isActiveList={true}
-                            items={items}
-                            setItems={setItems}
-                            setTargetItems={setArchivedItems}
-                            setEditingItem={setEditingItem}
-                            updateItemById={updateItemById}
-                        />
-                    ) : (
-                        <Checklist
-                            key="archived-checklist"
-                            isActiveList={false}
-                            items={archivedItems}
-                            setItems={setArchivedItems}
-                            setTargetItems={setItems}
-                            setEditingItem={setEditingItem}
-                            updateItemById={updateItemById}
-                        />
-                    )}
+                    <Checklist
+                        {...activeChecklist}
+                        setEditingItem={setEditingItem}
+                    />
                 </main>
             </div>
         </>
