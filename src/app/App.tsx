@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC } from 'react';
+import { useState, useEffect, useEffectEvent, type FC } from 'react';
 import { Download, Upload, FolderArchive } from 'lucide-react';
 import 'app/app.css';
 import { usePersistedChecklist } from 'app/use-persisted-checklist.tsx';
@@ -7,7 +7,7 @@ import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import { isChecklistItemArray } from 'app/utilities/is-valid-item-array.ts';
-import { starterItems } from 'app/utilities/starter-data.ts';
+import { fetchChores, postChores, updateChore } from 'app/api';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
@@ -16,6 +16,7 @@ const App: FC = () => {
     const [archivedItems, setArchivedItems] = usePersistedChecklist(ARCHIVED_KEY);
     const activeKey = isDailyChecklist ? ITEMS_KEY : ARCHIVED_KEY;
     const setActiveItems = isDailyChecklist ? setItems : setArchivedItems;
+    const updateActiveItems = useEffectEvent(setActiveItems);
     const activeChecklist = isDailyChecklist ? {
         items,
         setActiveItems: setItems,
@@ -28,10 +29,11 @@ const App: FC = () => {
         isActiveList: false,
     };
     useEffect(() => {
-        if (items.length === 0) {
-            setItems(starterItems);
-        }
-    }, [items, setItems]);
+        fetchChores().then((data) => {
+            updateActiveItems(data);
+        })
+    }, [])
+
     const copyData = async () => {
         const storedItems = localStorage.getItem(activeKey);
         if (!storedItems) {
@@ -60,6 +62,8 @@ const App: FC = () => {
             }
 
             setActiveItems(parsedData);
+            postChores(parsedData);
+            alert('Chores saved!');
         } catch (e) {
             alert('There was an error: ' + e);
         }
@@ -69,6 +73,13 @@ const App: FC = () => {
         if (!editingItem) return;
         setActiveItems(prev => {
             return prev.map(item => item.id === editingItem.id ? editingItem : item);
+        });
+        updateChore(editingItem).then((data) => {
+            alert('Chore updated');
+            console.log(data);
+        }).catch((e) => {
+            alert('Chore was not updated:' + e);
+            console.error(e);
         });
         setEditingItem(null);
     }

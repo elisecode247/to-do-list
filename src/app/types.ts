@@ -6,4 +6,5 @@ export interface ChecklistItem {
     done: boolean;
     lastCompleted: string;
     note: string;
+    sortOrder: number;
 }

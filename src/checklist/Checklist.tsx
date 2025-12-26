@@ -7,6 +7,7 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { formatDate } from 'app/utilities/format-date.ts'
 import { updateItemById } from 'checklist/update-item-by-id.ts';
+import { updateChoresOrder } from 'app/api';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -36,13 +37,27 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        setActiveItems((items) => {
+        setActiveItems((items: ChecklistItem[]) => {
             const oldIndex = items.findIndex((item) => item.id === active.id);
             const newIndex = items.findIndex((item) => item.id === over.id);
             if (oldIndex === -1 || newIndex === -1) return items;
-            return arrayMove(items, oldIndex, newIndex);
+
+            const newItems = arrayMove(items, oldIndex, newIndex);
+
+            const updatedItems = newItems.map((item, index) => ({
+                ...item,
+                sortOrder: index
+            }));
+
+            updateChoresOrder(
+                updatedItems.map(({ id, sortOrder }) => ({ id, sortOrder }))
+            ).catch((err: string) => {
+                console.error('Failed to update chore order:', err)
+            });
+
+            return updatedItems;
         });
-    }
+    };
 
     const toggleChecked = (id: UniqueIdentifier) => {
         updateItemById(setActiveItems, id, item => ({
@@ -90,7 +105,14 @@ const Checklist: FC<ChecklistProps> = ({
     const addItem = (): void => {
         if (!inputText.trim()) return;
         const id = crypto?.randomUUID?.() ?? Date.now().toString();
-        setActiveItems(prev => [{ id, text: inputText, done: false, lastCompleted: '', note: '' }, ...prev]);
+        setActiveItems(prev => [{
+            id,
+            text: inputText,
+            done: false,
+            lastCompleted: '',
+            note: '',
+            sortOrder: items.length
+        }, ...prev]);
         setInputText("");
     };
 
