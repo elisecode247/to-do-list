@@ -1,4 +1,4 @@
-import { type ChecklistItem } from '../types';
+import { type ChecklistItem } from 'app/types';
 
 export const starterItems: ChecklistItem[] = [
   { id: '1', text: 'Wake up and stretch', done: false, lastCompleted: '', note: '' },

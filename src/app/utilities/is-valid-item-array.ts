@@ -1,4 +1,4 @@
-import type { ChecklistItem } from '../types.ts';
+import type { ChecklistItem } from 'app/types.ts';
 
 export function isChecklistItemArray(data: unknown): data is ChecklistItem[] {
   return Array.isArray(data) &&

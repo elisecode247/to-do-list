@@ -1,7 +1,7 @@
 // usePersistedChecklist.ts
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
-import type { ChecklistItem } from './types';
-import { type PersistedChecklistKey } from './constants';
+import type { ChecklistItem } from 'app/types';
+import { type PersistedChecklistKey } from 'app/constants';
 
 export function usePersistedChecklist(KEY: PersistedChecklistKey) {
   const [items, setItems] = useState<ChecklistItem[]>([]);

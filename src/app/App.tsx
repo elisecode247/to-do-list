@@ -1,13 +1,13 @@
 import { useState, useEffect, type FC } from 'react';
 import { Download, Upload, FolderArchive } from 'lucide-react';
-import './app.css';
-import { usePersistedChecklist } from './use-persisted-checklist.tsx';
-import { ITEMS_KEY, ARCHIVED_KEY } from './constants.ts';
-import { ItemModal } from '../item-modal/ItemModal.tsx';
-import type { ChecklistItem } from './types.ts';
-import Checklist from '../checklist/Checklist.tsx';
-import { isChecklistItemArray } from './utilities/is-valid-item-array.ts';
-import { starterItems } from './utilities/starter-data.ts';
+import 'app/app.css';
+import { usePersistedChecklist } from 'app/use-persisted-checklist.tsx';
+import { ITEMS_KEY, ARCHIVED_KEY } from 'app/constants.ts';
+import { ItemModal } from 'item-modal/ItemModal.tsx';
+import type { ChecklistItem } from 'app/types';
+import Checklist from 'checklist/Checklist.tsx';
+import { isChecklistItemArray } from 'app/utilities/is-valid-item-array.ts';
+import { starterItems } from 'app/utilities/starter-data.ts';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);

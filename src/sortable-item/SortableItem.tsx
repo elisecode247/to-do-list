@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import type { FC } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
-import './sortable-item.css';
+import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 
 interface SortableItemProps {

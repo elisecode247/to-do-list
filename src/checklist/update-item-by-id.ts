@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import type { ChecklistItem } from '../app/types.ts';
+import type { ChecklistItem } from 'app/types.ts';
 
 export const updateItemById = (
     setList: Dispatch<SetStateAction<ChecklistItem[]>>,

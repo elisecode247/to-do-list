@@ -1,6 +1,6 @@
-import './item-modal.css';
+import 'item-modal/item-modal.css';
 import { useEffect, useEffectEvent, useRef, type FC } from 'react';
-import type { ChecklistItem } from '../app/types';
+import type { ChecklistItem } from 'app/types';
 
 type ItemModalProps = {
   formData: ChecklistItem;

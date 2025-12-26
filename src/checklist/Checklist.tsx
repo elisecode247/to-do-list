@@ -1,12 +1,12 @@
 import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
-import type { ChecklistItem } from '../app/types.ts';
+import type { ChecklistItem } from 'app/types.ts';
 import { ListChecks } from 'lucide-react';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
-import { SortableItem } from '../sortable-item/SortableItem.tsx';
-import { formatDate } from '../app/utilities/format-date.ts'
-import { updateItemById } from './update-item-by-id.ts';
+import { SortableItem } from 'sortable-item/SortableItem.tsx';
+import { formatDate } from 'app/utilities/format-date.ts'
+import { updateItemById } from 'checklist/update-item-by-id.ts';
 
 interface ChecklistProps {
     isActiveList: boolean;

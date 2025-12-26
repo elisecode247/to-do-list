@@ -1,7 +1,18 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "files": [],
+    "references": [
+        {"path": "./tsconfig.app.json"},
+        {"path": "./tsconfig.node.json"}
+    ],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["./src/*"],
+            "app/*": ["./src/app/*"],
+            "checklist/*": ["./src/checklist/*"],
+            "item-modal/*": ["./src/item-modal/*"],
+            "sortable-item/*": ["./src/sortable-item/*"],
+            "utilities/*": ["./src/utilities/*"]
+        }
+    },
 }
