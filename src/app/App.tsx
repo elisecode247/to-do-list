@@ -7,7 +7,7 @@ import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import { isChecklistItemArray } from 'app/utilities/is-valid-item-array.ts';
-import { fetchChores, postChores, updateChore } from 'app/api';
+import { fetchTasks, postTasks, updateTask } from 'app/api';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
@@ -29,7 +29,7 @@ const App: FC = () => {
         isActiveList: false,
     };
     useEffect(() => {
-        fetchChores().then((data) => {
+        fetchTasks().then((data) => {
             updateActiveItems(data);
         })
     }, [])
@@ -62,8 +62,8 @@ const App: FC = () => {
             }
 
             setActiveItems(parsedData);
-            postChores(parsedData);
-            alert('Chores saved!');
+            postTasks(parsedData);
+            alert('Tasks saved!');
         } catch (e) {
             alert('There was an error: ' + e);
         }
@@ -74,11 +74,11 @@ const App: FC = () => {
         setActiveItems(prev => {
             return prev.map(item => item.id === editingItem.id ? editingItem : item);
         });
-        updateChore(editingItem).then((data) => {
-            alert('Chore updated');
+        updateTask(editingItem).then((data) => {
+            alert('Task updated');
             console.log(data);
         }).catch((e) => {
-            alert('Chore was not updated:' + e);
+            alert('Task was not updated:' + e);
             console.error(e);
         });
         setEditingItem(null);

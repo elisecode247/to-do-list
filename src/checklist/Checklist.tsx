@@ -7,7 +7,7 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { formatDate } from 'app/utilities/format-date.ts'
 import { updateItemById } from 'checklist/update-item-by-id.ts';
-import { updateChoresOrder } from 'app/api';
+import { addTask, updateTasksOrder, deleteTask } from 'app/api';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -30,7 +30,13 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const deleteItem = (id: UniqueIdentifier): void => {
-        setActiveItems(prev => prev.filter(item => item.id !== id));
+        deleteTask(id).then((data) => {
+            console.log(data);
+            setActiveItems(prev => prev.filter(item => item.id !== id));
+        }).catch((err) => {
+            console.error('Failed to delete task:', err);
+            alert('Task could not be deleted.');
+        });
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -49,10 +55,10 @@ const Checklist: FC<ChecklistProps> = ({
                 sortOrder: index
             }));
 
-            updateChoresOrder(
+            updateTasksOrder(
                 updatedItems.map(({ id, sortOrder }) => ({ id, sortOrder }))
             ).catch((err: string) => {
-                console.error('Failed to update chore order:', err)
+                console.error('Failed to update task order:', err)
             });
 
             return updatedItems;
@@ -75,8 +81,17 @@ const Checklist: FC<ChecklistProps> = ({
             return;
         }
 
-        setEditingItem({ ...selectedItem });
+        const formattedItem = {
+            ...selectedItem,
+            lastCompleted: selectedItem.lastCompleted
+                ? new Date(selectedItem.lastCompleted).toISOString().split('T')[0]
+                : ''
+        };
+        console.log(formattedItem);
+
+        setEditingItem(formattedItem);
     };
+
 
     function moveItemBetweenLists(
         id: UniqueIdentifier,
@@ -103,17 +118,38 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const addItem = (): void => {
-        if (!inputText.trim()) return;
-        const id = crypto?.randomUUID?.() ?? Date.now().toString();
-        setActiveItems(prev => [{
+        const text = inputText.trim();
+        if (!text) return;
+
+        const id = crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+
+        const newItem: ChecklistItem = {
             id,
-            text: inputText,
+            text,
             done: false,
             lastCompleted: '',
             note: '',
-            sortOrder: items.length
-        }, ...prev]);
-        setInputText("");
+            sortOrder: 0
+        };
+
+        addTask(newItem)
+            .then((data) => {
+                const formattedTask = {
+                    id: data.uuid,
+                    done: false,
+                    text: data.text,
+                    lastCompleted: data.lastCompleted,
+                    note: data.note,
+                    sortOrder: data.sortOrder
+                }
+                console.log(data);
+                setActiveItems(prev => [formattedTask, ...prev]);
+                setInputText('');
+            })
+            .catch((e) => {
+                alert('Task could not be added');
+                console.error(e);
+            });
     };
 
     const moveItem = (id: UniqueIdentifier) => {
