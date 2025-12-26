@@ -31,6 +31,9 @@ const App: FC = () => {
     useEffect(() => {
         fetchTasks().then((data) => {
             updateActiveItems(data);
+        }).catch(e => {
+            console.error(e);
+            updateActiveItems([]);
         })
     }, [])
 
