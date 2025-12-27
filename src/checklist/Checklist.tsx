@@ -6,7 +6,7 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { formatDate } from 'app/utilities/format-date.ts'
-import { updateItemById } from 'checklist/update-item-by-id.ts';
+import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask } from 'app/api';
 
 interface ChecklistProps {
@@ -26,7 +26,12 @@ const Checklist: FC<ChecklistProps> = ({
     const [inputText, setInputText] = useState<string>("");
 
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
-        updateItemById(setActiveItems, id, (item: ChecklistItem) => ({ ...item, text: newText }));
+        updateItemByIdAndSync(
+            items,
+            setActiveItems,
+            id,
+            (item: ChecklistItem) => ({ ...item, text: newText })
+        );
     };
 
     const deleteItem = (id: UniqueIdentifier): void => {
@@ -66,11 +71,15 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const toggleChecked = (id: UniqueIdentifier) => {
-        updateItemById(setActiveItems, id, item => ({
-            ...item,
-            done: !item.done,
-            lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
-        }));
+        updateItemByIdAndSync(
+            items,
+            setActiveItems,
+            id, item => ({
+                ...item,
+                done: !item.done,
+                lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
+            })
+        );
     };
 
     const handleEdit = (id: UniqueIdentifier) => {
