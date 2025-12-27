@@ -8,6 +8,9 @@ import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { formatDate } from 'app/utilities/format-date.ts'
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask } from 'app/api';
+import { TAGS } from 'checklist/constants';
+import { getTagColor } from 'checklist/utilities/get-tag-color';
+import 'checklist/checklist.css';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -24,6 +27,7 @@ const Checklist: FC<ChecklistProps> = ({
     setEditingItem
 }) => {
     const [inputText, setInputText] = useState<string>("");
+    const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
 
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
         updateItemByIdAndSync(
@@ -120,11 +124,19 @@ const Checklist: FC<ChecklistProps> = ({
 
     }
 
-
-
     const resetCheckboxes = (): void => {
         setActiveItems(prev => prev.map(item => ({ ...item, done: false })))
     };
+
+    const handleTagClick = (val: string): void => {
+        setNewTaskTags((prev: string[]) => {
+            if (prev.includes(val)) {
+                return prev.filter(tag => tag !== val);
+            } else {
+                return [...prev, val];
+            }
+        });
+    }
 
     const addItem = (): void => {
         const text = inputText.trim();
@@ -138,7 +150,8 @@ const Checklist: FC<ChecklistProps> = ({
             done: false,
             lastCompleted: '',
             note: '',
-            sortOrder: 0
+            sortOrder: 0,
+            tags: newTaskTags
         };
 
         addTask(newItem)
@@ -149,7 +162,8 @@ const Checklist: FC<ChecklistProps> = ({
                     text: data.text,
                     lastCompleted: data.lastCompleted,
                     note: data.note,
-                    sortOrder: data.sortOrder
+                    sortOrder: data.sortOrder,
+                    tags: data.tags
                 }
                 console.log(data);
                 setActiveItems(prev => [formattedTask, ...prev]);
@@ -167,8 +181,8 @@ const Checklist: FC<ChecklistProps> = ({
 
     return (
         <>
-            <div>
-                <button onClick={resetCheckboxes}>
+            <div className="new-item-container">
+                <button className="reset-button" onClick={resetCheckboxes}>
                     <ListChecks size={12} />
                 </button>
                 <input
@@ -182,7 +196,21 @@ const Checklist: FC<ChecklistProps> = ({
                     }}
                     placeholder="New item..."
                 />
-                <button onClick={addItem}  >Add</button>
+                <button onClick={addItem}>Add</button>
+                <div className="tag-container">
+                    {TAGS.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => handleTagClick(tag)}
+                            className={`tag-button ${
+                                newTaskTags.includes(tag) ? getTagColor(tag) :
+                                'tag-button-inactive'}`
+                            }
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="task-list-container">
