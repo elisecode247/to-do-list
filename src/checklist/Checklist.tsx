@@ -181,11 +181,9 @@ const Checklist: FC<ChecklistProps> = ({
 
     return (
         <>
-            <div className="new-item-container">
-                <button className="reset-button" onClick={resetCheckboxes}>
-                    <ListChecks size={12} />
-                </button>
+            <div className="checklist_new-item-container">
                 <input
+                    className="checklist_new-item-text-input"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={(e) => {
@@ -196,8 +194,8 @@ const Checklist: FC<ChecklistProps> = ({
                     }}
                     placeholder="New item..."
                 />
-                <button onClick={addItem}>Add</button>
-                <div className="tag-container">
+                <button className="checklist_new-item-add-button" onClick={addItem}>Add</button>
+                <div className="new-task-tag-container">
                     {TAGS.map(tag => (
                         <button
                             key={tag}
@@ -211,6 +209,11 @@ const Checklist: FC<ChecklistProps> = ({
                         </button>
                     ))}
                 </div>
+            </div>
+            <div>
+                <button className="checklist_reset-button" onClick={resetCheckboxes}>
+                    <ListChecks size={12} />
+                </button>
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="task-list-container">

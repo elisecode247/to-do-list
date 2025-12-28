@@ -1,15 +1,23 @@
 
 /* Input Container */
-.checklist > .new-item-container {
+.checklist_new-item-container {
     display: flex;
     gap: 12px;
     margin-bottom: 24px;
-    align-items: stretch;
     flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #e0e4e8;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Reset Button */
-.checklist > .new-item-container > .reset-button {
+.checklist_reset-button {
     background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     border: none;
     padding: 12px 16px;
@@ -24,18 +32,19 @@
     flex-shrink: 0;
 }
 
-.checklist>div:first-child>button:first-child:hover {
+/* Reset Button */
+.checklist_reset-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
     background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
 }
 
-.checklist>div:first-child>button:first-child:active {
+.checklist_reset-button:active {
     transform: translateY(0);
 }
 
-/* Text Input */
-.checklist>div:first-child>input[type="text"] {
+/* New Task Text Input */
+.checklist_new-item-text-input {
     flex: 1;
     border: 2px solid #e0e4e8;
     background: #f8f9fa;
@@ -47,18 +56,18 @@
     outline: none;
 }
 
-.checklist>div:first-child>input[type="text"]:focus {
+.checklist_new-item-text-input:focus {
     border-color: #7c3aed;
     background: white;
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
 }
 
-.checklist>div:first-child>input[type="text"]::placeholder {
+.checklist_new-item-text-input::placeholder {
     color: #9ca3af;
 }
 
 /* Add Button */
-.checklist>div:first-child>button:last-child {
+.checklist_new-item-add-button {
     background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     border: none;
     padding: 12px 24px;
@@ -70,37 +79,34 @@
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
     flex-shrink: 0;
+    flex: 0 0 auto;
 }
 
-.checklist>div:first-child>button:last-child:hover {
+.checklist_new-item-add-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
     background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
 }
 
-.checklist>div:first-child>button:last-child:active {
+.checklist_new-item-add-button:active {
     transform: translateY(0);
 }
 
-.checklist > .new-item-container > button,
-.checklist > .new-item-container > input {
-  flex: 0 0 auto;
-}
-
-.tag-container {
+/* New Task Tag Container */
+.new-task-tag-container {
   flex: 0 0 100%;
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-/* Tag Selection */
-.tag-container {
+.new-task-tag-container {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
+/* New Task Tag Buttons */
 .tag-button {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -133,4 +139,51 @@
 .tag-occasional {
   background-color: #f3e8ff;
   color: #7e22ce;
+}
+/* Responsive Design */
+@media (max-width: 640px) {
+
+    .checklist {
+        padding: 0px;
+    }
+
+    .checklist_new-item-container {
+        flex-wrap: wrap;
+    }
+
+    .checklist_new-item-text-input {
+        flex: 1 1 100%;
+        order: -1;
+        margin-bottom: 12px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+
+    .checklist {
+        background: #1f2937;
+    }
+
+    .checklist_new-item-container {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: #374151;
+        color: #f9fafb;
+    }
+
+    .checklist_new-item-text-input {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+
+    .checklist_new-item-text-input:focus {
+        background: #4b5563;
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .checklist_new-item-text-input::placeholder {
+        color: #9ca3af;
+    }
 }
