@@ -1,1 +1,1 @@
-export const TAGS = ['daily', 'one-time', 'occasional'];
+export const TAGS = ['daily', 'one-time', 'occasional', 'none'];

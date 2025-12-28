@@ -28,7 +28,10 @@ const Checklist: FC<ChecklistProps> = ({
     const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
     const [activeFilter, setActiveFilter] = useState('daily');
     const filteredItems = activeFilter
-        ? items.filter(task => task.tags.includes(activeFilter))
+        ? items.filter(task => {
+            if (activeFilter === 'none') return task.tags.length === 0;
+            return task.tags.includes(activeFilter)
+        })
         : items;
 
     const deleteItem = (id: UniqueIdentifier): void => {
@@ -225,7 +228,9 @@ const Checklist: FC<ChecklistProps> = ({
                                 : ''
                                 } ${getTagColor(tag)} hover:opacity-80`}
                         >
-                            {tag} ({items.filter(t => t.tags.includes(tag)).length})
+                            {tag} ({(activeFilter === 'none') ?
+                                items.filter(t => t.tags.length === 0).length :
+                                items.filter(t => t.tags.includes(tag)).length})
                         </button>
                     ))}
                 </div>

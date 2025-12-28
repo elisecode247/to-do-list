@@ -23,30 +23,6 @@ export async function fetchTasks() {
   }
 }
 
-export async function postTasks(tasks: ChecklistItem[]) {
-  try {
-    const response = await fetch(`${API_URL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(tasks),
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`HTTP ${response.status}: ${text}`);
-    }
-
-    const data = await response.json();
-    console.log("Saved tasks:", data);
-    return data;
-  } catch (err) {
-    console.error("Failed to save tasks:", err);
-    throw err;
-  }
-}
-
 export async function addTask(task: ChecklistItem) {
   try {
     const response = await fetch(`${API_URL}/new`, {

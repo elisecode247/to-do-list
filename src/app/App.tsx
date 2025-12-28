@@ -15,7 +15,16 @@ const App: FC = () => {
     const updateActiveItems = useEffectEvent(setItems);
     useEffect(() => {
         fetchTasks().then((data) => {
-            setItems(data);
+            const formattedItems = data.map((item: ChecklistItem) => {
+                const isoDate = item.lastCompleted !== null &&
+                    new Date(item.lastCompleted).toISOString().slice(0, 10)
+                const isToday = !!isoDate && isoDate === new Date().toISOString().slice(0, 10);
+                return {
+                    ...item,
+                    done: isToday
+                }
+            })
+            setItems(formattedItems);
         }).catch(e => {
             console.error(e);
             updateActiveItems([]);
