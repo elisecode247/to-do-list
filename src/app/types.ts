@@ -8,4 +8,5 @@ export interface ChecklistItem {
     note: string;
     sortOrder: number;
     tags: string[];
+    isArchived: boolean;
 }

@@ -12,7 +12,6 @@ interface SortableItemProps {
     deleteItem: (id: UniqueIdentifier) => void;
     text: string;
     toggleChecked: (id: UniqueIdentifier) => void;
-    updateItemText: (id: UniqueIdentifier, newText: string) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
 }
@@ -24,7 +23,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     deleteItem,
     text,
     toggleChecked,
-    updateItemText,
     handleEdit,
     onMoveItem
 }) => {
@@ -65,16 +63,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onTouchStart={(e) => e.stopPropagation()}
                 />
 
-                <input
-                    className="sortable-item_text-input"
-                    type="text"
-                    value={text}
-                    onChange={(e) => updateItemText(id, e.target.value)}
-                    aria-label={`Edit task: ${text}`}
-                    title={text}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onTouchStart={(e) => e.stopPropagation()}
-                />
+                <div className="sortable-item_text">{text}</div>
                 {isActive ? (
                     <button
                         className="archive-button"
