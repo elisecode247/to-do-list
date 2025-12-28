@@ -84,3 +84,30 @@ textarea {
     justify-content: flex-end;
     margin-top: 20px;
 }
+
+/* Task Tags */
+.item-modal_tag-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.item-modal_tag-button {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.item-modal_tag-button--inactive {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.item-modal_tag-button--inactive:hover {
+  background-color: #e5e7eb;
+}
