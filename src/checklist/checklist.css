@@ -21,22 +21,20 @@
     padding: 12px;
 }
 
+/* Reset Button */
 .checklist_reset-button {
     background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     border: none;
-    padding: 12px 16px;
-    border-radius: 10px;
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    height: 37px;
 }
 
-/* Reset Button */
 .checklist_reset-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
@@ -144,6 +142,59 @@
   background-color: #f3e8ff;
   color: #7e22ce;
 }
+
+/* Checklist Toolbar and Filter Buttons */
+.checklist_toolbar, .checklist_filter-container {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  height: 37px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button-all {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.filter-button-all:hover {
+  background-color: #d1d5db;
+}
+
+.filter-button-all-active {
+  background-color: #374151;
+  color: white;
+}
+
+.filter-button-active {
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #9ca3af;
+}
+
+.filter-button:hover {
+  opacity: 0.8;
+}
+
+.checklist_clear-filter-button {
+    color: #2563eb;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    border: none;
+    background: none;
+}
+
+.checklist_clear-filter-button:hover {
+  text-decoration: underline;
+}
 /* Responsive Design */
 @media (max-width: 640px) {
 
@@ -160,6 +211,7 @@
         order: -1;
         margin-bottom: 12px;
     }
+
 }
 
 /* Dark Mode Support */
@@ -189,5 +241,13 @@
 
     .checklist_new-item-text-input::placeholder {
         color: #9ca3af;
+    }
+
+        .checklist_filter-container {
+        color: white;
+    }
+
+    .checklist_toolbar {
+        color: white;
     }
 }

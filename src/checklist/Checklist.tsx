@@ -28,7 +28,10 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
-
+    const [activeFilter, setActiveFilter] = useState('daily');
+    const filteredItems = activeFilter
+        ? items.filter(task => task.tags.includes(activeFilter))
+        : items;
     const updateItemText = (id: UniqueIdentifier, newText: string): void => {
         updateItemByIdAndSync(
             items,
@@ -200,8 +203,7 @@ const Checklist: FC<ChecklistProps> = ({
                         <button
                             key={tag}
                             onClick={() => handleTagClick(tag)}
-                            className={`tag-button ${
-                                newTaskTags.includes(tag) ? getTagColor(tag) :
+                            className={`tag-button ${newTaskTags.includes(tag) ? getTagColor(tag) :
                                 'tag-button-inactive'}`
                             }
                         >
@@ -214,11 +216,51 @@ const Checklist: FC<ChecklistProps> = ({
                 <button className="checklist_reset-button" onClick={resetCheckboxes}>
                     <ListChecks size={12} />
                 </button>
+                {/* Tag Filter Buttons */}
+                <div className="checklist_filter-container">
+                    <button
+                        onClick={() => setActiveFilter('')}
+                        className={`filter-button ${activeFilter === ''
+                            ? 'filter-button-all-active'
+                            : 'filter-button-all'
+                            }`}
+                    >
+                        All ({items.length})
+                    </button>
+                    {TAGS.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => setActiveFilter(tag)}
+                            className={`filter-button ${activeFilter === tag
+                                ? 'filter-button-active'
+                                : ''
+                                } ${getTagColor(tag)} hover:opacity-80`}
+                        >
+                            {tag} ({items.filter(t => t.tags.includes(tag)).length})
+                        </button>
+                    ))}
+                </div>
+
+                {/* Active Filter Indicator */}
+                {activeFilter && (
+                    <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+                        <span>Showing items tagged with: </span>
+                        <span className={`px-3 py-1 rounded-full font-medium ${getTagColor(activeFilter)}`}>
+                            {activeFilter}
+                        </span>
+                        <button
+                            onClick={() => setActiveFilter('')}
+                            className="checklist_clear-filter-button"
+                        >
+                            Clear filter
+                        </button>
+                    </div>
+                )}
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="task-list-container">
-                    <SortableContext items={items.map(i => i.id)}>
-                        {items.map(item => (
+                    <SortableContext items={filteredItems.map(i => i.id)}>
+                        {filteredItems.map(item => (
                             <SortableItem
                                 isActive={isActiveList}
                                 checked={item.done}

@@ -118,7 +118,7 @@ export const ItemModal: FC<ItemModalProps> = ({
 
         <div className="modal-actions">
           <button
-            className="btn-secondary"
+            className="item-modal_button btn-secondary"
             onClick={onClose}
             type="button"
             aria-label="Close modal"
@@ -126,7 +126,7 @@ export const ItemModal: FC<ItemModalProps> = ({
             Cancel
           </button>
           <button
-            className="btn-primary"
+            className="item-modal_button btn-primary"
             onClick={onSave}
             type="button"
             aria-label="Save changes"
