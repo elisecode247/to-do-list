@@ -66,6 +66,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 />
 
                 <input
+                    className="sortable-item_text-input"
                     type="text"
                     value={text}
                     onChange={(e) => updateItemText(id, e.target.value)}
@@ -73,7 +74,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                     title={text}
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
-                    className="task-text-input"
                 />
                 {isActive ? (
                     <button

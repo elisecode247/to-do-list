@@ -17,6 +17,10 @@
     overflow: hidden;
 }
 
+.checklist_toolbar {
+    padding: 12px;
+}
+
 .checklist_reset-button {
     background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     border: none;
@@ -50,7 +54,7 @@
     background: #f8f9fa;
     padding: 12px 16px;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 16px;
     color: #1f2937;
     transition: all 0.2s ease;
     outline: none;
@@ -74,7 +78,7 @@
     border-radius: 10px;
     color: white;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
@@ -108,9 +112,9 @@
 
 /* New Task Tag Buttons */
 .tag-button {
-  padding: 0.25rem 0.75rem;
+  padding: 12px 16px;
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   border: none;
   cursor: pointer;

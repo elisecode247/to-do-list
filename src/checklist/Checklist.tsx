@@ -210,7 +210,7 @@ const Checklist: FC<ChecklistProps> = ({
                     ))}
                 </div>
             </div>
-            <div>
+            <div className="checklist_toolbar">
                 <button className="checklist_reset-button" onClick={resetCheckboxes}>
                     <ListChecks size={12} />
                 </button>

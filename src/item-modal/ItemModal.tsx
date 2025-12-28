@@ -79,6 +79,7 @@ export const ItemModal: FC<ItemModalProps> = ({
         <div className="form-group">
           <label htmlFor="task-text">Task</label>
           <input
+            className="item-modal_text-input"
             id="task-text"
             type="text"
             value={formData.text}
