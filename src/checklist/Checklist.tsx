@@ -257,7 +257,7 @@ const Checklist: FC<ChecklistProps> = ({
                 )}
             </div>
             <DndContext onDragEnd={handleDragEnd}>
-                <div className="task-list-container">
+                <div className="checklist_list-container">
                     <SortableContext items={filteredItems.map(i => i.id)}>
                         {filteredItems.map(item => (
                             <SortableItem

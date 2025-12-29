@@ -59,10 +59,10 @@ const App: FC = () => {
                     onClose={() => setEditingItem(null)}
                 />
             ) : null}
-            <div className="container">
+            <div className="app_container">
                 <header>
                     <h1 >My To Do List</h1>
-                    <div className="header-button-group">
+                    <div className="header_button-group">
                         {isActiveList ? (
                             <button
                                 id="see-archived-data"
