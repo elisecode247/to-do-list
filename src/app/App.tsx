@@ -11,6 +11,8 @@ const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
+    const [activeFilter, setActiveFilter] = useState('daily');
+
     const filteredList = isActiveList ? items.filter(item => !item.isArchived) :
         items.filter(item => item.isArchived)
     const updateActiveItems = useEffectEvent(setItems);
@@ -45,7 +47,15 @@ const App: FC = () => {
     }
 
     function toggleChecklist() {
-        setActiveChecklist(prev => !prev);
+        setActiveChecklist(prev => {
+            // show all tasks in archived list
+            if (prev) {
+                setActiveFilter('')
+            } else {
+                setActiveFilter('daily')
+            }
+            return!prev;
+        });
         setEditingItem(null);
     }
 
@@ -94,6 +104,8 @@ const App: FC = () => {
                         isActiveList={isActiveList}
                         setItems={setItems}
                         setEditingItem={setEditingItem}
+                        activeFilter={activeFilter}
+                        setActiveFilter={setActiveFilter}
                     />
                 </main>
             </div>

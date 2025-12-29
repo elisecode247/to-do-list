@@ -16,16 +16,19 @@ interface ChecklistProps {
     items: Array<ChecklistItem>;
     setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setEditingItem: (checklistItem: ChecklistItem) => void;
+    activeFilter: string;
+    setActiveFilter: Dispatch<SetStateAction<string>>;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
     setItems,
-    setEditingItem
+    setEditingItem,
+    activeFilter,
+    setActiveFilter
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
-    const [activeFilter, setActiveFilter] = useState('daily');
     const filteredItems = activeFilter
         ? items.filter(task => {
             if (activeFilter === 'none') return task.tags.length === 0;
