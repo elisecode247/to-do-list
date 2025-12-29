@@ -70,14 +70,20 @@ const Checklist: FC<ChecklistProps> = ({
         });
     };
 
-    const toggleChecked = (id: UniqueIdentifier) => {
+    const toggleChecked = (id: UniqueIdentifier, checked: boolean) => {
+        if (!checked) {
+            const confirmMessage = `If you uncheck, you will lose the last completed date.
+            Are you sure you want to uncheck?`;
+            const confirmed = confirm(confirmMessage);
+            if (!confirmed) return;
+        }
         updateItemByIdAndSync(
             items,
             setItems,
             id, item => ({
                 ...item,
                 done: !item.done,
-                lastCompleted: !item.done ? formatDate(new Date()) : item.lastCompleted,
+                lastCompleted: checked ? formatDate(new Date()) : '',
             })
         );
     };

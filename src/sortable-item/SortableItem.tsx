@@ -11,7 +11,7 @@ interface SortableItemProps {
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     text: string;
-    toggleChecked: (id: UniqueIdentifier) => void;
+    toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
 }
@@ -56,7 +56,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     className="task-checkbox"
                     type="checkbox"
                     checked={checked}
-                    onChange={() => toggleChecked(id)}
+                    onChange={(e) => toggleChecked(id, e.target.checked)}
                     aria-label={`Mark task "${text}" as done`}
                     title={checked ? "Mark as not done" : "Mark as done"}
                     onPointerDown={(e) => e.stopPropagation()}
