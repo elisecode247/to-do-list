@@ -127,6 +127,7 @@
 }
 
 .sortable-item_text {
+    position: relative;
     flex: 1;
     border: none;
     background: transparent;
@@ -148,6 +149,15 @@
     color: #9ca3af;
 }
 
+.sortable-item_last-completed-text {
+    font-size: 10px;
+    font-style: italic;
+    margin-left: 8px;
+    color: blueviolet;
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+}
 .delete-button, .edit-button, .archive-button {
     background: transparent;
     border: none;

@@ -11,6 +11,8 @@ interface SortableItemProps {
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     text: string;
+    lastCompleted: string;
+    activeFilter: string;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
@@ -22,6 +24,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     checked,
     deleteItem,
     text,
+    lastCompleted,
+    activeFilter,
     toggleChecked,
     handleEdit,
     onMoveItem
@@ -34,6 +38,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         transition,
         opacity: isDragging ? 0.5 : 1,
     };
+    const showLastCompleted = activeFilter === 'occasional' && !!lastCompleted;
 
     return (
         <div
@@ -63,7 +68,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onTouchStart={(e) => e.stopPropagation()}
                 />
 
-                <div className="sortable-item_text">{text}</div>
+                <div className="sortable-item_text">
+                    <span>{text}</span>
+                    {showLastCompleted && (
+                        <span className="sortable-item_last-completed-text">
+                            {`${new Date(lastCompleted).toDateString()}`}
+                        </span>
+                    )}
+                </div>
                 {isActive ? (
                     <button
                         className="archive-button"

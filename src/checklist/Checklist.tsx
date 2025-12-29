@@ -264,11 +264,13 @@ const Checklist: FC<ChecklistProps> = ({
                     <SortableContext items={filteredItems.map(i => i.id)}>
                         {filteredItems.map(item => (
                             <SortableItem
+                                activeFilter={activeFilter}
                                 isActive={isActiveList}
                                 checked={item.done}
                                 key={item.id}
                                 id={item.id}
                                 text={item.text}
+                                lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}

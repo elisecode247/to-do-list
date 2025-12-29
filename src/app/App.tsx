@@ -37,7 +37,6 @@ const App: FC = () => {
             return prev.map(item => item.id === editingItem.id ? editingItem : item);
         });
         updateTask(editingItem).then((data) => {
-            alert('Task updated');
             console.log(data);
         }).catch((e) => {
             alert('Task was not updated:' + e);
