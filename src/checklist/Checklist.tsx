@@ -82,8 +82,8 @@ const Checklist: FC<ChecklistProps> = ({
             setItems,
             id, item => ({
                 ...item,
-                done: !item.done,
-                lastCompleted: checked ? formatDate(new Date()) : '',
+                done: checked,
+                lastCompleted: checked ? new Date().toISOString() : '',
             })
         );
     };
@@ -99,7 +99,7 @@ const Checklist: FC<ChecklistProps> = ({
         const formattedItem = {
             ...selectedItem,
             lastCompleted: selectedItem.lastCompleted
-                ? new Date(selectedItem.lastCompleted).toISOString().split('T')[0]
+                ? new Date(selectedItem.lastCompleted).toISOString()
                 : ''
         };
         console.log(formattedItem);

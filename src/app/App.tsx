@@ -5,6 +5,7 @@ import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import { fetchTasks, updateTask } from 'app/api';
+import { isDateToday } from 'src/utilities/is-date-today';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
@@ -16,12 +17,9 @@ const App: FC = () => {
     useEffect(() => {
         fetchTasks().then((data) => {
             const formattedItems = data.map((item: ChecklistItem) => {
-                const isoDate = item.lastCompleted !== null &&
-                    new Date(item.lastCompleted).toISOString().slice(0, 10)
-                const isToday = !!isoDate && isoDate === new Date().toISOString().slice(0, 10);
                 return {
                     ...item,
-                    done: isToday
+                    done: isDateToday(item.lastCompleted)
                 }
             })
             setItems(formattedItems);

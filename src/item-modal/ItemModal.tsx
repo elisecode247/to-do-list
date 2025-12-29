@@ -3,6 +3,7 @@ import { useEffect, useEffectEvent, useRef, type FC } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { TAGS } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
+import { formatDate } from 'src/app/utilities/format-date';
 
 type ItemModalProps = {
     formData: ChecklistItem;
@@ -104,7 +105,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                     <input
                         id="last-completed"
                         type="date"
-                        value={formData.lastCompleted ?? ''}
+                        value={formatDate(new Date(formData.lastCompleted)) ?? ''}
                         onChange={(e) =>
                             setEditingItem({
                                 ...formData,
