@@ -5,7 +5,6 @@ import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
-import { formatDate } from 'app/utilities/format-date.ts'
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask } from 'app/api';
 import { TAGS } from 'checklist/constants';
