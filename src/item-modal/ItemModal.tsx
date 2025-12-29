@@ -4,6 +4,7 @@ import type { ChecklistItem } from 'app/types';
 import { TAGS } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
+import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 
 type ItemModalProps = {
     formData: ChecklistItem;
@@ -106,12 +107,13 @@ export const ItemModal: FC<ItemModalProps> = ({
                         id="last-completed"
                         type="date"
                         value={formatDate(new Date(formData.lastCompleted)) ?? ''}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                            const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
                             setEditingItem({
                                 ...formData,
-                                lastCompleted: e.target.value || '',
+                                lastCompleted: isoDateString || '',
                             })
-                        }
+                        }}
                     />
                 </div>
 
