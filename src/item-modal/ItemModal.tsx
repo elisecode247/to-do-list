@@ -121,7 +121,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                     <label htmlFor="notes">Notes</label>
                     <textarea
                         id="notes"
-                        value={formData.note}
+                        value={formData.note ?? ''}
                         onChange={(e) =>
                             setEditingItem({ ...formData, note: e.target.value })
                         }
