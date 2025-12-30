@@ -1,0 +1,68 @@
+.frequency-selector__group-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+}
+
+.frequency-selector__button-group {
+  display: inline-flex;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+}
+
+.frequency-selector__button {
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.frequency-selector__button:not(:first-child) {
+  border-left: 1px solid #d1d5db;
+}
+
+.frequency-selector__button:hover {
+  background: #f9fafb;
+}
+
+.frequency-selector__button--active {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.frequency-selector__button:not(:first-child) {
+  border-left: 1px solid #d1d5db;
+}
+
+.frequency-selector__button:hover {
+  background: #f9fafb;
+}
+
+.frequency-selector__button--active {
+  font-weight: 600;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Styles */
+@media (max-width: 640px) {
+
+  .frequency-selector__group-wrapper {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .frequency-selector__button-group {
+    width: 100%;
+  }
+
+  .frequency-selector__button {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}

@@ -45,7 +45,6 @@ export const ItemModal: FC<ItemModalProps> = ({
         const first = focusableElements[0];
         const last = focusableElements[focusableElements.length - 1];
 
-        first?.focus();
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {

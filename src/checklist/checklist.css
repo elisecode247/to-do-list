@@ -68,6 +68,12 @@
     overflow: hidden;
 }
 
+.checklist_new-item-input-row {
+    display: flex;
+    gap: .5rem;
+    width: 100%;
+}
+
 .checklist_toolbar {
     padding: 12px;
 }
@@ -180,17 +186,17 @@
 }
 
 .tag-daily {
-  background-color: #dbeafe;
+  background-color: var(--filter-daily-color);
   color: #1d4ed8;
 }
 
 .tag-one-time {
-  background-color: #dcfce7;
+  background-color: var(--filter-one-time-color);
   color: #15803d;
 }
 
 .tag-occasional {
-  background-color: #f3e8ff;
+  background-color: var(--filter-occasional-color);
   color: #7e22ce;
 }
 
@@ -222,7 +228,7 @@
 }
 
 .filter-button-all-active {
-  background-color: #374151;
+  background-color: var(--filter-all-color);
   color: white;
 }
 
@@ -257,7 +263,12 @@
 
     .checklist_new-item-container {
         flex-wrap: wrap;
-        height: 21vh;
+        height: 15vh;
+    }
+
+    .checklist_new-item-input-row {
+        width: 100%;
+        align-items: baseline;
     }
 
     .checklist_new-item-text-input {

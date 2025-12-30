@@ -7,7 +7,8 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask } from 'app/api';
-import { TAGS } from 'checklist/constants';
+import { TAGS, type Tag } from 'checklist/constants';
+import FrequencyButtonGroup from 'src/frequency-button-group';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
 
@@ -28,7 +29,7 @@ const Checklist: FC<ChecklistProps> = ({
     setActiveFilter
 }) => {
     const [inputText, setInputText] = useState<string>("");
-    const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
+    const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
     const filteredItems = activeFilter
         ? items.filter(task => {
             if (activeFilter === 'none') return task.tags.length === 0;
@@ -130,13 +131,7 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const handleTagClick = (val: string): void => {
-        setNewTaskTags((prev: string[]) => {
-            if (prev.includes(val)) {
-                return prev.filter(tag => tag !== val);
-            } else {
-                return [...prev, val];
-            }
-        });
+        setNewTaskTags([val]);
     }
 
     const addItem = (): void => {
@@ -185,31 +180,24 @@ const Checklist: FC<ChecklistProps> = ({
     return (
         <>
             <div className="checklist_new-item-container">
-                <input
-                    className="checklist_new-item-text-input"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                        e.stopPropagation();
-                        if (e.key === 'Enter') {
-                            addItem();
-                        }
-                    }}
-                    placeholder="New item..."
+                <FrequencyButtonGroup
+                    newTaskTags={newTaskTags}
+                    onClick={(tag: Tag) => handleTagClick(tag)}
                 />
-                <button className="checklist_new-item-add-button" onClick={addItem}>Add</button>
-                <div className="new-task-tag-container">
-                    {TAGS.map(tag => (
-                        <button
-                            key={tag}
-                            onClick={() => handleTagClick(tag)}
-                            className={`tag-button ${newTaskTags.includes(tag) ? getTagColor(tag) :
-                                'tag-button-inactive'}`
+                <div className="checklist_new-item-input-row">
+                    <input
+                        className="checklist_new-item-text-input"
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                                addItem();
                             }
-                        >
-                            {tag}
-                        </button>
-                    ))}
+                        }}
+                        placeholder="New item..."
+                    />
+                    <button className="checklist_new-item-add-button" onClick={addItem}>Add</button>
                 </div>
             </div>
             <div className="checklist_toolbar">

@@ -1,3 +1,13 @@
+/* Declaration (Global Scope) */
+:root {
+    --primary-color: #0d6efd;
+    --padding: 12px;
+    --filter-all-color: #374151;
+    --filter-daily-color: #dbeafe;
+    --filter-one-time-color: #dcfce7;
+    --filter-occasional-color: #f3e8ff;
+}
+
 body {
     margin: 0;
     padding: 0;
