@@ -30,6 +30,8 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
+    const isAddButtonDisabled = !inputText.length;
+
     const filteredItems = activeFilter
         ? items.filter(task => {
             if (activeFilter === 'none') return task.tags.length === 0;
@@ -197,7 +199,16 @@ const Checklist: FC<ChecklistProps> = ({
                         }}
                         placeholder="New item..."
                     />
-                    <button className="checklist_new-item-add-button" onClick={addItem}>Add</button>
+                    <button
+                        disabled={isAddButtonDisabled}
+                        className={`checklist_new-item-add-button
+                            ${isAddButtonDisabled &&
+                            'checklist_new-item-add-button--disabled'}`
+                        }
+                        onClick={addItem}
+                    >
+                            Add
+                    </button>
                 </div>
             </div>
             <div className="checklist_toolbar">

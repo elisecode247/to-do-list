@@ -151,6 +151,12 @@
     transform: translateY(0);
 }
 
+.checklist_new-item-add-button--disabled {
+        opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* New Task Tag Container */
 .new-task-tag-container {
   flex: 0 0 100%;

@@ -15,7 +15,6 @@ An app so simple to use you will actually use it. Whether you have daily routine
 - Add Google login
 - Add logout
 ### UI improvements
-- Disable "Add" button when the input is empty
 - Add label "Frequency" for the add task section's buttons
 - Style the frequency tags (daily, one-time, etc.) as toggle button groups
 - Add filter for completed and incomplete tasks, or add a "hide completed" option
