@@ -258,6 +258,15 @@
 .checklist_clear-filter-button:hover {
   text-decoration: underline;
 }
+
+.checklist_hide-completed-checkbox-container {
+    width: 100%;
+}
+.checklist_hide-completed-checkbox-input {
+    width: auto;
+    padding: 0 12px 0 0 ;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
 

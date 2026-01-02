@@ -11,6 +11,7 @@ import { TAGS, type Tag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
+import { isDateToday } from 'src/utilities/is-date-today';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -30,14 +31,15 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
+    const [hideCompleted, setHideCompleted] = useState(false);
+
     const isAddButtonDisabled = !inputText.length;
 
-    const filteredItems = activeFilter
-        ? items.filter(task => {
-            if (activeFilter === 'none') return task.tags.length === 0;
-            return task.tags.includes(activeFilter)
-        })
-        : items;
+    const filteredItems = items.filter(task => {
+        if (hideCompleted && isDateToday(task.lastCompleted)) return false;
+        if (activeFilter) return task.tags.includes(activeFilter);
+        return items;
+    });
 
     const deleteItem = (id: UniqueIdentifier): void => {
         deleteTask(id).then((data) => {
@@ -207,7 +209,7 @@ const Checklist: FC<ChecklistProps> = ({
                         }
                         onClick={addItem}
                     >
-                            Add
+                        Add
                     </button>
                 </div>
             </div>
@@ -257,6 +259,21 @@ const Checklist: FC<ChecklistProps> = ({
                         </button>
                     </div>
                 )}
+                <div className="checklist_hide-completed-checkbox-container">
+                    <input
+                        className="checklist_hide-completed-checkbox-input"
+                        type="checkbox"
+                        id="hideCompleted"
+                        checked={hideCompleted}
+                        onChange={(e) => setHideCompleted(e.target.checked)}
+                    />
+                    <label
+                        htmlFor="hideCompleted"
+                        className="checklist_hide-completed-checkbox-label"
+                    >
+                        Hide completed tasks
+                    </label>
+                </div>
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="checklist_list-container">
