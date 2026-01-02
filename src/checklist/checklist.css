@@ -127,34 +127,42 @@
 
 /* Add Button */
 .checklist_new-item-add-button {
-    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-    flex-shrink: 0;
-    flex: 0 0 auto;
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  flex-shrink: 0;
 }
 
 .checklist_new-item-add-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
 }
 
 .checklist_new-item-add-button:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .checklist_new-item-add-button--disabled {
-        opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.checklist_new-item-add-button--disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
 }
 
 /* New Task Tag Container */
