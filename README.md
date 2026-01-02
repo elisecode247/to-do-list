@@ -16,6 +16,5 @@ An app so simple to use you will actually use it. Whether you have daily routine
 - Add logout
 ### UI improvements
 - Add empty state message
-- Make design consistent for Archive button and Add button
 - Make task item's background color match frequency type
 - Check padding is consistent everywhere
