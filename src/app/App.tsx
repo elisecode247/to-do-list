@@ -6,17 +6,22 @@ import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import { fetchTasks, updateTask } from 'app/api';
 import { isDateToday } from 'src/utilities/is-date-today';
+import GoogleLoginButton from 'src/authentication/google-login-button';
+import { loginWithGoogle } from 'src/authentication/authentication-api';
 
 const App: FC = () => {
+    const token = localStorage.getItem("authToken");
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [activeFilter, setActiveFilter] = useState('daily');
+    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
     const filteredList = isActiveList ? items.filter(item => !item.isArchived) :
         items.filter(item => item.isArchived)
     const updateActiveItems = useEffectEvent(setItems);
     useEffect(() => {
+        if (!isAuthenticated) return;
         fetchTasks().then((data) => {
             const formattedItems = data.map((item: ChecklistItem) => {
                 return {
@@ -26,10 +31,11 @@ const App: FC = () => {
             })
             setItems(formattedItems);
         }).catch(e => {
+            console.log("%c Line:33 🍑 e", "color:#3f7cff", e);
             console.error(e);
             updateActiveItems([]);
         })
-    }, [])
+    }, [isAuthenticated])
 
     const handleSave = () => {
         if (!editingItem) return;
@@ -53,7 +59,7 @@ const App: FC = () => {
             } else {
                 setActiveFilter('daily')
             }
-            return!prev;
+            return !prev;
         });
         setEditingItem(null);
     }
@@ -70,6 +76,22 @@ const App: FC = () => {
             ) : null}
             <div className="app_container">
                 <header>
+                    {!isAuthenticated &&
+                        <GoogleLoginButton
+                            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                            onSuccess={async (token) => {
+                                try {
+                                    await loginWithGoogle(token);
+                                    setIsAuthenticated(true);
+                                } catch (err) {
+                                    console.error(err);
+                                }
+                            }}
+                            onError={(err) => {
+                                console.error("Google login error:", err);
+                            }}
+                        />
+                    }
                     <h1 >My To Do List</h1>
                     <div className="header_button-group">
                         {isActiveList ? (
