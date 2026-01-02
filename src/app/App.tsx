@@ -76,22 +76,6 @@ const App: FC = () => {
             ) : null}
             <div className="app_container">
                 <header>
-                    {!isAuthenticated &&
-                        <GoogleLoginButton
-                            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-                            onSuccess={async (token) => {
-                                try {
-                                    await loginWithGoogle(token);
-                                    setIsAuthenticated(true);
-                                } catch (err) {
-                                    console.error(err);
-                                }
-                            }}
-                            onError={(err) => {
-                                console.error("Google login error:", err);
-                            }}
-                        />
-                    }
                     <h1 >My To Do List</h1>
                     <div className="header_button-group">
                         {isActiveList ? (
@@ -117,6 +101,22 @@ const App: FC = () => {
                                 <span>&nbsp; See Active Checklist</span>
                             </button>
                         )}
+                        {/* {!isAuthenticated && */}
+                            <GoogleLoginButton
+                                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                                onSuccess={async (token) => {
+                                    try {
+                                        await loginWithGoogle(token);
+                                        setIsAuthenticated(true);
+                                    } catch (err) {
+                                        console.error(err);
+                                    }
+                                }}
+                                onError={(err) => {
+                                    console.error("Google login error:", err);
+                                }}
+                            />
+                        {/* } */}
                     </div>
                 </header>
                 <main className="checklist">

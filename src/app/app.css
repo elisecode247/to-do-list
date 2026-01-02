@@ -1,6 +1,6 @@
 #app-root {
     max-width: 100vw;
-    min-width: 300px;
+    min-width: 475;
     margin: 0 auto;
     height: 100vh;
     background: linear-gradient(135deg, #5b21b6 0%, #1e1b4b 100%);
@@ -43,7 +43,7 @@ header h1 {
 /* Header Buttons */
 .header_button-group {
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     gap: 1rem;
     margin-top: 1rem;
 }
@@ -108,7 +108,7 @@ header h1 {
     }
 
     .header_button-group {
-        margin-left: 20px;
+        margin: 10px 10px 0 10px;
     }
 }
 
