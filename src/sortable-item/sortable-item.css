@@ -7,7 +7,6 @@
 @layer base {
     .sortable-item_container {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         gap: var(--spacing-xs);
         padding: var(--spacing-sm);
@@ -46,8 +45,8 @@
 
 /* Checkbox */
 .sortable-item_checkbox {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     accent-color: var(--color-success);
     flex-shrink: 0;
@@ -69,6 +68,7 @@
     color: var(--color-text-primary);
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-left: var(--spacing-xl);
 }
 
 .sortable-item_last-completed-text {
@@ -77,6 +77,11 @@
     font-style: italic;
 }
 
+/* Button Container */
+.sortable-item_button-group-container {
+    display: flex;
+    align-items: flex-start;
+}
 /* Action Buttons Base */
 .sortable-item_archive-button,
 .sortable-item_restore-button,
