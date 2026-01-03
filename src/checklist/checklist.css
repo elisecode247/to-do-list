@@ -96,37 +96,39 @@
     gap: var(--spacing-xs);
 }
 
-.filter-button {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background-color: var(--color-surface);
-    color: var(--color-text-secondary);
-}
+@layer base {
+    .filter-button {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-full);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        background-color: var(--color-surface);
+        color: var(--color-text-secondary);
+    }
 
-.filter-button:hover {
-    opacity: 0.8;
-}
+    .filter-button:hover {
+        opacity: 0.8;
+    }
 
-.filter-button-all {
-    background-color: var(--color-surface);
-    color: var(--color-text-secondary);
-}
+    .filter-button-all {
+        background-color: var(--color-surface);
+        color: var(--color-text-secondary);
+    }
 
-.filter-button-all-active {
-    background-color: var(--color-text-primary);
-    color: var(--color-surface);
-    border-color: var(--color-text-primary);
-}
+    .filter-button-all-active {
+        background-color: var(--color-text-primary);
+        color: var(--color-surface);
+        border-color: var(--color-text-primary);
+    }
 
-.filter-button-active {
-    opacity: 1;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
+    .filter-button-active {
+        opacity: 1;
+        font-weight: 600;
+        box-shadow: var(--shadow-sm);
+    }
 }
 
 .checklist_clear-filter-button {

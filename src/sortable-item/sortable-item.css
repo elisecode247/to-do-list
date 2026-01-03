@@ -4,23 +4,24 @@
 }
 
 /* Item Container */
-.sortable-item_container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-sm);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-}
+@layer base {
+    .sortable-item_container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-sm);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+    }
 
-.sortable-item_container:hover {
-    border-color: var(--color-border);
-    box-shadow: var(--shadow-sm);
+    .sortable-item_container:hover {
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-sm);
+    }
 }
-
 /* Drag Handle */
 .sortable-item_drag-handle {
     display: flex;
@@ -131,6 +132,12 @@
 .sortable-item_delete-button:hover {
     background-color: rgba(239, 68, 68, 0.1);
     color: var(--color-danger);
+}
+
+.sortable-item_container.tag-frequency--daily,
+.sortable-item_container.tag-frequency--one-time,
+.sortable-item_container.tag-frequency--occasional {
+    border-left: 3px solid;
 }
 
 /* Responsive adjustments for larger screens */
