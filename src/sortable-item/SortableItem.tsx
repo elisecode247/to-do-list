@@ -81,45 +81,47 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </span>
                     )}
                 </div>
-                {isActive ? (
+                <div className="sortable-item_button-group-container">
+                    {isActive ? (
+                        <button
+                            className="sortable-item_archive-button"
+                            onClick={() => onMoveItem(id)}
+                            aria-label="Archive task"
+                            title="Archive task"
+                            type="button"
+                        >
+                            <Archive size={24} />
+                        </button>
+                    ) : (
+                        <button
+                            className="sortable-item_restore-button"
+                            onClick={() => onMoveItem(id)}
+                            aria-label="Restore archived task"
+                            title="Restore archived task"
+                            type="button"
+                        >
+                            <ListPlus size={24} />
+                        </button>
+                    )}
                     <button
-                        className="sortable-item_archive-button"
-                        onClick={() => onMoveItem(id)}
-                        aria-label="Archive task"
-                        title="Archive task"
+                        className="sortable-item_edit-button"
+                        onClick={() => handleEdit(id)}
+                        aria-label="Edit task"
+                        title="Edit task"
                         type="button"
                     >
-                        <Archive size={12} />
+                        <Edit size={24} />
                     </button>
-                ) : (
                     <button
-                        className="sortable-item_restore-button"
-                        onClick={() => onMoveItem(id)}
-                        aria-label="Restore archived task"
-                        title="Restore archived task"
+                        className="sortable-item_delete-button"
+                        onClick={() => deleteItem(id)}
+                        aria-label="Delete task"
+                        title="Delete task"
                         type="button"
                     >
-                        <ListPlus size={12} />
+                        <Trash size={24} />
                     </button>
-                )}
-                <button
-                    className="sortable-item_edit-button"
-                    onClick={() => handleEdit(id)}
-                    aria-label="Edit task"
-                    title="Edit task"
-                    type="button"
-                >
-                    <Edit size={12} />
-                </button>
-                <button
-                    className="sortable-item_delete-button"
-                    onClick={() => deleteItem(id)}
-                    aria-label="Delete task"
-                    title="Delete task"
-                    type="button"
-                >
-                    <Trash size={12} />
-                </button>
+                </div>
             </div>
         </div>
     );
