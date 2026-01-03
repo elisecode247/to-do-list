@@ -75,51 +75,53 @@ const App: FC = () => {
                 />
             ) : null}
             <div className="app_container">
-                <header>
-                    <h1 >My To Do List</h1>
-                    <div className="header_button-group">
+                <header className="app_header">
+                    <h1 className="app_h1">My To Do List</h1>
+                    <div className="app_header_button-group">
+                        <GoogleLoginButton
+                            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                            onSuccess={async (token) => {
+                                try {
+                                    await loginWithGoogle(token);
+                                    setIsAuthenticated(true);
+                                } catch (err) {
+                                    console.error(err);
+                                }
+                            }}
+                            onError={(err) => {
+                                console.error("Google login error:", err);
+                            }}
+                        />
                         {isActiveList ? (
                             <button
                                 id="see-archived-data"
-                                className="see-archived-checklist-button"
+                                className="app_see-archived-checklist-button"
                                 disabled={!!editingItem}
                                 onClick={toggleChecklist}
                                 title="See Archived Items"
                             >
                                 <FolderArchive size={12} />
-                                <span>&nbsp; See Archived Checklist</span>
+                                <span className="app_see-archived-checklist-text">
+                                    &nbsp; See Archived Checklist
+                                </span>
                             </button>
                         ) : (
                             <button
                                 id="see-active-checklist"
-                                className="see-active-checklist-button"
+                                className="app_see-active-checklist-button"
                                 onClick={toggleChecklist}
                                 title="See Active Checklist"
                                 disabled={!!editingItem}
                             >
                                 <FolderArchive size={12} />
-                                <span>&nbsp; See Active Checklist</span>
+                                <span className="app_see-archived-checklist-text">
+                                    &nbsp; See Active Checklist
+                                </span>
                             </button>
                         )}
-                        {/* {!isAuthenticated && */}
-                            <GoogleLoginButton
-                                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-                                onSuccess={async (token) => {
-                                    try {
-                                        await loginWithGoogle(token);
-                                        setIsAuthenticated(true);
-                                    } catch (err) {
-                                        console.error(err);
-                                    }
-                                }}
-                                onError={(err) => {
-                                    console.error("Google login error:", err);
-                                }}
-                            />
-                        {/* } */}
                     </div>
                 </header>
-                <main className="checklist">
+                <main className="app_main">
                     <Checklist
                         items={filteredList}
                         isActiveList={isActiveList}

@@ -1,7 +1,7 @@
 const colors = {
-  daily: " tag-daily ",
-  "one-time": " tag-one-time ",
-  occasional: " tag-occasional ",
+  daily: " tag-frequency--daily ",
+  "one-time": " tag-frequency--one-time ",
+  occasional: " tag-frequency--occasional ",
 };
 
 type ColorKey = keyof typeof colors;

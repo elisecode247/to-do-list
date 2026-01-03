@@ -42,15 +42,15 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     return (
         <div
-            className="task-container"
+            className="sortable-item_drag-wrapper"
             ref={setNodeRef}
             style={style}
             {...attributes}
         >
-            <div className="task-item">
+            <div className="sortable-item_container">
                 <button
                     {...listeners}
-                    className="drag-handle"
+                    className="sortable-item_drag-handle"
                     aria-label="Drag to reorder task"
                     title="Drag to reorder"
                     type="button"
@@ -58,7 +58,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <GripVertical size={16} />
                 </button>
                 <input
-                    className="task-checkbox"
+                    className="sortable-item_checkbox"
                     type="checkbox"
                     checked={checked}
                     onChange={(e) => toggleChecked(id, e.target.checked)}
@@ -68,8 +68,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onTouchStart={(e) => e.stopPropagation()}
                 />
 
-                <div className="sortable-item_text">
-                    <span>{text}</span>
+                <div className="sortable-item_text-container">
+                    <span className="sortable-item_text">{text}</span>
                     {showLastCompleted && (
                         <span className="sortable-item_last-completed-text">
                             {`${new Date(lastCompleted).toDateString()}`}
@@ -78,7 +78,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 </div>
                 {isActive ? (
                     <button
-                        className="archive-button"
+                        className="sortable-item_archive-button"
                         onClick={() => onMoveItem(id)}
                         aria-label="Archive task"
                         title="Archive task"
@@ -88,7 +88,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </button>
                 ) : (
                     <button
-                        className="restore-button"
+                        className="sortable-item_restore-button"
                         onClick={() => onMoveItem(id)}
                         aria-label="Restore archived task"
                         title="Restore archived task"
@@ -98,7 +98,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </button>
                 )}
                 <button
-                    className="edit-button"
+                    className="sortable-item_edit-button"
                     onClick={() => handleEdit(id)}
                     aria-label="Edit task"
                     title="Edit task"
@@ -107,7 +107,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <Edit size={12} />
                 </button>
                 <button
-                    className="delete-button"
+                    className="sortable-item_delete-button"
                     onClick={() => deleteItem(id)}
                     aria-label="Delete task"
                     title="Delete task"

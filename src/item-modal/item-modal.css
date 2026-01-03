@@ -86,7 +86,7 @@ textarea {
 .item-modal_tag-button {
   padding: 0.5rem 1rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: 16px;
   font-weight: 500;
   border: none;
   cursor: pointer;
