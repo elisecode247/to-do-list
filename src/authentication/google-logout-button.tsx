@@ -1,17 +1,21 @@
 import React from "react";
 import 'src/authentication/authentication.css';
-import { logout } from "./authentication-api";
-import { LogOut } from 'lucide-react';
+import { LogOut } from "lucide-react";
 
-const GoogleLogoutButton: React.FC = () => {
+interface GoogleLogoutButtonProps {
+    onLogout: () => void;
+}
+
+const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
+    onLogout
+}) => {
     const handleLogout = () => {
         // Revoke Google session if available
         if (window.google?.accounts?.id) {
             window.google.accounts.id.disableAutoSelect();
         }
 
-        // Call the parent's logout handler
-        logout();
+        onLogout();
     };
 
     return (
@@ -20,7 +24,7 @@ const GoogleLogoutButton: React.FC = () => {
             className="google-logout"
         >
             <LogOut size={16} />
-            Sign out
+            Log out
         </button>
     );
 };
