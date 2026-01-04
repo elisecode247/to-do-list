@@ -1,7 +1,6 @@
 // Function to set the theme
 export function setTheme(theme: 'dark' | 'light') {
   const body = document.getElementById('root');
-    console.log(body)
 
   if (!body) return;
   if (theme === 'dark') {
@@ -21,7 +20,6 @@ export function setTheme(theme: 'dark' | 'light') {
 
 // Function to toggle between light/dark (or back to system default)
 export function toggleTheme() {
-    console.log('toggle')
   const currentPreference = localStorage.getItem('theme');
   if (currentPreference === 'dark') {
     setTheme('light');
