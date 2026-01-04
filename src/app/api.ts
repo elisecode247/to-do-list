@@ -5,7 +5,6 @@ import { AUTH_TOKEN_KEY } from "src/authentication/constants";
 
 export async function fetchTasks() {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    console.log("%c Line:7 🧀 token", "color:#e41a6a", token);
 
     try {
         const response = await fetch(API_URL, {
@@ -21,7 +20,6 @@ export async function fetchTasks() {
         }
 
         const data = await response.json();
-        console.log("Tasks:", data);
         return data;
     } catch (err) {
         console.error("Failed to fetch tasks:", err);

@@ -42,8 +42,7 @@ const Checklist: FC<ChecklistProps> = ({
     });
 
     const deleteItem = (id: UniqueIdentifier): void => {
-        deleteTask(id).then((data) => {
-            console.log(data);
+        deleteTask(id).then(() => {
             setItems(prev => prev.filter(item => item.id !== id));
         }).catch((err) => {
             console.error('Failed to delete task:', err);
@@ -109,7 +108,6 @@ const Checklist: FC<ChecklistProps> = ({
                 ? new Date(selectedItem.lastCompleted).toISOString()
                 : ''
         };
-        console.log(formattedItem);
 
         setEditingItem(formattedItem);
     };
@@ -167,7 +165,6 @@ const Checklist: FC<ChecklistProps> = ({
                     tags: data.tags,
                     isArchived: false
                 }
-                console.log(data);
                 setItems(prev => [formattedTask, ...prev]);
                 setInputText('');
             })

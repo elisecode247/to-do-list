@@ -54,13 +54,12 @@ const App: FC = () => {
         setItems(prev => {
             return prev.map(item => item.id === editingItem.id ? editingItem : item);
         });
-        updateTask(editingItem).then((data) => {
-            console.log(data);
-        }).catch((error) => {
-            alert('Task was not updated');
-            setItems(prevItems);
-            console.error('Task update failed', error);
-        });
+        updateTask(editingItem)
+            .catch((error) => {
+                alert('Task was not updated');
+                setItems(prevItems);
+                console.error('Task update failed', error);
+            });
         setEditingItem(null);
     }
 
