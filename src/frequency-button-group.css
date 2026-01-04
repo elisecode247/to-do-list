@@ -3,50 +3,55 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+    padding: 0;
 }
 
 .frequency-selector__group-wrapper label {
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
 }
 
 /* Button Group Container */
 .frequency-selector__button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
+    display: inline-flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: var(--spacing-xs);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    width: fit-content;
 }
 
 /* Frequency Button Base */
 @layer base {
     .frequency-selector__button {
         padding: var(--spacing-xs) var(--spacing-md);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-full);
+        border: none;
+        border-radius: calc(var(--radius-full) - 4px);
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         transition: all var(--transition-fast);
-        background-color: var(--color-surface);
+        background-color: transparent;
         color: var(--color-text-secondary);
         white-space: nowrap;
     }
 
-    .frequency-selector__button:hover {
-        opacity: 0.8;
-        transform: translateY(-1px);
+    .frequency-selector__button:hover:not(.frequency-selector__button--active) {
+        background-color: rgba(0, 0, 0, 0.05);
     }
 
     .frequency-selector__button:active {
-        transform: translateY(0);
+        transform: scale(0.98);
     }
 
     /* Active State */
     .frequency-selector__button--active {
         font-weight: 600;
-        box-shadow: var(--shadow-sm);
-        opacity: 1;
+        color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 }
 
@@ -60,10 +65,6 @@
 
     .frequency-selector__group-wrapper label {
         white-space: nowrap;
-    }
-
-    .frequency-selector__button-group {
-        gap: var(--spacing-sm);
     }
 
     .frequency-selector__button {
