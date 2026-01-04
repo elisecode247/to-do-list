@@ -1,8 +1,9 @@
 import { API_AUTH_URL } from "app/constants";
+import { AUTH_TOKEN_KEY } from "src/authentication/constants";
 
-export async function loginWithGoogle(token: string) {
+export async function loginWithGoogle(token: string): Promise<void> {
     try {
-        const response = await fetch(`${API_AUTH_URL}`, {
+        const response = await fetch(API_AUTH_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -11,15 +12,30 @@ export async function loginWithGoogle(token: string) {
         });
 
         if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw new Error(`HTTP ${response.status}: ${await response.text()}`);
         }
 
         const data = await response.json();
-        console.log("%c Line:19 🍏 data", "color:#ea7e5c", data);
-        localStorage.setItem("authToken", data.token);
+        if (!data?.token) {
+            throw new Error("No auth token returned from server");
+        }
+
+        localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+
     } catch (err) {
         console.error("Failed to authenticate:", err);
-        throw err;
+        throw new Error("Google authentication failed", { cause: err });
     }
+}
+
+export function logout(): void {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+export function getAuthToken(): string | null {
+    return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+export function isAuthenticated(): boolean {
+    return Boolean(getAuthToken());
 }

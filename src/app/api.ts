@@ -1,9 +1,10 @@
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { API_URL } from "app/constants";
 import { type ChecklistItem } from "app/types";
+import { AUTH_TOKEN_KEY } from "src/authentication/constants";
 
 export async function fetchTasks() {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
     console.log("%c Line:7 🧀 token", "color:#e41a6a", token);
 
     try {
@@ -33,7 +34,7 @@ export async function addTask(task: ChecklistItem) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                "Authorization": `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY)}`,
             },
             body: JSON.stringify(task),
         });
@@ -58,7 +59,7 @@ export async function updateTask(task: ChecklistItem) {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                "Authorization": `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY)}`,
             },
             body: JSON.stringify(task),
         });
@@ -84,7 +85,7 @@ export async function updateTasksOrder(
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+            "Authorization": `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY)}`,
         },
         body: JSON.stringify({ orders }),
     });
@@ -96,7 +97,7 @@ export async function deleteTask(id: UniqueIdentifier): Promise<void> {
         const response = await fetch(`${API_URL}/${id}`, {
             method: "DELETE",
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+                "Authorization": `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY)}`,
             }
         });
 
