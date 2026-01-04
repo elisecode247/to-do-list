@@ -19,6 +19,8 @@ const App: FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(() =>
         Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
     );
+    const [isLoading, setIsLoading] = useState(isAuthenticated);
+
     const filteredList = useMemo(() => {
         return isActiveList
             ? items.filter(item => !item.isArchived)
@@ -41,6 +43,10 @@ const App: FC = () => {
             if (!cancelled) {
                 console.error(error);
                 setItems([]);
+            }
+        }).finally(() => {
+            if (!cancelled) {
+                setIsLoading(false);
             }
         });
         return () => {
@@ -138,14 +144,20 @@ const App: FC = () => {
                     </div>
                 </header>
                 <main className="app_main">
-                    <Checklist
-                        items={filteredList}
-                        isActiveList={isActiveList}
-                        setItems={setItems}
-                        setEditingItem={setEditingItem}
-                        activeFilter={activeFilter}
-                        setActiveFilter={setActiveFilter}
-                    />
+                    {isLoading ? (
+                        <div className="app_loading-container">
+                            <div className="app_loading-spinner"></div>
+                            <p>Loading your tasks...</p>
+                        </div>
+                    ) : (
+                        <Checklist
+                            items={filteredList}
+                            isActiveList={isActiveList}
+                            setItems={setItems}
+                            setEditingItem={setEditingItem}
+                            activeFilter={activeFilter}
+                            setActiveFilter={setActiveFilter}
+                        />)}
                 </main>
             </div>
         </>
