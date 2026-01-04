@@ -1,4 +1,4 @@
-import { useState, useEffect, useEffectEvent, type FC } from 'react';
+import { useState, useEffect, useMemo, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
 import 'app/app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
@@ -8,21 +8,27 @@ import { fetchTasks, updateTask } from 'app/api';
 import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import { loginWithGoogle } from 'src/authentication/authentication-api';
+import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 
 const App: FC = () => {
-    const token = localStorage.getItem("authToken");
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
-    const [activeFilter, setActiveFilter] = useState('daily');
-    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+    const [activeFilter, setActiveFilter] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(() =>
+        Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
+    );
+    const filteredList = useMemo(() => {
+        return isActiveList
+            ? items.filter(item => !item.isArchived)
+            : items.filter(item => item.isArchived);
+    }, [items, isActiveList]);
 
-    const filteredList = isActiveList ? items.filter(item => !item.isArchived) :
-        items.filter(item => item.isArchived)
-    const updateActiveItems = useEffectEvent(setItems);
     useEffect(() => {
         if (!isAuthenticated) return;
+        let cancelled = false;
         fetchTasks().then((data) => {
+            if (cancelled) return;
             const formattedItems = data.map((item: ChecklistItem) => {
                 return {
                     ...item,
@@ -30,37 +36,37 @@ const App: FC = () => {
                 }
             })
             setItems(formattedItems);
-        }).catch(e => {
-            console.log("%c Line:33 🍑 e", "color:#3f7cff", e);
-            console.error(e);
-            updateActiveItems([]);
-        })
+        }).catch(error => {
+            if (!cancelled) {
+                console.error(error);
+                setItems([]);
+            }
+        });
+        return () => {
+            cancelled = true;
+        };
     }, [isAuthenticated])
 
     const handleSave = () => {
         if (!editingItem) return;
+        const prevItems = [...items];
         setItems(prev => {
             return prev.map(item => item.id === editingItem.id ? editingItem : item);
         });
         updateTask(editingItem).then((data) => {
             console.log(data);
-        }).catch((e) => {
-            alert('Task was not updated:' + e);
-            console.error(e);
+        }).catch((error) => {
+            alert('Task was not updated');
+            setItems(prevItems);
+            console.error('Task update failed', error);
         });
         setEditingItem(null);
     }
 
     function toggleChecklist() {
-        setActiveChecklist(prev => {
-            // show all tasks in archived list
-            if (prev) {
-                setActiveFilter('')
-            } else {
-                setActiveFilter('daily')
-            }
-            return !prev;
-        });
+        const next = !isActiveList;
+        setActiveChecklist(next);
+        setActiveFilter('');
         setEditingItem(null);
     }
 
