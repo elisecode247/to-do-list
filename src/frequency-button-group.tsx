@@ -22,10 +22,10 @@ function FrequencyButtonGroup({ newTaskTags, onClick }: FrequencyButtonGroupProp
                         onClick={() => handleSelect(frequency)}
                         className={`frequency-selector__button
                             ${newTaskTags.includes(frequency)
-                                ? 'frequency-selector__button--active'
+                                ? `frequency-selector__button--active
+                                    ${getTagColor(frequency)}`
                                 : ''
-                            }
-                            ${getTagColor(frequency)} hover:opacity-80`}
+                            }`}
                     >
                         {frequency}
                     </button>
