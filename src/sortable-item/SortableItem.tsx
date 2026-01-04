@@ -4,8 +4,6 @@ import type { UniqueIdentifier } from '@dnd-kit/core';
 import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
-import { getTagColor } from 'checklist/utilities/get-tag-color';
-import type { Tag } from 'checklist/constants';
 
 interface SortableItemProps {
     id: UniqueIdentifier;
@@ -15,7 +13,6 @@ interface SortableItemProps {
     text: string;
     lastCompleted: string;
     activeFilter: string;
-    tags: Tag[];
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
@@ -29,7 +26,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     text,
     lastCompleted,
     activeFilter,
-    tags,
     toggleChecked,
     handleEdit,
     onMoveItem
@@ -43,7 +39,6 @@ export const SortableItem: FC<SortableItemProps> = ({
         opacity: isDragging ? 0.5 : 1,
     };
     const showLastCompleted = activeFilter === 'occasional' && !!lastCompleted;
-    const tagColorClass = tags.length > 0 ? getTagColor(tags[0]) : '';
 
     return (
         <div
@@ -52,7 +47,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             style={style}
             {...attributes}
         >
-            <div className={`sortable-item_container ${tagColorClass}`}>
+            <div className="sortable-item_container">
                 <button
                     {...listeners}
                     className="sortable-item_drag-handle"

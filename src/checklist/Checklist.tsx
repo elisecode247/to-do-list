@@ -286,7 +286,6 @@ const Checklist: FC<ChecklistProps> = ({
                                 key={item.id}
                                 id={item.id}
                                 text={item.text}
-                                tags={item.tags}
                                 lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}
                                 toggleChecked={toggleChecked}
