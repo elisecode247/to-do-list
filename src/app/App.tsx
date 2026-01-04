@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
-import 'app/app.css';
+import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
@@ -70,6 +70,12 @@ const App: FC = () => {
         setEditingItem(null);
     }
 
+    function handleLogout() {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        setIsAuthenticated(false);
+        setItems([]);
+    }
+
     return (
         <>
             {editingItem ? (
@@ -85,7 +91,7 @@ const App: FC = () => {
                     <h1 className="app_h1">My To Do List</h1>
                     <div className="app_header_button-group">
                         {isAuthenticated ? (
-                            <GoogleLogoutButton />
+                            <GoogleLogoutButton onLogout={handleLogout} />
                         ) : (
                             <GoogleLoginButton
                                 clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
