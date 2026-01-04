@@ -7,6 +7,7 @@ import Checklist from 'checklist/Checklist.tsx';
 import { fetchTasks, updateTask } from 'app/api';
 import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
+import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import { loginWithGoogle } from 'src/authentication/authentication-api';
 import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 
@@ -84,20 +85,24 @@ const App: FC = () => {
                 <header className="app_header">
                     <h1 className="app_h1">My To Do List</h1>
                     <div className="app_header_button-group">
-                        <GoogleLoginButton
-                            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-                            onSuccess={async (token) => {
-                                try {
-                                    await loginWithGoogle(token);
-                                    setIsAuthenticated(true);
-                                } catch (err) {
-                                    console.error(err);
-                                }
-                            }}
-                            onError={(err) => {
-                                console.error("Google login error:", err);
-                            }}
-                        />
+                        {isAuthenticated ? (
+                            <GoogleLogoutButton />
+                        ) : (
+                            <GoogleLoginButton
+                                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                                onSuccess={async (token) => {
+                                    try {
+                                        await loginWithGoogle(token);
+                                        setIsAuthenticated(true);
+                                    } catch (err) {
+                                        console.error(err);
+                                    }
+                                }}
+                                onError={(err) => {
+                                    console.error("Google login error:", err);
+                                }}
+                            />
+                        )}
                         {isActiveList ? (
                             <button
                                 id="see-archived-data"
