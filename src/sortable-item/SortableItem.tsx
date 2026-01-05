@@ -16,6 +16,7 @@ interface SortableItemProps {
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
+    tags: Array<Tag>
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -28,7 +29,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     activeFilters,
     toggleChecked,
     handleEdit,
-    onMoveItem
+    onMoveItem,
+    tags
 }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
         useSortable({ id });
@@ -47,7 +49,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             style={style}
             {...attributes}
         >
-            <div className="sortable-item_container">
+            <div className={`sortable-item_container ${tags.includes('priority') && 'tag-priority'}`}>
                 <button
                     {...listeners}
                     className="sortable-item_drag-handle"
