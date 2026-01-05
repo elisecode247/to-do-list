@@ -81,6 +81,7 @@ textarea {
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
+  align-items: baseline;
 }
 
 .item-modal_tag-button {
@@ -100,4 +101,36 @@ textarea {
 
 .item-modal_tag-button--inactive:hover {
   background-color: #e5e7eb;
+}
+
+.item-modal_tag-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 6px;
+}
+
+.item-modal_tag-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.item-modal_tag-button--priority {
+    border: 2px dotted;
+    font-weight: 600;
+    background: transparent;
+    color: #f5b301;
+    transition:
+        background-color 150ms ease,
+        color 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        transform 120ms ease;
+}
+
+.item-modal_tag-button--priority-active {
+    background: #fff6d1;
+    border-color: #f5b301;
+    box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.25);
+    transform: scale(0.97);
 }

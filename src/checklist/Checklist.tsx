@@ -7,7 +7,7 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask } from 'app/api';
-import { TAGS, type Tag } from 'checklist/constants';
+import { TAGS, PRIORITY_TAG, type Tag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
@@ -224,22 +224,30 @@ const Checklist: FC<ChecklistProps> = ({
                     >
                         All ({items.length})
                     </button>
-                    {TAGS.map(tag => (
-                        <button
-                            key={tag}
-                            onClick={() => setActiveFilters(prev =>
-                                prev.includes(tag)
-                                    ? prev.filter(t => t !== tag)
-                                    : [...prev, tag]
-                            )}
-                            className={`filter-button ${activeFilters.includes(tag)
-                                ? 'filter-button-active'
-                                : ''
-                                } ${getTagColor(tag)} hover:opacity-80`}
-                        >
-                            {tag} ({items.filter(t => t.tags.includes(tag)).length})
-                        </button>
-                    ))}
+                    {TAGS.map(tag => {
+                        const isPriority = tag === PRIORITY_TAG;
+                        const isActive = activeFilters.includes(tag);
+                        return (
+                            <button
+                                key={tag}
+                                onClick={() => setActiveFilters(prev =>
+                                    prev.includes(tag)
+                                        ? prev.filter(t => t !== tag)
+                                        : [...prev, tag]
+                                )}
+                                className={`
+                                filter-button
+                                ${isActive ? 'filter-button-active' : ''}
+                                ${!isPriority ? getTagColor(tag) : ''}
+                                ${isPriority ? 'filter-button--priority' : ''}
+                                ${isPriority && isActive ? 'filter-button--priority-active' : ''}
+                            `}
+                            >
+                                {isPriority ? '⭐ ' : ''}
+                                {tag} ({items.filter(t => t.tags.includes(tag)).length})
+                            </button>
+                        )
+                    })}
                 </div>
 
                 <div className="checklist_hide-completed-checkbox-container">
