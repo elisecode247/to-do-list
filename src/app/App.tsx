@@ -10,7 +10,7 @@ import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import { loginWithGoogle } from 'src/authentication/authentication-api';
 import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
-import Toast from 'src/toast/toast';
+import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
 import { type Tag } from 'src/checklist/constants';
