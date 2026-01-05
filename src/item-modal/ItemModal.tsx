@@ -1,7 +1,7 @@
 import 'item-modal/item-modal.css';
 import { useEffect, useEffectEvent, useRef, type FC } from 'react';
 import type { ChecklistItem } from 'app/types';
-import { TAGS } from 'checklist/constants';
+import { TAGS, EXCLUSIVE_TAGS, type ExclusiveTag } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -23,13 +23,35 @@ export const ItemModal: FC<ItemModalProps> = ({
     const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
     const toggleTag = (tag: string) => {
+        const isExclusive = EXCLUSIVE_TAGS.includes(tag as ExclusiveTag);
+
+        if (isExclusive) {
+            const alreadySelected = formData.tags.includes(tag);
+
+            if (alreadySelected) return;
+
+            setEditingItem({
+                ...formData,
+                tags: [
+                    ...formData.tags.filter(
+                        t => !EXCLUSIVE_TAGS.includes(t as ExclusiveTag)
+                    ),
+                    tag,
+                ],
+            });
+
+            return;
+        }
+
+        // Normal toggle behavior for non-exclusive tags
         setEditingItem({
             ...formData,
-            tags: formData.tags.includes(tag) ?
-                formData.tags.filter(t => t !== tag) :
-                [...formData.tags, tag]
+            tags: formData.tags.includes(tag)
+                ? formData.tags.filter(t => t !== tag)
+                : [...formData.tags, tag],
         });
     };
+
     const closeModal = useEffectEvent(onClose);
 
     useEffect(() => {
@@ -133,10 +155,16 @@ export const ItemModal: FC<ItemModalProps> = ({
                         <button
                             key={tag}
                             onClick={() => toggleTag(tag)}
-                            className={`item-modal_tag-button ${formData.tags.includes(tag)
-                                ? getTagColor(tag)
-                                : 'item-modal_tag-button--inactive'
-                                }`}
+                            className={`item-modal_tag-button
+                                ${formData.tags.includes(tag) ?
+                                    getTagColor(tag) :
+                                    'item-modal_tag-button--inactive'
+                                }
+                                ${EXCLUSIVE_TAGS.includes(tag as ExclusiveTag) ?
+                                    'item-modal_tag-button--exclusive' :
+                                    ''
+                                }
+                            `}
                         >
                             {tag}
                         </button>
