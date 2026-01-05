@@ -16,13 +16,13 @@ function getRandomSuccessKeyword(): "success" | "nod" | "hurray" {
 }
 
 function SuccessGif({
-    onClose,
-    query = getRandomSuccessKeyword(),
-    maxResults = 5,
-    fallbackDuration = 10000
+    onClose
 }: SuccessGifProps) {
     const [gifUrl, setGifUrl] = useState<string | null>(null);
     const [gifDuration, setGifDuration] = useState<number | null>(null);
+    const query = getRandomSuccessKeyword();
+    const maxResults = 5;
+    const fallbackDuration = 10000;
 
     useEffect(() => {
         let timeoutId: number | null = null;
@@ -55,7 +55,7 @@ function SuccessGif({
         return () => {
             if (timeoutId) clearTimeout(timeoutId);
         };
-    }, [query, maxResults, fallbackDuration]);
+    }, []);
 
     // Start auto-close timer once gifDuration is set
     useEffect(() => {
