@@ -51,9 +51,9 @@
     --color-tag-occasional-text: #166534;
     --color-tag-occasional-border: #86efac;
 
-    --color-tag-priority-bg: #fff7ed;
-    --color-tag-priority-text: #c2410c;
-    --color-tag-priority-border: #fed7aa;
+    --color-tag-priority-bg: #faf5ff;
+    --color-tag-priority-text: #7c3aed;
+    --color-tag-priority-border: #ddd6fe;
 
 }
 
@@ -141,6 +141,10 @@ body {
         --color-tag-occasional-bg: #14532d;
         --color-tag-occasional-text: #86efac;
         --color-tag-occasional-border: #166534;
+
+        --color-tag-priority-bg: #581c87;
+        --color-tag-priority-text: #e9d5ff;
+        --color-tag-priority-border: #7c3aed;
     }
 
     /* Body */
@@ -240,13 +244,15 @@ body {
     }
 
     /* Sortable Item */
-    .sortable-item_container {
-        background-color: var(--color-surface);
-        border-color: var(--color-border-light);
-    }
+    @layer base {
+        .sortable-item_container {
+            background-color: var(--color-surface);
+            border-color: var(--color-border-light);
+        }
 
-    .sortable-item_container:hover {
-        border-color: var(--color-border);
+        .sortable-item_container:hover {
+            border-color: var(--color-border);
+        }
     }
 
     .sortable-item_drag-handle {
