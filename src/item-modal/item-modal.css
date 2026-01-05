@@ -104,7 +104,7 @@ textarea {
 }
 
 .item-modal_tag-label {
-    font-size: 0.75rem;
+    font-size: 12px;
     text-transform: uppercase;
     opacity: 0.7;
     margin-bottom: 6px;
@@ -133,4 +133,13 @@ textarea {
     border-color: var(--color-tag-priority-text);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-tag-priority-text) 25%, transparent);
     transform: scale(0.97);
+}
+
+@media (prefers-color-scheme: dark) {
+    .modal {
+        background-color: var(--color-background);
+    }
+    .item-modal_tag-label {
+        color: var(--color-text-primary);
+    }
 }
