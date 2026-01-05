@@ -68,7 +68,6 @@ export async function updateTask(task: ChecklistItem) {
         }
 
         const data = await response.json();
-        console.log("Saved task:", data);
         return data;
     } catch (err) {
         console.error("Failed to save task:", err);

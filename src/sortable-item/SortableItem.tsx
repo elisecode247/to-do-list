@@ -70,7 +70,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     checked={checked}
                     onChange={(e) => {
                         toggleChecked(id, e.target.checked)
-                        onSuccess(true);
+                        if (e.target.checked && tags.includes(PRIORITY_TAG)) onSuccess(true);
                     }}
                     aria-label={`Mark task "${text}" as done`}
                     title={checked ? "Mark as not done" : "Mark as done"}

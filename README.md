@@ -16,3 +16,4 @@ An app so simple to use you will actually use it. Whether you have daily routine
 - Add logout
 ### UI improvements
 - Use custom hooks
+- add gifs to completed tasks
