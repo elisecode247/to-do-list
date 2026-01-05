@@ -1,5 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
-import type { FC } from 'react';
+import type { FC, Dispatch, SetStateAction } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { GripVertical, Trash, Edit, Archive, ListPlus, Star } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
@@ -17,6 +17,7 @@ interface SortableItemProps {
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
+    onSuccess: Dispatch<SetStateAction<boolean>>;
     tags: Array<Tag>
 }
 
@@ -32,7 +33,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     toggleChecked,
     handleEdit,
     onMoveItem,
-    tags
+    tags,
+    onSuccess
 }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
         useSortable({ id });
@@ -66,7 +68,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                     className="sortable-item_checkbox"
                     type="checkbox"
                     checked={checked}
-                    onChange={(e) => toggleChecked(id, e.target.checked)}
+                    onChange={(e) => {
+                        toggleChecked(id, e.target.checked)
+                        onSuccess(true);
+                    }}
                     aria-label={`Mark task "${text}" as done`}
                     title={checked ? "Mark as not done" : "Mark as done"}
                     onPointerDown={(e) => e.stopPropagation()}

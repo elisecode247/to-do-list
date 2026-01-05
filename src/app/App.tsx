@@ -14,6 +14,7 @@ import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
 import { type Tag } from 'src/checklist/constants';
+import SuccessGif from 'src/success-state/success-gif';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
@@ -26,6 +27,7 @@ const App: FC = () => {
     const [isLoading, setIsLoading] = useState(isAuthenticated);
     const [error, setError] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
+    const [showSuccessGif, setShowSuccessGif] = useState(false);
 
     const showToast = (message: string, type: ToastMessage['type']) => {
         const id = Date.now();
@@ -130,6 +132,9 @@ const App: FC = () => {
                     onClose={() => removeToast(toast.id)}
                 />
             ))}
+            {showSuccessGif && (
+                <SuccessGif onClose={() => setShowSuccessGif(false)} />
+            )}
             <div className="app_container">
                 <header className="app_header">
                     <h1 className="app_h1">My To Do List</h1>
@@ -200,6 +205,7 @@ const App: FC = () => {
                             setEditingItem={setEditingItem}
                             activeFilters={activeFilters}
                             setActiveFilters={setActiveFilters}
+                            onSuccess={setShowSuccessGif}
                         />)}
                 </main>
             </div>
