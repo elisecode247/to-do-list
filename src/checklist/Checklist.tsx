@@ -1,6 +1,5 @@
 import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
-import { ListChecks } from 'lucide-react';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
@@ -128,10 +127,6 @@ const Checklist: FC<ChecklistProps> = ({
 
     }
 
-    const resetCheckboxes = (): void => {
-        setItems(prev => prev.map(item => ({ ...item, done: false })))
-    };
-
     const handleTagClick = (val: string): void => {
         setNewTaskTags([val]);
     }
@@ -211,9 +206,6 @@ const Checklist: FC<ChecklistProps> = ({
                 </div>
             </div>
             <div className="checklist_toolbar">
-                <button className="checklist_reset-button" onClick={resetCheckboxes}>
-                    <ListChecks size={12} />
-                </button>
                 <div className="checklist_filter-container">
                     <button
                         onClick={() => setActiveFilters([])}

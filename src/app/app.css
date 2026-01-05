@@ -6,9 +6,9 @@
     max-width: 100%;
     margin: 0 auto;
     background:
-        radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-        radial-gradient(ellipse at 70% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%),
-        linear-gradient(to bottom, #1e1b4b 0%, #0f172a 150px, var(--color-surface) 300px);
+        radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse at 70% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 70%),
+        linear-gradient(to bottom, #1e1b4b 0%, #0f172a 150px, var(--color-surface) 100%);
 }
 
 /* Header */
@@ -159,7 +159,6 @@
     align-items: flex-end;
 }
 
-/* Archive/Active Buttons - Subtle Design */
 .app_see-archived-checklist-button,
 .app_see-active-checklist-button {
     display: flex;
@@ -174,8 +173,7 @@
     font-weight: 400;
     cursor: pointer;
     transition: all var(--transition-fast);
-    width: 100%;
-    align-self: flex-start;
+    align-self: flex-end;
 }
 
 .app_see-archived-checklist-button:hover:not(:disabled),
@@ -262,7 +260,6 @@
 
     .app_see-archived-checklist-button,
     .app_see-active-checklist-button {
-        width: auto;
         padding: var(--spacing-xs) var(--spacing-sm);
     }
 
