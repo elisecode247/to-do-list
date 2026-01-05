@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { searchTenorGifs } from "./search-tenor";
 import './success-gif.css';
 
 type SuccessGifProps = {
     onClose: () => void;
-    duration?: number; // fallback duration in milliseconds
+    query?: string;      // GIF search term
+    maxResults?: number; // number of GIFs to fetch
+    fallbackDuration?: number; // ms to auto-close if GIF duration not available
 };
 
 function getRandomSuccessKeyword(): "success" | "nod" | "hurray" {
@@ -13,44 +14,54 @@ function getRandomSuccessKeyword(): "success" | "nod" | "hurray" {
     return options[randomIndex];
 }
 
-
-function SuccessGif({ onClose, duration = 5000 }: SuccessGifProps) {
+function SuccessGif({
+    onClose,
+    query = getRandomSuccessKeyword(),
+    maxResults = 5,
+    fallbackDuration = 10000
+}: SuccessGifProps) {
     const [gifUrl, setGifUrl] = useState<string | null>(null);
+    const [gifDuration, setGifDuration] = useState<number | null>(null);
 
     useEffect(() => {
-        let timeoutId: number;
+        let timeoutId: number | null = null;
 
-        searchTenorGifs(getRandomSuccessKeyword(), 1)
-            .then(results => {
+        async function loadGif() {
+            try {
+                const res = await fetch(`/api/search-gif?q=${encodeURIComponent(query)}&limit=${maxResults}`);
+                if (!res.ok) throw new Error("Failed to fetch GIF from backend");
+
+                const data = await res.json();
+                const results = data.results;
                 if (!results || !results.length) return;
 
                 // Pick a random GIF
-                const randomIndex = Math.floor(Math.random() * results.length);
-                const gif = results[randomIndex];
+                const randomGif = results[Math.floor(Math.random() * results.length)];
+                const url = randomGif.media_formats?.gif?.url ?? randomGif.url ?? null;
+                const duration = randomGif.media_formats?.gif?.duration ?? fallbackDuration / 1000; // seconds
 
-                // Get the GIF duration (seconds) and convert to ms
-                const gifDurationMs = (gif.media_formats?.gif?.duration ?? duration / 1000) * 1000;
-
-                // Pick preferred format
-                const url =
-                    gif.media_formats?.gif?.url ??
-                    gif.url ??
-                    gif.media_formats?.tinygif?.url ??
-                    gif.media_formats?.nanogif?.url;
-
-                if (url) setGifUrl(url);
-
-                // Auto-close after the GIF duration
-                timeoutId = window.setTimeout(onClose, Math.max(duration, gifDurationMs));
-            })
-            .catch(err => {
+                if (url) {
+                    setGifUrl(url);
+                    setGifDuration(duration * 1000); // convert to ms
+                }
+            } catch (err) {
                 console.error("Failed to load success GIF:", err);
-                // fallback: close after default duration
-                timeoutId = window.setTimeout(onClose, duration);
-            });
+            }
+        }
 
+        loadGif();
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [query, maxResults, fallbackDuration]);
+
+    // Start auto-close timer once gifDuration is set
+    useEffect(() => {
+        if (!gifUrl || gifDuration === null) return;
+        const timeoutId = window.setTimeout(onClose, gifDuration);
         return () => clearTimeout(timeoutId);
-    }, [onClose, duration]);
+    }, [gifUrl, gifDuration, onClose]);
 
     if (!gifUrl) return null;
 
