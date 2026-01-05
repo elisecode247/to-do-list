@@ -1,12 +1,10 @@
 import 'item-modal/item-modal.css';
 import { useEffect, useEffectEvent, useRef, type FC } from 'react';
 import type { ChecklistItem } from 'app/types';
-import { TAGS, EXCLUSIVE_TAGS, type ExclusiveTag } from 'checklist/constants';
+import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type ExclusiveTag } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
-
-const PRIORITY_TAG = 'priority';
 
 type ItemModalProps = {
     formData: ChecklistItem;

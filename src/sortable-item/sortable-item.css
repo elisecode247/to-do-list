@@ -86,7 +86,8 @@
 .sortable-item_archive-button,
 .sortable-item_restore-button,
 .sortable-item_edit-button,
-.sortable-item_delete-button {
+.sortable-item_delete-button,
+.sortable-item_priority-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,12 +102,12 @@
 
 /* Archive Button */
 .sortable-item_archive-button {
-    color: var(--color-warning);
+    color: var(--color-success);
 }
 
 .sortable-item_archive-button:hover {
     background-color: rgba(245, 158, 11, 0.1);
-    color: var(--color-warning);
+    color: var(--color-success);
 }
 
 /* Restore Button */
@@ -137,6 +138,16 @@
 .sortable-item_delete-button:hover {
     background-color: rgba(239, 68, 68, 0.1);
     color: var(--color-danger);
+}
+
+/* Priority Button */
+.sortable-item_priority-button {
+    color: var(--color-warning);
+}
+
+.sortable-item_priority-button:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-warning);
 }
 
 .sortable-item_container.tag-frequency--daily,
@@ -178,7 +189,8 @@
     .sortable-item_archive-button,
     .sortable-item_restore-button,
     .sortable-item_edit-button,
-    .sortable-item_delete-button {
+    .sortable-item_delete-button,
+     .sortable-item_priority-button{
         padding: var(--spacing-sm);
     }
 }
@@ -189,7 +201,8 @@
 .sortable-item_archive-button:focus-visible,
 .sortable-item_restore-button:focus-visible,
 .sortable-item_edit-button:focus-visible,
-.sortable-item_delete-button:focus-visible {
+.sortable-item_delete-button:focus-visible,
+.sortable-item_priority-button:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
