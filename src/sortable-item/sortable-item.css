@@ -14,6 +14,7 @@
         border: 1px solid var(--color-border-light);
         border-radius: var(--radius-md);
         transition: all var(--transition-fast);
+        color: var(--color-text-primary);
     }
 
     .sortable-item_container:hover {
@@ -21,6 +22,7 @@
         box-shadow: var(--shadow-sm);
     }
 }
+
 /* Drag Handle */
 .sortable-item_drag-handle {
     display: flex;
@@ -52,23 +54,24 @@
     flex-shrink: 0;
 }
 
-/* Text Container */
-.sortable-item_text-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-    /* Force text container to take full width on mobile when buttons wrap */
-    flex-basis: 100%;
-}
+@layer base {
+    /* Text Container */
+    .sortable-item_text-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        /* Force text container to take full width on mobile when buttons wrap */
+        flex-basis: 100%;
+    }
 
-.sortable-item_text {
-    font-size: 14px;
-    color: var(--color-text-primary);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    margin-left: var(--spacing-xl);
+    .sortable-item_text {
+        font-size: 14px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        margin-left: var(--spacing-xl);
+    }
 }
 
 .sortable-item_last-completed-text {
@@ -82,6 +85,7 @@
     display: flex;
     align-items: flex-start;
 }
+
 /* Action Buttons Base */
 .sortable-item_archive-button,
 .sortable-item_restore-button,
@@ -190,7 +194,7 @@
     .sortable-item_restore-button,
     .sortable-item_edit-button,
     .sortable-item_delete-button,
-     .sortable-item_priority-button{
+    .sortable-item_priority-button {
         padding: var(--spacing-sm);
     }
 }
