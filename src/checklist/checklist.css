@@ -129,22 +129,31 @@
         font-weight: 600;
         box-shadow: var(--shadow-sm);
     }
-}
 
-.checklist_clear-filter-button {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    color: var(--color-primary);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
+    .filter-button--priority {
+        border: 2px dotted;
+        font-weight: 600;
+        background: transparent;
+        color: #f5b301;
 
-.checklist_clear-filter-button:hover {
-    background-color: var(--color-background);
-    border-color: var(--color-primary);
+        transition:
+            background-color 150ms ease,
+            color 150ms ease,
+            border-color 150ms ease,
+            box-shadow 150ms ease,
+            transform 120ms ease;
+    }
+
+    .filter-button--priority-active {
+        background: #fff6d1;
+        border-color: #f5b301;
+        box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.25);
+    }
+
+    .filter-button--priority:active {
+        transform: scale(0.97);
+    }
+
 }
 
 /* Hide Completed Checkbox */

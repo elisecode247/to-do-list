@@ -6,6 +6,8 @@ import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 
+const PRIORITY_TAG = 'priority';
+
 type ItemModalProps = {
     formData: ChecklistItem;
     setEditingItem: (item: ChecklistItem) => void;
@@ -26,9 +28,7 @@ export const ItemModal: FC<ItemModalProps> = ({
         const isExclusive = EXCLUSIVE_TAGS.includes(tag as ExclusiveTag);
 
         if (isExclusive) {
-            const alreadySelected = formData.tags.includes(tag);
-
-            if (alreadySelected) return;
+            if (formData.tags.includes(tag)) return;
 
             setEditingItem({
                 ...formData,
@@ -39,11 +39,9 @@ export const ItemModal: FC<ItemModalProps> = ({
                     tag,
                 ],
             });
-
             return;
         }
 
-        // Normal toggle behavior for non-exclusive tags
         setEditingItem({
             ...formData,
             tags: formData.tags.includes(tag)
@@ -67,7 +65,6 @@ export const ItemModal: FC<ItemModalProps> = ({
         const first = focusableElements[0];
         const last = focusableElements[focusableElements.length - 1];
 
-
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.preventDefault();
@@ -75,15 +72,11 @@ export const ItemModal: FC<ItemModalProps> = ({
                 return;
             }
 
-            if (e.key !== 'Tab') return;
-
-            if (e.shiftKey) {
-                if (document.activeElement === first) {
+            if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === first) {
                     e.preventDefault();
                     last?.focus();
-                }
-            } else {
-                if (document.activeElement === last) {
+                } else if (!e.shiftKey && document.activeElement === last) {
                     e.preventDefault();
                     first?.focus();
                 }
@@ -91,10 +84,9 @@ export const ItemModal: FC<ItemModalProps> = ({
         };
 
         document.addEventListener('keydown', handleKeyDown);
-
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-            previouslyFocusedElement?.current?.focus();
+            previouslyFocusedElement.current?.focus();
         };
     }, []);
 
@@ -106,14 +98,15 @@ export const ItemModal: FC<ItemModalProps> = ({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
-            >
-                <h2 id="modal-title">Edit Task</h2>
 
+            >
+                <h2>Edit Task</h2>
+
+                {/* Task */}
                 <div className="form-group">
-                    <label htmlFor="task-text">Task</label>
+                    <label>Task</label>
                     <input
                         className="item-modal_text-input"
-                        id="task-text"
                         type="text"
                         value={formData.text}
                         onChange={(e) =>
@@ -122,10 +115,10 @@ export const ItemModal: FC<ItemModalProps> = ({
                     />
                 </div>
 
+                {/* Date */}
                 <div className="form-group">
-                    <label htmlFor="last-completed">Last Completed</label>
+                    <label>Last Completed</label>
                     <input
-                        id="last-completed"
                         type="date"
                         value={formatDate(new Date(formData.lastCompleted)) ?? ''}
                         onChange={(e) => {
@@ -138,39 +131,64 @@ export const ItemModal: FC<ItemModalProps> = ({
                     />
                 </div>
 
+                {/* Notes */}
                 <div className="form-group">
-                    <label htmlFor="notes">Notes</label>
+                    <label>Notes</label>
                     <textarea
-                        id="notes"
                         value={formData.note ?? ''}
-                        onChange={(e) =>
+                        onChange={e =>
                             setEditingItem({ ...formData, note: e.target.value })
                         }
                         rows={4}
                     />
                 </div>
 
+                {/* Tags */}
                 <div className="item-modal_tag-container">
-                    {TAGS.map(tag => (
-                        <button
-                            key={tag}
-                            onClick={() => toggleTag(tag)}
-                            className={`item-modal_tag-button
-                                ${formData.tags.includes(tag) ?
-                                    getTagColor(tag) :
-                                    'item-modal_tag-button--inactive'
-                                }
-                                ${EXCLUSIVE_TAGS.includes(tag as ExclusiveTag) ?
-                                    'item-modal_tag-button--exclusive' :
-                                    ''
-                                }
-                            `}
-                        >
-                            {tag}
-                        </button>
-                    ))}
+                    <p className="item-modal_tag-label">Schedule (choose one)</p>
+
+                    <div className="item-modal_tag-group">
+                        {TAGS.filter(tag =>
+                            EXCLUSIVE_TAGS.includes(tag as ExclusiveTag)
+                        ).map(tag => (
+                            <button
+                                key={tag}
+                                onClick={() => toggleTag(tag)}
+                                className={`item-modal_tag-button
+                                    ${formData.tags.includes(tag)
+                                        ? getTagColor(tag)
+                                        : 'item-modal_tag-button--inactive'}
+                                `}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="item-modal_tag-container">
+
+                    <p className="item-modal_tag-label">Options</p>
+
+                    <div className="item-modal_tag-group">
+                        {TAGS.filter(tag => tag === PRIORITY_TAG).map(tag => (
+                            <button
+                                key={tag}
+                                onClick={() => toggleTag(tag)}
+                                className={`item-modal_tag-button
+                                    item-modal_tag-button--priority
+                                    ${formData.tags.includes(tag)
+                                        ? 'item-modal_tag-button--priority-active'
+                                        : ''}
+                                `}
+                                title="Can be combined with any schedule"
+                            >
+                                ⭐ {tag}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
+                {/* Actions */}
                 <div className="modal-actions">
                     <button
                         className="item-modal_button btn-secondary"
@@ -185,7 +203,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                         onClick={onSave}
                         type="button"
                         aria-label="Save changes"
-                    >
+                        >
                         Save
                     </button>
                 </div>
