@@ -109,7 +109,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </button>
                     <button
                         className="sortable-item_delete-button"
-                        onClick={() => deleteItem(id)}
+                        onClick={() => {
+                            const answer = confirm('Are you sure?');
+                            if (!answer) return;
+                            deleteItem(id)
+                        }}
                         aria-label="Delete task"
                         title="Delete task"
                         type="button"

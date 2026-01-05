@@ -1,0 +1,52 @@
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    min-height: 300px;
+    text-align: center;
+}
+
+.error-state__icon {
+    color: var(--color-danger);
+    margin-bottom: var(--spacing-md);
+}
+
+.error-state__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.error-state__message {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-lg) 0;
+    max-width: 400px;
+}
+
+.error-state__button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.error-state__button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.error-state__button:active {
+    transform: translateY(0);
+}
