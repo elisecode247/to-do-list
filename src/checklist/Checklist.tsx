@@ -237,8 +237,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 )}
                                 className={`
                                 filter-button
-                                ${isActive ? 'filter-button-active' : ''}
-                                ${!isPriority ? getTagColor(tag) : ''}
+                                ${!isPriority && isActive ? getTagColor(tag) + 'filter-button-active' : ''}
                                 ${isPriority ? 'filter-button--priority' : ''}
                                 ${isPriority && isActive ? 'filter-button--priority-active' : ''}
                             `}

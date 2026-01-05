@@ -208,10 +208,12 @@ body {
     }
 
     /* Filter Buttons */
-    .filter-button {
-        background-color: var(--color-surface);
-        border-color: var(--color-border);
-        color: var(--color-text-secondary);
+    @layer base {
+        .filter-button {
+            background-color: var(--color-surface);
+            border-color: var(--color-border);
+            color: var(--color-text-secondary);
+        }
     }
 
     .filter-button-all {
