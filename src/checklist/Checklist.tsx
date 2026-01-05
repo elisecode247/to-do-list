@@ -274,6 +274,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 onMoveItem={moveItem}
+                                tags={item.tags}
                             />
                         ))}
                     </SortableContext>

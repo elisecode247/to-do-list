@@ -2,6 +2,7 @@ const colors = {
   daily: " tag-frequency--daily ",
   "one-time": " tag-frequency--one-time ",
   occasional: " tag-frequency--occasional ",
+  priority: " tag-priority"
 };
 
 type ColorKey = keyof typeof colors;
