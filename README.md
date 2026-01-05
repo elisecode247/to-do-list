@@ -16,4 +16,3 @@ An app so simple to use you will actually use it. Whether you have daily routine
 - Add logout
 ### UI improvements
 - Use custom hooks
-- Check padding is consistent everywhere
