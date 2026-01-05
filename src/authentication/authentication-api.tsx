@@ -1,13 +1,11 @@
 import { API_AUTH_URL } from "app/constants";
 import { AUTH_TOKEN_KEY } from "src/authentication/constants";
-
+// Exchange Google ID token for your backend auth token
 export async function loginWithGoogle(token: string): Promise<void> {
     try {
         const response = await fetch(API_AUTH_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token }),
         });
 
@@ -16,9 +14,7 @@ export async function loginWithGoogle(token: string): Promise<void> {
         }
 
         const data = await response.json();
-        if (!data?.token) {
-            throw new Error("No auth token returned from server");
-        }
+        if (!data?.token) throw new Error("No auth token returned from server");
 
         localStorage.setItem(AUTH_TOKEN_KEY, data.token);
 

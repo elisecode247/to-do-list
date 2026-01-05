@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -26,26 +26,47 @@ declare global {
     };
   }
 }
+
 interface GoogleCredentialResponse {
   credential: string;
   select_by?: string;
 }
 
 interface GoogleLoginButtonProps {
-  clientId: string;
   onSuccess: (googleIdToken: string) => void;
   onError?: (error: unknown) => void;
+  backendClientIdEndpoint?: string; // optional backend endpoint
 }
 
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
-  clientId,
   onSuccess,
   onError,
+  backendClientIdEndpoint = "https://demo-server-production-9fc2.up.railway.app/api/google-client-id", // default endpoint
 }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
+  const [clientId, setClientId] = useState<string | null>(null);
 
+  // Fetch client ID from backend
   useEffect(() => {
-    if (!window.google || !buttonRef.current) return;
+    const fetchClientId = async () => {
+      try {
+        const res = await fetch(backendClientIdEndpoint);
+        if (!res.ok) throw new Error(`Failed to fetch client ID: ${res.status}`);
+        const data = await res.json();
+        if (!data?.clientId) throw new Error("No client ID returned from server");
+        setClientId(data.clientId);
+      } catch (err) {
+        console.error(err);
+        onError?.(err);
+      }
+    };
+
+    fetchClientId();
+  }, [backendClientIdEndpoint, onError]);
+
+  // Initialize Google Sign-In when clientId is ready
+  useEffect(() => {
+    if (!window.google || !buttonRef.current || !clientId) return;
 
     try {
       window.google.accounts.id.initialize({
@@ -58,6 +79,9 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
           onSuccess(response.credential);
         },
       });
+
+      // Disable auto-select so user is always prompted
+      window.google.accounts.id.disableAutoSelect();
 
       window.google.accounts.id.renderButton(buttonRef.current, {
         theme: "outline",

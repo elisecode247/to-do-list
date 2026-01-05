@@ -143,7 +143,6 @@ const App: FC = () => {
                             <GoogleLogoutButton onLogout={handleLogout} />
                         ) : (
                             <GoogleLoginButton
-                                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
                                 onSuccess={async (token) => {
                                     try {
                                         await loginWithGoogle(token);
