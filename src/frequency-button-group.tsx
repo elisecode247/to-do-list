@@ -8,7 +8,7 @@ interface FrequencyButtonGroupProps {
 }
 
 function FrequencyButtonGroup({ newTaskTags, onClick }: FrequencyButtonGroupProps) {
-    const handleSelect = (frequency: string) => {
+    const handleSelect = (frequency: Tag) => {
         onClick(frequency);
     };
 
