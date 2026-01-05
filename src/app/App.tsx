@@ -13,12 +13,13 @@ import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 import Toast from 'src/toast/toast';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
+import { type Tag } from 'src/checklist/constants';
 
 const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
-    const [activeFilter, setActiveFilter] = useState('');
+    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
     const [isAuthenticated, setIsAuthenticated] = useState(() =>
         Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
     );
@@ -99,14 +100,14 @@ const App: FC = () => {
     function toggleChecklist() {
         const next = !isActiveList;
         setActiveChecklist(next);
-        setActiveFilter('');
+        setActiveFilters([]);
         setEditingItem(null);
     }
 
     function handleLogout() {
         localStorage.removeItem(AUTH_TOKEN_KEY);
         setIsAuthenticated(false);
-        setActiveFilter('');
+        setActiveFilters([]);
         setActiveChecklist(true);
         setItems([]);
     }
@@ -197,8 +198,8 @@ const App: FC = () => {
                             isActiveList={isActiveList}
                             setItems={setItems}
                             setEditingItem={setEditingItem}
-                            activeFilter={activeFilter}
-                            setActiveFilter={setActiveFilter}
+                            activeFilters={activeFilters}
+                            setActiveFilters={setActiveFilters}
                         />)}
                 </main>
             </div>

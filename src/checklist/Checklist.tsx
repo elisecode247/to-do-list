@@ -18,16 +18,16 @@ interface ChecklistProps {
     items: Array<ChecklistItem>;
     setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
     setEditingItem: (checklistItem: ChecklistItem) => void;
-    activeFilter: string;
-    setActiveFilter: Dispatch<SetStateAction<string>>;
+    activeFilters: Array<Tag>;
+    setActiveFilters: Dispatch<SetStateAction<Array<Tag>>>;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
     setItems,
     setEditingItem,
-    activeFilter,
-    setActiveFilter
+    activeFilters,
+    setActiveFilters
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
@@ -37,7 +37,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const filteredItems = items.filter(task => {
         if (hideCompleted && isDateToday(task.lastCompleted)) return false;
-        if (activeFilter) return task.tags.includes(activeFilter);
+        if (activeFilters.length) return task.tags.some((tag) => activeFilters.includes(tag));
         return items;
     });
 
@@ -214,11 +214,10 @@ const Checklist: FC<ChecklistProps> = ({
                 <button className="checklist_reset-button" onClick={resetCheckboxes}>
                     <ListChecks size={12} />
                 </button>
-                {/* Tag Filter Buttons */}
                 <div className="checklist_filter-container">
                     <button
-                        onClick={() => setActiveFilter('')}
-                        className={`filter-button ${activeFilter === ''
+                        onClick={() => setActiveFilters([])}
+                        className={`filter-button ${!activeFilters.length
                             ? 'filter-button-all-active'
                             : 'filter-button-all'
                             }`}
@@ -228,34 +227,21 @@ const Checklist: FC<ChecklistProps> = ({
                     {TAGS.map(tag => (
                         <button
                             key={tag}
-                            onClick={() => setActiveFilter(tag)}
-                            className={`filter-button ${activeFilter === tag
+                            onClick={() => setActiveFilters(prev =>
+                                prev.includes(tag)
+                                    ? prev.filter(t => t !== tag)
+                                    : [...prev, tag]
+                            )}
+                            className={`filter-button ${activeFilters.includes(tag)
                                 ? 'filter-button-active'
                                 : ''
                                 } ${getTagColor(tag)} hover:opacity-80`}
                         >
-                            {tag} ({(activeFilter === 'none') ?
-                                items.filter(t => t.tags.length === 0).length :
-                                items.filter(t => t.tags.includes(tag)).length})
+                            {tag} ({items.filter(t => t.tags.includes(tag)).length})
                         </button>
                     ))}
                 </div>
 
-                {/* Active Filter Indicator */}
-                {activeFilter && (
-                    <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
-                        <span>Showing items tagged with: </span>
-                        <span className={`px-3 py-1 rounded-full font-medium ${getTagColor(activeFilter)}`}>
-                            {activeFilter}
-                        </span>
-                        <button
-                            onClick={() => setActiveFilter('')}
-                            className="checklist_clear-filter-button"
-                        >
-                            Clear filter
-                        </button>
-                    </div>
-                )}
                 <div className="checklist_hide-completed-checkbox-container">
                     <input
                         className="checklist_hide-completed-checkbox-input"
@@ -277,7 +263,7 @@ const Checklist: FC<ChecklistProps> = ({
                     <SortableContext items={filteredItems.map(i => i.id)}>
                         {filteredItems.map(item => (
                             <SortableItem
-                                activeFilter={activeFilter}
+                                activeFilters={activeFilters}
                                 isActive={isActiveList}
                                 checked={item.done}
                                 key={item.id}

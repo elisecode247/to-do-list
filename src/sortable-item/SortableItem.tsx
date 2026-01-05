@@ -4,7 +4,7 @@ import type { UniqueIdentifier } from '@dnd-kit/core';
 import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
-
+import { type Tag } from 'src/checklist/constants';
 interface SortableItemProps {
     id: UniqueIdentifier;
     isActive: boolean;
@@ -12,7 +12,7 @@ interface SortableItemProps {
     deleteItem: (id: UniqueIdentifier) => void;
     text: string;
     lastCompleted: string;
-    activeFilter: string;
+    activeFilters: Array<Tag>;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
@@ -25,7 +25,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     deleteItem,
     text,
     lastCompleted,
-    activeFilter,
+    activeFilters,
     toggleChecked,
     handleEdit,
     onMoveItem
@@ -38,7 +38,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         transition,
         opacity: isDragging ? 0.5 : 1,
     };
-    const showLastCompleted = activeFilter === 'occasional' && !!lastCompleted;
+    const showLastCompleted = activeFilters.includes('occasional') && !!lastCompleted;
 
     return (
         <div
