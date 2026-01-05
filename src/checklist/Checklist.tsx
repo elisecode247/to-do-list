@@ -1,4 +1,4 @@
-import { useState, type FC, type Dispatch, type SetStateAction } from 'react';
+import { useState, useMemo, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -6,7 +6,7 @@ import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask, updateTask } from 'app/api';
-import { TAGS, PRIORITY_TAG, type Tag } from 'checklist/constants';
+import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
@@ -19,6 +19,7 @@ interface ChecklistProps {
     setEditingItem: (checklistItem: ChecklistItem) => void;
     activeFilters: Array<Tag>;
     setActiveFilters: Dispatch<SetStateAction<Array<Tag>>>;
+    onSuccess: Dispatch<SetStateAction<boolean>>;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
@@ -26,19 +27,44 @@ const Checklist: FC<ChecklistProps> = ({
     setItems,
     setEditingItem,
     activeFilters,
-    setActiveFilters
+    setActiveFilters,
+    onSuccess
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
     const [hideCompleted, setHideCompleted] = useState(false);
-
     const isAddButtonDisabled = !inputText.length;
+    const hasExclusiveFilter = activeFilters.some(f =>
+        EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
+    );
+    const filteredItems = useMemo(() => {
+        if (!items.length) return items;
 
-    const filteredItems = items.filter(task => {
-        if (hideCompleted && isDateToday(task.lastCompleted)) return false;
-        if (activeFilters.length) return task.tags.some((tag) => activeFilters.includes(tag));
-        return items;
-    });
+        const exclusiveFilters = activeFilters.filter(
+            selected => isExclusiveTag(selected)
+        );
+        const nonExclusiveFilters = activeFilters.filter(
+            selected => !isExclusiveTag(selected)
+        );
+
+        return items.filter(task => {
+            if (hideCompleted && isDateToday(task.lastCompleted)) return false;
+
+            const tagSet = new Set(task.tags);
+
+            // OR logic for exclusive tags
+            if (exclusiveFilters.length > 0) {
+                if (!exclusiveFilters.some(tag =>tagSet.has(tag))) return false;
+            }
+
+            // AND logic for everything else (priority, etc)
+            for (const tag of nonExclusiveFilters) {
+                if (!tagSet.has(tag)) return false;
+            }
+
+            return true;
+        });
+    }, [items, activeFilters, hideCompleted]);
 
     const deleteItem = (id: UniqueIdentifier): void => {
         deleteTask(id).then(() => {
@@ -146,7 +172,7 @@ const Checklist: FC<ChecklistProps> = ({
     }
 
     const handleTagClick = (val: string): void => {
-        setNewTaskTags([val]);
+        setNewTaskTags([val as Tag]);
     }
 
     const addItem = (): void => {
@@ -226,8 +252,13 @@ const Checklist: FC<ChecklistProps> = ({
             <div className="checklist_toolbar">
                 <div className="checklist_filter-container">
                     <button
-                        onClick={() => setActiveFilters([])}
-                        className={`filter-button ${!activeFilters.length
+                        onClick={() => {
+                            const updatedFilters = activeFilters.filter(
+                                (filter) => !isExclusiveTag(filter)
+                            )
+                            setActiveFilters(updatedFilters);
+                        }}
+                        className={`filter-button ${!hasExclusiveFilter
                             ? 'filter-button-all-active'
                             : 'filter-button-all'
                             }`}
@@ -292,7 +323,8 @@ const Checklist: FC<ChecklistProps> = ({
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 onMoveItem={moveItem}
-                                tags={item.tags}
+                                tags={item.tags as Tag[]}
+                                onSuccess={onSuccess}
                             />
                         ))}
                     </SortableContext>
