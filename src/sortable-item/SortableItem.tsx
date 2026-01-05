@@ -4,7 +4,7 @@ import type { UniqueIdentifier } from '@dnd-kit/core';
 import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
-import { type Tag } from 'src/checklist/constants';
+import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 interface SortableItemProps {
     id: UniqueIdentifier;
     isActive: boolean;
@@ -71,7 +71,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                 />
 
                 <div className="sortable-item_text-container">
-                    <span className="sortable-item_text">{text}</span>
+                    <span className="sortable-item_text">
+                        {tags.includes(PRIORITY_TAG) && '⭐ '}{text}
+                    </span>
                     {showLastCompleted && (
                         <span className="sortable-item_last-completed-text">
                             {`${new Date(lastCompleted).toDateString()}`}
