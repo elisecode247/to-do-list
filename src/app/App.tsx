@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type FC } from 'react';
+import { useState, useEffect, useMemo, useCallback, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
@@ -67,7 +67,7 @@ const App: FC = () => {
             }
         });
     }
-
+    const closeGif = useCallback(() => setShowSuccessGif(false), [setShowSuccessGif])
     useEffect(() => {
         if (!isAuthenticated) return;
 
@@ -133,7 +133,7 @@ const App: FC = () => {
                 />
             ))}
             {showSuccessGif && (
-                <SuccessGif onClose={() => setShowSuccessGif(false)} />
+                <SuccessGif onClose={closeGif} />
             )}
             <div className="app_container">
                 <header className="app_header">
