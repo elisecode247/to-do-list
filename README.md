@@ -15,6 +15,5 @@ An app so simple to use you will actually use it. Whether you have daily routine
 - Add Google login
 - Add logout
 ### UI improvements
-- Add empty state message
-- Make task item's background color match frequency type
+- Use custom hooks
 - Check padding is consistent everywhere
