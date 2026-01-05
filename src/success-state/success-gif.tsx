@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import './success-gif.css';
+import { API_TENOR_URL } from 'src/app/constants';
 
 type SuccessGifProps = {
     onClose: () => void;
@@ -28,7 +29,7 @@ function SuccessGif({
 
         async function loadGif() {
             try {
-                const res = await fetch(`/api/search-gif?q=${encodeURIComponent(query)}&limit=${maxResults}`);
+                const res = await fetch(`${API_TENOR_URL}/api/search-gif?q=${encodeURIComponent(query)}&limit=${maxResults}`);
                 if (!res.ok) throw new Error("Failed to fetch GIF from backend");
 
                 const data = await res.json();
