@@ -5,7 +5,7 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { updateItemByIdAndSync } from 'checklist/sync-item-update';
-import { addTask, updateTasksOrder, deleteTask } from 'app/api';
+import { addTask, updateTasksOrder, deleteTask, updateTask } from 'app/api';
 import { TAGS, PRIORITY_TAG, type Tag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
@@ -46,6 +46,24 @@ const Checklist: FC<ChecklistProps> = ({
         }).catch((err) => {
             console.error('Failed to delete task:', err);
             alert('Task could not be deleted.');
+        });
+    };
+
+    const prioritizeItem = (id: UniqueIdentifier): void => {
+        const updatedItem = items.find(item => item.id === id);
+        if (!updatedItem) return;
+        if (updatedItem.tags.includes(PRIORITY_TAG)) {
+            updatedItem.tags = updatedItem.tags.filter(tag => tag !== PRIORITY_TAG)
+        } else {
+            updatedItem.tags.push(PRIORITY_TAG);
+        }
+        updateTask(updatedItem).then(() => {
+            setItems(prev => {
+                return prev.map(item => item.id === id ? updatedItem : item);
+            });
+        }).catch((err) => {
+            console.error('Failed to prioritize task:', err);
+            alert('Task could not be prioritized.');
         });
     };
 
@@ -270,6 +288,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 text={item.text}
                                 lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}
+                                prioritizeItem={prioritizeItem}
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 onMoveItem={moveItem}

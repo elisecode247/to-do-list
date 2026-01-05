@@ -1,5 +1,5 @@
 import './frequency-button-group.css'; // TODO update absolute path
-import { TAGS, type Tag } from 'checklist/constants';
+import { EXCLUSIVE_TAGS, type Tag } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 
 interface FrequencyButtonGroupProps {
@@ -16,7 +16,7 @@ function FrequencyButtonGroup({ newTaskTags, onClick }: FrequencyButtonGroupProp
         <div className="frequency-selector__group-wrapper">
             <label>New Task Frequency:</label>
             <div className="frequency-selector__button-group">
-                {TAGS.map((frequency) => (
+                {EXCLUSIVE_TAGS.map((frequency) => (
                     <button
                         key={frequency}
                         onClick={() => handleSelect(frequency)}

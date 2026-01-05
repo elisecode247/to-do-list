@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash, Edit, Archive, ListPlus } from 'lucide-react';
+import { GripVertical, Trash, Edit, Archive, ListPlus, Star } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
@@ -10,6 +10,7 @@ interface SortableItemProps {
     isActive: boolean;
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
+    prioritizeItem: (id: UniqueIdentifier) => void;
     text: string;
     lastCompleted: string;
     activeFilters: Array<Tag>;
@@ -24,6 +25,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     isActive,
     checked,
     deleteItem,
+    prioritizeItem,
     text,
     lastCompleted,
     activeFilters,
@@ -41,6 +43,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         opacity: isDragging ? 0.5 : 1,
     };
     const showLastCompleted = activeFilters.includes('occasional') && !!lastCompleted;
+    const priorityStyle = tags.includes(PRIORITY_TAG) ? 'yellow' : 'none';
 
     return (
         <div
@@ -49,7 +52,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             style={style}
             {...attributes}
         >
-            <div className={`sortable-item_container ${tags.includes('priority') && 'tag-priority'}`}>
+            <div className={`sortable-item_container ${tags.includes(PRIORITY_TAG) ? 'tag-priority' : ''}`}>
                 <button
                     {...listeners}
                     className="sortable-item_drag-handle"
@@ -81,6 +84,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                 </div>
                 <div className="sortable-item_button-group-container">
+                    <button
+                        className="sortable-item_edit-button"
+                        onClick={() => handleEdit(id)}
+                        aria-label="Edit task"
+                        title="Edit task"
+                        type="button"
+                    >
+                        <Edit size={24} />
+                    </button>
                     {isActive ? (
                         <button
                             className="sortable-item_archive-button"
@@ -103,15 +115,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </button>
                     )}
                     <button
-                        className="sortable-item_edit-button"
-                        onClick={() => handleEdit(id)}
-                        aria-label="Edit task"
-                        title="Edit task"
-                        type="button"
-                    >
-                        <Edit size={24} />
-                    </button>
-                    <button
                         className="sortable-item_delete-button"
                         onClick={() => {
                             const answer = confirm('Are you sure?');
@@ -123,6 +126,17 @@ export const SortableItem: FC<SortableItemProps> = ({
                         type="button"
                     >
                         <Trash size={24} />
+                    </button>
+                    <button
+                        className="sortable-item_priority-button"
+                        onClick={() => {
+                            prioritizeItem(id)
+                        }}
+                        aria-label="Prioritize task"
+                        title="Prioritize task"
+                        type="button"
+                    >
+                        <Star size={24} fill={priorityStyle} />
                     </button>
                 </div>
             </div>
