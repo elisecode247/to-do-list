@@ -14,7 +14,6 @@ interface SortableItemProps {
     prioritizeItem: (id: UniqueIdentifier) => void;
     text: string;
     lastCompleted: string;
-    activeFilters: Array<Tag>;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
@@ -30,7 +29,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     prioritizeItem,
     text,
     lastCompleted,
-    activeFilters,
     toggleChecked,
     handleEdit,
     onMoveItem,

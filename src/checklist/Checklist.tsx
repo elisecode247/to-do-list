@@ -311,7 +311,6 @@ const Checklist: FC<ChecklistProps> = ({
                     <SortableContext items={filteredItems.map(i => i.id)}>
                         {filteredItems.map(item => (
                             <SortableItem
-                                activeFilters={activeFilters}
                                 isActive={isActiveList}
                                 checked={item.done}
                                 key={item.id}
