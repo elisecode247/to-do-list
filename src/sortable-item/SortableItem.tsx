@@ -5,6 +5,7 @@ import { GripVertical, Trash, Edit, Archive, ListPlus, Star } from 'lucide-react
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
+import { getDaysFromNow } from 'src/utilities/days-ago';
 interface SortableItemProps {
     id: UniqueIdentifier;
     isActive: boolean;
@@ -44,7 +45,8 @@ export const SortableItem: FC<SortableItemProps> = ({
         transition,
         opacity: isDragging ? 0.5 : 1,
     };
-    const showLastCompleted = activeFilters.includes('occasional') && !!lastCompleted;
+    const showLastCompleted = !!lastCompleted;
+    const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
     const priorityStyle = tags.includes(PRIORITY_TAG) ? 'yellow' : 'none';
 
     return (
@@ -81,12 +83,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <div className="sortable-item_text-container">
                     <span className="sortable-item_text">
                         {tags.includes(PRIORITY_TAG) && '⭐ '}{text}
+                        {showLastCompleted && (
+                            <span className="sortable-item_last-completed-text">
+                                {lastCompletedDate}
+                            </span>
+                        )}
                     </span>
-                    {showLastCompleted && (
-                        <span className="sortable-item_last-completed-text">
-                            {`${new Date(lastCompleted).toDateString()}`}
-                        </span>
-                    )}
                 </div>
                 <div className="sortable-item_button-group-container">
                     <button

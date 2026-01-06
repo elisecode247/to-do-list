@@ -64,20 +64,27 @@
         min-width: 0;
         /* Force text container to take full width on mobile when buttons wrap */
         flex-basis: 100%;
+        align-items: flex-start;
     }
 
     .sortable-item_text {
         font-size: 14px;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        margin-left: var(--spacing-xl);
     }
 }
 
 .sortable-item_last-completed-text {
-    font-size: 12px;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
     color: var(--color-text-light);
-    font-style: italic;
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 2px 8px;
+    margin-left: var(--spacing-xs);
+    border-radius: var(--radius-sm);
 }
 
 /* Button Container */
@@ -184,10 +191,6 @@
 
     .sortable-item_text {
         font-size: 15px;
-    }
-
-    .sortable-item_last-completed-text {
-        font-size: 13px;
     }
 
     .sortable-item_archive-button,
