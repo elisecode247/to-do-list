@@ -155,7 +155,7 @@
 
 .checklist_hide-completed-checkbox-label {
     font-size: 14px;
-    color: var(--color-text-secondary);
+    color: white;
     cursor: pointer;
     user-select: none;
 }
