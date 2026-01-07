@@ -21,25 +21,23 @@ function SuccessGif({
     const [gifUrl, setGifUrl] = useState<string | null>(null);
     const [gifDuration, setGifDuration] = useState<number | null>(null);
     const query = getRandomSuccessKeyword();
-    const maxResults = 5;
-    const fallbackDuration = 10000;
+    const fallbackDurationSeconds = 5;
 
     useEffect(() => {
         let timeoutId: number | null = null;
 
         async function loadGif() {
             try {
-                const res = await fetch(`${API_TENOR_URL}/api/search-gif?q=${encodeURIComponent(query)}&limit=${maxResults}`);
+                const res = await fetch(`${API_TENOR_URL}/api/search-gif?q=${encodeURIComponent(query)}&limit=1&random=true`);
                 if (!res.ok) throw new Error("Failed to fetch GIF from backend");
 
                 const data = await res.json();
                 const results = data.results;
                 if (!results || !results.length) return;
 
-                // Pick a random GIF
-                const randomGif = results[Math.floor(Math.random() * results.length)];
-                const url = randomGif.media_formats?.gif?.url ?? randomGif.url ?? null;
-                const duration = randomGif.media_formats?.gif?.duration ?? fallbackDuration / 1000; // seconds
+                const url = results[0].media_formats?.gif?.url ?? results[0].url ?? null;
+                const gifDuration = results[0].media_formats?.gif?.duration ?? fallbackDurationSeconds;
+                const duration = Math.max(gifDuration, fallbackDurationSeconds)
 
                 if (url) {
                     setGifUrl(url);
