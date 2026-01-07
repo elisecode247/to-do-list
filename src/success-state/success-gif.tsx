@@ -19,6 +19,7 @@ function SuccessGif({
     onClose
 }: SuccessGifProps) {
     const [gifUrl, setGifUrl] = useState<string | null>(null);
+      const [loaded, setLoaded] = useState(false);
     const [gifDuration, setGifDuration] = useState<number | null>(null);
     const query = getRandomSuccessKeyword();
     const fallbackDurationSeconds = 5;
@@ -43,6 +44,14 @@ function SuccessGif({
                     setGifUrl(url);
                     setGifDuration(duration * 1000); // convert to ms
                 }
+                // Preload gif to prevent flicker of empty modal
+                const img = new Image();
+                img.src = url;
+                img.onload = () => {
+                setGifUrl(url);
+                setLoaded(true);
+                // set timeout here
+                };
             } catch (err) {
                 console.error("Failed to load success GIF:", err);
             }
@@ -62,7 +71,7 @@ function SuccessGif({
         return () => clearTimeout(timeoutId);
     }, [gifUrl, gifDuration, onClose]);
 
-    if (!gifUrl) return null;
+    if (!loaded || !gifUrl) return null;
 
     return (
         <div className="success-gif-overlay">
