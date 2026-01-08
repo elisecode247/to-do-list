@@ -1,10 +1,12 @@
 /* App Container */
 .app_container {
+    height: 100vh;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     max-width: 100%;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 /* Header */
@@ -252,6 +254,7 @@ body::after {
     flex: 1;
     padding: var(--spacing-md);
     overflow-y: auto;
+    min-height: 0;
 }
 
 /* Loading Content */
