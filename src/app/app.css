@@ -194,7 +194,6 @@ body::after {
     position: relative;
     z-index: 1;
     animation: glow 15s ease-in-out infinite;
-    animation-delay: 7.5s;
     background: linear-gradient(135deg,
             #a78bfa 0%,
             #ec4899 50%,
@@ -202,6 +201,7 @@ body::after {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    margin: var(--spacing-lg) 0 0 var(--spacing-lg);
 }
 
 
