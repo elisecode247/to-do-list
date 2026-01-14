@@ -17,6 +17,7 @@ export default defineConfig({
     alias: {
       "src/*": "/src/*",
       "app/*": "/src/app/*",
+      "category-select/*": "/src/category-select/*",
       "checklist/*": "/src/checklist/*",
       "item-modal": "/src/item-modal",
       "item-modal/*": "./src/item-modal/*",

@@ -7,6 +7,7 @@ export interface ChecklistItem {
     lastCompleted: string;
     note: string;
     sortOrder: number;
+    category: string;
     tags: string[];
     isArchived: boolean;
 }

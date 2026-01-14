@@ -12,7 +12,8 @@
             "checklist/*": ["./src/checklist/*"],
             "item-modal/*": ["./src/item-modal/*"],
             "sortable-item/*": ["./src/sortable-item/*"],
-            "utilities/*": ["./src/utilities/*"]
+            "utilities/*": ["./src/utilities/*"],
+            "category-select/*": ["./src/category-select/*"]
         }
     },
 }

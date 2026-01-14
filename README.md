@@ -21,6 +21,11 @@ Live: https://elisecode247.github.io/to-do-list/
 - add gifs to completed tasks
 
 *** To do
+- Include categories
+- Include AI task breakdown and add to separate checklist
+- Include speech to text
+- Move frontend code to Railway
 - Refresh token in HttpOnly Secure SameSite cookie
 - Access token in memory
 - Replace deprecated Tenor API usage
+- Connect to google calendar for scheduled tasks

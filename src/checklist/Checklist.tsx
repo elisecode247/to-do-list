@@ -8,6 +8,7 @@ import { updateItemByIdAndSync } from 'checklist/sync-item-update';
 import { addTask, updateTasksOrder, deleteTask, updateTask } from 'app/api';
 import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
+import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
 import { isDateToday } from 'src/utilities/is-date-today';
@@ -32,6 +33,7 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
+    const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const [hideCompleted, setHideCompleted] = useState(false);
     const isAddButtonDisabled = !inputText.length;
     const hasExclusiveFilter = activeFilters.some(f =>
@@ -188,6 +190,7 @@ const Checklist: FC<ChecklistProps> = ({
             lastCompleted: '',
             note: '',
             sortOrder: 0,
+            category: newTaskCategory,
             tags: newTaskTags,
             isArchived: false
         };
@@ -195,15 +198,16 @@ const Checklist: FC<ChecklistProps> = ({
         addTask(newItem)
             .then((data) => {
                 const formattedTask = {
-                    id: data.uuid,
+                    id: data.id,
                     done: false,
                     text: data.text,
                     lastCompleted: data.lastCompleted,
                     note: data.note,
                     sortOrder: data.sortOrder,
+                    category: data.category,
                     tags: data.tags,
                     isArchived: false
-                }
+                } as ChecklistItem;
                 setItems(prev => [formattedTask, ...prev]);
                 setInputText('');
             })
@@ -223,6 +227,10 @@ const Checklist: FC<ChecklistProps> = ({
                 <FrequencyButtonGroup
                     newTaskTags={newTaskTags}
                     onClick={(tag: Tag) => handleTagClick(tag)}
+                />
+                <CategorySelect
+                    newTaskCategory={newTaskCategory}
+                    onChange={(category: string) => setNewTaskCategory(category)}
                 />
                 <div className="checklist_new-item-input-row">
                     <input
