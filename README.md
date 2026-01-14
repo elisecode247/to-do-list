@@ -2,6 +2,8 @@
 
 An app so simple to use you will actually use it. Whether you have daily routines, one-time errands, or occasional tasks, this app will defog your mind.
 
+Live: https://elisecode247.github.io/to-do-list/
+
 ## Features
 
 - **Frequency-based tagging**: Categorize tasks as daily, one-time, or occasional
@@ -17,3 +19,8 @@ An app so simple to use you will actually use it. Whether you have daily routine
 ### UI improvements
 - Use custom hooks
 - add gifs to completed tasks
+
+*** To do
+- Refresh token in HttpOnly Secure SameSite cookie
+- Access token in memory
+- Replace deprecated Tenor API usage
