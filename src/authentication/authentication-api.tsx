@@ -1,9 +1,8 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY, TOKEN_EXPIRES_KEY } from "src/authentication/constants";
 
-const SKEW_MS = 30_000; // 30s
+const SKEW_MS = 30_000; // 30s buffer before expiry
 
-// Exchange Google ID token for your backend auth token
 export async function loginWithGoogle(token: string): Promise<void> {
     try {
         const response = await fetch(API_AUTH_URL, {
@@ -17,7 +16,6 @@ export async function loginWithGoogle(token: string): Promise<void> {
         }
 
         const data = await response.json();
-        console.log("%c Line:20 🍋 data", "color:#93c0a4", data);
         if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
             throw new Error("Invalid auth response from server");
         }
@@ -41,7 +39,6 @@ export function getAuthToken(): string | null {
 
 export function isAuthenticated(): boolean {
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
-
     if (!expiresAt || Number.isNaN(expiresAt)) {
         logout();
         return false;
@@ -50,6 +47,7 @@ export function isAuthenticated(): boolean {
 }
 
 let refreshPromise: Promise<string | null> | null = null;
+
 export async function getValidAuthToken(): Promise<string | null> {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
@@ -58,8 +56,11 @@ export async function getValidAuthToken(): Promise<string | null> {
         logout();
         return null;
     }
+
+    // Return token if still valid
     if (token && Date.now() < expiresAt - SKEW_MS) return token;
 
+    // Only one refresh in progress at a time
     if (!refreshPromise) {
         refreshPromise = refreshAuthToken().finally(() => {
             refreshPromise = null;
@@ -93,11 +94,10 @@ export async function refreshAuthToken(): Promise<string | null> {
         return null;
     }
 
-    let data;
     try {
-        data = await response.json();
+        const data = await response.json();
         if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
-            throw new Error("Invalid auth response from server");
+            throw new Error("Invalid refresh response from server");
         }
         persistTokens(data.accessToken, data.refreshToken, data.expiresIn);
         return data.accessToken;
