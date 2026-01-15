@@ -66,6 +66,7 @@ const Checklist: FC<ChecklistProps> = ({
             }
 
             if (filterCategory && task.category !== filterCategory) return false;
+            if (task.isHidden) return false;
 
             return true;
         });
@@ -160,6 +161,16 @@ const Checklist: FC<ChecklistProps> = ({
         setEditingItem(formattedItem);
     };
 
+    const handleHide = (id: UniqueIdentifier) => {
+        updateItemByIdAndSync(
+            items,
+            setItems,
+            id, item => ({
+                ...item,
+                isHidden: true
+            })
+        );
+    };
 
     function moveItemBetweenLists(
         id: UniqueIdentifier,
@@ -195,7 +206,8 @@ const Checklist: FC<ChecklistProps> = ({
             sortOrder: 0,
             category: newTaskCategory,
             tags: newTaskTags,
-            isArchived: false
+            isArchived: false,
+            isHidden: false
         };
 
         addTask(newItem)
@@ -340,6 +352,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 prioritizeItem={prioritizeItem}
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
+                                handleHideItem={handleHide}
                                 onMoveItem={moveItem}
                                 tags={item.tags as Tag[]}
                                 onSuccess={onSuccess}

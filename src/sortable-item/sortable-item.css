@@ -15,6 +15,7 @@
         border-radius: var(--radius-md);
         transition: all var(--transition-fast);
         color: var(--color-text-primary);
+        flex-wrap: wrap;
     }
 
     .sortable-item_container:hover {
@@ -97,6 +98,7 @@
 .sortable-item_archive-button,
 .sortable-item_restore-button,
 .sortable-item_edit-button,
+.sortable-item_hide-button,
 .sortable-item_delete-button,
 .sortable-item_priority-button {
     display: flex;
@@ -129,6 +131,16 @@
 .sortable-item_restore-button:hover {
     background-color: rgba(16, 185, 129, 0.1);
     color: var(--color-success);
+}
+
+/* Hide Button */
+.sortable-item_hide-button {
+    color: var(--color-text-secondary);
+}
+
+.sortable-item_hide-button:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--color-text-light);
 }
 
 /* Edit Button */
@@ -196,6 +208,7 @@
     .sortable-item_archive-button,
     .sortable-item_restore-button,
     .sortable-item_edit-button,
+    .sortable-item_hide-button,
     .sortable-item_delete-button,
     .sortable-item_priority-button {
         padding: var(--spacing-sm);
@@ -208,6 +221,7 @@
 .sortable-item_archive-button:focus-visible,
 .sortable-item_restore-button:focus-visible,
 .sortable-item_edit-button:focus-visible,
+.sortable-item_hide-button:focus-visible,
 .sortable-item_delete-button:focus-visible,
 .sortable-item_priority-button:focus-visible {
     outline: 2px solid var(--color-primary);

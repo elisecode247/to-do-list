@@ -1,6 +1,7 @@
 import type { UniqueIdentifier } from '@dnd-kit/core';
 
 export interface ChecklistItem {
+    isHidden?: boolean;
     id: UniqueIdentifier;
     text: string;
     done: boolean;

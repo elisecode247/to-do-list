@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC, Dispatch, SetStateAction } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash, Edit, Archive, ListPlus, Star } from 'lucide-react';
+import { GripVertical, Trash, Edit, Archive, ListPlus, Star, EyeClosed } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
@@ -16,6 +16,7 @@ interface SortableItemProps {
     lastCompleted: string;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
+    handleHideItem: (id: UniqueIdentifier) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     tags: Array<Tag>
@@ -31,6 +32,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     lastCompleted,
     toggleChecked,
     handleEdit,
+    handleHideItem,
     onMoveItem,
     tags,
     onSuccess
@@ -89,6 +91,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </span>
                 </div>
                 <div className="sortable-item_button-group-container">
+                    <button
+                        className="sortable-item_hide-button"
+                        onClick={() => handleHideItem(id)}
+                        aria-label="Hide task"
+                        title="Hide task"
+                        type="button"
+                    >
+                        <EyeClosed size={24} />
+                    </button>
                     <button
                         className="sortable-item_edit-button"
                         onClick={() => handleEdit(id)}
