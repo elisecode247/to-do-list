@@ -1,20 +1,24 @@
 import './category-select.css';
 
 interface CategorySelectProps {
-    newTaskCategory: string;
+    id: string;
+    isFilter?: boolean;
+    selectedCategory: string;
     onChange: (value: string) => void;
 }
 
 const CategorySelect = ({
-    newTaskCategory,
+    id,
+    isFilter = false,
+    selectedCategory,
     onChange
 }: CategorySelectProps) => (
-    <div className="category-select-wrapper">
-        <label htmlFor="categorySelect">New Task Category:</label>
+    <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper_filter' : ''}`}>
+        {!isFilter && <label htmlFor={id}>New Task Category:</label>}
         <select
-            id="categorySelect"
-            className="category-select"
-            value={newTaskCategory}
+            id={id}
+            className={`category-select ${isFilter ? 'category-select_filter' : ''}`}
+            value={selectedCategory}
             onChange={(e) => onChange(e.target.value)}
         >
             <option value="">No Category</option>

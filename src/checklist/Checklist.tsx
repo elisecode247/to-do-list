@@ -35,6 +35,7 @@ const Checklist: FC<ChecklistProps> = ({
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const [hideCompleted, setHideCompleted] = useState(false);
+    const [filterCategory, setFilterCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
@@ -64,9 +65,11 @@ const Checklist: FC<ChecklistProps> = ({
                 if (!tagSet.has(tag)) return false;
             }
 
+            if (filterCategory && task.category !== filterCategory) return false;
+
             return true;
         });
-    }, [items, activeFilters, hideCompleted]);
+    }, [items, activeFilters, hideCompleted, filterCategory]);
 
     const deleteItem = (id: UniqueIdentifier): void => {
         deleteTask(id).then(() => {
@@ -229,11 +232,13 @@ const Checklist: FC<ChecklistProps> = ({
                     onClick={(tag: Tag) => handleTagClick(tag)}
                 />
                 <CategorySelect
-                    newTaskCategory={newTaskCategory}
+                    id="checklist-new-item-category-select"
+                    selectedCategory={newTaskCategory}
                     onChange={(category: string) => setNewTaskCategory(category)}
                 />
                 <div className="checklist_new-item-input-row">
                     <input
+                        id="checklist-new-item-text-input"
                         className="checklist_new-item-text-input"
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
@@ -313,6 +318,12 @@ const Checklist: FC<ChecklistProps> = ({
                         Hide completed tasks
                     </label>
                 </div>
+                <CategorySelect
+                    id="checklist-filter-category-select"
+                    isFilter={true}
+                    selectedCategory={filterCategory}
+                    onChange={(value: string) => setFilterCategory(value)}
+                />
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="checklist_list-container">

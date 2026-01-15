@@ -5,6 +5,7 @@ import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type ExclusiveTag } from 'checklist
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
+import CategorySelect from 'category-select/CategorySelect';
 
 type ItemModalProps = {
     formData: ChecklistItem;
@@ -112,7 +113,14 @@ export const ItemModal: FC<ItemModalProps> = ({
                         }
                     />
                 </div>
-
+                {/* Category */}
+                <CategorySelect
+                    id="item-modal-category-select"
+                    selectedCategory={formData.category}
+                    onChange={(category: string) =>
+                        setEditingItem({ ...formData, category })
+                    }
+                />
                 {/* Date */}
                 <div className="form-group">
                     <label>Last Completed</label>

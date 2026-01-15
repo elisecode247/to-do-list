@@ -26,7 +26,7 @@
     cursor: pointer;
     transition: all var(--transition-fast);
     background-color: transparent;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     white-space: nowrap;
     min-width: 150px;
 }
@@ -47,8 +47,18 @@
 /* Option styling within select */
 .category-select option {
     background-color: var(--color-surface);
-    color: var(--color-text-primary);
+    color: white;
     padding: var(--spacing-md);
+}
+/* Filter specific styles */
+.category-select_filter {
+    margin: 0;
+    padding: 0;
+}
+
+.category-select-wrapper_filter {
+    margin: 0;
+    padding: 0;
 }
 
 /* Responsive adjustments for larger screens */
@@ -63,5 +73,18 @@
 
     .category-select-wrapper label {
         white-space: nowrap;
+    }
+
+    /* Filter specific styles */
+    .category-select_filter {
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+
+    .category-select-wrapper_filter {
+        margin: 0;
+        padding: 0;
+        color: white;
     }
 }
