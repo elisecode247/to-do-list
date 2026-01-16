@@ -13,17 +13,9 @@ Live: https://elisecode247.github.io/to-do-list/
 - **Archive system**: Keep your list clean while preserving completed tasks
 - **Intuitive interface**: Clean, distraction-free design with a vibrant purple theme
 
-## To Do List's to do list
-- Add Google login
-- Add logout
-### UI improvements
-- Use custom hooks
-- add gifs to completed tasks
 
-*** To do
-- Include categories
+### To do
 - Include AI task breakdown and add to separate checklist
-- Include speech to text
 - Move frontend code to Railway
 - Refresh token in HttpOnly Secure SameSite cookie
 - Access token in memory

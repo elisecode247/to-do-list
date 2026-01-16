@@ -39,6 +39,7 @@ export function getAuthToken(): string | null {
 
 export function isAuthenticated(): boolean {
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
+    console.log("%c Line:42 🥖 expiresAt", "color:#465975", expiresAt);
     if (!expiresAt || Number.isNaN(expiresAt)) {
         logout();
         return false;
@@ -50,7 +51,9 @@ let refreshPromise: Promise<string | null> | null = null;
 
 export async function getValidAuthToken(): Promise<string | null> {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    console.log("%c Line:53 🍎 token", "color:#fca650", token);
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
+    console.log("%c Line:54 🥐 expiresAt", "color:#42b983", expiresAt);
 
     if (!expiresAt || Number.isNaN(expiresAt)) {
         logout();
@@ -68,6 +71,7 @@ export async function getValidAuthToken(): Promise<string | null> {
     }
 
     return refreshPromise.then(token => {
+        console.log("%c Line:73 🍅 token", "color:#fca650", token);
         if (!token) logout();
         return token;
     });
@@ -88,6 +92,7 @@ export async function refreshAuthToken(): Promise<string | null> {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
     });
+        console.log("%c Line:93 🍬 response", "color:#ed9ec7", response);
 
     if (!response.ok) {
         logout();
@@ -96,6 +101,7 @@ export async function refreshAuthToken(): Promise<string | null> {
 
     try {
         const data = await response.json();
+        console.log("%c Line:99 🍰 data", "color:#4fff4B", data);
         if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
@@ -109,6 +115,7 @@ export async function refreshAuthToken(): Promise<string | null> {
 
 export async function authHeaders(): Promise<HeadersInit> {
     const token = await getValidAuthToken();
+    console.log("%c Line:112 🌶 token", "color:#ea7e5c", token);
     if (!token) {
         logout();
         throw new Error("No valid auth token available");
