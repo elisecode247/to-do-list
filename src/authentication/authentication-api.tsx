@@ -89,7 +89,7 @@ export async function refreshAuthToken(): Promise<string | null> {
 
     const response = await fetch(API_REFRESH_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await authHeaders(),
         body: JSON.stringify({ refreshToken }),
     });
         console.log("%c Line:93 🍬 response", "color:#ed9ec7", response);
