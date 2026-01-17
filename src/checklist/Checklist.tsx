@@ -1,4 +1,4 @@
-import { useState, useMemo, type FC, type Dispatch, type SetStateAction } from 'react';
+import { useState, useMemo, useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -36,10 +36,23 @@ const Checklist: FC<ChecklistProps> = ({
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const [hideCompleted, setHideCompleted] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string>('');
+    const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const isAddButtonDisabled = !inputText.length;
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
+
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isAddSectionExpanded) {
+                setIsAddSectionExpanded(false);
+            }
+        };
+
+        window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, [isAddSectionExpanded]);
+
     const filteredItems = useMemo(() => {
         if (!items.length) return items;
 
@@ -57,7 +70,7 @@ const Checklist: FC<ChecklistProps> = ({
 
             // OR logic for exclusive tags
             if (exclusiveFilters.length > 0) {
-                if (!exclusiveFilters.some(tag =>tagSet.has(tag))) return false;
+                if (!exclusiveFilters.some(tag => tagSet.has(tag))) return false;
             }
 
             // AND logic for everything else (priority, etc)
@@ -238,41 +251,66 @@ const Checklist: FC<ChecklistProps> = ({
 
     return (
         <>
-            <div className="checklist_new-item-container">
-                <FrequencyButtonGroup
-                    newTaskTags={newTaskTags}
-                    onClick={(tag: Tag) => handleTagClick(tag)}
-                />
-                <CategorySelect
-                    id="checklist-new-item-category-select"
-                    selectedCategory={newTaskCategory}
-                    onChange={(category: string) => setNewTaskCategory(category)}
-                />
-                <div className="checklist_new-item-input-row">
-                    <input
-                        id="checklist-new-item-text-input"
-                        className="checklist_new-item-text-input"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={(e) => {
-                            e.stopPropagation();
-                            if (e.key === 'Enter') {
-                                addItem();
-                            }
-                        }}
-                        placeholder="New item..."
-                    />
+            <div className={`checklist_new-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
+                {!isAddSectionExpanded && (
                     <button
-                        disabled={isAddButtonDisabled}
-                        className={`checklist_new-item-add-button
-                            ${isAddButtonDisabled &&
-                            'checklist_new-item-add-button--disabled'}`
-                        }
-                        onClick={addItem}
+                        className="checklist_new-item-toggle-button"
+                        onClick={() => setIsAddSectionExpanded(true)}
+                        aria-label="Add new item"
                     >
-                        Add
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
                     </button>
-                </div>
+                )}
+                {isAddSectionExpanded && (<>
+                    <div className="checklist_new-item-header">
+                        <span className="checklist_new-item-title">New Task</span>
+                        <button
+                            className="checklist_new-item-close-button"
+                            onClick={() => setIsAddSectionExpanded(false)}
+                            aria-label="Close"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <FrequencyButtonGroup
+                        newTaskTags={newTaskTags}
+                        onClick={(tag: Tag) => handleTagClick(tag)}
+                    />
+                    <CategorySelect
+                        id="checklist-new-item-category-select"
+                        selectedCategory={newTaskCategory}
+                        onChange={(category: string) => setNewTaskCategory(category)}
+                    />
+                    <div className="checklist_new-item-input-row">
+                        <input
+                            id="checklist-new-item-text-input"
+                            className="checklist_new-item-text-input"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyDown={(e) => {
+                                e.stopPropagation();
+                                if (e.key === 'Enter') {
+                                    addItem();
+                                }
+                            }}
+                            placeholder="New item..."
+                        />
+                        <button
+                            disabled={isAddButtonDisabled}
+                            className={`checklist_new-item-add-button
+                            ${isAddButtonDisabled &&
+                                'checklist_new-item-add-button--disabled'}`
+                            }
+                            onClick={addItem}
+                        >
+                            Add
+                        </button>
+                    </div>
+                </>)}
             </div>
             <div className="checklist_toolbar">
                 <div className="checklist_filter-container">
