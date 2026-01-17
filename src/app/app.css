@@ -9,7 +9,6 @@
     overflow: hidden;
 }
 
-/* Header */
 body {
     background:
         radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
@@ -184,6 +183,11 @@ body::after {
     }
 }
 
+.app_header {
+    height: 20vh;
+    flex-shrink: 0;
+}
+
 .app_h1 {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 28px;
@@ -253,8 +257,10 @@ body::after {
 .app_main {
     flex: 1;
     padding: var(--spacing-md);
-    overflow-y: auto;
     min-height: 0;
+    height: 80vh;
+    display:flex;
+    flex-direction: column;
 }
 
 /* Loading Content */
