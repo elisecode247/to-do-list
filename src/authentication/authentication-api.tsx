@@ -89,10 +89,9 @@ export async function refreshAuthToken(): Promise<string | null> {
 
     const response = await fetch(API_REFRESH_URL, {
         method: "POST",
-        headers: await authHeaders(),
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
     });
-        console.log("%c Line:93 🍬 response", "color:#ed9ec7", response);
 
     if (!response.ok) {
         logout();
@@ -101,7 +100,6 @@ export async function refreshAuthToken(): Promise<string | null> {
 
     try {
         const data = await response.json();
-        console.log("%c Line:99 🍰 data", "color:#4fff4B", data);
         if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
@@ -112,6 +110,7 @@ export async function refreshAuthToken(): Promise<string | null> {
         return null;
     }
 }
+
 
 export async function authHeaders(): Promise<HeadersInit> {
     const token = await getValidAuthToken();
