@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, type FC } from 'react';
+import { useState, useMemo, useCallback, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
@@ -7,9 +7,6 @@ import Checklist from 'checklist/Checklist.tsx';
 import { fetchTasks, updateTask } from 'app/api';
 import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
-import GoogleLogoutButton from 'src/authentication/google-logout-button';
-import { loginWithGoogle } from 'src/authentication/authentication-api';
-import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
@@ -21,10 +18,7 @@ const App: FC = () => {
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(() =>
-        Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
-    );
-    const [isLoading, setIsLoading] = useState(isAuthenticated);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
@@ -68,18 +62,6 @@ const App: FC = () => {
         });
     }
     const closeGif = useCallback(() => setShowSuccessGif(false), [setShowSuccessGif])
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        let cancelled = false;
-
-        const fetchData = () => loadTasks(cancelled);
-        fetchData();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [isAuthenticated])
 
     const handleSave = () => {
         if (!editingItem) return;
@@ -106,9 +88,7 @@ const App: FC = () => {
         setEditingItem(null);
     }
 
-    function handleLogout() {
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        setIsAuthenticated(false);
+    function handleResetAppState() {
         setActiveFilters([]);
         setActiveChecklist(true);
         setItems([]);
@@ -139,23 +119,7 @@ const App: FC = () => {
                 <header className="app_header">
                     <h1 className="app_h1">My To Do List</h1>
                     <div className="app_header_button-group">
-                        {isAuthenticated ? (
-                            <GoogleLogoutButton onLogout={handleLogout} />
-                        ) : (
-                            <GoogleLoginButton
-                                onSuccess={async (token) => {
-                                    try {
-                                        await loginWithGoogle(token);
-                                        setIsAuthenticated(true);
-                                    } catch (err) {
-                                        console.error(err);
-                                    }
-                                }}
-                                onError={(err) => {
-                                    console.error("Google login error:", err);
-                                }}
-                            />
-                        )}
+                        <GoogleLoginButton onReset={handleResetAppState} onLoad={loadTasks} />
                         {isActiveList ? (
                             <button
                                 id="see-archived-data"
@@ -194,7 +158,10 @@ const App: FC = () => {
                     ) : error ? (
                         <ErrorState
                             message={error}
-                            onRetry={loadTasks}
+                            onRetry={() => {
+                                console.log("Retrying to load tasks...");
+                                loadTasks()
+                            }}
                         />
                     ) : (
                         <Checklist
