@@ -14,6 +14,20 @@ Live: https://elisecode247.github.io/to-do-list/
 - **Intuitive interface**: Clean, distraction-free design with a vibrant purple theme
 
 
+## Architecture
+    App
+    ├── AuthContext (isAuthenticated)
+    ├── TaskProvider (items, loading, error)
+    |── ToastProvider
+    ├── Header
+    │    ├── GoogleLoginButton
+    │    └── GoogleLogoutButton
+    ├── ChecklistController
+         ├── Checklist
+         ├── ItemModal
+         └── SuccessGif
+
+
 ### To do
 - Include AI task breakdown and add to separate checklist
 - Move frontend code to Railway

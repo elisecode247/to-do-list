@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
+import { useState, useMemo, useEffect, useCallback, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -12,6 +12,7 @@ import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
 import { isDateToday } from 'src/utilities/is-date-today';
+import SuccessGif from 'src/success-state/success-gif';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -20,7 +21,6 @@ interface ChecklistProps {
     setEditingItem: (checklistItem: ChecklistItem) => void;
     activeFilters: Array<Tag>;
     setActiveFilters: Dispatch<SetStateAction<Array<Tag>>>;
-    onSuccess: Dispatch<SetStateAction<boolean>>;
 }
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
@@ -29,7 +29,6 @@ const Checklist: FC<ChecklistProps> = ({
     setEditingItem,
     activeFilters,
     setActiveFilters,
-    onSuccess
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
@@ -38,6 +37,8 @@ const Checklist: FC<ChecklistProps> = ({
     const [filterCategory, setFilterCategory] = useState<string>('');
     const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const isAddButtonDisabled = !inputText.length;
+    const [showSuccessGif, setShowSuccessGif] = useState(false);
+    const closeGif = useCallback(() => setShowSuccessGif(false), [setShowSuccessGif])
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
@@ -251,6 +252,9 @@ const Checklist: FC<ChecklistProps> = ({
 
     return (
         <>
+            {showSuccessGif && (
+                <SuccessGif onClose={closeGif} />
+            )}
             <div className={`checklist_new-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
                 {!isAddSectionExpanded && (
                     <button
@@ -393,7 +397,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 handleHideItem={handleHide}
                                 onMoveItem={moveItem}
                                 tags={item.tags as Tag[]}
-                                onSuccess={onSuccess}
+                                onSuccess={setShowSuccessGif}
                             />
                         ))}
                     </SortableContext>
