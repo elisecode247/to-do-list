@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GoogleLogoutButton from 'src/authentication/google-logout-button';
-import { AUTH_TOKEN_KEY, API_GOOGLE_CLIENT_ID_URL, REFRESH_TOKEN_KEY } from 'src/authentication/constants';
-import { loginWithGoogle } from 'src/authentication/authentication-api';
+
 declare global {
     interface Window {
         google?: {
@@ -35,33 +33,36 @@ interface GoogleCredentialResponse {
 }
 
 interface GoogleLoginButtonProps {
-    onLoad: (cancelled?: boolean) => void;
-    onReset: () => void;
+    onSuccess: (googleIdToken: string) => void;
+    onError?: (error: unknown) => void;
+    backendClientIdEndpoint?: string; // optional backend endpoint
 }
-const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onReset, onLoad }) => {
+
+const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
+    onSuccess,
+    onError,
+    backendClientIdEndpoint = "https://demo-server-production-9fc2.up.railway.app/api/google-client-id",
+}) => {
     const buttonRef = useRef<HTMLDivElement>(null);
     const [clientId, setClientId] = useState<string | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem(AUTH_TOKEN_KEY)));
     const initializedRef = useRef(false); // ensure Google button is initialized once
 
     // Fetch client ID from backend
     useEffect(() => {
         const fetchClientId = async () => {
             try {
-                const res = await fetch(API_GOOGLE_CLIENT_ID_URL);
+                const res = await fetch(backendClientIdEndpoint);
                 if (!res.ok) throw new Error(`Failed to fetch client ID: ${res.status}`);
                 const data = await res.json();
                 if (!data?.clientId) throw new Error("No client ID returned from server");
                 setClientId(data.clientId);
-                if (isAuthenticated) {
-                    onLoad();
-                }
             } catch (err) {
                 console.error("GoogleLoginButton fetch error:", err);
+                onError?.(err);
             }
         };
         fetchClientId();
-    }, []);
+    }, [backendClientIdEndpoint, onError]);
 
     // Initialize Google Sign-In button
     useEffect(() => {
@@ -72,17 +73,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onReset, onLoad }
         try {
             window.google.accounts.id.initialize({
                 client_id: clientId,
-                callback: async function (response: GoogleCredentialResponse) {
-                    try {
-                        if (!response.credential) {
-                            throw new Error("No credential returned from Google");
-                        }
-                        await loginWithGoogle(response.credential);
-                        setIsAuthenticated(true);
-                        onLoad(); // or just onLoad?.()
-                    } catch (err) {
-                        console.error("Google login error:", err);
+                callback: (response: GoogleCredentialResponse) => {
+                    if (!response.credential) {
+                        onError?.("No credential returned from Google");
+                        return;
                     }
+                    onSuccess(response.credential);
                 },
             });
 
@@ -97,25 +93,11 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onReset, onLoad }
             });
         } catch (err) {
             console.error("GoogleLoginButton initialization error:", err);
+            onError?.(err);
         }
-    }, [clientId]);
+    }, [clientId, onSuccess, onError]);
 
-    function handleLogout() {
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
-        if (window.google?.accounts?.id) {
-            window.google.accounts.id.disableAutoSelect();
-        }
-        setIsAuthenticated(false);
-        onReset();
-    }
-
-    return (
-        <div>
-            <div ref={buttonRef} hidden={isAuthenticated} />
-            {isAuthenticated && <GoogleLogoutButton onLogout={handleLogout} />}
-        </div>
-    );
+    return <div ref={buttonRef} />;
 };
 
 export default GoogleLoginButton;
