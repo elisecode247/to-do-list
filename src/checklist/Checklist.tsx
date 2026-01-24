@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback, type FC, type Dispatch, type SetStateAction } from 'react';
+import { useState, useMemo, useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -38,7 +38,6 @@ const Checklist: FC<ChecklistProps> = ({
     const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const isAddButtonDisabled = !inputText.length;
     const [showSuccessGif, setShowSuccessGif] = useState(false);
-    const closeGif = useCallback(() => setShowSuccessGif(false), [setShowSuccessGif])
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
@@ -253,7 +252,7 @@ const Checklist: FC<ChecklistProps> = ({
     return (
         <>
             {showSuccessGif && (
-                <SuccessGif onClose={closeGif} />
+                <SuccessGif onClose={() => setShowSuccessGif(false)} />
             )}
             <div className={`checklist_new-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
                 {!isAddSectionExpanded && (
