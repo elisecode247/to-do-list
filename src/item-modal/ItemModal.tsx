@@ -51,9 +51,9 @@ export const ItemModal: FC<ItemModalProps> = ({
 
     useEffect(() => {
         previouslyFocusedElement.current = document.activeElement as HTMLElement;
-
+        let initialClick = false;
         const modal = modalRef.current;
-        if (!modal) return;
+        if (!modal) return; 
 
         const focusableElements = modal.querySelectorAll<HTMLElement>(
             'input, textarea, button, [tabindex]:not([tabindex="-1"])'
@@ -70,6 +70,14 @@ export const ItemModal: FC<ItemModalProps> = ({
             }
 
             if (e.key === 'Tab') {
+                // let tab focus inside the modal
+                if (!initialClick) {
+                    e.preventDefault();
+                    first?.focus();
+                    initialClick = true;
+                    return;
+                }
+
                 if (e.shiftKey && document.activeElement === first) {
                     e.preventDefault();
                     last?.focus();
