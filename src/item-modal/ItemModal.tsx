@@ -70,7 +70,6 @@ export const ItemModal: FC<ItemModalProps> = ({
 
             if (e.key === 'Tab') {
                 const active = document.activeElement as HTMLElement;
-                console.log("%c Line:77 🌭 active", "color:#465975", active);
 
                 // Enter modal on first Tab
                 if (!modal.contains(active)) {
