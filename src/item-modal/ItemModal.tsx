@@ -1,5 +1,5 @@
 import 'item-modal/item-modal.css';
-import { useEffect, useEffectEvent, useRef, type FC } from 'react';
+import { useEffect, useRef, type FC } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type ExclusiveTag } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
@@ -49,8 +49,6 @@ export const ItemModal: FC<ItemModalProps> = ({
         });
     };
 
-    const closeModal = useEffectEvent(onClose);
-
     useEffect(() => {
         previouslyFocusedElement.current = document.activeElement as HTMLElement;
 
@@ -67,7 +65,7 @@ export const ItemModal: FC<ItemModalProps> = ({
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.preventDefault();
-                closeModal();
+                onClose();
                 return;
             }
 
