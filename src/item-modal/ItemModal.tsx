@@ -51,9 +51,8 @@ export const ItemModal: FC<ItemModalProps> = ({
 
     useEffect(() => {
         previouslyFocusedElement.current = document.activeElement as HTMLElement;
-        let initialClick = false;
         const modal = modalRef.current;
-        if (!modal) return; 
+        if (!modal) return;
 
         const focusableElements = modal.querySelectorAll<HTMLElement>(
             'input, textarea, button, [tabindex]:not([tabindex="-1"])'
@@ -70,18 +69,21 @@ export const ItemModal: FC<ItemModalProps> = ({
             }
 
             if (e.key === 'Tab') {
-                // let tab focus inside the modal
-                if (!initialClick) {
+                const active = document.activeElement as HTMLElement;
+                console.log("%c Line:77 🌭 active", "color:#465975", active);
+
+                // Enter modal on first Tab
+                if (!modal.contains(active)) {
                     e.preventDefault();
                     first?.focus();
-                    initialClick = true;
                     return;
                 }
 
-                if (e.shiftKey && document.activeElement === first) {
+                // Trap focus inside modal
+                if (e.shiftKey && active === first) {
                     e.preventDefault();
                     last?.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
+                } else if (!e.shiftKey && active === last) {
                     e.preventDefault();
                     first?.focus();
                 }
@@ -215,7 +217,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                         onClick={onSave}
                         type="button"
                         aria-label="Save changes"
-                        >
+                    >
                         Save
                     </button>
                 </div>
