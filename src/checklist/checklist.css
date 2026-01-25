@@ -221,6 +221,11 @@
     accent-color: var(--color-primary);
 }
 
+.checklist_hide-completed-checkbox-input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .checklist_hide-completed-checkbox-label {
     font-size: 14px;
     color: white;
