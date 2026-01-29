@@ -15,12 +15,13 @@ import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useAuthentication } from 'src/authentication/use-authentication';
+import { useTask } from 'src/app/use-task';
 
 const App: FC = () => {
     const { isAuthenticated, login, logout } = useAuthentication();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
-    const [items, setItems] = useState<ChecklistItem[]>([]);
+    const { items, setItems } = useTask();
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
     const [isLoading, setIsLoading] = useState(isAuthenticated);
     const [error, setError] = useState<string | null>(null);

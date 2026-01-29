@@ -11,7 +11,7 @@
 .category-select-wrapper label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: white;
     margin-bottom: var(--spacing-xs);
 }
 
