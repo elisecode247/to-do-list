@@ -8,7 +8,6 @@ import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'a
 import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
-import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
@@ -104,7 +103,6 @@ const App: FC = () => {
     }
 
     function handleLogout() {
-        localStorage.removeItem(AUTH_TOKEN_KEY);
         logout();
         setActiveFilters([]);
         setActiveChecklist(true);
@@ -267,9 +265,12 @@ const App: FC = () => {
                             <GoogleLogoutButton onLogout={handleLogout} />
                         ) : (
                             <GoogleLoginButton
-                                onSuccess={login}
-                                onError={(err) => {
-                                    console.error("Google login error:", err);
+                                onSuccess={async (token) => {
+                                    try {
+                                        await login(token);
+                                    } catch (err) {
+                                        console.error(err);
+                                    }
                                 }}
                             />
                         )}
