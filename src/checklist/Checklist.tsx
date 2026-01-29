@@ -1,11 +1,9 @@
-import { useState, useMemo, useEffect, type FC, type Dispatch, type SetStateAction } from 'react';
+import { useState, useMemo, useEffect, type FC } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
-import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
-import { updateItemByIdAndSync } from 'checklist/sync-item-update';
-import { addTask, updateTasksOrder, deleteTask, updateTask } from 'app/api';
 import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'checklist/constants';
 import FrequencyButtonGroup from 'src/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect.tsx';
@@ -16,19 +14,32 @@ import SuccessGif from 'src/success-state/success-gif';
 
 interface ChecklistProps {
     isActiveList: boolean;
-    items: Array<ChecklistItem>;
-    setItems: Dispatch<SetStateAction<ChecklistItem[]>>;
-    setEditingItem: (checklistItem: ChecklistItem) => void;
-    activeFilters: Array<Tag>;
-    setActiveFilters: Dispatch<SetStateAction<Array<Tag>>>;
+    items: ChecklistItem[];
+    activeFilters: Tag[];
+    onEditItem: (item: ChecklistItem) => void;
+    onToggleItem: (id: UniqueIdentifier, checked: boolean) => void;
+    onArchiveItem: (id: UniqueIdentifier) => void;
+    onDeleteItem: (id: UniqueIdentifier) => void;
+    onPrioritizeItem: (id: UniqueIdentifier) => void;
+    onHideItem: (id: UniqueIdentifier) => void;
+    onAddItem: (item: ChecklistItem) => void;
+    onReorderItems: (params: { activeId: number; overId: number }) => void;
+    onChangeFilters: (filters: Tag[]) => void;
 }
+
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
-    setItems,
-    setEditingItem,
     activeFilters,
-    setActiveFilters,
+    onEditItem,
+    onToggleItem,
+    onArchiveItem,
+    onDeleteItem,
+    onPrioritizeItem,
+    onHideItem,
+    onAddItem,
+    onChangeFilters,
+    onReorderItems,
 }) => {
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
@@ -86,75 +97,34 @@ const Checklist: FC<ChecklistProps> = ({
     }, [items, activeFilters, hideCompleted, filterCategory]);
 
     const deleteItem = (id: UniqueIdentifier): void => {
-        deleteTask(id).then(() => {
-            setItems(prev => prev.filter(item => item.id !== id));
-        }).catch((err) => {
-            console.error('Failed to delete task:', err);
-            alert('Task could not be deleted.');
-        });
+        onDeleteItem(id as number)
     };
 
     const prioritizeItem = (id: UniqueIdentifier): void => {
-        const updatedItem = items.find(item => item.id === id);
-        if (!updatedItem) return;
-        if (updatedItem.tags.includes(PRIORITY_TAG)) {
-            updatedItem.tags = updatedItem.tags.filter(tag => tag !== PRIORITY_TAG)
-        } else {
-            updatedItem.tags.push(PRIORITY_TAG);
-        }
-        updateTask(updatedItem).then(() => {
-            setItems(prev => {
-                return prev.map(item => item.id === id ? updatedItem : item);
-            });
-        }).catch((err) => {
-            console.error('Failed to prioritize task:', err);
-            alert('Task could not be prioritized.');
-        });
+        onPrioritizeItem(id as number);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        setItems((items: ChecklistItem[]) => {
-            const oldIndex = items.findIndex((item) => item.id === active.id);
-            const newIndex = items.findIndex((item) => item.id === over.id);
-            if (oldIndex === -1 || newIndex === -1) return items;
-
-            const newItems = arrayMove(items, oldIndex, newIndex);
-
-            const updatedItems = newItems.map((item, index) => ({
-                ...item,
-                sortOrder: index
-            }));
-
-            updateTasksOrder(
-                updatedItems.map(({ id, sortOrder }) => ({ id, sortOrder }))
-            ).catch((err: string) => {
-                console.error('Failed to update task order:', err)
-            });
-
-            return updatedItems;
+        onReorderItems({
+            activeId: active.id as number,
+            overId: over.id as number
         });
     };
 
     const toggleChecked = (id: UniqueIdentifier, checked: boolean) => {
         if (!checked) {
-            const confirmMessage = `If you uncheck, you will lose the last completed date.
-            Are you sure you want to uncheck?`;
-            const confirmed = confirm(confirmMessage);
+            const confirmed = confirm(
+                'If you uncheck, you will lose the last completed date. Are you sure?'
+            );
             if (!confirmed) return;
         }
-        updateItemByIdAndSync(
-            items,
-            setItems,
-            id, item => ({
-                ...item,
-                done: checked,
-                lastCompleted: checked ? new Date().toISOString() : '',
-            })
-        );
+
+        onToggleItem(id as number, checked);
     };
+
 
     const handleEdit = (id: UniqueIdentifier) => {
         const selectedItem = items.find(item => item.id === id);
@@ -171,34 +141,12 @@ const Checklist: FC<ChecklistProps> = ({
                 : ''
         };
 
-        setEditingItem(formattedItem);
+        onEditItem(formattedItem);
     };
 
     const handleHide = (id: UniqueIdentifier) => {
-        updateItemByIdAndSync(
-            items,
-            setItems,
-            id, item => ({
-                ...item,
-                isHidden: true
-            })
-        );
+        onHideItem(id as number);
     };
-
-    function moveItemBetweenLists(
-        id: UniqueIdentifier,
-        setItems: React.Dispatch<React.SetStateAction<ChecklistItem[]>>
-    ) {
-        updateItemByIdAndSync(
-            items,
-            setItems,
-            id, item => ({
-                ...item,
-                isArchived: !item.isArchived
-            })
-        );
-
-    }
 
     const handleTagClick = (val: string): void => {
         setNewTaskTags([val as Tag]);
@@ -208,10 +156,8 @@ const Checklist: FC<ChecklistProps> = ({
         const text = inputText.trim();
         if (!text) return;
 
-        const id = crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-
         const newItem: ChecklistItem = {
-            id,
+            id: crypto.randomUUID(),
             text,
             done: false,
             lastCompleted: '',
@@ -222,31 +168,13 @@ const Checklist: FC<ChecklistProps> = ({
             isArchived: false,
             isHidden: false
         };
-
-        addTask(newItem)
-            .then((data) => {
-                const formattedTask = {
-                    id: data.id,
-                    done: false,
-                    text: data.text,
-                    lastCompleted: data.lastCompleted,
-                    note: data.note,
-                    sortOrder: data.sortOrder,
-                    category: data.category,
-                    tags: data.tags,
-                    isArchived: false
-                } as ChecklistItem;
-                setItems(prev => [formattedTask, ...prev]);
-                setInputText('');
-            })
-            .catch((e) => {
-                alert('Task could not be added');
-                console.error(e);
-            });
+        onAddItem(newItem);
+        setInputText('');
     };
 
-    const moveItem = (id: UniqueIdentifier) => {
-        moveItemBetweenLists(id, setItems);
+
+    const handleMoveItem = (id: UniqueIdentifier) => {
+        onArchiveItem(id);
     };
 
     return (
@@ -322,7 +250,7 @@ const Checklist: FC<ChecklistProps> = ({
                             const updatedFilters = activeFilters.filter(
                                 (filter) => !isExclusiveTag(filter)
                             )
-                            setActiveFilters(updatedFilters);
+                            onChangeFilters(updatedFilters);
                         }}
                         className={`filter-button ${!hasExclusiveFilter
                             ? 'filter-button-all-active'
@@ -337,17 +265,19 @@ const Checklist: FC<ChecklistProps> = ({
                         return (
                             <button
                                 key={tag}
-                                onClick={() => setActiveFilters(prev =>
-                                    prev.includes(tag)
-                                        ? prev.filter(t => t !== tag)
-                                        : [...prev, tag]
-                                )}
+                                onClick={() => {
+                                    const nextFilters = activeFilters.includes(tag)
+                                        ? activeFilters.filter(t => t !== tag)
+                                        : [...activeFilters, tag];
+
+                                    onChangeFilters(nextFilters);
+                                }}
                                 className={`
                                 filter-button
                                 ${!isPriority && isActive ? getTagColor(tag) + 'filter-button-active' : ''}
                                 ${isPriority ? 'filter-button--priority' : ''}
                                 ${isPriority && isActive ? 'filter-button--priority-active' : ''}
-                            `}
+                                `}
                             >
                                 {isPriority ? '⭐ ' : ''}
                                 {tag} ({items.filter(t => t.tags.includes(tag)).length})
@@ -394,7 +324,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 handleHideItem={handleHide}
-                                onMoveItem={moveItem}
+                                onMoveItem={handleMoveItem}
                                 tags={item.tags as Tag[]}
                                 onSuccess={setShowSuccessGif}
                             />
