@@ -1,5 +1,5 @@
 import { loginWithGoogle } from 'src/authentication/authentication-api';
-import { useState, useCallback, use } from 'react';
+import { useState, useCallback } from 'react';
 import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 
 export function useAuthentication() {
