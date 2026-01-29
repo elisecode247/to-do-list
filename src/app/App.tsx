@@ -8,7 +8,6 @@ import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'a
 import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
-import { loginWithGoogle } from 'src/authentication/authentication-api';
 import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
@@ -16,15 +15,14 @@ import { type ToastMessage } from 'src/toast/types';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { UniqueIdentifier } from '@dnd-kit/core';
+import { useAuthentication } from 'src/authentication/use-authentication';
 
 const App: FC = () => {
+    const { isAuthenticated, login, logout } = useAuthentication();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(() =>
-        Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
-    );
     const [isLoading, setIsLoading] = useState(isAuthenticated);
     const [error, setError] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -107,7 +105,7 @@ const App: FC = () => {
 
     function handleLogout() {
         localStorage.removeItem(AUTH_TOKEN_KEY);
-        setIsAuthenticated(false);
+        logout();
         setActiveFilters([]);
         setActiveChecklist(true);
         setItems([]);
@@ -269,14 +267,7 @@ const App: FC = () => {
                             <GoogleLogoutButton onLogout={handleLogout} />
                         ) : (
                             <GoogleLoginButton
-                                onSuccess={async (token) => {
-                                    try {
-                                        await loginWithGoogle(token);
-                                        setIsAuthenticated(true);
-                                    } catch (err) {
-                                        console.error(err);
-                                    }
-                                }}
+                                onSuccess={login}
                                 onError={(err) => {
                                     console.error("Google login error:", err);
                                 }}
