@@ -141,7 +141,12 @@ const App: FC = () => {
     }
 
     function handleToggleItem(id: UniqueIdentifier, checked: boolean) {
-        setItems(prev =>
+        updateTask({
+            ...items.find(item => item.id === id)!,
+            done: checked,
+            lastCompleted: checked ? new Date().toISOString() : '',
+        }).then(() => {
+            setItems(prev =>
             prev.map(item =>
                 item.id === id
                     ? {
@@ -151,7 +156,11 @@ const App: FC = () => {
                     }
                     : item
             )
-        );
+            );
+        }).catch((err) => {
+            console.error('Failed to toggle task:', err);
+            showToast('Failed to update task status. Please try again.', 'error');
+        });
     }
 
 
