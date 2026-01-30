@@ -4,27 +4,36 @@ import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
-import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
-import { isDateToday } from 'src/utilities/is-date-today';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type ToastMessage } from 'src/toast/types';
-import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
-import { arrayMove } from '@dnd-kit/sortable';
+import { type Tag } from 'src/checklist/constants';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 
 const App: FC = () => {
     const { isAuthenticated, login, logout } = useAuthentication();
+    const {
+        items,
+        isLoading,
+        error,
+        loadTasks,
+        addItem,
+        deleteItem,
+        updateItem,
+        toggleItem,
+        prioritizeItem,
+        archiveItem,
+        hideItem,
+        reorderItems,
+        reset
+    } = useTask({ enabled: isAuthenticated });
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
-    const { items, setItems } = useTask();
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [isLoading, setIsLoading] = useState(isAuthenticated);
-    const [error, setError] = useState<string | null>(null);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
     const showToast = (message: string, type: ToastMessage['type']) => {
@@ -41,30 +50,6 @@ const App: FC = () => {
             : items.filter(item => item.isArchived);
     }, [items, isActiveList]);
 
-    function loadTasks(cancelled = false) {
-        if (!cancelled) setError(null);
-        setIsLoading(true);
-        fetchTasks().then((data) => {
-            if (cancelled) return;
-            const formattedItems = data.map((item: ChecklistItem) => {
-                return {
-                    ...item,
-                    done: isDateToday(item.lastCompleted)
-                }
-            })
-            setItems(formattedItems);
-        }).catch(error => {
-            if (!cancelled) {
-                console.error(error);
-                setError('Failed to load your tasks. Please check your connection and try again.');
-                setItems([]);
-            }
-        }).finally(() => {
-            if (!cancelled) {
-                setIsLoading(false);
-            }
-        });
-    }
     useEffect(() => {
         if (!isAuthenticated) return;
 
@@ -78,22 +63,16 @@ const App: FC = () => {
         };
     }, [isAuthenticated])
 
-    const handleSave = () => {
+    async function handleSave() {
         if (!editingItem) return;
-        const prevItems = [...items];
-        setItems(prev => {
-            return prev.map(item => item.id === editingItem.id ? editingItem : item);
-        });
-        updateTask(editingItem)
-            .then(() => {
-                showToast('Task updated successfully', 'success');
-                setEditingItem(null);
-            })
-            .catch((error) => {
-                showToast('Failed to update task. Please try again.', 'error');
-                setItems(prevItems);
-                console.error('Task update failed', error);
-            });
+
+        try {
+            await updateItem(editingItem);
+            setEditingItem(null);
+            showToast('Task updated successfully', 'success');
+        } catch {
+            showToast('Failed to update task. Please try again.', 'error');
+        }
     }
 
     function toggleChecklist() {
@@ -107,32 +86,11 @@ const App: FC = () => {
         logout();
         setActiveFilters([]);
         setActiveChecklist(true);
-        setItems([]);
+        reset();
     }
 
     function handlePrioritizeItem(id: UniqueIdentifier): void {
-        setItems(prev => {
-            const updated = prev.map(item => {
-                if (item.id !== id) return item;
-
-                const hasPriority = item.tags.includes(PRIORITY_TAG);
-                return {
-                    ...item,
-                    tags: hasPriority
-                        ? item.tags.filter(t => t !== PRIORITY_TAG)
-                        : [...item.tags, PRIORITY_TAG]
-                };
-            });
-
-            const changedItem = updated.find(i => i.id === id);
-            if (changedItem) {
-                updateTask(changedItem).catch(err => {
-                    console.error('Failed to prioritize task:', err);
-                });
-            }
-
-            return updated;
-        });
+        prioritizeItem(id);
     }
 
 
@@ -140,38 +98,23 @@ const App: FC = () => {
         setEditingItem(item);
     }
 
-    function handleToggleItem(id: UniqueIdentifier, checked: boolean) {
-        updateTask({
-            ...items.find(item => item.id === id)!,
-            done: checked,
-            lastCompleted: checked ? new Date().toISOString() : '',
-        }).then(() => {
-            setItems(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? {
-                        ...item,
-                        done: checked,
-                        lastCompleted: checked ? new Date().toISOString() : '',
-                    }
-                    : item
-            )
-            );
-        }).catch((err) => {
+    async function handleToggleItem(id: UniqueIdentifier, checked: boolean) {
+        try {
+            await toggleItem(id, checked)
+        } catch(err) {
             console.error('Failed to toggle task:', err);
             showToast('Failed to update task status. Please try again.', 'error');
-        });
+        };
     }
 
 
-    function handleArchiveItem(id: UniqueIdentifier) {
-        setItems(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? { ...item, isArchived: !item.isArchived }
-                    : item
-            )
-        );
+    async function handleArchiveItem(id: UniqueIdentifier) {
+        try {
+            await archiveItem(id);
+        } catch(err) {
+            console.error('Failed to archive task:', err);
+            showToast('Failed to update task archive status. Please try again.', 'error');
+        }
     }
 
 
@@ -179,74 +122,29 @@ const App: FC = () => {
         setActiveFilters(filters);
     }
 
-    function handleReorderItems({
-        activeId,
-        overId
-    }: {
-        activeId: number;
-        overId: number;
-    }) {
-        setItems(prevItems => {
-            const oldIndex = prevItems.findIndex(item => item.id === activeId);
-            const newIndex = prevItems.findIndex(item => item.id === overId);
-
-            if (oldIndex === -1 || newIndex === -1) return prevItems;
-
-            const reordered = arrayMove(prevItems, oldIndex, newIndex);
-
-            const updatedItems = reordered.map((item, index) => ({
-                ...item,
-                sortOrder: index
-            }));
-
-            // optimistic update
-            updateTasksOrder(
-                updatedItems.map(({ id, sortOrder }) => ({ id, sortOrder }))
-            ).catch(err => {
-                console.error('Failed to update task order:', err);
-                // optional: reload tasks or rollback
-            });
-
-            return updatedItems;
-        });
+    async function handleDeleteItem(id: UniqueIdentifier) {
+        try {
+            await deleteItem(id);
+        } catch(e) {
+            showToast('Task could not be deleted. Please try again.', 'error');
+        }
     }
 
-    function deleteItem(id: UniqueIdentifier) {
-        deleteTask(id).then(() => {
-            setItems(prev => prev.filter(item => item.id !== id));
-        }).catch((err) => {
-            console.error('Failed to delete task:', err);
-            alert('Task could not be deleted.');
-        });
+    async function handleAddItem(newItem: ChecklistItem) {
+        try {
+            await addItem(newItem)
+        } catch(e) {
+            showToast('Failed to add task. Please try again.', 'error');
+        }
     }
 
-    function handleAddItem(newItem: ChecklistItem) {
-        addTask(newItem)
-            .then((data) => {
-                const formattedTask = {
-                    id: data.id,
-                    done: false,
-                    text: data.text,
-                    lastCompleted: data.lastCompleted,
-                    note: data.note,
-                    sortOrder: data.sortOrder,
-                    category: data.category,
-                    tags: data.tags,
-                    isArchived: false
-                } as ChecklistItem;
-                setItems(prev => [formattedTask, ...prev]);
-            })
-            .catch((e) => {
-                alert('Task could not be added');
-                console.error(e);
-            });
+    type ReorderArgs = { activeId: UniqueIdentifier; overId: UniqueIdentifier; };
+    function handleReorderItems({ activeId, overId }: ReorderArgs) {
+        reorderItems(activeId, overId);
     }
 
     function handleHideItem(id: UniqueIdentifier) {
-        let updatedItems = items.map(item =>
-            item.id === id ? { ...item, isHidden: true } : item
-        );
-        setItems(updatedItems);
+        hideItem(id);
     }
 
     return (
@@ -329,7 +227,7 @@ const App: FC = () => {
                             items={filteredList}
                             isActiveList={isActiveList}
                             activeFilters={activeFilters}
-                            onDeleteItem={deleteItem}
+                            onDeleteItem={handleDeleteItem}
                             onPrioritizeItem={handlePrioritizeItem}
                             onHideItem={handleHideItem}
                             onAddItem={handleAddItem}

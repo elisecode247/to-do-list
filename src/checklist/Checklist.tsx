@@ -23,7 +23,7 @@ interface ChecklistProps {
     onPrioritizeItem: (id: UniqueIdentifier) => void;
     onHideItem: (id: UniqueIdentifier) => void;
     onAddItem: (item: ChecklistItem) => void;
-    onReorderItems: (params: { activeId: number; overId: number }) => void;
+    onReorderItems: (params: { activeId: UniqueIdentifier; overId: UniqueIdentifier }) => void;
     onChangeFilters: (filters: Tag[]) => void;
 }
 
@@ -96,21 +96,13 @@ const Checklist: FC<ChecklistProps> = ({
         });
     }, [items, activeFilters, hideCompleted, filterCategory]);
 
-    const deleteItem = (id: UniqueIdentifier): void => {
-        onDeleteItem(id as number)
-    };
-
-    const prioritizeItem = (id: UniqueIdentifier): void => {
-        onPrioritizeItem(id as number);
-    };
-
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         onReorderItems({
-            activeId: active.id as number,
-            overId: over.id as number
+            activeId: active.id,
+            overId: over.id
         });
     };
 
@@ -152,7 +144,7 @@ const Checklist: FC<ChecklistProps> = ({
         setNewTaskTags([val as Tag]);
     }
 
-    const addItem = (): void => {
+    const handleAddItem = (): void => {
         const text = inputText.trim();
         if (!text) return;
 
@@ -225,7 +217,7 @@ const Checklist: FC<ChecklistProps> = ({
                             onKeyDown={(e) => {
                                 e.stopPropagation();
                                 if (e.key === 'Enter') {
-                                    addItem();
+                                    handleAddItem();
                                 }
                             }}
                             placeholder="New item..."
@@ -236,7 +228,7 @@ const Checklist: FC<ChecklistProps> = ({
                             ${isAddButtonDisabled &&
                                 'checklist_new-item-add-button--disabled'}`
                             }
-                            onClick={addItem}
+                            onClick={handleAddItem}
                         >
                             Add
                         </button>
@@ -319,8 +311,8 @@ const Checklist: FC<ChecklistProps> = ({
                                 id={item.id}
                                 text={item.text}
                                 lastCompleted={item.lastCompleted}
-                                deleteItem={deleteItem}
-                                prioritizeItem={prioritizeItem}
+                                deleteItem={onDeleteItem}
+                                prioritizeItem={onPrioritizeItem}
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 handleHideItem={handleHide}
