@@ -1,8 +1,10 @@
+import { authHeaders } from "src/authentication/authentication-api";
+
 interface GoogleAuthCodeResponse {
     code: string;
 }
 
-export const connectGoogleCalendar = (googleClientId: string, accessToken: string): void => {
+export async const connectGoogleCalendar = (googleClientId: string, accessToken: string): void => {
     if (!window.google?.accounts.oauth2) {
         console.error("Google API not loaded");
         return;
@@ -14,10 +16,7 @@ export const connectGoogleCalendar = (googleClientId: string, accessToken: strin
         callback: async ({ code }: GoogleAuthCodeResponse) => {
             await fetch("/auth/google/calendar", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
+                headers: await authHeaders(),
                 body: JSON.stringify({ code }),
             });
         },
