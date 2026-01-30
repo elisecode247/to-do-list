@@ -5,6 +5,7 @@ import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
+import GoogleCalendarConnectButton from 'src/google-authorization/google-calendar-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type Tag } from 'src/checklist/constants';
@@ -15,7 +16,7 @@ import ArchiveButton from './ArchiveButton';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { isAuthenticated, login, logout } = useAuthentication();
+    const { isAuthenticated, login, logout, accessToken } = useAuthentication();
     const {
         isLoading,
         error,
@@ -105,6 +106,7 @@ const App: FC = () => {
                                 onToggle={toggleChecklist}
                             />
                         )}
+                        {isAuthenticated && <GoogleCalendarConnectButton accessToken={accessToken}  />}
                     </div>
                 </header>
                 <main className="app_main">

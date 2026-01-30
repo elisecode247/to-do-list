@@ -1,32 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-
-declare global {
-    interface Window {
-        google?: {
-            accounts: {
-                id: {
-                    initialize(options: {
-                        client_id: string;
-                        callback: (response: GoogleCredentialResponse) => void;
-                    }): void;
-                    disableAutoSelect: () => void;
-                    renderButton(
-                        parent: HTMLElement | null,
-                        options: {
-                            theme?: "outline" | "filled_blue" | "filled_black";
-                            size?: "small" | "medium" | "large";
-                            text?: string;
-                            shape?: string;
-                            logo_alignment?: string;
-                            width?: number;
-                        }
-                    ): void;
-                };
-            };
-        };
-    }
-}
-
 interface GoogleCredentialResponse {
     credential: string;
     select_by?: string;
