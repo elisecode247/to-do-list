@@ -11,36 +11,31 @@ import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
 import { isDateToday } from 'src/utilities/is-date-today';
 import SuccessGif from 'src/success-state/success-gif';
-
+import { useTask } from 'src/app/use-task';
 interface ChecklistProps {
     isActiveList: boolean;
     items: ChecklistItem[];
     activeFilters: Tag[];
-    onEditItem: (item: ChecklistItem) => void;
-    onToggleItem: (id: UniqueIdentifier, checked: boolean) => void;
-    onArchiveItem: (id: UniqueIdentifier) => void;
-    onDeleteItem: (id: UniqueIdentifier) => void;
-    onPrioritizeItem: (id: UniqueIdentifier) => void;
-    onHideItem: (id: UniqueIdentifier) => void;
-    onAddItem: (item: ChecklistItem) => void;
-    onReorderItems: (params: { activeId: UniqueIdentifier; overId: UniqueIdentifier }) => void;
     onChangeFilters: (filters: Tag[]) => void;
+    onEditItem: (item: ChecklistItem) => void;
 }
 
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
     items,
     activeFilters,
-    onEditItem,
-    onToggleItem,
-    onArchiveItem,
-    onDeleteItem,
-    onPrioritizeItem,
-    onHideItem,
-    onAddItem,
     onChangeFilters,
-    onReorderItems,
+    onEditItem,
 }) => {
+    const {
+        addItem,
+        deleteItem,
+        toggleItem,
+        prioritizeItem,
+        archiveItem,
+        hideItem,
+        reorderItems,
+    } = useTask();
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
@@ -100,10 +95,7 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        onReorderItems({
-            activeId: active.id,
-            overId: over.id
-        });
+        reorderItems(active.id, over.id);
     };
 
     const toggleChecked = (id: UniqueIdentifier, checked: boolean) => {
@@ -114,7 +106,7 @@ const Checklist: FC<ChecklistProps> = ({
             if (!confirmed) return;
         }
 
-        onToggleItem(id as number, checked);
+        toggleItem(id, checked);
     };
 
 
@@ -137,7 +129,7 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const handleHide = (id: UniqueIdentifier) => {
-        onHideItem(id as number);
+        hideItem(id);
     };
 
     const handleTagClick = (val: string): void => {
@@ -160,13 +152,13 @@ const Checklist: FC<ChecklistProps> = ({
             isArchived: false,
             isHidden: false
         };
-        onAddItem(newItem);
+        addItem(newItem);
         setInputText('');
     };
 
 
     const handleMoveItem = (id: UniqueIdentifier) => {
-        onArchiveItem(id);
+        archiveItem(id);
     };
 
     return (
@@ -311,8 +303,8 @@ const Checklist: FC<ChecklistProps> = ({
                                 id={item.id}
                                 text={item.text}
                                 lastCompleted={item.lastCompleted}
-                                deleteItem={onDeleteItem}
-                                prioritizeItem={onPrioritizeItem}
+                                deleteItem={deleteItem}
+                                prioritizeItem={prioritizeItem}
                                 toggleChecked={toggleChecked}
                                 handleEdit={handleEdit}
                                 handleHideItem={handleHide}

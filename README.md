@@ -21,4 +21,3 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Replace deprecated Tenor API usage
 - Connect to google calendar for scheduled tasks
-- Move tasks to Context

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type FC } from 'react';
+import { useState, useMemo, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
@@ -9,7 +9,6 @@ import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type Tag } from 'src/checklist/constants';
-import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
@@ -22,16 +21,9 @@ const App: FC = () => {
         isLoading,
         error,
         loadTasks,
-        addItem,
-        deleteItem,
         updateItem,
-        toggleItem,
-        prioritizeItem,
-        archiveItem,
-        hideItem,
-        reorderItems,
         reset
-    } = useTask({ enabled: isAuthenticated });
+    } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
@@ -41,19 +33,6 @@ const App: FC = () => {
             ? items.filter(item => !item.isArchived)
             : items.filter(item => item.isArchived);
     }, [items, isActiveList]);
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        let cancelled = false;
-
-        const fetchData = () => loadTasks(cancelled);
-        fetchData();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [isAuthenticated])
 
     async function handleSave() {
         if (!editingItem) return;
@@ -81,62 +60,12 @@ const App: FC = () => {
         reset();
     }
 
-    function handlePrioritizeItem(id: UniqueIdentifier): void {
-        prioritizeItem(id);
-    }
-
-
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
     }
 
-    async function handleToggleItem(id: UniqueIdentifier, checked: boolean) {
-        try {
-            await toggleItem(id, checked)
-        } catch(err) {
-            console.error('Failed to toggle task:', err);
-            showToast('Failed to update task status. Please try again.', 'error');
-        };
-    }
-
-
-    async function handleArchiveItem(id: UniqueIdentifier) {
-        try {
-            await archiveItem(id);
-        } catch(err) {
-            console.error('Failed to archive task:', err);
-            showToast('Failed to update task archive status. Please try again.', 'error');
-        }
-    }
-
-
     function handleChangeFilters(filters: Tag[]) {
         setActiveFilters(filters);
-    }
-
-    async function handleDeleteItem(id: UniqueIdentifier) {
-        try {
-            await deleteItem(id);
-        } catch(e) {
-            showToast('Task could not be deleted. Please try again.', 'error');
-        }
-    }
-
-    async function handleAddItem(newItem: ChecklistItem) {
-        try {
-            await addItem(newItem)
-        } catch(e) {
-            showToast('Failed to add task. Please try again.', 'error');
-        }
-    }
-
-    type ReorderArgs = { activeId: UniqueIdentifier; overId: UniqueIdentifier; };
-    function handleReorderItems({ activeId, overId }: ReorderArgs) {
-        reorderItems(activeId, overId);
-    }
-
-    function handleHideItem(id: UniqueIdentifier) {
-        hideItem(id);
     }
 
     return (
@@ -220,15 +149,8 @@ const App: FC = () => {
                             items={filteredList}
                             isActiveList={isActiveList}
                             activeFilters={activeFilters}
-                            onDeleteItem={handleDeleteItem}
-                            onPrioritizeItem={handlePrioritizeItem}
-                            onHideItem={handleHideItem}
-                            onAddItem={handleAddItem}
-                            onEditItem={handleEditItem}
-                            onToggleItem={handleToggleItem}
-                            onArchiveItem={handleArchiveItem}
                             onChangeFilters={handleChangeFilters}
-                            onReorderItems={handleReorderItems}
+                            onEditItem={handleEditItem}
                         />
                     )}
                 </main>
