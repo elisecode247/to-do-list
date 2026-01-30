@@ -7,19 +7,15 @@ interface Props {
     onError?: (err: unknown) => void;
 }
 
-const GoogleCalendarConnectButton: React.FC<Props> = ({
-    backendClientIdEndpoint = "https://demo-server-production-9fc2.up.railway.app/api/google-client-id",
-    onSuccess,
-    onError,
-}) => {
+const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
     const [clientId, setClientId] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch(backendClientIdEndpoint)
+        fetch("https://demo-server-production-9fc2.up.railway.app/api/google-client-id")
             .then(res => res.json())
             .then(data => setClientId(data.clientId))
             .catch(onError);
-    }, [backendClientIdEndpoint, onError]);
+    }, [onError]);
 
     const connectCalendar = () => {
         if (!clientId || !window.google) return;
@@ -36,7 +32,7 @@ const GoogleCalendarConnectButton: React.FC<Props> = ({
                             "https://demo-server-production-9fc2.up.railway.app/auth/google/calendar",
                             {
                                 method: "POST",
-                                headers: await authHeaders(),
+                                headers: await authHeaders(), // must include your app JWT
                                 body: JSON.stringify({ code }),
                             }
                         );
@@ -49,11 +45,7 @@ const GoogleCalendarConnectButton: React.FC<Props> = ({
             .requestCode();
     };
 
-    return (
-        <button onClick={connectCalendar}>
-            Connect Google Calendar
-        </button>
-    );
+    return <button onClick={connectCalendar}>Connect Google Calendar</button>;
 };
 
 export default GoogleCalendarConnectButton;
