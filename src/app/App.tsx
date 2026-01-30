@@ -8,13 +8,14 @@ import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
-import { type ToastMessage } from 'src/toast/types';
 import { type Tag } from 'src/checklist/constants';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
+import { useToast } from 'src/toast/use-toast';
 
 const App: FC = () => {
+    const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login, logout } = useAuthentication();
     const {
         items,
@@ -34,16 +35,7 @@ const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-    const showToast = (message: string, type: ToastMessage['type']) => {
-        const id = Date.now();
-        setToasts(prev => [...prev, { id, message, type }]);
-    };
-
-    const removeToast = (id: number) => {
-        setToasts(prev => prev.filter(toast => toast.id !== id));
-    };
     const filteredList = useMemo(() => {
         return isActiveList
             ? items.filter(item => !item.isArchived)
