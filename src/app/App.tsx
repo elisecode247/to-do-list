@@ -1,5 +1,4 @@
 import { useState, type FC } from 'react';
-import { Archive, FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';

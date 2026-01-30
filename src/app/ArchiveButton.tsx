@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { FolderArchive } from 'lucide-react';
+import { Archive, FolderArchive } from 'lucide-react';
 import type { ChecklistItem } from 'app/types';
 
 interface ToggleChecklistButtonProps {
@@ -28,7 +28,7 @@ const ToggleChecklistButton: FC<ToggleChecklistButtonProps> = ({
             disabled={!!editingItem}
             title={buttonTitle}
         >
-            <FolderArchive size={12} />
+            {isArchivedView ? <Archive size={12} /> : <FolderArchive size={12} />}
             <span className="app_see-archived-checklist-text">
                 &nbsp; {buttonText}
             </span>
