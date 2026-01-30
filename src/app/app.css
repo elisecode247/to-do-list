@@ -1,12 +1,11 @@
 /* App Container */
 .app_container {
-    height: 100vh;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
+    height: 100vh;
 }
 
 body {
@@ -23,6 +22,7 @@ body {
     gap: var(--spacing-sm);
     position: relative;
     overflow: hidden;
+    height: 100vh;
 }
 
 body::before {
@@ -184,7 +184,7 @@ body::after {
 }
 
 .app_header {
-    height: 20vh;
+    height: auto;
     flex-shrink: 0;
 }
 
@@ -196,7 +196,6 @@ body::after {
     text-transform: uppercase;
     color: var(--color-surface);
     position: relative;
-    z-index: 1;
     animation: glow 15s ease-in-out infinite;
     background: linear-gradient(135deg,
             #a78bfa 0%,
@@ -231,7 +230,6 @@ body::after {
     cursor: pointer;
     transition: all var(--transition-fast);
     align-self: flex-end;
-    z-index: 9999;
 }
 
 .app_see-archived-checklist-button:hover:not(:disabled),
@@ -259,7 +257,6 @@ body::after {
     flex: 1;
     padding: var(--spacing-md);
     min-height: 0;
-    height: 80vh;
     display:flex;
     flex-direction: column;
 }
