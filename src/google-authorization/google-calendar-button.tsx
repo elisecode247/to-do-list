@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
+import { authHeaders } from "src/authentication/authentication-api";
 
 interface Props {
-    accessToken: string;
     backendClientIdEndpoint?: string;
     onSuccess?: () => void;
     onError?: (err: unknown) => void;
 }
 
 const GoogleCalendarConnectButton: React.FC<Props> = ({
-    accessToken,
     backendClientIdEndpoint = "https://demo-server-production-9fc2.up.railway.app/api/google-client-id",
     onSuccess,
     onError,
@@ -37,10 +36,7 @@ const GoogleCalendarConnectButton: React.FC<Props> = ({
                             "https://demo-server-production-9fc2.up.railway.app/auth/google/calendar",
                             {
                                 method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    Authorization: `Bearer ${accessToken}`,
-                                },
+                                headers: await authHeaders(),
                                 body: JSON.stringify({ code }),
                             }
                         );

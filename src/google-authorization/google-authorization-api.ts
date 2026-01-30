@@ -4,7 +4,7 @@ interface GoogleAuthCodeResponse {
     code: string;
 }
 
-export async const connectGoogleCalendar = (googleClientId: string, accessToken: string): void => {
+export const connectGoogleCalendar = async (googleClientId: string): Promise<void> => {
     if (!window.google?.accounts.oauth2) {
         console.error("Google API not loaded");
         return;

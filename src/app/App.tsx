@@ -16,7 +16,7 @@ import ArchiveButton from './ArchiveButton';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { isAuthenticated, login, logout, accessToken } = useAuthentication();
+    const { isAuthenticated, login, logout } = useAuthentication();
     const {
         isLoading,
         error,
@@ -106,7 +106,7 @@ const App: FC = () => {
                                 onToggle={toggleChecklist}
                             />
                         )}
-                        {isAuthenticated && <GoogleCalendarConnectButton accessToken={accessToken}  />}
+                        {isAuthenticated && <GoogleCalendarConnectButton  />}
                     </div>
                 </header>
                 <main className="app_main">

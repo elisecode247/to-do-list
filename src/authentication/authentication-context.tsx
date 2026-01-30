@@ -7,13 +7,11 @@ interface AuthenticationContextType {
     isAuthenticated: boolean;
     login: (token: string) => Promise<void>;
     logout: () => void;
-    accessToken: string;
 }
 
 export const AuthenticationContext = createContext<AuthenticationContextType | undefined>(undefined);
 
 export const AuthenticationProvider = ({ children }: { children: ReactNode }) => {
-    const accessToken = localStorage.getItem(AUTH_TOKEN_KEY) || '';
     const [isAuthenticated, setIsAuthenticated] = useState(() =>
         Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
     );
@@ -29,7 +27,7 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
     }, []);
 
     return (
-        <AuthenticationContext.Provider value={{ isAuthenticated, login, logout, accessToken }}>
+        <AuthenticationContext.Provider value={{ isAuthenticated, login, logout }}>
             {children}
         </AuthenticationContext.Provider>
     );
