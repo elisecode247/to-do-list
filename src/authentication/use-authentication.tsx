@@ -1,25 +1,10 @@
-import { loginWithGoogle } from 'src/authentication/authentication-api';
-import { useState, useCallback } from 'react';
-import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
+import { useContext } from 'react';
+import { AuthenticationContext } from 'src/authentication/authentication-context';
 
 export function useAuthentication() {
-    const [isAuthenticated, setIsAuthenticated] = useState(() =>
-        Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
-    );
-
-    const login = useCallback(async (token: string) => {
-        await loginWithGoogle(token);
-        setIsAuthenticated(true);
-    }, []);
-
-    const logout = useCallback(() => {
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        setIsAuthenticated(false);
-    }, []);
-
-    return {
-        isAuthenticated,
-        login,
-        logout,
-    };
+        const context = useContext(AuthenticationContext);
+    if (!context) {
+        throw new Error('useAuthentication must be used within a AuthenticationProvider');
+    }
+    return context;
 }
