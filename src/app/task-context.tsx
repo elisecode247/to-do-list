@@ -135,6 +135,13 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
 
     const toggleItem = (id: UniqueIdentifier, checked: boolean) => {
+        if (!checked) {
+            const confirmed = confirm(
+                'If you uncheck, you will lose the last completed date. Are you sure?'
+            );
+            if (!confirmed) return;
+        }
+
         updateTask({
             ...items.find(item => item.id === id)!,
             done: checked,
