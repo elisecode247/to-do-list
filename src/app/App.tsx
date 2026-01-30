@@ -182,7 +182,7 @@ const App: FC = () => {
                                 }}
                             />
                         )}
-                        {isActiveList ? (
+                        {isAuthenticated && isActiveList && (
                             <button
                                 id="see-archived-data"
                                 className="app_see-archived-checklist-button"
@@ -195,7 +195,8 @@ const App: FC = () => {
                                     &nbsp; See Archived Checklist
                                 </span>
                             </button>
-                        ) : (
+                        )}
+                        {isAuthenticated && !isActiveList && (
                             <button
                                 id="see-active-checklist"
                                 className="app_see-active-checklist-button"
