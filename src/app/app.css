@@ -231,6 +231,7 @@ body::after {
     cursor: pointer;
     transition: all var(--transition-fast);
     align-self: flex-end;
+    z-index: 9999;
 }
 
 .app_see-archived-checklist-button:hover:not(:disabled),

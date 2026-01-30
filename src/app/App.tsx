@@ -1,5 +1,5 @@
 import { useState, type FC } from 'react';
-import { FolderArchive } from 'lucide-react';
+import { Archive, FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
@@ -12,6 +12,7 @@ import { type Tag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
+import ArchiveButton from './ArchiveButton';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
@@ -61,6 +62,15 @@ const App: FC = () => {
         setActiveFilters(filters);
     }
 
+    const handleLoginSuccess = async (token: string) => {
+        try { await login(token); }
+        catch (err) { console.error(err); }
+    };
+
+    const handleLogoutClick = () => {
+        handleLogout();
+    };
+
     return (
         <>
             {editingItem ? (
@@ -84,45 +94,17 @@ const App: FC = () => {
                     <h1 className="app_h1">My To Do List</h1>
                     <div className="app_header_button-group">
                         {isAuthenticated ? (
-                            <GoogleLogoutButton onLogout={handleLogout} />
+                            <GoogleLogoutButton onLogout={handleLogoutClick} />
                         ) : (
-                            <GoogleLoginButton
-                                onSuccess={async (token) => {
-                                    try {
-                                        await login(token);
-                                    } catch (err) {
-                                        console.error(err);
-                                    }
-                                }}
+                            <GoogleLoginButton onSuccess={handleLoginSuccess} />
+                        )}
+
+                        {isAuthenticated && (
+                            <ArchiveButton
+                                isActiveList={isActiveList}
+                                editingItem={editingItem}
+                                onToggle={toggleChecklist}
                             />
-                        )}
-                        {isAuthenticated && isActiveList && (
-                            <button
-                                id="see-archived-data"
-                                className="app_see-archived-checklist-button"
-                                disabled={!!editingItem}
-                                onClick={toggleChecklist}
-                                title="See Archived Items"
-                            >
-                                <FolderArchive size={12} />
-                                <span className="app_see-archived-checklist-text">
-                                    &nbsp; See Archived Checklist
-                                </span>
-                            </button>
-                        )}
-                        {isAuthenticated && !isActiveList && (
-                            <button
-                                id="see-active-checklist"
-                                className="app_see-active-checklist-button"
-                                onClick={toggleChecklist}
-                                title="See Active Checklist"
-                                disabled={!!editingItem}
-                            >
-                                <FolderArchive size={12} />
-                                <span className="app_see-archived-checklist-text">
-                                    &nbsp; See Active Checklist
-                                </span>
-                            </button>
                         )}
                     </div>
                 </header>
