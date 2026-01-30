@@ -1,4 +1,4 @@
-import { useState, useMemo, type FC } from 'react';
+import { useState, type FC } from 'react';
 import { FolderArchive } from 'lucide-react';
 import './app.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
@@ -17,7 +17,6 @@ const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login, logout } = useAuthentication();
     const {
-        items,
         isLoading,
         error,
         loadTasks,
@@ -27,12 +26,6 @@ const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-
-    const filteredList = useMemo(() => {
-        return isActiveList
-            ? items.filter(item => !item.isArchived)
-            : items.filter(item => item.isArchived);
-    }, [items, isActiveList]);
 
     async function handleSave() {
         if (!editingItem) return;
@@ -146,7 +139,6 @@ const App: FC = () => {
                         />
                     ) : (
                         <Checklist
-                            items={filteredList}
                             isActiveList={isActiveList}
                             activeFilters={activeFilters}
                             onChangeFilters={handleChangeFilters}

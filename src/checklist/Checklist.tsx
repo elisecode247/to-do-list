@@ -9,12 +9,11 @@ import FrequencyButtonGroup from 'src/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
-import { isDateToday } from 'src/utilities/is-date-today';
 import SuccessGif from 'src/success-state/success-gif';
 import { useTask } from 'src/app/use-task';
+
 interface ChecklistProps {
     isActiveList: boolean;
-    items: ChecklistItem[];
     activeFilters: Tag[];
     onChangeFilters: (filters: Tag[]) => void;
     onEditItem: (item: ChecklistItem) => void;
@@ -22,12 +21,12 @@ interface ChecklistProps {
 
 const Checklist: FC<ChecklistProps> = ({
     isActiveList,
-    items,
     activeFilters,
     onChangeFilters,
     onEditItem,
 }) => {
     const {
+        items,
         addItem,
         deleteItem,
         toggleItem,
@@ -35,6 +34,7 @@ const Checklist: FC<ChecklistProps> = ({
         archiveItem,
         hideItem,
         reorderItems,
+        filterTasks,
     } = useTask();
     const [inputText, setInputText] = useState<string>("");
     const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
@@ -60,35 +60,7 @@ const Checklist: FC<ChecklistProps> = ({
     }, [isAddSectionExpanded]);
 
     const filteredItems = useMemo(() => {
-        if (!items.length) return items;
-
-        const exclusiveFilters = activeFilters.filter(
-            selected => isExclusiveTag(selected)
-        );
-        const nonExclusiveFilters = activeFilters.filter(
-            selected => !isExclusiveTag(selected)
-        );
-
-        return items.filter(task => {
-            if (hideCompleted && isDateToday(task.lastCompleted)) return false;
-
-            const tagSet = new Set(task.tags);
-
-            // OR logic for exclusive tags
-            if (exclusiveFilters.length > 0) {
-                if (!exclusiveFilters.some(tag => tagSet.has(tag))) return false;
-            }
-
-            // AND logic for everything else (priority, etc)
-            for (const tag of nonExclusiveFilters) {
-                if (!tagSet.has(tag)) return false;
-            }
-
-            if (filterCategory && task.category !== filterCategory) return false;
-            if (task.isHidden) return false;
-
-            return true;
-        });
+        return filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory })
     }, [items, activeFilters, hideCompleted, filterCategory]);
 
     const handleDragEnd = (event: DragEndEvent) => {

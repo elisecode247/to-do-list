@@ -1,13 +1,12 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
-import { isDateToday } from 'src/utilities/is-date-today';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { PRIORITY_TAG } from 'src/checklist/constants';
+import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
-
+import { isDateToday } from 'src/utilities/is-date-today';
 interface TaskContextType {
     items: ChecklistItem[];
     isLoading: boolean;
@@ -22,6 +21,12 @@ interface TaskContextType {
     hideItem: (id: UniqueIdentifier) => void;
     reorderItems: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
     reset: () => void;
+    filterTasks: (params: {
+        activeFilters: Tag[];
+        isActiveList: boolean;
+        hideCompleted: boolean;
+        filterCategory: string;
+    }) => ChecklistItem[];
 }
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -227,6 +232,48 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             return updatedItems;
         });
     }
+    type FilterParams = {
+        activeFilters: Tag[];
+        isActiveList: boolean;
+        hideCompleted: boolean;
+        filterCategory: string;
+    };
+    const filterTasks = ({
+        activeFilters,
+        isActiveList,
+        hideCompleted,
+        filterCategory
+    }: FilterParams) => {
+        if (!items.length) return items;
+        const exclusiveFilters = activeFilters.filter(
+            selected => isExclusiveTag(selected)
+        );
+        const nonExclusiveFilters = activeFilters.filter(
+            selected => !isExclusiveTag(selected)
+        );
+
+        return items.filter(task => {
+            if (isActiveList ? task.isArchived : !task.isArchived) return false;
+            if (hideCompleted && isDateToday(task.lastCompleted)) return false;
+
+            const tagSet = new Set(task.tags);
+
+            // OR logic for exclusive tags
+            if (exclusiveFilters.length > 0) {
+                if (!exclusiveFilters.some(tag => tagSet.has(tag))) return false;
+            }
+
+            // AND logic for everything else (priority, etc)
+            for (const tag of nonExclusiveFilters) {
+                if (!tagSet.has(tag)) return false;
+            }
+
+            if (filterCategory && task.category !== filterCategory) return false;
+            if (task.isHidden) return false;
+
+            return true;
+        });
+    }
 
     return (
         <TaskContext.Provider value={{
@@ -242,7 +289,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             archiveItem,
             hideItem,
             reorderItems,
-            reset
+            reset,
+            filterTasks,
         }}>
             {children}
         </TaskContext.Provider>
