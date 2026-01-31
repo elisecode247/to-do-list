@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { authHeaders } from "src/authentication/authentication-api";
+import 'src/google-authorization/google-calendar-button.css';
 
 interface Props {
     backendClientIdEndpoint?: string;
@@ -45,7 +46,14 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
             .requestCode();
     };
 
-    return <button onClick={connectCalendar}>Connect Google Calendar</button>;
+    return (
+        <button
+            className="calendar-connect-button"
+            onClick={connectCalendar}
+        >
+            Connect Google Calendar
+        </button>
+    );
 };
 
 export default GoogleCalendarConnectButton;

@@ -1,13 +1,3 @@
-/* App Container */
-.app_container {
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
-    height: 100vh;
-}
-
 body {
     background:
         radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
@@ -183,20 +173,32 @@ body::after {
     }
 }
 
+/* App Container */
+.app_container {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    height: 100vh;
+}
+
 .app_header {
-    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
     flex-shrink: 0;
+    position: relative;
+    margin-bottom: var(--spacing-md);
 }
 
 .app_h1 {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: 2px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--color-surface);
-    position: relative;
-    animation: glow 15s ease-in-out infinite;
     background: linear-gradient(135deg,
             #a78bfa 0%,
             #ec4899 50%,
@@ -204,15 +206,17 @@ body::after {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin: var(--spacing-lg) 0 0 var(--spacing-lg);
+    animation: glow 15s ease-in-out infinite;
+    position: absolute;
+    top: 0;
 }
-
 
 .app_header_button-group {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
     align-items: flex-end;
+    width: 100%;
 }
 
 .app_see-archived-checklist-button,
@@ -223,13 +227,13 @@ body::after {
     background-color: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--radius-sm);
-    color: var(--color-surface);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: 13px;
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-xs);
+    font-size: 12px;
     font-weight: 400;
     cursor: pointer;
     transition: all var(--transition-fast);
-    align-self: flex-end;
+    align-self: flex-start;
 }
 
 .app_see-archived-checklist-button:hover:not(:disabled),
@@ -255,9 +259,9 @@ body::after {
 /* Main Content */
 .app_main {
     flex: 1;
-    padding: var(--spacing-md);
+    padding: var(--spacing-md) 0;
     min-height: 0;
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
@@ -300,15 +304,15 @@ body::after {
     }
 
     .app_header {
-        padding: var(--spacing-xl) var(--spacing-lg);
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
         align-items: flex-start;
-        gap: var(--spacing-lg);
     }
 
     .app_h1 {
         font-size: 28px;
+        left: 33%;
+        margin: var(--spacing-md) 0 0 var(--spacing-md);
     }
 
     .app_header_button-group {
@@ -318,9 +322,5 @@ body::after {
     .app_see-archived-checklist-button,
     .app_see-active-checklist-button {
         padding: var(--spacing-xs) var(--spacing-sm);
-    }
-
-    .app_main {
-        padding: var(--spacing-xl);
     }
 }
