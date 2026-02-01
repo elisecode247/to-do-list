@@ -191,6 +191,7 @@ body::after {
     flex-shrink: 0;
     position: relative;
     margin-bottom: var(--spacing-md);
+    min-height: 50px;
 }
 
 .app_h1 {
@@ -209,6 +210,28 @@ body::after {
     animation: glow 15s ease-in-out infinite;
     position: absolute;
     top: 0;
+}
+
+.app_header_menu-icon {
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    color: white;
+    position: absolute;
+}
+
+.app_header_settings {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-sm);
+    z-index: 10;
 }
 
 .app_header_button-group {
@@ -233,7 +256,9 @@ body::after {
     font-weight: 400;
     cursor: pointer;
     transition: all var(--transition-fast);
-    align-self: flex-start;
+    position: absolute;
+    right: 0;
+    top: 40px;
 }
 
 .app_see-archived-checklist-button:hover:not(:disabled),

@@ -37,14 +37,8 @@ export function useCalendarIntegration() {
                     { headers: await authHeaders() }
                 );
 
-                if (!res.ok) {
-                    setConnected(false);
-                    writeCalendarCache(false);
-                    return false;
-                }
-
-                const data = await res.json();
-                const isConnected = Boolean(data?.connected);
+                const isConnected =
+                    res.ok && Boolean((await res.json())?.connected);
 
                 setConnected(isConnected);
                 writeCalendarCache(isConnected);
@@ -60,11 +54,32 @@ export function useCalendarIntegration() {
         [isAuthenticated]
     );
 
+    const disconnectCalendar = useCallback(async () => {
+        if (!isAuthenticated) return;
+
+        setLoading(true);
+
+        try {
+            await fetch(
+                `${API_AUTH_URL}/auth/google/calendar/disconnect`,
+                {
+                    method: "POST",
+                    headers: await authHeaders(),
+                }
+            );
+        } catch (err) {
+            console.error("Calendar disconnect failed:", err);
+        } finally {
+            setConnected(false);
+            clearCalendarCache();
+            setLoading(false);
+        }
+    }, [isAuthenticated]);
+
     useEffect(() => {
         if (isAuthenticated) {
             fetchStatus();
         } else {
-            // logout cleanup
             setConnected(false);
             setLoading(false);
             clearCalendarCache();
@@ -75,5 +90,6 @@ export function useCalendarIntegration() {
         connected,
         loading,
         refreshStatus: () => fetchStatus({ force: true }),
+        disconnectCalendar,
     };
 }

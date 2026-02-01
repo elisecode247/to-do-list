@@ -13,10 +13,12 @@ import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import ArchiveButton from './ArchiveButton';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
+import { MenuSquare } from 'lucide-react';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login, logout } = useAuthentication();
+    const [isSettingOpen, setIsSettingOpen] = useState(false);
     const {
         isLoading,
         error,
@@ -92,21 +94,29 @@ const App: FC = () => {
             <div className="app_container">
                 <header className="app_header">
                     <h1 className="app_h1">My To Do List</h1>
-                    <div className="app_header_button-group">
-                        {isAuthenticated ? (
-                            <GoogleLogoutButton onLogout={handleLogoutClick} />
-                        ) : (
-                            <GoogleLoginButton onSuccess={handleLoginSuccess} />
-                        )}
-                        <GoogleCalendarStatus />
-                        {isAuthenticated && (
-                            <ArchiveButton
-                                isActiveList={isActiveList}
-                                editingItem={editingItem}
-                                onToggle={toggleChecklist}
-                            />
-                        )}
-                    </div>
+                    <MenuSquare
+                        onClick={() => { setIsSettingOpen(prev => !prev); }}
+                        className="app_header_menu-icon"
+                    />
+                    {isSettingOpen && (
+                        <div className="app_header_settings">
+                            <div className="app_header_button-group">
+                                {isAuthenticated ? (
+                                    <GoogleLogoutButton onLogout={handleLogoutClick} />
+                                ) : (
+                                    <GoogleLoginButton onSuccess={handleLoginSuccess} />
+                                )}
+                                <GoogleCalendarStatus />
+                            </div>
+                        </div>
+                    )}
+                    {isAuthenticated && (
+                        <ArchiveButton
+                            isActiveList={isActiveList}
+                            editingItem={editingItem}
+                            onToggle={toggleChecklist}
+                        />
+                    )}
                 </header>
                 <main className="app_main">
                     {isLoading ? (

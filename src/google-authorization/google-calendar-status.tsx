@@ -7,7 +7,7 @@ import { CalendarSync } from 'lucide-react';
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
-    const { loading, connected, refreshStatus } = useCalendarIntegration();
+    const { loading, connected, refreshStatus, disconnectCalendar } = useCalendarIntegration();
     const [modalOpen, setModalOpen] = useState(false);
 
     if (loading) return null;
@@ -31,6 +31,14 @@ const GoogleCalendarStatus = () => {
                     </span>
                 )}
             </div>
+            {connected && (
+                <button
+                    onClick={() => disconnectCalendar()}
+                    className="calendar-disconnect-button"
+                >
+                    Disconnect Calendar
+                </button>
+            )}
 
             {!connected && modalOpen && (
                 <div className="calendar-modal">
