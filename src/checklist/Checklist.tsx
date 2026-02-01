@@ -100,7 +100,9 @@ const Checklist: FC<ChecklistProps> = ({
                             : 'filter-button-all'
                             }`}
                     >
-                        All ({items.length})
+                        All ({items.filter(t => {
+                            return isActiveList ? !t.isArchived : t.isArchived;
+                        }).length})
                     </button>
                     {TAGS.map(tag => {
                         const isPriority = tag === PRIORITY_TAG;
@@ -123,7 +125,10 @@ const Checklist: FC<ChecklistProps> = ({
                                 `}
                             >
                                 {isPriority ? '⭐ ' : ''}
-                                {tag} ({items.filter(t => t.tags.includes(tag)).length})
+                                {tag} ({items.filter(t => {
+                                    const isActive = isActiveList ? !t.isArchived : t.isArchived;
+                                    return isActive && t.tags.includes(tag);
+                                }).length})
                             </button>
                         )
                     })}
