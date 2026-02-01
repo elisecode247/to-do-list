@@ -7,7 +7,7 @@ import { CalendarSync } from 'lucide-react';
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
-    const { loading, connected } = useCalendarIntegration();
+    const { loading, connected, refreshStatus } = useCalendarIntegration();
     const [modalOpen, setModalOpen] = useState(false);
 
     if (loading) return null;
@@ -43,7 +43,7 @@ const GoogleCalendarStatus = () => {
                     <p className="calendar-help">
                         Sync chores with due dates to your Google Calendar.
                     </p>
-                    <GoogleCalendarConnectButton />
+                    <GoogleCalendarConnectButton onSuccess={refreshStatus} />
                 </div>
             )}
         </div>
