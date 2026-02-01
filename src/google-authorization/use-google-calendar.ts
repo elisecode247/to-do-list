@@ -61,17 +61,17 @@ export function useCalendarIntegration() {
 
         try {
             await fetch(
-                `${API_AUTH_URL}/auth/google/calendar/disconnect`,
+                `${API_AUTH_URL}/google/calendar/disconnect`,
                 {
                     method: "POST",
                     headers: await authHeaders(),
                 }
             );
+            setConnected(false);
+            clearCalendarCache();
         } catch (err) {
             console.error("Calendar disconnect failed:", err);
         } finally {
-            setConnected(false);
-            clearCalendarCache();
             setLoading(false);
         }
     }, [isAuthenticated]);
