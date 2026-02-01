@@ -5,7 +5,6 @@
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-sm);
     font-size: 14px;
-    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }

@@ -4,15 +4,21 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useCalendarIntegration } from './use-google-calendar';
 import GoogleCalendarConnectButton from 'src/google-authorization/google-calendar-button';
 import { CalendarSync } from 'lucide-react';
+import { useToast } from 'src/toast/use-toast';
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
     const { loading, connected, refreshStatus, disconnectCalendar } = useCalendarIntegration();
     const [modalOpen, setModalOpen] = useState(false);
+    const { showToast } = useToast();
 
     if (loading) return null;
     if (!isAuthenticated) return null;
 
+    function handleConnectionError(err: unknown) {
+        console.error('Error connecting to Google Calendar:', err);
+        showToast('There was an error connecting to Google Calendar. Please try again.');
+    }
     return (
         <div className="calendar-integration">
             <div className="calendar-header">
@@ -40,19 +46,16 @@ const GoogleCalendarStatus = () => {
                 </button>
             )}
 
-            {!connected && modalOpen && (
-                <div className="calendar-modal">
-                    <button
-                        className="calendar-modal-close"
-                        onClick={() => setModalOpen(false)}
-                    >
-                        ×
-                    </button>
+            {!connected && (
+                <>
                     <p className="calendar-help">
                         Sync chores with due dates to your Google Calendar.
                     </p>
-                    <GoogleCalendarConnectButton onSuccess={refreshStatus} />
-                </div>
+                    <GoogleCalendarConnectButton
+                        onSuccess={refreshStatus}
+                        onError={handleConnectionError}
+                    />
+                </>
             )}
         </div>
     );
