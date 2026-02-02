@@ -223,8 +223,8 @@
 }
 
 .checklist_hide-completed-checkbox-input:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .checklist_hide-completed-checkbox-label {
@@ -232,6 +232,19 @@
     color: white;
     cursor: pointer;
     user-select: none;
+}
+
+/* Show Hidden Checkbox */
+#show-hidden-tasks-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+#show-hidden-tasks-label input {
+    margin: 0;
 }
 
 /* List Container */

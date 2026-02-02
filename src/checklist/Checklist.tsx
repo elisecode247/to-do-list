@@ -39,13 +39,14 @@ const Checklist: FC<ChecklistProps> = ({
     const [hideCompleted, setHideCompleted] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
+    const [showHidden, setShowHidden] = useState(false);
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory })
-    }, [items, activeFilters, isActiveList, hideCompleted, filterCategory]);
+        return filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory, showHidden })
+    }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden]);
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -156,6 +157,17 @@ const Checklist: FC<ChecklistProps> = ({
                     selectedCategory={filterCategory}
                     onChange={(value: string) => setFilterCategory(value)}
                 />
+                <label id="show-hidden-tasks-label" htmlFor="show-hidden-tasks">
+                    <input
+                        type="checkbox"
+                        id="show-hidden-tasks"
+                        checked={showHidden === true}
+                        onChange={(e) => setShowHidden(e.target.checked)}
+                    />
+                    Show Hidden ({items.filter(item => {
+                        return isActiveList === !item.isArchived && item.isHidden;
+                    }).length})
+                </label>
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="checklist_list-container">

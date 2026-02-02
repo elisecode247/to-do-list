@@ -7,7 +7,7 @@ import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants'
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
-import { ALL_CATEGORIES, isCategoryIncluded } from 'src/category-select/category-constants';
+import { isCategoryIncluded } from 'src/category-select/category-constants';
 
 interface TaskContextType {
     items: ChecklistItem[];
@@ -28,6 +28,7 @@ interface TaskContextType {
         isActiveList: boolean;
         hideCompleted: boolean;
         filterCategory: string;
+        showHidden: boolean;
     }) => ChecklistItem[];
 }
 
@@ -248,14 +249,19 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         isActiveList: boolean;
         hideCompleted: boolean;
         filterCategory: string;
+        showHidden: boolean;
     };
     const filterTasks = ({
         activeFilters,
         isActiveList,
         hideCompleted,
-        filterCategory
+        filterCategory,
+        showHidden,
     }: FilterParams) => {
         if (!items.length) return items;
+        if (showHidden) {
+            return items.filter(task => isActiveList === !task.isArchived && task.isHidden === true);
+        }
         const exclusiveFilters = activeFilters.filter(
             selected => isExclusiveTag(selected)
         );
@@ -266,6 +272,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         return items.filter(task => {
             if (isActiveList ? task.isArchived : !task.isArchived) return false;
             if (hideCompleted && isDateToday(task.lastCompleted)) return false;
+            if (!showHidden && task.isHidden) return false;
 
             const tagSet = new Set(task.tags);
 
@@ -281,8 +288,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             if (!isCategoryIncluded(filterCategory, task.category)) {
                 return false;
             }
-            // finally, exclude hidden tasks
-            if (task.isHidden) return false;
 
             return true;
         });
