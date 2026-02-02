@@ -7,6 +7,8 @@ import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants'
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
+import { ALL_CATEGORIES, isCategoryIncluded } from 'src/category-select/category-constants';
+
 interface TaskContextType {
     items: ChecklistItem[];
     isLoading: boolean;
@@ -88,13 +90,15 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const updateItem = async (item: ChecklistItem) => {
         const prevItems = [...items];
-
         setItems(prev =>
             prev.map(i => (i.id === item.id ? item : i))
         );
 
         try {
             await updateTask(item);
+            setItems(prev =>
+                prev.map(i => (i.id === item.id ? item : i))
+            );
         } catch (error) {
             setItems(prevItems);
             throw error;
@@ -274,8 +278,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             for (const tag of nonExclusiveFilters) {
                 if (!tagSet.has(tag)) return false;
             }
-
-            if (filterCategory && task.category !== filterCategory) return false;
+            if (!isCategoryIncluded(filterCategory, task.category)) {
+                return false;
+            }
+            // finally, exclude hidden tasks
             if (task.isHidden) return false;
 
             return true;

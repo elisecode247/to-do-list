@@ -11,6 +11,7 @@ import 'checklist/checklist.css';
 import SuccessGif from 'src/success-state/success-gif';
 import { useTask } from 'src/app/use-task';
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
+import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -36,7 +37,7 @@ const Checklist: FC<ChecklistProps> = ({
         filterTasks,
     } = useTask();
     const [hideCompleted, setHideCompleted] = useState(false);
-    const [filterCategory, setFilterCategory] = useState<string>('');
+    const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])

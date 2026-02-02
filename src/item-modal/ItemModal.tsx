@@ -123,6 +123,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                 {/* Category */}
                 <CategorySelect
                     id="item-modal-category-select"
+                    isFilter={false}
                     selectedCategory={formData.category}
                     onChange={(category: string) =>
                         setEditingItem({ ...formData, category })
