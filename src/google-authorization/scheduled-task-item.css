@@ -54,6 +54,7 @@
 
 .scheduled-task-description {
     padding: 1rem;
+    width: 100%;
 }
 
 /* Fix bullet indentation */
