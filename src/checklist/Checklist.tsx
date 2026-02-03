@@ -13,6 +13,7 @@ import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
+import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -174,6 +175,12 @@ const Checklist: FC<ChecklistProps> = ({
             </div>
             <DndContext onDragEnd={handleDragEnd}>
                 <div className="checklist_list-container">
+                    {events.map(event => (
+                        <CalendarEventItem
+                            key={event.id}
+                            event={event}
+                        />
+                    ))}
                     <SortableContext items={filteredItems.map(i => i.id)}>
                         {filteredItems.map(item => (
                             <SortableItem

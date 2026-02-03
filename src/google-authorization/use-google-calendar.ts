@@ -10,9 +10,13 @@ import {
 
 type Event = {
     id: string;
-    summary: string;
-    start: { dateTime: string };
-    end: { dateTime: string };
+    start: string;
+    end: string;
+    title: string;
+    status: string;
+    allDay: boolean;
+    description?: string;
+    location?: string;
 };
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
@@ -107,8 +111,8 @@ export function useCalendarIntegration() {
                 { headers: await authHeaders() }
             );
             if (!res.ok) throw new Error("Failed to load calendar events");
-            const events = await res.json();
-            setEvents(events);
+            const jsonObject = await res.json();
+            setEvents(jsonObject.events);
         } catch (err) {
             console.error("Loading calendar events failed:", err);
             setEvents([]);
