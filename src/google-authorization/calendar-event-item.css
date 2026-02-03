@@ -7,6 +7,7 @@
     border-left: 4px solid var(--color-primary);
     background-color: #fafbff;
     border-left: 4px solid #4285f4;
+    color: var(--color-text-primary);
 }
 
 .calendar-event-item:hover {
@@ -24,8 +25,7 @@
 }
 
 .calendar-event-item .calendar-event-time {
-    color: #666;
-    font-size: 0.9em;
+    color: var(--color-text-secondary);
 }
 
 .calendar-event-description {
@@ -61,4 +61,19 @@
     display: inline-block;
     color: #1a73e8;
     text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-event-item {
+        background-color: var(--color-surface);
+        color: var(--color-text-primary);
+    }
+
+    .calendar-event-item:hover {
+        background-color: var(--color-surface-hover);
+    }
+
+    .calendar-event-item .calendar-event-link {
+        color: #8ab4f8;
+    }
 }
