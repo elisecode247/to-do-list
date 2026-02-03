@@ -1,9 +1,16 @@
 .calendar-event-item {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 8px;
-    background-color: #f9f9f9;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    border-left: 4px solid var(--color-primary);
+    background-color: #fafbff;
+    border-left: 4px solid #4285f4;
+}
+
+.calendar-event-item:hover {
+    background-color: #f5f7ff;
 }
 
 .calendar-event-item h4 {
