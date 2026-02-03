@@ -220,6 +220,7 @@
     height: 16px;
     cursor: pointer;
     accent-color: var(--color-primary);
+    font-size: 13px;
 }
 
 .checklist_hide-completed-checkbox-input:focus {
@@ -239,8 +240,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 14px;
+    font-size: 13px;
     white-space: nowrap;
+    color: white;
 }
 
 #show-hidden-tasks-label input {

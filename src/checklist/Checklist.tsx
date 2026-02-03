@@ -10,6 +10,7 @@ import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
 import SuccessGif from 'src/success-state/success-gif';
 import { useTask } from 'src/app/use-task';
+import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 
@@ -36,6 +37,8 @@ const Checklist: FC<ChecklistProps> = ({
         reorderItems,
         filterTasks,
     } = useTask();
+    const { events } = useCalendarIntegration();
+    console.log("%c Line:41 🌽 events", "color:#e41a6a", events);
     const [hideCompleted, setHideCompleted] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);

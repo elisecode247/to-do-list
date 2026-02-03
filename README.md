@@ -21,6 +21,4 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Replace deprecated Tenor API usage
 - Connect to google calendar for scheduled tasks
-    - Add a disconnectCalendar() flow
-    - Cache status to avoid refetching on every mount
     - Tie calendar sync to chore mutations cleanly

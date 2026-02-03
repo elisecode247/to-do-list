@@ -8,10 +8,17 @@ import {
     clearCalendarCache,
 } from "./google-calendar-cache";
 
+type Event = {
+    id: string;
+    summary: string;
+    start: { dateTime: string };
+    end: { dateTime: string };
+};
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [events, setEvents] = useState<Event[]>([]);
 
     const fetchStatus = useCallback(
         async (opts?: { force?: boolean }) => {
@@ -77,19 +84,43 @@ export function useCalendarIntegration() {
     }, [isAuthenticated]);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchStatus();
-        } else {
-            setConnected(false);
-            setLoading(false);
-            clearCalendarCache();
-        }
+        const initializeCalendar = async () => {
+            if (isAuthenticated) {
+                await fetchStatus();
+                await loadCalendarEvents();
+            } else {
+                setConnected(false);
+                setLoading(false);
+                setEvents([]);
+                clearCalendarCache();
+            }
+        };
+        initializeCalendar();
     }, [isAuthenticated, fetchStatus]);
+
+    const loadCalendarEvents = useCallback(async () => {
+        if (!isAuthenticated) return [];
+
+        try {
+            const res = await fetch(
+                `${API_AUTH_URL}/google/calendar/events`,
+                { headers: await authHeaders() }
+            );
+            if (!res.ok) throw new Error("Failed to load calendar events");
+            const events = await res.json();
+            setEvents(events);
+        } catch (err) {
+            console.error("Loading calendar events failed:", err);
+            setEvents([]);
+        }
+    }, [isAuthenticated]);
 
     return {
         connected,
         loading,
         refreshStatus: () => fetchStatus({ force: true }),
         disconnectCalendar,
+        loadCalendarEvents,
+        events
     };
 }
