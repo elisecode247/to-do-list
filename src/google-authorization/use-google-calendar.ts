@@ -107,11 +107,12 @@ export function useCalendarIntegration() {
 
         try {
             const res = await fetch(
-                `${API_AUTH_URL}/google/calendar/events`,
+                `${API_AUTH_URL}/google/calendar/events-and-tasks`,
                 { headers: await authHeaders() }
             );
             if (!res.ok) throw new Error("Failed to load calendar events");
             const jsonObject = await res.json();
+            console.log("%c Line:115 🥒 jsonObject", "color:#6ec1c2", jsonObject);
             setEvents(jsonObject.events);
         } catch (err) {
             console.error("Loading calendar events failed:", err);
