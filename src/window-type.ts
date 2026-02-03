@@ -28,7 +28,7 @@ declare global {
                 oauth2: {
                     initCodeClient(config: {
                         client_id: string;
-                        scope: string[];
+                        scope: string;
                         ux_mode: string;
                         prompt?: string;
                         callback: (response: { code: string }) => void;
