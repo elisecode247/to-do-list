@@ -17,8 +17,42 @@
     margin: 0 0 5px 0;
 }
 
-.calendar-event-item p {
-    margin: 0;
+.calendar-event-item .calendar-event-time {
     color: #666;
     font-size: 0.9em;
+}
+
+.calendar-event-description {
+  padding: 1rem;
+}
+
+/* Fix bullet indentation */
+.calendar-event-description ul,
+.calendar-event-description ol {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  list-style-position: inside;
+}
+
+.calendar-event-description b,
+.calendar-event-description strong {
+  font-weight: bold;
+}
+
+.calendar-event-description i,
+.calendar-event-description em {
+  font-style: italic;
+}
+
+.calendar-event-description a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.calendar-event-item .calendar-event-link {
+    margin-top: 8px;
+    display: inline-block;
+    color: #1a73e8;
+    text-decoration: none;
 }
