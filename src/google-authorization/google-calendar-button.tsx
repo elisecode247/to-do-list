@@ -18,13 +18,20 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
             .catch(onError);
     }, [onError]);
 
+    const SCOPES = [
+        "https://www.googleapis.com/auth/calendar", // read/write if needed
+        "openid",
+        "profile",
+        "email"
+    ];
     const connectCalendar = () => {
         if (!clientId || !window.google) return;
 
         window.google.accounts.oauth2
             .initCodeClient({
+                access_type: 'offline',
                 client_id: clientId,
-                scope: "https://www.googleapis.com/auth/calendar.events",
+                scope: SCOPES,
                 ux_mode: "popup",
                 prompt: "consent",
                 callback: async ({ code }) => {
