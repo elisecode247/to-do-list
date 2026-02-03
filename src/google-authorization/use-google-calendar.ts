@@ -7,30 +7,27 @@ import {
     writeCalendarCache,
     clearCalendarCache,
 } from "./google-calendar-cache";
+import { type Task, type Event } from "src/google-authorization/types";
 
-type Event = {
-    id: string;
-    start: string;
-    end: string;
-    title: string;
-    status: string;
-    allDay: boolean;
-    description?: string;
-    location?: string;
-};
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
     const [connected, setConnected] = useState(false);
+    console.log("%c Line:24 🥟 connected", "color:#7f2b82", connected);
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<Event[]>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
 
     const fetchStatus = useCallback(
         async (opts?: { force?: boolean }) => {
+            console.log("%c Line:29 🍐 opts", "color:#b03734", opts);
+            console.log("%c Line:30 🍫 isAuthenticated", "color:#93c0a4", isAuthenticated);
+
             if (!isAuthenticated) {
                 setConnected(false);
                 setLoading(false);
                 return false;
             }
+                console.log("%c Line:39 🍇 !opts?.force", "color:#33a5ff", !opts?.force);
 
             if (!opts?.force) {
                 const cached = readCalendarCache();
@@ -48,9 +45,7 @@ export function useCalendarIntegration() {
                     { headers: await authHeaders() }
                 );
 
-                const isConnected =
-                    res.ok && Boolean((await res.json())?.connected);
-
+                const isConnected = res.ok && Boolean((await res.json())?.connected);
                 setConnected(isConnected);
                 writeCalendarCache(isConnected);
                 return isConnected;
@@ -89,6 +84,7 @@ export function useCalendarIntegration() {
 
     useEffect(() => {
         const initializeCalendar = async () => {
+            console.log("%c Line:94 🌽 isAuthenticated", "color:#e41a6a", isAuthenticated);
             if (isAuthenticated) {
                 await fetchStatus();
                 await loadCalendarEvents();
@@ -96,16 +92,18 @@ export function useCalendarIntegration() {
                 setConnected(false);
                 setLoading(false);
                 setEvents([]);
+                setTasks([]);
                 clearCalendarCache();
             }
         };
         initializeCalendar();
-    }, [isAuthenticated, fetchStatus]);
+    }, [isAuthenticated, fetchStatus, connected]);
 
     const loadCalendarEvents = useCallback(async () => {
         if (!isAuthenticated) return [];
         if (!connected) {
             setEvents([]);
+            setTasks([]);
             return [];
         }
 
@@ -118,11 +116,12 @@ export function useCalendarIntegration() {
             const jsonObject = await res.json();
             console.log("%c Line:115 🥒 jsonObject", "color:#6ec1c2", jsonObject);
             setEvents(jsonObject.events);
+            setTasks(jsonObject.tasks);
         } catch (err) {
             console.error("Loading calendar events failed:", err);
             setEvents([]);
-        }
-    }, [isAuthenticated]);
+            setTasks([]);}
+    }, [isAuthenticated, connected]);
 
     return {
         connected,
@@ -130,6 +129,7 @@ export function useCalendarIntegration() {
         refreshStatus: () => fetchStatus({ force: true }),
         disconnectCalendar,
         loadCalendarEvents,
-        events
+        events,
+        tasks
     };
 }

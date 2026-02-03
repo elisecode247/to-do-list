@@ -14,6 +14,7 @@ import { useCalendarIntegration } from 'src/google-authorization/use-google-cale
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
+import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 
 interface ChecklistProps {
     isActiveList: boolean;
@@ -38,8 +39,7 @@ const Checklist: FC<ChecklistProps> = ({
         reorderItems,
         filterTasks,
     } = useTask();
-    const { events } = useCalendarIntegration();
-    console.log("%c Line:41 🌽 events", "color:#e41a6a", events);
+    const { events, tasks } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
@@ -179,6 +179,12 @@ const Checklist: FC<ChecklistProps> = ({
                         <CalendarEventItem
                             key={event.id}
                             event={event}
+                        />
+                    ))}
+                    {tasks.map(task => (
+                        <ScheduledTaskItem
+                            key={task.id}
+                            task={task}
                         />
                     ))}
                     <SortableContext items={filteredItems.map(i => i.id)}>
