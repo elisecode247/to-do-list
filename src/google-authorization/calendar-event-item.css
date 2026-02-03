@@ -17,6 +17,12 @@
     margin: 0 0 5px 0;
 }
 
+.calendar-event-controls {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+}
+
 .calendar-event-item .calendar-event-time {
     color: #666;
     font-size: 0.9em;

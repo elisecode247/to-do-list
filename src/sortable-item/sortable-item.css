@@ -96,6 +96,7 @@
 }
 
 /* Action Buttons Base */
+.calendar-event_hide-button,
 .sortable-item_archive-button,
 .sortable-item_restore-button,
 .sortable-item_edit-button,
@@ -135,10 +136,12 @@
 }
 
 /* Hide Button */
+.calendar-event_hide-button,
 .sortable-item_hide-button {
     color: var(--color-text-secondary);
 }
 
+.calendar-event_hide-button,
 .sortable-item_hide-button:hover {
     background-color: rgba(59, 130, 246, 0.1);
     color: var(--color-text-light);
@@ -206,6 +209,7 @@
         font-size: 15px;
     }
 
+    .calendar-event_hide-button,
     .sortable-item_archive-button,
     .sortable-item_restore-button,
     .sortable-item_edit-button,
@@ -217,6 +221,7 @@
 }
 
 /* Focus styles for accessibility */
+.calendar-event_hide-button:focus-visible,
 .sortable-item_drag-handle:focus-visible,
 .sortable-item_checkbox:focus-visible,
 .sortable-item_archive-button:focus-visible,
