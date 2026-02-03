@@ -104,6 +104,10 @@ export function useCalendarIntegration() {
 
     const loadCalendarEvents = useCallback(async () => {
         if (!isAuthenticated) return [];
+        if (!connected) {
+            setEvents([]);
+            return [];
+        }
 
         try {
             const res = await fetch(

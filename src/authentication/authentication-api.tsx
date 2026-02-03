@@ -61,9 +61,7 @@ let refreshPromise: Promise<string | null> | null = null;
 
 export async function getValidAuthToken(): Promise<string | null> {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    console.log("%c Line:53 🍎 token", "color:#fca650", token);
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
-    console.log("%c Line:54 🥐 expiresAt", "color:#42b983", expiresAt);
 
     if (!expiresAt || Number.isNaN(expiresAt)) {
         logout();
@@ -124,7 +122,6 @@ export async function refreshAuthToken(): Promise<string | null> {
 
 export async function authHeaders(): Promise<HeadersInit> {
     const token = await getValidAuthToken();
-    console.log("%c Line:112 🌶 token", "color:#ea7e5c", token);
     if (!token) {
         logout();
         throw new Error("No valid auth token available");
