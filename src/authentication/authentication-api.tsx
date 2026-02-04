@@ -31,7 +31,7 @@ export async function logout(): Promise<void> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 
     if (refreshToken) {
-        fetch(API_AUTH_URL + "/auth/logout", {
+        fetch(API_AUTH_URL + "/logout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refreshToken }),

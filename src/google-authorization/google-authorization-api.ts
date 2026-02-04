@@ -1,3 +1,4 @@
+import { API_AUTH_URL } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
 
 interface GoogleAuthCodeResponse {
@@ -14,7 +15,7 @@ export const connectGoogleCalendar = async (googleClientId: string): Promise<voi
         scope: "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/calendar",
         ux_mode: "popup",
         callback: async ({ code }: GoogleAuthCodeResponse) => {
-            await fetch("/auth/google/calendar", {
+            await fetch(API_AUTH_URL + "/google/calendar", {
                 method: "POST",
                 headers: await authHeaders(),
                 body: JSON.stringify({ code }),
