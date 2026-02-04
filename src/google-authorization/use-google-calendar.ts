@@ -8,9 +8,11 @@ import {
     clearCalendarCache,
 } from "./google-calendar-cache";
 import { type Task, type Event } from "src/google-authorization/types";
+import { useToast } from "src/toast/use-toast";
 
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
+    const { showToast } = useToast();
     const [connected, setConnected] = useState(false);
     console.log("%c Line:24 🥟 connected", "color:#7f2b82", connected);
     const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export function useCalendarIntegration() {
                 setLoading(false);
                 return false;
             }
-                console.log("%c Line:39 🍇 !opts?.force", "color:#33a5ff", !opts?.force);
+            console.log("%c Line:39 🍇 !opts?.force", "color:#33a5ff", !opts?.force);
 
             if (!opts?.force) {
                 const cached = readCalendarCache();
@@ -84,7 +86,6 @@ export function useCalendarIntegration() {
 
     useEffect(() => {
         const initializeCalendar = async () => {
-            console.log("%c Line:94 🌽 isAuthenticated", "color:#e41a6a", isAuthenticated);
             if (isAuthenticated) {
                 await fetchStatus();
                 await loadCalendarEvents();
@@ -120,8 +121,29 @@ export function useCalendarIntegration() {
         } catch (err) {
             console.error("Loading calendar events failed:", err);
             setEvents([]);
-            setTasks([]);}
+            setTasks([]);
+        }
     }, [isAuthenticated, connected]);
+
+    const markScheduledTaskCompletion = useCallback(
+        async (taskId: string, listId: string, isCompleted: boolean) => {
+            if (!isAuthenticated) return;
+
+            try {
+                await fetch(`${API_AUTH_URL}/google/tasks/${listId}/${taskId}`, {
+                    method: "PATCH",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({ completed: isCompleted })
+                });
+            } catch (err) {
+                console.error("Marking scheduled task as completed failed:", err);
+                showToast("Failed to update task completion status", "error");
+            }
+        },
+        [isAuthenticated]
+    );
+
+
 
     return {
         connected,
@@ -129,6 +151,7 @@ export function useCalendarIntegration() {
         refreshStatus: () => fetchStatus({ force: true }),
         disconnectCalendar,
         loadCalendarEvents,
+        markScheduledTaskCompletion,
         events,
         tasks
     };

@@ -39,7 +39,7 @@ const Checklist: FC<ChecklistProps> = ({
         reorderItems,
         filterTasks,
     } = useTask();
-    const { events, tasks } = useCalendarIntegration();
+    const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
@@ -185,6 +185,7 @@ const Checklist: FC<ChecklistProps> = ({
                         <ScheduledTaskItem
                             key={task.id}
                             task={task}
+                            markCompleted={markScheduledTaskCompletion}
                         />
                     ))}
                     <SortableContext items={filteredItems.map(i => i.id)}>

@@ -4,12 +4,15 @@ import { useState } from "react";
 import { EyeClosed } from "lucide-react";
 import { type Task } from "src/google-authorization/types";
 
-const ScheduledTaskItem = ({ task }: { task: Task }) => {
+type ScheduledTaskItemProps = {
+    task: Task;
+    markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
+}
+const ScheduledTaskItem = ({ task, markCompleted }: ScheduledTaskItemProps) => {
     const [hidden, setHidden] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [checked, setChecked] = useState(!!task.completed);
     const toggleCollapsed = () => setCollapsed(!collapsed);
-    const dateString = task.due;
     const sanitizedHTML = DOMPurify.sanitize(task.notes || '');
     if (hidden) return null;
     return (
@@ -19,7 +22,8 @@ const ScheduledTaskItem = ({ task }: { task: Task }) => {
                 type="checkbox"
                 checked={checked}
                 onChange={(e) => {
-                    setChecked(e.target.checked)
+                    setChecked(e.target.checked);
+                    markCompleted(task.id, task.listId, e.target.checked);
                 }}
                 aria-label={`Mark task as done`}
                 title={checked ? "Mark as not done" : "Mark as done"}
@@ -28,8 +32,7 @@ const ScheduledTaskItem = ({ task }: { task: Task }) => {
             />
             <div className="scheduled-task-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
-                    <h4>{task.title}</h4>
-                    <p className="scheduled-task-time">{dateString}</p>
+                    <h4>Scheduled Task: {task.title}</h4>
                 </div>
             </div>
             <div className="scheduled-task-controls">

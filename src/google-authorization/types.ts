@@ -6,6 +6,7 @@ export type Task = {
     due: string | null;
     completed: string | null;
     listName: string;
+    listId: string;
 };
 
 export type Event = {
