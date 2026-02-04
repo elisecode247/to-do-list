@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_AUTH_URL } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
 import 'src/google-authorization/google-calendar-button.css';
 
@@ -12,7 +13,7 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
     const [clientId, setClientId] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch("https://demo-server-production-9fc2.up.railway.app/api/google-client-id")
+        fetch(`${API_AUTH_URL}/google-client-id`)
             .then(res => res.json())
             .then(data => setClientId(data.clientId))
             .catch(onError);
