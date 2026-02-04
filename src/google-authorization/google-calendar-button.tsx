@@ -31,7 +31,7 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
                 callback: async ({ code }) => {
                     try {
                         await fetch(
-                            "https://demo-server-production-9fc2.up.railway.app/auth/google/calendar",
+                            `${API_AUTH_URL}/google/calendar`,
                             {
                                 method: "POST",
                                 headers: await authHeaders(), // must include your app JWT

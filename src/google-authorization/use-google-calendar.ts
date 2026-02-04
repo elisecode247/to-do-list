@@ -14,7 +14,6 @@ export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
     const { showToast } = useToast();
     const [connected, setConnected] = useState(false);
-    console.log("%c Line:24 🥟 connected", "color:#7f2b82", connected);
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<Event[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);

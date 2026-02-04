@@ -1,4 +1,4 @@
-const TENOR_API_KEY = import.meta.env.VITE_TENOR_API_KEY;
+import  { TENOR_API_KEY } from "../app/constants";
 
 interface TenorGif {
     id: string;

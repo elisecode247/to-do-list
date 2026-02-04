@@ -29,6 +29,7 @@ interface TaskContextType {
         filterCategory: string;
         showHidden: boolean;
     }) => ChecklistItem[];
+    getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
 }
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -69,9 +70,11 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         fetchTasks().then((data) => {
             if (cancelled) return;
             const formattedItems = data.map((item: ChecklistItem) => {
+                console.log("%c Line:73 🥥 item", "color:#e41a6a", item);
                 return {
                     ...item,
-                    done: isDateToday(item.lastCompleted)
+                    done: isDateToday(item.lastCompleted),
+                    tags: item.tags || [],
                 }
             })
             setItems(formattedItems);
@@ -262,6 +265,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         );
 
         return items.filter(task => {
+            if (task.parentUuid) return false;
             if (isActiveList ? task.isArchived : !task.isArchived) return false;
             if (hideCompleted && isDateToday(task.lastCompleted)) return false;
             if (!showHidden && task.isHidden) return false;
@@ -285,6 +289,11 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
+    const getSubtasks = (parentId: UniqueIdentifier) => {
+        if (!parentId) return [];
+        return items.filter(item => item.parentUuid === parentId);
+    }
+
     return (
         <TaskContext.Provider value={{
             items,
@@ -300,6 +309,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             reorderItems,
             reset,
             filterTasks,
+            getSubtasks,
         }}>
             {children}
         </TaskContext.Provider>

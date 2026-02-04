@@ -11,4 +11,6 @@ export interface ChecklistItem {
     category: string;
     tags: string[];
     isArchived: boolean;
+    hasSubChores: boolean;
+    parentUuid: UniqueIdentifier | null;
 }
