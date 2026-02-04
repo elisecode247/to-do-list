@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { API_AUTH_URL } from "src/app/constants";
 interface GoogleCredentialResponse {
     credential: string;
     select_by?: string;
@@ -13,7 +14,7 @@ interface GoogleLoginButtonProps {
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     onSuccess,
     onError,
-    backendClientIdEndpoint = "https://demo-server-production-9fc2.up.railway.app/api/google-client-id",
+    backendClientIdEndpoint = `${API_AUTH_URL}/google-client-id`,
 }) => {
     const buttonRef = useRef<HTMLDivElement>(null);
     const [clientId, setClientId] = useState<string | null>(null);
