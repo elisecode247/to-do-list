@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import FrequencyButtonGroup from 'src/frequency-button-group';
+import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { type Tag } from 'checklist/constants';
 import type { ChecklistItem } from 'app/types.ts';

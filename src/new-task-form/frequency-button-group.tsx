@@ -1,4 +1,4 @@
-import './frequency-button-group.css'; // TODO update absolute path
+import './frequency-button-group.css';
 import { EXCLUSIVE_TAGS, type Tag } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 

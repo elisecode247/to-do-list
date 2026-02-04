@@ -20,5 +20,4 @@ Live: https://elisecode247.github.io/to-do-list/
 - Refresh token in HttpOnly Secure SameSite cookie
 - Access token in memory
 - Replace deprecated Tenor API usage
-- Connect to google calendar for scheduled tasks
-    - Tie calendar sync to chore mutations cleanly
+- Reset all env variables
