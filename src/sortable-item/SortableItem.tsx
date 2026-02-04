@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import type { FC, Dispatch, SetStateAction } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
-import { GripVertical, Trash, Edit, Archive, ListPlus, Star, EyeClosed } from 'lucide-react';
+import { GripVertical, Trash, Edit, Archive, ListPlus, Star, EyeClosed, Eye } from 'lucide-react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
@@ -9,6 +9,7 @@ import { getDaysFromNow } from 'src/utilities/days-ago';
 interface SortableItemProps {
     id: UniqueIdentifier;
     isActive: boolean;
+    isHidden: boolean;
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     prioritizeItem: (id: UniqueIdentifier) => void;
@@ -16,7 +17,7 @@ interface SortableItemProps {
     lastCompleted: string;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
-    handleHideItem: (id: UniqueIdentifier) => void;
+    handleHideItem: (id: UniqueIdentifier, isHiddenItem: boolean) => void;
     onMoveItem: (id: UniqueIdentifier) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     tags: Array<Tag>
@@ -25,6 +26,7 @@ interface SortableItemProps {
 export const SortableItem: FC<SortableItemProps> = ({
     id,
     isActive,
+    isHidden,
     checked,
     deleteItem,
     prioritizeItem,
@@ -93,12 +95,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <div className="sortable-item_button-group-container">
                     <button
                         className="sortable-item_hide-button"
-                        onClick={() => handleHideItem(id)}
+                        onClick={() => handleHideItem(id, isHidden)}
                         aria-label="Hide task"
-                        title="Hide task"
+                        title={isHidden ? "Unhide task for today" : "Hide task for today"}
                         type="button"
                     >
-                        <EyeClosed size={24} />
+                        {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
                     </button>
                     <button
                         className="sortable-item_edit-button"

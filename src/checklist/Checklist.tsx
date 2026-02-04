@@ -15,7 +15,7 @@ import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
-
+import { useDailyHide } from 'src/app/use-hide-task';
 interface ChecklistProps {
     isActiveList: boolean;
     activeFilters: Tag[];
@@ -35,7 +35,6 @@ const Checklist: FC<ChecklistProps> = ({
         toggleItem,
         prioritizeItem,
         archiveItem,
-        hideItem,
         reorderItems,
         filterTasks,
     } = useTask();
@@ -44,13 +43,27 @@ const Checklist: FC<ChecklistProps> = ({
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
     const [showHidden, setShowHidden] = useState(false);
+    const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
+
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory, showHidden })
-    }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden]);
+        if (showHidden) {
+            return items.filter(item => {
+                const isCorrectList = isActiveList === !item.isArchived;
+                return isCorrectList && isHiddenToday(item.id as string);
+            });
+        }
+        const baseItems = filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory, showHidden });
+        return baseItems.filter(item => {
+            const hidden = isHiddenToday(item.id as string);
+
+            if (showHidden) return hidden;
+            return !hidden;
+        });
+    }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden, isHiddenToday]);
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -78,8 +91,12 @@ const Checklist: FC<ChecklistProps> = ({
         onEditItem(formattedItem);
     };
 
-    const handleHide = (id: UniqueIdentifier) => {
-        hideItem(id);
+    const handleHide = (id: UniqueIdentifier, isHiddenItem: boolean) => {
+        if (isHiddenItem) {
+            unhideForToday(id as string);
+        } else {
+            hideForToday(id as string);
+        }
     };
 
     const handleMoveItem = (id: UniqueIdentifier) => {
@@ -169,7 +186,8 @@ const Checklist: FC<ChecklistProps> = ({
                         onChange={(e) => setShowHidden(e.target.checked)}
                     />
                     Show Hidden ({items.filter(item => {
-                        return isActiveList === !item.isArchived && item.isHidden;
+                        const isCorrectList = isActiveList === !item.isArchived;
+                        return isCorrectList && isHiddenToday(item.id as string);
                     }).length})
                 </label>
             </div>
@@ -195,6 +213,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 checked={item.done}
                                 key={item.id}
                                 id={item.id}
+                                isHidden={isHiddenToday(item.id as string)}
                                 text={item.text}
                                 lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}

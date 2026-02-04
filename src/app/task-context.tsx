@@ -20,7 +20,6 @@ interface TaskContextType {
     toggleItem: (id: UniqueIdentifier, checked: boolean) => void;
     prioritizeItem: (id: UniqueIdentifier) => void;
     archiveItem: (id: UniqueIdentifier) => void;
-    hideItem: (id: UniqueIdentifier) => void;
     reorderItems: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
     reset: () => void;
     filterTasks: (params: {
@@ -212,13 +211,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const hideItem = (id: UniqueIdentifier) => {
-        let updatedItems = items.map(item =>
-            item.id === id ? { ...item, isHidden: true } : item
-        );
-        setItems(updatedItems);
-    }
-
     const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
         setItems(prevItems => {
             const oldIndex = prevItems.findIndex(item => item.id === activeId);
@@ -305,7 +297,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             toggleItem,
             prioritizeItem,
             archiveItem,
-            hideItem,
             reorderItems,
             reset,
             filterTasks,
