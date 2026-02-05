@@ -20,15 +20,12 @@ export function useCalendarIntegration() {
 
     const fetchStatus = useCallback(
         async (opts?: { force?: boolean }) => {
-            console.log("%c Line:29 🍐 opts", "color:#b03734", opts);
-            console.log("%c Line:30 🍫 isAuthenticated", "color:#93c0a4", isAuthenticated);
 
             if (!isAuthenticated) {
                 setConnected(false);
                 setLoading(false);
                 return false;
             }
-            console.log("%c Line:39 🍇 !opts?.force", "color:#33a5ff", !opts?.force);
 
             if (!opts?.force) {
                 const cached = readCalendarCache();
@@ -114,7 +111,6 @@ export function useCalendarIntegration() {
             );
             if (!res.ok) throw new Error("Failed to load calendar events");
             const jsonObject = await res.json();
-            console.log("%c Line:115 🥒 jsonObject", "color:#6ec1c2", jsonObject);
             setEvents(jsonObject.events);
             setTasks(jsonObject.tasks);
         } catch (err) {

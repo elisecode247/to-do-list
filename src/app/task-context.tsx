@@ -70,7 +70,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         fetchTasks().then((data) => {
             if (cancelled) return;
             const formattedItems = data.map((item: ChecklistItem) => {
-                console.log("%c Line:73 🥥 item", "color:#e41a6a", item);
                 return {
                     ...item,
                     done: isDateToday(item.lastCompleted),
@@ -218,29 +217,59 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
         setItems(prevItems => {
-            const oldIndex = prevItems.findIndex(item => item.id === activeId);
-            const newIndex = prevItems.findIndex(item => item.id === overId);
+            const activeItem = prevItems.find(i => i.id === activeId);
+            if (!activeItem) return prevItems;
 
+            // items at same tree level
+            const sameLevelItems = prevItems.filter(item =>
+                activeItem.parentUuid
+                    ? item.parentUuid === activeItem.parentUuid
+                    : !item.parentUuid
+            );
+
+            const oldIndex = sameLevelItems.findIndex(i => i.id === activeId);
+            const newIndex = sameLevelItems.findIndex(i => i.id === overId);
             if (oldIndex === -1 || newIndex === -1) return prevItems;
 
-            const reordered = arrayMove(prevItems, oldIndex, newIndex);
+            // reorder visually
+            const reordered = arrayMove(sameLevelItems, oldIndex, newIndex);
 
-            const updatedItems = reordered.map((item, index) => ({
+            // apply new sortOrder
+            const reorderedWithSort = reordered.map((item, index) => ({
                 ...item,
                 sortOrder: index
             }));
 
-            // optimistic update
+            // 🔑 rebuild the FULL list in correct order
+            const otherItems = prevItems.filter(
+                item =>
+                    activeItem.parentUuid
+                        ? item.parentUuid !== activeItem.parentUuid
+                        : item.parentUuid
+            );
+
+            const updatedItems = activeItem.parentUuid
+                ? [
+                    ...otherItems.filter(i => i.parentUuid !== activeItem.parentUuid),
+                    ...reorderedWithSort
+                ]
+                : [
+                    ...reorderedWithSort,
+                    ...otherItems
+                ];
+
+            // optimistic DB update
             updateTasksOrder(
-                updatedItems.map(({ id, sortOrder }) => ({ id, sortOrder }))
+                reorderedWithSort.map(({ id, sortOrder }) => ({ id, sortOrder }))
             ).catch(err => {
-                console.error('Failed to update task order:', err);
-                // optional: reload tasks or rollback
+                console.error("Failed to update task order:", err);
             });
 
             return updatedItems;
         });
-    }
+    };
+
+
     type FilterParams = {
         activeFilters: Tag[];
         isActiveList: boolean;
