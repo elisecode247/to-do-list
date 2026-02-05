@@ -320,6 +320,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         );
 
         return items.filter(task => {
+            if (isActiveList && task.parentUuid) return false;
             if (isActiveList ? task.isArchived : !task.isArchived) return false;
             if (hideCompleted && isDateToday(task.lastCompleted)) return false;
             if (!showHidden && task.isHidden) return false;
