@@ -300,3 +300,38 @@
     background-color: var(--color-surface);
     border-left-color: var(--color-primary);
 }
+
+/** New Item Section */
+.sortable-item_new-item-form {
+    position: relative;
+}
+
+.sortable-item_new-item-input-container {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+.sortable-item_new-item-add-button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.sortable-item_new-item-close-button {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    position: absolute;
+    top: 0;
+    right: 0;
+}

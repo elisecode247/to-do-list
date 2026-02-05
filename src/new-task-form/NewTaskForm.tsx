@@ -38,7 +38,9 @@ const NewTaskForm = () => {
             category: newTaskCategory,
             tags: newTaskTags,
             isArchived: false,
-            isHidden: false
+            isHidden: false,
+            hasSubChores: false,
+            parentUuid: null
         };
         addItem(newItem);
         setInputText('');

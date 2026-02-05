@@ -121,7 +121,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 sortOrder: data.sortOrder,
                 category: data.category,
                 tags: data.tags,
-                isArchived: false
+                isArchived: false,
+                parentUuid: data.parentUuid,
+                hasSubChores: data.hasSubChores,
             } as ChecklistItem;
             setItems(prev => [formattedTask, ...prev]);
         } catch (err) {

@@ -8,6 +8,7 @@ import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem } from 'src/app/types.ts';
 import { useTask } from 'src/app/use-task';
+import { useToast } from 'src/toast/use-toast.tsx';
 import {
     GripVertical,
     Trash,
@@ -61,12 +62,15 @@ export const SortableItem: FC<SortableItemProps> = ({
     onSuccess,
     subtasks,
 }) => {
-    const { getSubtasks } = useTask();
+    const { getSubtasks, addItem } = useTask();
+    const { showToast } = useToast();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
         useSortable({ id });
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
+    const [inputText, setInputText] = useState("");
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -76,6 +80,34 @@ export const SortableItem: FC<SortableItemProps> = ({
     const showLastCompleted = !!lastCompleted;
     const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
     const priorityStyle = tags.includes(PRIORITY_TAG) ? 'yellow' : 'none';
+
+    async function handleAdd(id: UniqueIdentifier) {
+        if (!inputText.trim()) {
+            showToast('Task details cannot be empty.', 'error');
+            return;
+        }
+        const newChecklistItem: ChecklistItem = {
+            id: crypto.randomUUID(),
+            text: inputText,
+            done: false,
+            lastCompleted: '',
+            note: '',
+            sortOrder: 0,
+            category: '',
+            tags: [],
+            isHidden: false,
+            isArchived: false,
+            hasSubChores: false,
+            parentUuid: id
+        };
+        try {
+            await addItem(newChecklistItem);
+            setOpenNewTaskForm(false);
+            showToast('Task added successfully', 'success');
+        } catch {
+            showToast('Failed to add task. Please try again.', 'error');
+        }
+    }
 
     return (
         <div
@@ -153,7 +185,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <>
                                 <button
                                     className="sortable-item_edit-button sortable-item_add-subtask-button"
-                                    onClick={() => console.log('add')}
+                                    onClick={() => setOpenNewTaskForm(true)}
                                     aria-label="Add subtask"
                                     title="Add subtask"
                                     type="button"
@@ -214,6 +246,41 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </button>
                     </div>
                 </div>
+                {openNewTaskForm ? (
+                    <div className="sortable-item_new-item-form">
+                        <h3>New Task</h3>
+                        <button
+                            className="sortable-item_new-item-close-button"
+                            onClick={() => setOpenNewTaskForm(false)}
+                            aria-label="Close"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                        <div className="sortable-item_new-item-input-container">
+                        <input
+                            className="sortable-item_new-item-input"
+                            type="text"
+                            placeholder="Task details..."
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyDown={(e) => {
+                                e.stopPropagation();
+                                if (e.key === 'Enter') {
+                                    handleAdd(id);
+                                }
+                            }}
+                        />
+                        <button
+                            className="sortable-item_new-item-add-button"
+                            onClick={() => handleAdd(id)}
+                        >
+                            Add
+                        </button>
+                        </div>
+                    </div>
+                ) : null}
                 {/* RECURSIVE SUBTASKS */}
                 <div className="sortable-item_subtasks-container">
                     {!collapsed && (
