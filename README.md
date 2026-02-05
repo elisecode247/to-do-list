@@ -23,6 +23,5 @@ Live: https://elisecode247.github.io/to-do-list/
 - Reset all env variables
 - update task to get only incomplete tasks to capture past pending tasks
 - fixed archived subtasks
-- hide doesn't work on subtasks until page refresh
 - show notes when task is expanded
 - fix category font color

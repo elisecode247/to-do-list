@@ -31,6 +31,7 @@ interface SortableItemProps {
     isActive: boolean;
     isHidden: boolean;
     isHiddenToday: (id: string) => boolean;
+    isHideCompleted: boolean;
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     prioritizeItem: (id: UniqueIdentifier) => void;
@@ -51,6 +52,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     isActive,
     isHidden,
     isHiddenToday,
+    isHideCompleted,
     checked,
     deleteItem,
     prioritizeItem,
@@ -291,7 +293,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <div className="sortable-item_subtasks-container">
                     {!collapsed && (
                         <SortableContext items={subtasks?.map(i => i.id) || []}>
-                            {subtasks?.filter((t) => !t.isArchived && !isHiddenToday(t.id as string) )
+                            {subtasks?.filter((t) => {
+                                if (isHiddenToday(t.id as string)) return false;
+                                if (isHideCompleted && t.done) return false;
+                                if (isActive === t.isArchived) return false;
+                                return true;
+                            })
                             ?.map((subtask) => (
                                 <SortableItem
                                     key={subtask.id}
@@ -300,6 +307,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     isActive={isActive}
                                     isHidden={isHiddenToday(subtask.id as string)}
                                     isHiddenToday={isHiddenToday}
+                                    isHideCompleted={isHideCompleted}
                                     checked={subtask.done}
                                     deleteItem={deleteItem}
                                     prioritizeItem={prioritizeItem}
