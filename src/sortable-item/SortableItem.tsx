@@ -8,7 +8,6 @@ import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem } from 'src/app/types.ts';
 import { useTask } from 'src/app/use-task';
-import { useDailyHide } from 'src/app/use-hide-task';
 import { useToast } from 'src/toast/use-toast.tsx';
 import {
     GripVertical,
