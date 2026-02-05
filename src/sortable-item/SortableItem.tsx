@@ -103,6 +103,8 @@ export const SortableItem: FC<SortableItemProps> = ({
         try {
             await addItem(newChecklistItem);
             setOpenNewTaskForm(false);
+            setCollapsed(false);
+            setInputText('');
             showToast('Task added successfully', 'success');
         } catch {
             showToast('Failed to add task. Please try again.', 'error');
