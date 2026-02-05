@@ -125,7 +125,9 @@ const Checklist: FC<ChecklistProps> = ({
                             }`}
                     >
                         All ({items.filter(t => {
-                            return isActiveList ? !t.isArchived : t.isArchived;
+                            if (t.isArchived !== !isActiveList) return false;
+                            if (t.parentUuid) return false;
+                            return true;
                         }).length})
                     </button>
                     {TAGS.map(tag => {
@@ -150,8 +152,9 @@ const Checklist: FC<ChecklistProps> = ({
                             >
                                 {isPriority ? '⭐ ' : ''}
                                 {tag} ({items.filter(t => {
-                                    const isActive = isActiveList ? !t.isArchived : t.isArchived;
-                                    return isActive && t.tags.includes(tag);
+                                    if (t.isArchived !== !isActiveList) return false;
+                                    if (t.parentUuid) return false;
+                                    return t.tags.includes(tag);
                                 }).length})
                             </button>
                         )
