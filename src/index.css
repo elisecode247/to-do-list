@@ -58,6 +58,53 @@
 
 }
 
+/* Dark Mode CSS Variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Colors - Dark Mode */
+        --color-primary: #10b981;
+        --color-primary-dark: #059669;
+        --color-text-primary: #f3f4f6;
+        --color-text-secondary: #9ca3af;
+        --color-text-light: #6b7280;
+        --color-background: #111827;
+        --color-surface: #1f2937;
+        --color-border: #374151;
+        --color-border-light: #2d3748;
+        --color-priority: #d946ef;
+        --color-success: #10b981;
+        --color-warning: #f59e0b;
+        --color-danger: #ef4444;
+        --color-info: #3b82f6;
+        --color-hover: #374151;
+        --color-shadow: rgba(0, 0, 0, 0.3);
+
+        /* Tag Frequency Colors - Dark Mode */
+        --color-tag-daily-bg: #1e3a8a;
+        --color-tag-daily-text: #93c5fd;
+        --color-tag-daily-border: #1e40af;
+
+        --color-tag-one-time-bg: #78350f;
+        --color-tag-one-time-text: #fde68a;
+        --color-tag-one-time-border: #92400e;
+
+        --color-tag-occasional-bg: #14532d;
+        --color-tag-occasional-text: #86efac;
+        --color-tag-occasional-border: #166534;
+
+        --color-tag-priority-bg: #581c87;
+        --color-tag-priority-text: #e9d5ff;
+        --color-tag-priority-border: #7c3aed;
+    }
+
+    /* Body */
+    body {
+        background-color: var(--color-background);
+        color: var(--color-text-primary);
+    }
+}
+
+
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
@@ -108,50 +155,4 @@ body {
     background-color: var(--color-tag-priority-bg);
     color: var(--color-tag-priority-text);
     border-color: var(--color-tag-priority-border);
-}
-
-/* Dark Mode CSS Variables */
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Colors - Dark Mode */
-        --color-primary: #10b981;
-        --color-primary-dark: #059669;
-        --color-text-primary: #f3f4f6;
-        --color-text-secondary: #9ca3af;
-        --color-text-light: #6b7280;
-        --color-background: #111827;
-        --color-surface: #1f2937;
-        --color-border: #374151;
-        --color-border-light: #2d3748;
-        --color-priority: #d946ef;
-        --color-success: #10b981;
-        --color-warning: #f59e0b;
-        --color-danger: #ef4444;
-        --color-info: #3b82f6;
-        --color-hover: #374151;
-        --color-shadow: rgba(0, 0, 0, 0.3);
-
-        /* Tag Frequency Colors - Dark Mode */
-        --color-tag-daily-bg: #1e3a8a;
-        --color-tag-daily-text: #93c5fd;
-        --color-tag-daily-border: #1e40af;
-
-        --color-tag-one-time-bg: #78350f;
-        --color-tag-one-time-text: #fde68a;
-        --color-tag-one-time-border: #92400e;
-
-        --color-tag-occasional-bg: #14532d;
-        --color-tag-occasional-text: #86efac;
-        --color-tag-occasional-border: #166534;
-
-        --color-tag-priority-bg: #581c87;
-        --color-tag-priority-text: #e9d5ff;
-        --color-tag-priority-border: #7c3aed;
-    }
-
-    /* Body */
-    body {
-        background-color: var(--color-background);
-        color: var(--color-text-primary);
-    }
 }

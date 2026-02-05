@@ -21,7 +21,9 @@ import {
     PlusCircle,
     UnfoldVertical,
     FoldVertical,
-    MoreHorizontal
+    MoreHorizontal,
+    BookPlus,
+    BookMinus
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 
@@ -36,6 +38,7 @@ interface SortableItemProps {
     deleteItem: (id: UniqueIdentifier) => void;
     prioritizeItem: (id: UniqueIdentifier) => void;
     text: string;
+    note: string;
     lastCompleted: string;
     toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
     handleEdit: (id: UniqueIdentifier) => void;
@@ -57,6 +60,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     deleteItem,
     prioritizeItem,
     text,
+    note,
     lastCompleted,
     toggleChecked,
     handleEdit,
@@ -75,6 +79,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [menuOpen, setMenuOpen] = useState(false);
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
+    const [showNotes, setShowNotes] = useState(false);
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -178,6 +183,17 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 {collapsed ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
                             </button>
                         )}
+                        {!!note?.length &&
+                            <button
+                                className="sortable-item_hide-button"
+                                onClick={() => setShowNotes(!showNotes)}
+                                aria-label="Show notes"
+                                title={showNotes ? "Hide notes" : "Show notes"}
+                                type="button"
+                            >
+                                {showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                            </button>
+                        }
                         <button
                             className="sortable-item_hide-button"
                             onClick={() => {
@@ -254,6 +270,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </button>
                     </div>
                 </div>
+                {showNotes && (
+                    <div className="sortable-item_note">
+                        {note}
+                    </div>
+                )}
                 {openNewTaskForm ? (
                     <div className="sortable-item_new-item-form">
                         <h3>New Task</h3>
@@ -267,25 +288,25 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </svg>
                         </button>
                         <div className="sortable-item_new-item-input-container">
-                        <input
-                            className="sortable-item_new-item-input"
-                            type="text"
-                            placeholder="Task details..."
-                            value={inputText}
-                            onChange={(e) => setInputText(e.target.value)}
-                            onKeyDown={(e) => {
-                                e.stopPropagation();
-                                if (e.key === 'Enter') {
-                                    handleAdd(id);
-                                }
-                            }}
-                        />
-                        <button
-                            className="sortable-item_new-item-add-button"
-                            onClick={() => handleAdd(id)}
-                        >
-                            Add
-                        </button>
+                            <input
+                                className="sortable-item_new-item-input"
+                                type="text"
+                                placeholder="Task details..."
+                                value={inputText}
+                                onChange={(e) => setInputText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    e.stopPropagation();
+                                    if (e.key === 'Enter') {
+                                        handleAdd(id);
+                                    }
+                                }}
+                            />
+                            <button
+                                className="sortable-item_new-item-add-button"
+                                onClick={() => handleAdd(id)}
+                            >
+                                Add
+                            </button>
                         </div>
                     </div>
                 ) : null}
@@ -299,29 +320,30 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 if (isActive === t.isArchived) return false;
                                 return true;
                             })
-                            ?.map((subtask) => (
-                                <SortableItem
-                                    key={subtask.id}
-                                    id={subtask.id}
-                                    hasSubChores={subtask.hasSubChores}
-                                    isActive={isActive}
-                                    isHidden={isHiddenToday(subtask.id as string)}
-                                    isHiddenToday={isHiddenToday}
-                                    isHideCompleted={isHideCompleted}
-                                    checked={subtask.done}
-                                    deleteItem={deleteItem}
-                                    prioritizeItem={prioritizeItem}
-                                    text={subtask.text}
-                                    lastCompleted={subtask.lastCompleted}
-                                    toggleChecked={toggleChecked}
-                                    handleEdit={handleEdit}
-                                    handleHideItem={handleHideItem}
-                                    onMoveItem={onMoveItem}
-                                    tags={subtask.tags as Tag[]}
-                                    onSuccess={onSuccess}
-                                    subtasks={getSubtasks(subtask.id)}
-                                />
-                            ))}
+                                ?.map((subtask) => (
+                                    <SortableItem
+                                        key={subtask.id}
+                                        id={subtask.id}
+                                        hasSubChores={subtask.hasSubChores}
+                                        isActive={isActive}
+                                        isHidden={isHiddenToday(subtask.id as string)}
+                                        isHiddenToday={isHiddenToday}
+                                        isHideCompleted={isHideCompleted}
+                                        checked={subtask.done}
+                                        deleteItem={deleteItem}
+                                        prioritizeItem={prioritizeItem}
+                                        text={subtask.text}
+                                        note={subtask.note}
+                                        lastCompleted={subtask.lastCompleted}
+                                        toggleChecked={toggleChecked}
+                                        handleEdit={handleEdit}
+                                        handleHideItem={handleHideItem}
+                                        onMoveItem={onMoveItem}
+                                        tags={subtask.tags as Tag[]}
+                                        onSuccess={onSuccess}
+                                        subtasks={getSubtasks(subtask.id)}
+                                    />
+                                ))}
                         </SortableContext>
                     )}
                 </div>

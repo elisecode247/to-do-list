@@ -222,6 +222,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 isHiddenToday={isHiddenToday}
                                 isHideCompleted={hideCompleted}
                                 text={item.text}
+                                note={item.note}
                                 lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}
                                 prioritizeItem={prioritizeItem}
