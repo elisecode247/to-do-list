@@ -219,6 +219,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 key={item.id}
                                 id={item.id}
                                 isHidden={isHiddenToday(item.id as string)}
+                                isHiddenToday={isHiddenToday}
                                 text={item.text}
                                 lastCompleted={item.lastCompleted}
                                 deleteItem={deleteItem}

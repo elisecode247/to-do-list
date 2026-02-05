@@ -31,6 +31,7 @@ interface SortableItemProps {
     hasSubChores?: boolean;
     isActive: boolean;
     isHidden: boolean;
+    isHiddenToday: (id: string) => boolean;
     checked: boolean;
     deleteItem: (id: UniqueIdentifier) => void;
     prioritizeItem: (id: UniqueIdentifier) => void;
@@ -50,6 +51,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     hasSubChores = false,
     isActive,
     isHidden,
+    isHiddenToday,
     checked,
     deleteItem,
     prioritizeItem,
@@ -64,7 +66,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     subtasks,
 }) => {
     const { getSubtasks, addItem } = useTask();
-    const { isHiddenToday } = useDailyHide();
     const { showToast } = useToast();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
         useSortable({ id });
@@ -178,7 +179,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                         <button
                             className="sortable-item_hide-button"
-                            onClick={() => handleHideItem(id, isHidden)}
+                            onClick={() => {
+                                handleHideItem(id, isHidden)
+                            }}
                             aria-label="Hide task"
                             title={isHidden ? "Unhide task for today" : "Hide task for today"}
                             type="button"
@@ -296,7 +299,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     id={subtask.id}
                                     hasSubChores={subtask.hasSubChores}
                                     isActive={isActive}
-                                    isHidden={false}
+                                    isHidden={isHiddenToday(subtask.id as string)}
+                                    isHiddenToday={isHiddenToday}
                                     checked={subtask.done}
                                     deleteItem={deleteItem}
                                     prioritizeItem={prioritizeItem}
