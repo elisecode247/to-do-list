@@ -287,7 +287,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <div className="sortable-item_subtasks-container">
                     {!collapsed && (
                         <SortableContext items={subtasks?.map(i => i.id) || []}>
-                            {subtasks?.map((subtask) => (
+                            {subtasks?.filter((t) => t.isArchived !== isActive)?.map((subtask) => (
                                 <SortableItem
                                     key={subtask.id}
                                     id={subtask.id}

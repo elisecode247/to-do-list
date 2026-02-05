@@ -124,7 +124,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 parentUuid: data.parentUuid,
                 hasSubChores: data.hasSubChores,
             } as ChecklistItem;
-            setItems(prev => [formattedTask, ...prev]);
+
+            setItems(prev => {
+                let updatedPrev = [...prev];
+                // update parent item's hasSubChores if formattedTask has a parent
+                if (formattedTask.parentUuid) {
+                    updatedPrev = prev.map(item => {
+                        if (item.id === formattedTask.parentUuid) {
+                            return { ...item, hasSubChores: true };
+                        }
+                        return item;
+                    });
+                }
+                return [formattedTask, ...updatedPrev]
+            });
         } catch (err) {
             console.error('Failed to add task:', err);
             showToast('Failed to add task. Please try again.', 'error');
@@ -133,7 +146,18 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const deleteItem = (id: UniqueIdentifier) => {
         deleteTask(id).then(() => {
-            setItems(prev => prev.filter(item => item.id !== id));
+            setItems(prev => {
+                // update hasSubChores of parent has last subtask deleted
+                let deletedTask = prev.find(item => item.id === id);
+                let parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
+                const updatedPrev = prev.map(item => {
+                    if (item.id === deletedTask?.parentUuid && parentSubTaskCount === 1) {
+                        return { ...item, hasSubChores: false };
+                    }
+                    return item;
+                });
+                return updatedPrev.filter(item => item.id !== id);
+            });
             showToast('Task deleted successfully', 'success');
         }).catch((err) => {
             console.error('Failed to delete task:', err);
@@ -296,7 +320,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         );
 
         return items.filter(task => {
-            if (task.parentUuid) return false;
             if (isActiveList ? task.isArchived : !task.isArchived) return false;
             if (hideCompleted && isDateToday(task.lastCompleted)) return false;
             if (!showHidden && task.isHidden) return false;
