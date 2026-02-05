@@ -8,6 +8,7 @@ import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem } from 'src/app/types.ts';
 import { useTask } from 'src/app/use-task';
+import { useDailyHide } from 'src/app/use-hide-task';
 import { useToast } from 'src/toast/use-toast.tsx';
 import {
     GripVertical,
@@ -63,6 +64,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     subtasks,
 }) => {
     const { getSubtasks, addItem } = useTask();
+    const { isHiddenToday } = useDailyHide();
     const { showToast } = useToast();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
         useSortable({ id });
@@ -287,7 +289,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                 <div className="sortable-item_subtasks-container">
                     {!collapsed && (
                         <SortableContext items={subtasks?.map(i => i.id) || []}>
-                            {subtasks?.filter((t) => t.isArchived !== isActive)?.map((subtask) => (
+                            {subtasks?.filter((t) => !t.isArchived && !isHiddenToday(t.id as string) )
+                            ?.map((subtask) => (
                                 <SortableItem
                                     key={subtask.id}
                                     id={subtask.id}
