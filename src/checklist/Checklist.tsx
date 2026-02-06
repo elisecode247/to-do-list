@@ -49,6 +49,16 @@ const Checklist: FC<ChecklistProps> = ({
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
 
+    const filteredTasks = useMemo(() => {
+        return tasks.filter(task => {
+            const isCorrectList = isActiveList === !task.isArchived;
+            const isHidden = showHidden === isHiddenToday(task.id);
+            if (!isCorrectList || !isHidden) return false;
+            return true;
+        });
+
+    }, [tasks, isActiveList, showHidden, isHiddenToday]);
+
     const filteredItems = useMemo(() => {
         if (showHidden) {
             return items.filter(item => {
@@ -107,6 +117,18 @@ const Checklist: FC<ChecklistProps> = ({
         setShowSparkles(true);
         setTimeout(() => setShowSparkles(false), 4000);
     }
+
+    const hiddenItemsAndTasksCount = useMemo(() => {
+        const hiddenItemsCount = items.filter(item => {
+                const isCorrectList = isActiveList === !item.isArchived;
+                return isCorrectList && isHiddenToday(item.id as string);
+        }).length
+        const hiddenTasksCount = tasks.filter(task => {
+            const isCorrectList = isActiveList === !task.isArchived;
+            return isCorrectList && isHiddenToday(task.id);
+        }).length
+        return hiddenItemsCount + hiddenTasksCount;
+    }, [items, tasks, isHiddenToday]);
 
     return (
         <>
@@ -201,10 +223,7 @@ const Checklist: FC<ChecklistProps> = ({
                         checked={showHidden === true}
                         onChange={(e) => setShowHidden(e.target.checked)}
                     />
-                    Show Hidden ({items.filter(item => {
-                        const isCorrectList = isActiveList === !item.isArchived;
-                        return isCorrectList && isHiddenToday(item.id as string);
-                    }).length})
+                    Show Hidden ({hiddenItemsAndTasksCount})
                 </label>
             </div>
             <DndContext onDragEnd={handleDragEnd}>
@@ -215,11 +234,14 @@ const Checklist: FC<ChecklistProps> = ({
                             event={event}
                         />
                     ))}
-                    {tasks.map(task => (
+                    {filteredTasks?.map(task => (
                         <ScheduledTaskItem
                             key={task.id}
                             task={task}
                             markCompleted={markScheduledTaskCompletion}
+                            isHiddenToday={isHiddenToday}
+                            hideForToday={hideForToday}
+                            unhideForToday={unhideForToday}
                         />
                     ))}
                     <SortableContext items={filteredItems.map(i => i.id)}>

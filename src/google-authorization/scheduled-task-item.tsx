@@ -1,20 +1,22 @@
 import "./scheduled-task-item.css";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
-import { EyeClosed, BookPlus, BookMinus } from "lucide-react";
+import { EyeClosed, Eye, BookPlus, BookMinus } from "lucide-react";
 import { type Task } from "src/google-authorization/types";
 
 type ScheduledTaskItemProps = {
     task: Task;
     markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
+    isHiddenToday: (taskId: string) => boolean;
+    hideForToday: (taskId: string) => void;
+    unhideForToday: (taskId: string) => void;
 }
-const ScheduledTaskItem = ({ task, markCompleted }: ScheduledTaskItemProps) => {
-    const [hidden, setHidden] = useState(false);
+const ScheduledTaskItem = ({task, markCompleted, isHiddenToday, hideForToday, unhideForToday }: ScheduledTaskItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const [checked, setChecked] = useState(task.done);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const sanitizedHTML = DOMPurify.sanitize(task.note || '');
-    if (hidden) return null;
+    const isHidden = isHiddenToday(task.id);
     return (
         <div className="scheduled-task-item">
             <div className="scheduled-task_main-content">
@@ -42,6 +44,7 @@ const ScheduledTaskItem = ({ task, markCompleted }: ScheduledTaskItemProps) => {
                             className="sortable-item_hide-button"
                             onClick={toggleCollapsed}
                             aria-label={collapsed ? "Expand task" : "Collapse task"}
+                            title={`${collapsed ? "Expand task to see details" : "Collapse task details"}`}
                         >
                             {collapsed ? <BookPlus size={24} /> : <BookMinus size={24} />}
                         </button>
@@ -49,10 +52,13 @@ const ScheduledTaskItem = ({ task, markCompleted }: ScheduledTaskItemProps) => {
                     )}
                     <button
                         className="scheduled-task_hide-button"
-                        onClick={() => setHidden(true)}
-                        aria-label="Hide task"
+                        onClick={() => {
+                            isHidden ? unhideForToday(task.id) : hideForToday(task.id);
+                        }}
+                        aria-label={isHidden ? "Unhide task for today" : "Hide task for today"}
+                        title={isHidden ? "Unhide task for today" : "Hide task for today"}
                     >
-                        <EyeClosed size={24} />
+                        {isHidden ? <Eye size={24} /> : <EyeClosed size={24} style={{ opacity: 0.3 }} />}
                     </button>
                 </div>
             </div>

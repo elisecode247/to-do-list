@@ -10,6 +10,14 @@ export function useDailyHide() {
 
     const [hiddenItems, setHiddenItems] = useState(() => {
         const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+        // delete old days (keep only today)
+        Object.keys(stored).forEach((key) => {
+            if (key !== todayKey) delete stored[key];
+        });
+
+        localStorage.setItem(storageKey, JSON.stringify(stored));
+
         return stored[todayKey] || [];
     });
 
@@ -29,7 +37,8 @@ export function useDailyHide() {
         setHiddenItems(hiddenItems.filter((id: string) => id !== itemId));
     };
 
-    const isHiddenToday = (itemId: string) => hiddenItems.includes(itemId);
+    type isHiddenTodayType = (itemId: string) => boolean;
+    const isHiddenToday: isHiddenTodayType = (itemId: string) => hiddenItems.includes(itemId);
 
     const hiddenCount = hiddenItems.length;
 
