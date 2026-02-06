@@ -181,7 +181,6 @@ const Checklist: FC<ChecklistProps> = ({
                     isFilter={true}
                     selectedCategory={filterCategory}
                     onChange={(value: string) => setFilterCategory(value)}
-                    theme="dark"
                 />
                 <label id="show-hidden-tasks-label" htmlFor="show-hidden-tasks">
                     <input

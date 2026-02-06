@@ -1,5 +1,6 @@
 import { useState, type FC } from 'react';
 import './app.css';
+import './settings.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
@@ -98,7 +99,7 @@ const App: FC = () => {
             ))}
             <div className="app_container">
                 <header className="app_header">
-                    <h1 className="app_h1">My To Do List</h1>
+                    <h1 className="app_h1">For My Today</h1>
                     <MenuSquare
                         onClick={() => { setIsSettingOpen(prev => !prev); }}
                         className="app_header_menu-icon"

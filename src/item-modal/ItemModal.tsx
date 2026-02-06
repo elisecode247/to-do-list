@@ -135,6 +135,8 @@ export const ItemModal: FC<ItemModalProps> = ({
                     <input
                         type="date"
                         value={formatDate(new Date(formData.lastCompleted)) ?? ''}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        onFocus={(e) => e.currentTarget.showPicker?.()}
                         onChange={(e) => {
                             const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
                             setEditingItem({

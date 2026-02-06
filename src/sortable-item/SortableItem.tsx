@@ -154,7 +154,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                     <div className="sortable-item_text-container">
                         <span className="sortable-item_text">
-                            {tags.includes(PRIORITY_TAG) && '⭐ '}{text}
+                            {text}
                             {showLastCompleted && (
                                 <span className="sortable-item_last-completed-text">
                                     {lastCompletedDate}
@@ -165,15 +165,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <div className="sortable-item_button-group-container">
                         <button
                             className="sortable-item_priority-button"
-                            onClick={() => {
-                                prioritizeItem(id)
-                            }}
+                            onClick={() => prioritizeItem(id)}
                             aria-label="Prioritize task"
                             title="Prioritize task"
                             type="button"
                         >
                             <Star size={24} fill={priorityStyle} />
+                            <span className="sortable-item_button-text-span">Priority</span>
                         </button>
+
                         {hasSubChores && (
                             <button
                                 className="sortable-item_hide-button"
@@ -181,9 +181,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 aria-label={collapsed ? "Expand task" : "Collapse task"}
                             >
                                 {collapsed ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                <span className="sortable-item_button-text-span">Subtasks</span>
                             </button>
                         )}
-                        {!!note?.length &&
+
+                        {!!note?.length && (
                             <button
                                 className="sortable-item_hide-button"
                                 onClick={() => setShowNotes(!showNotes)}
@@ -192,21 +194,31 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 type="button"
                             >
                                 {showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                                <span className="sortable-item_button-text-span">Notes</span>
                             </button>
-                        }
+                        )}
+
                         <button
                             className="sortable-item_hide-button"
-                            onClick={() => {
-                                handleHideItem(id, isHidden)
-                            }}
+                            onClick={() => handleHideItem(id, isHidden)}
                             aria-label="Hide task"
                             title={isHidden ? "Unhide task for today" : "Hide task for today"}
                             type="button"
                         >
                             {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
+                            <span className="sortable-item_button-text-span">Hide Today</span>
                         </button>
-                        {menuOpen && (
-                            <>
+
+                        <div className="sortable-item_menu-wrapper">
+                            <button
+                                className="sortable-item_menu-button sortable-item_edit-button"
+                                aria-label="More actions"
+                                type="button"
+                            >
+                                <MoreHorizontal size={24} />
+                            </button>
+
+                            <div className="sortable-item_menu-dropdown">
                                 <button
                                     className="sortable-item_edit-button sortable-item_add-subtask-button"
                                     onClick={() => setOpenNewTaskForm(true)}
@@ -215,7 +227,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     type="button"
                                 >
                                     <PlusCircle size={24} />
+                                    <span className="sortable-item_button-text-span">Add Subtask</span>
                                 </button>
+
                                 <button
                                     className="sortable-item_edit-button"
                                     onClick={() => handleEdit(id)}
@@ -224,7 +238,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     type="button"
                                 >
                                     <Edit size={24} />
+                                    <span className="sortable-item_button-text-span">Edit</span>
                                 </button>
+
                                 {isActive ? (
                                     <button
                                         className="sortable-item_archive-button"
@@ -234,6 +250,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         type="button"
                                     >
                                         <Archive size={24} />
+                                        <span className="sortable-item_button-text-span">Archive</span>
                                     </button>
                                 ) : (
                                     <button
@@ -244,31 +261,28 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         type="button"
                                     >
                                         <ListPlus size={24} />
+                                        <span className="sortable-item_button-text-span">Restore</span>
                                     </button>
                                 )}
+
                                 <button
                                     className="sortable-item_delete-button"
                                     onClick={() => {
-                                        const answer = confirm('Are you sure?');
+                                        const answer = confirm("Are you sure?");
                                         if (!answer) return;
-                                        deleteItem(id)
+                                        deleteItem(id);
                                     }}
                                     aria-label="Delete task"
                                     title="Delete task"
                                     type="button"
                                 >
                                     <Trash size={24} />
+                                    <span className="sortable-item_button-text-span">Delete</span>
                                 </button>
-                            </>
-                        )}
-                        <button
-                            className="sortable-item_menu-button sortable-item_edit-button"
-                            onClick={() => setMenuOpen(!menuOpen)}
-                            aria-label="More actions"
-                        >
-                            <MoreHorizontal size={24} />
-                        </button>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
                 {showNotes && (
                     <div className="sortable-item_note">

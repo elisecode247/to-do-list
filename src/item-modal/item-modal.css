@@ -28,12 +28,16 @@
     margin-bottom: var(--spacing-md);
 }
 
-.form-group > label {
+.form-group>label {
     display: block;
     margin-bottom: 4px;
     font-weight: 500;
     font-size: 16px;
     color: var(--color-text-primary);
+}
+
+.form-group input[type="date"] {
+    cursor: pointer;
 }
 
 input,
@@ -162,6 +166,7 @@ textarea {
     .modal {
         background-color: var(--color-surface);
     }
+
     .item-modal_tag-label {
         color: var(--color-text-primary);
     }

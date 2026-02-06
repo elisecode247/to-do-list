@@ -1,5 +1,4 @@
 import React from "react";
-import 'src/authentication/authentication.css';
 import { LogOut } from "lucide-react";
 
 interface GoogleLogoutButtonProps {
@@ -21,10 +20,11 @@ const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
     return (
         <button
             onClick={handleLogout}
-            className="google-logout"
+            className="settings-btn settings-btn--danger"
+            type="button"
         >
             <LogOut size={16} />
-            Log out
+            <span>Log out</span>
         </button>
     );
 };

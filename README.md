@@ -22,14 +22,12 @@ Live: https://elisecode247.github.io/to-do-list/
 - Reset all env variables
 - Split google client id into local and prod
 - Remove success gif
-- hide tasks for the day in LocalStorage
+- hide scheduled tasks for the day in LocalStorage
 - move tasks among levels
 - allow user delete history
 - improve settings menu dropdown ui
 - tabs for active, hidden, scheduled, archived, hidden
 - log out button should include email or name
-- improve ui for not logged in
 - improve ui for newly logged in user
     - Welcome Elise! Wave icon
     - a call to action to add a task
-- click calendar input to open calendar not just icon

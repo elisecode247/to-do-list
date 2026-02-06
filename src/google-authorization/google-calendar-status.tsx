@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import 'src/google-authorization/google-calendar-status.css';
-import { useAuthentication } from 'src/authentication/use-authentication';
-import { useCalendarIntegration } from './use-google-calendar';
-import GoogleCalendarConnectButton from 'src/google-authorization/google-calendar-button';
-import { CalendarSync } from 'lucide-react';
-import { useToast } from 'src/toast/use-toast';
+import { useState } from "react";
+import "src/google-authorization/google-calendar-status.css";
+import { useAuthentication } from "src/authentication/use-authentication";
+import { useCalendarIntegration } from "./use-google-calendar";
+import GoogleCalendarConnectButton from "src/google-authorization/google-calendar-button";
+import { CalendarSync, CheckCircle2 } from "lucide-react";
+import { useToast } from "src/toast/use-toast";
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
@@ -16,47 +16,57 @@ const GoogleCalendarStatus = () => {
     if (!isAuthenticated) return null;
 
     function handleConnectionError(err: unknown) {
-        console.error('Error connecting to Google Calendar:', err);
-        showToast('There was an error connecting to Google Calendar. Please try again.');
+        console.error("Error connecting to Google Calendar:", err);
+        showToast("There was an error connecting to Google Calendar. Please try again.");
     }
-    return (
-        <div className="calendar-integration">
-            <div className="calendar-header">
-                {connected ? (
-                    <span className="calendar-status connected">
-                        ✓ Calendar Connected
-                    </span>
-                ) : (
-                    <span
-                        className="calendar-status disconnected"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setModalOpen(!modalOpen)}
-                    >
-                        <CalendarSync size={12} style={{ marginRight: 4 }} />
-                        Calendar Not Connected
-                    </span>
-                )}
-            </div>
-            {connected && (
-                <button
-                    onClick={() => disconnectCalendar()}
-                    className="calendar-disconnect-button"
-                >
-                    Disconnect Calendar
-                </button>
-            )}
 
-            {!connected && (
-                <>
-                    <p className="calendar-help">
-                        Sync chores with due dates to your Google Calendar.
-                    </p>
-                    <GoogleCalendarConnectButton
-                        onSuccess={refreshStatus}
-                        onError={handleConnectionError}
-                    />
-                </>
-            )}
+    return (
+        <div
+            className={`settings-dropdown ${modalOpen ? "settings-dropdown--modalOpen" : ""}`}
+            onMouseLeave={() => setModalOpen(false)}
+        >
+            <button
+                type="button"
+                className="settings-btn"
+                onClick={() => setModalOpen(!modalOpen)}
+                aria-expanded={modalOpen}
+            >
+                {connected ? (
+                    <>
+                        <CheckCircle2 size={14} />
+                        <span>Calendar Connected</span>
+                    </>
+                ) : (
+                    <>
+                        <CalendarSync size={14} />
+                        <span>Calendar Not Connected</span>
+                    </>
+                )}
+            </button>
+
+            <div className="settings-panel">
+                <div className="settings-panel-header">
+                    <h4>Google Calendar</h4>
+                    <p>Sync chores with due dates to your calendar.</p>
+                </div>
+
+                <div className="settings-panel-actions">
+                    {connected ? (
+                        <button
+                            type="button"
+                            className="settings-btn settings-btn--secondary"
+                            onClick={() => disconnectCalendar()}
+                        >
+                            Disconnect Calendar
+                        </button>
+                    ) : (
+                        <GoogleCalendarConnectButton
+                            onSuccess={refreshStatus}
+                            onError={handleConnectionError}
+                        />
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

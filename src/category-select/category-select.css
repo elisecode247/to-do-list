@@ -8,10 +8,6 @@
     margin-bottom: var(--spacing-md);
 }
 
-.category-select-wrapper--dark {
-    color: white;
-}
-
 .category-select-wrapper label {
     font-size: 14px;
     font-weight: 600;
@@ -58,16 +54,15 @@
 .category-select_filter {
     margin: 0;
     padding: 0;
+    color: white;
 }
 
 .category-select-wrapper_filter {
     margin: 0;
     padding: 0;
-}
-
-.category-select-wrapper_filter--dark {
     color: white;
 }
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 768px) {
     .category-select-wrapper {
@@ -86,19 +81,12 @@
     .category-select_filter {
         margin: 0;
         padding: 0;
-        color: var(--color-text-primary);
-    }
-    .category-select_filter--dark {
-        color: white;
     }
 
     .category-select-wrapper_filter {
         margin: 0;
         padding: 0;
         color: var(--color-text-primary);
-    }
-    .category-select-wrapper_filter--dark {
-        color: white;
     }
 }
 

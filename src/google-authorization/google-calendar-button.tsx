@@ -49,12 +49,14 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
 
     return (
         <button
-            className="calendar-connect-button"
+            type="button"
+            className="settings-btn settings-btn--primary"
             onClick={connectCalendar}
         >
             Connect Google Calendar
         </button>
     );
+
 };
 
 export default GoogleCalendarConnectButton;

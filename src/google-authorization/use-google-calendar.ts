@@ -115,6 +115,7 @@ export function useCalendarIntegration() {
             setTasks(jsonObject.tasks);
         } catch (err) {
             console.error("Loading calendar events failed:", err);
+            showToast("Failed to load calendar events and tasks", "error");
             setEvents([]);
             setTasks([]);
         }
