@@ -8,7 +8,6 @@ import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'ch
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
-import SuccessGif from 'src/success-state/success-gif';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
@@ -42,7 +41,7 @@ const Checklist: FC<ChecklistProps> = ({
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
-    const [showSuccessGif, setShowSuccessGif] = useState(false);
+    const [showSparkles, setShowSparkles] = useState(false);
     const [showHidden, setShowHidden] = useState(false);
     const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
 
@@ -104,10 +103,23 @@ const Checklist: FC<ChecklistProps> = ({
         archiveItem(id);
     };
 
+    const displaySparkles = () => {
+        setShowSparkles(true);
+        setTimeout(() => setShowSparkles(false), 4000);
+    }
+
     return (
         <>
-            {showSuccessGif && (
-                <SuccessGif onClose={() => setShowSuccessGif(false)} />
+            {showSparkles && (
+                <div className="sparkles">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                        <span key={i} className="sparkle" style={{
+                            left: `${Math.random() * 100}%`,
+                            animationDelay: `${Math.random() * 0.5}s`,
+                            animationDuration: `${1 + Math.random() * 1}s`
+                        }} />
+                    ))}
+                </div>
             )}
             <NewTaskForm />
             <div className="checklist_toolbar">
@@ -232,7 +244,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 subtasks={getSubtasks(item.id)}
                                 onMoveItem={handleMoveItem}
                                 tags={item.tags as Tag[]}
-                                onSuccess={setShowSuccessGif}
+                                onSuccess={displaySparkles}
                             />
                         ))}
                     </SortableContext>

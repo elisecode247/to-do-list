@@ -21,7 +21,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Reset all env variables
 - Split google client id into local and prod
-- Remove success gif
 - hide scheduled tasks for the day in LocalStorage
 - move tasks among levels
 - allow user delete history
