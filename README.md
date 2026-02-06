@@ -19,6 +19,7 @@ Live: https://elisecode247.github.io/to-do-list/
 - Move frontend code to Railway
 - Refresh token in HttpOnly Secure SameSite cookie
 - Access token in memory
-- Replace deprecated Tenor API usage
 - Reset all env variables
-- hide tasks for the day
+- Remove success gif
+- hide tasks for the day in LocalStorage
+- move tasks among levels
