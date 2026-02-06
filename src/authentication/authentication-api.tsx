@@ -3,7 +3,7 @@ import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY, TOKEN_EXPIRES_KEY } from "src/authen
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
 
-export async function loginWithGoogle(token: string): Promise<void> {
+export async function loginWithGoogle(token: string): Promise<{email?: string}> {
     try {
         const response = await fetch(API_AUTH_URL, {
             method: "POST",
@@ -16,11 +16,12 @@ export async function loginWithGoogle(token: string): Promise<void> {
         }
 
         const data = await response.json();
-        if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
+        if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn || !data?.email) {
             throw new Error("Invalid auth response from server");
         }
 
-        persistTokens(data.accessToken, data.refreshToken, data.expiresIn);
+        persistTokens(data.accessToken, data.refreshToken, data.expiresIn, data.email);
+        return { email: data.email };
     } catch (err) {
         console.error("Failed to authenticate:", err);
         throw new Error("Google authentication failed", { cause: err });
@@ -41,6 +42,7 @@ export async function logout(): Promise<void> {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(TOKEN_EXPIRES_KEY);
+    localStorage.removeItem("email");
 }
 
 export function getAuthToken(): string | null {
@@ -49,7 +51,6 @@ export function getAuthToken(): string | null {
 
 export function isAuthenticated(): boolean {
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
-    console.log("%c Line:42 🥖 expiresAt", "color:#465975", expiresAt);
     if (!expiresAt || Number.isNaN(expiresAt)) {
         logout();
         return false;
@@ -79,16 +80,16 @@ export async function getValidAuthToken(): Promise<string | null> {
     }
 
     return refreshPromise.then(token => {
-        console.log("%c Line:73 🍅 token", "color:#fca650", token);
         if (!token) logout();
         return token;
     });
 }
 
-function persistTokens(access: string, refresh: string, expiresIn: number) {
+function persistTokens(access: string, refresh: string, expiresIn: number, email: string): void {
     localStorage.setItem(AUTH_TOKEN_KEY, access);
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
     localStorage.setItem(TOKEN_EXPIRES_KEY, String(Date.now() + expiresIn * 1000));
+    localStorage.setItem("email", email);
 }
 
 export async function refreshAuthToken(): Promise<string | null> {
@@ -111,7 +112,7 @@ export async function refreshAuthToken(): Promise<string | null> {
         if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
-        persistTokens(data.accessToken, data.refreshToken, data.expiresIn);
+        persistTokens(data.accessToken, data.refreshToken, data.expiresIn, data.email);
         return data.accessToken;
     } catch {
         logout();

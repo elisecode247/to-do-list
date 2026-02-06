@@ -3,10 +3,12 @@ import { LogOut } from "lucide-react";
 
 interface GoogleLogoutButtonProps {
     onLogout: () => void;
+    email?: string;
 }
 
 const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
-    onLogout
+    onLogout,
+    email
 }) => {
     const handleLogout = () => {
         // Revoke Google session if available
@@ -20,11 +22,14 @@ const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
     return (
         <button
             onClick={handleLogout}
-            className="settings-btn settings-btn--danger"
+            className="settings-btn settings-btn--primary"
             type="button"
         >
             <LogOut size={16} />
-            <span>Log out</span>
+            <div className="settings-btn-text-wrapper">
+                <span className="settings-btn-title">Log out</span>
+                {email && <span className="settings-btn-subtitle">{email}</span>}
+            </div>
         </button>
     );
 };

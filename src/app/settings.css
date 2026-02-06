@@ -49,13 +49,13 @@
 
 /* VARIANTS */
 .settings-btn--primary {
-    background: #111;
+    background: var(--color-primary-dark);
     color: white;
     border: 1px solid #111;
 }
 
 .settings-btn--primary:hover {
-    background: #222;
+    background: var(--color-primary);
 }
 
 .settings-btn--secondary {
@@ -73,6 +73,35 @@
     background: rgba(220, 38, 38, 0.14);
 }
 
+/* Text wrapper: title + subtitle stacked */
+.settings-btn-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+/* Main action text */
+.settings-btn-title {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+/* Email or subtitle */
+.settings-btn-subtitle {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 1.2;
+    /* lighter for contrast on danger button */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+    /* optional: limit width so long emails truncate */
+}
+
+
 /* DROPDOWN WRAPPER */
 .settings-dropdown {
     position: relative;
@@ -89,7 +118,7 @@
     box-sizing: border-box; /* include padding in width */
     padding: 12px;
 
-    border-radius: 10px; 
+    border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: white;
     box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.18);
@@ -109,4 +138,3 @@
     visibility: visible;
     transform: translateY(0);
 }
-

@@ -26,7 +26,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - move tasks among levels
 - allow user delete history
 - tabs for active, hidden, scheduled, archived, hidden
-- log out button should include email or name
 - improve ui for newly logged in user
     - Welcome Elise! Wave icon
     - a call to action to add a task

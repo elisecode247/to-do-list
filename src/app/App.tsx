@@ -19,7 +19,7 @@ import LoggedOut from 'src/logged-out/LoggedOut';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { isAuthenticated, login, logout } = useAuthentication();
+    const { isAuthenticated, login, logout, email } = useAuthentication();
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const {
         isLoading,
@@ -108,7 +108,7 @@ const App: FC = () => {
                         <div className="app_header_settings">
                             <div className="app_header_button-group">
                                 {isAuthenticated ? (
-                                    <GoogleLogoutButton onLogout={handleLogoutClick} />
+                                    <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                                 ) : (
                                     <GoogleLoginButton onSuccess={handleLoginSuccess} />
                                 )}
