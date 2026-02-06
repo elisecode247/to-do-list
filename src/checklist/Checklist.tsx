@@ -40,7 +40,7 @@ const Checklist: FC<ChecklistProps> = ({
         getSubtasks,
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
-    const [hideCompleted, setHideCompleted] = useState(false);
+    const [hideCompleted, setHideCompleted] = useState(true);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSuccessGif, setShowSuccessGif] = useState(false);
     const [showHidden, setShowHidden] = useState(false);
