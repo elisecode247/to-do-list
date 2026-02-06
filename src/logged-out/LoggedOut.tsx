@@ -11,7 +11,7 @@ export default function LoggedOut({ onSuccessfulLogin }: { onSuccessfulLogin: (t
                     className="headline"
                     initial={{ opacity: 0, filter: "blur(20px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 6, ease: "easeOut" }}
+                    transition={{ duration: 4, ease: "easeOut" }}
                 >
                     free your mind
                 </motion.h1>
@@ -25,21 +25,21 @@ export default function LoggedOut({ onSuccessfulLogin }: { onSuccessfulLogin: (t
                     Holding space for your thoughts so your mind can float freely
                 </motion.p>
 
-                <motion.div
-                    className="cta-row"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 4, duration: 2 }}
-                >
-                    <div className="login-orbit">
-                        <p className="login-label" >Enter your space</p>
-                        <div className="google-shell">
-                            <GoogleLoginButton
-                                onSuccess={onSuccessfulLogin}
-                            />
-                        </div>
+                <div className="login-orbit">
+                    <motion.p
+                        className="login-label"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 4 }}
+                    >
+                        Enter your space
+                    </motion.p>
+                    <div className="google-shell">
+                        <GoogleLoginButton
+                            onSuccess={onSuccessfulLogin}
+                        />
                     </div>
-                </motion.div>
+                </div>
 
                 <motion.p
                     className="footer-hint"
