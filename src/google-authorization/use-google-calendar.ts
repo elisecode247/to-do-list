@@ -125,7 +125,7 @@ export function useCalendarIntegration() {
             if (!isAuthenticated) return;
 
             try {
-                await fetch(`${API_AUTH_URL}/google/calendar/${listId}/${taskId}`, {
+                await fetch(`${API_AUTH_URL}/google/calendar/tasks/${listId}/${taskId}`, {
                     method: "PATCH",
                     headers: await authHeaders(),
                     body: JSON.stringify({ completed: isCompleted })
