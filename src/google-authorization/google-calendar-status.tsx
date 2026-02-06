@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "src/google-authorization/google-calendar-status.css";
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useCalendarIntegration } from "./use-google-calendar";
