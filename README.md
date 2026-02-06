@@ -25,7 +25,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - hide scheduled tasks for the day in LocalStorage
 - move tasks among levels
 - allow user delete history
-- improve settings menu dropdown ui
 - tabs for active, hidden, scheduled, archived, hidden
 - log out button should include email or name
 - improve ui for newly logged in user

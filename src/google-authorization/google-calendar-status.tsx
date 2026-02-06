@@ -9,7 +9,6 @@ import { useToast } from "src/toast/use-toast";
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
     const { loading, connected, refreshStatus, disconnectCalendar } = useCalendarIntegration();
-    const [modalOpen, setModalOpen] = useState(false);
     const { showToast } = useToast();
 
     if (loading) return null;
@@ -21,15 +20,12 @@ const GoogleCalendarStatus = () => {
     }
 
     return (
-        <div
-            className={`settings-dropdown ${modalOpen ? "settings-dropdown--modalOpen" : ""}`}
-            onMouseLeave={() => setModalOpen(false)}
-        >
+        <div className="settings-dropdown">
             <button
                 type="button"
                 className="settings-btn"
-                onClick={() => setModalOpen(!modalOpen)}
-                aria-expanded={modalOpen}
+                aria-haspopup="true"
+                aria-expanded={connected}
             >
                 {connected ? (
                     <>
@@ -55,14 +51,14 @@ const GoogleCalendarStatus = () => {
                         <button
                             type="button"
                             className="settings-btn settings-btn--secondary"
-                            onClick={() => disconnectCalendar()}
+                            onClick={disconnectCalendar}
                         >
                             Disconnect Calendar
                         </button>
                     ) : (
                         <GoogleCalendarConnectButton
                             onSuccess={refreshStatus}
-                            onError={handleConnectionError}
+                            onError={(err) => handleConnectionError(err)}
                         />
                     )}
                 </div>
