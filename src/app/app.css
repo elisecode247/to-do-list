@@ -87,8 +87,8 @@ body::before {
         radial-gradient(5px 5px at 15% 25%, white, transparent);
     background-size: 100vw 100vh;
     animation:
-        starsMove 50s linear infinite,
-        starsTwinkle 7s ease-in-out infinite alternate;
+        starsMove 120s linear infinite alternate,
+        starsTwinkle 5s ease-in-out infinite alternate;
     will-change: transform, opacity;
 }
 
@@ -117,8 +117,8 @@ body::after {
     pointer-events: none;
     transform: translateX(-100%);
     animation:
-        shimmerSweep 15s ease-in-out infinite,
-        stars-move 60s linear infinite,
+        shimmerSweep 15s ease-in-out infinite alternate,
+        stars-move 60s linear infinite alternate,
         twinkle 9s ease-in-out infinite alternate;
     will-change: transform;
 }

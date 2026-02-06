@@ -1,0 +1,83 @@
+/* LoggedOut.css */
+
+.logged-out-root {
+    position: relative;
+    min-height: 50vh;
+    overflow: hidden;
+    color: #e6ebff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+}
+
+.stars {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px;
+}
+
+.headline {
+    margin-bottom: 24px;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: 0.25em;
+}
+
+.subtext {
+    max-width: 520px;
+    margin-bottom: 48px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(230, 235, 255, 0.85);
+}
+
+.cta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.login-orbit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.google-shell {
+  padding: 10px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at center,
+    rgba(120,140,255,0.25),
+    rgba(120,140,255,0.05) 70%,
+    transparent
+  );
+  filter: drop-shadow(0 0 14px rgba(120,140,255,0.35));
+}
+
+.footer-hint {
+    margin-top: 80px;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: lowercase;
+}

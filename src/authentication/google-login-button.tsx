@@ -60,9 +60,11 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
             // Render the button
             window.google.accounts.id.renderButton(buttonRef.current, {
-                theme: "outline",
+                theme: "filled_black",
+                text: "continue_with",
                 size: "large",
-                width: 260,
+                shape: "pill",
+                logo_alignment: "left",
             });
         } catch (err) {
             console.error("GoogleLoginButton initialization error:", err);

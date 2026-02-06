@@ -14,6 +14,7 @@ import { useToast } from 'src/toast/use-toast';
 import ArchiveButton from './ArchiveButton';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
 import { MenuSquare } from 'lucide-react';
+import LoggedOut from 'src/logged-out/LoggedOut';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
@@ -72,6 +73,10 @@ const App: FC = () => {
     const handleLogoutClick = () => {
         handleLogout();
     };
+
+    if (!isAuthenticated) {
+        return <LoggedOut onSuccessfulLogin={handleLoginSuccess} />;
+    }
 
     return (
         <>
