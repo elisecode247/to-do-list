@@ -1,12 +1,18 @@
 export type Task = {
+    isHidden: boolean;
     id: string;
-    title: string;
-    notes: string;
-    status: string;
-    due: string | null;
-    completed: string | null;
-    listName: string;
+    text: string;
+    done: boolean;
+    lastCompleted: string | null;
+    note: string;
+    sortOrder: 0;
+    category: string;
+    tags: string[];
+    isArchived: boolean;
+    hasSubChores: boolean;
+    parentUuid: null;
     listId: string;
+    due: string;
 };
 
 export type Event = {
@@ -16,6 +22,6 @@ export type Event = {
     title: string;
     status: string;
     allDay: boolean;
-    description?: string;
+    note?: string;
     location?: string;
 };

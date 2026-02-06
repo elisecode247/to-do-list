@@ -15,7 +15,7 @@ const CalendarEventItem = ({ event }: { event: any }) => {
             hour: '2-digit',
             minute: '2-digit'
         })}`;
-    const sanitizedHTML = DOMPurify.sanitize(event.description || '');
+    const sanitizedHTML = DOMPurify.sanitize(event.note || '');
     if (hidden) return null;
     return (
         <div className="calendar-event-item">
@@ -25,7 +25,7 @@ const CalendarEventItem = ({ event }: { event: any }) => {
                     <p className="calendar-event-time">{dateString}</p>
                 </div>
                 <div className="calendar-event-controls">
-                    {!!event.description && (
+                    {!!event.note && (
                         <button
                             onClick={toggleCollapsed}
                             style={{
@@ -50,7 +50,7 @@ const CalendarEventItem = ({ event }: { event: any }) => {
             </div>
 
             {/* Description */}
-            {!event.description ? '' : !collapsed && (
+            {!event.note ? '' : !collapsed && (
                 <div
                     className="calendar-event-description"
                     dangerouslySetInnerHTML={{ __html: sanitizedHTML }}

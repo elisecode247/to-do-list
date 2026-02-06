@@ -20,6 +20,14 @@
     }
 }
 
+.scheduled-task_main-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
 .scheduled-task_checkbox {
     width: 24px;
     height: 24px;
@@ -30,8 +38,8 @@
 
 .scheduled-task-header {
     flex: 1;
-    flex-basis: 100%;
     min-width: 0;
+    flex-basis: 100%;
 }
 
 .scheduled-task-controls {
@@ -47,6 +55,7 @@
 .scheduled-task-description {
     padding: 1rem;
     width: 100%;
+    flex-basis: 100%;
 }
 
 /* Fix bullet indentation */
@@ -83,10 +92,20 @@
 /* Responsive adjustments for larger screens */
 @media (min-width: 768px) {
     .scheduled-task-item {
+        padding: var(--spacing-md);
+        gap: var(--spacing-sm);
+    }
+
+    .scheduled-task-item_main-content {
         flex-wrap: nowrap;
         padding: var(--spacing-md);
         gap: var(--spacing-sm);
     }
+
+    .scheduled-task-header {
+        flex-basis: auto;
+    }
+
 }
 
 @media (prefers-color-scheme: dark) {
