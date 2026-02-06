@@ -76,7 +76,6 @@ export const SortableItem: FC<SortableItemProps> = ({
         useSortable({ id });
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
-    const [menuOpen, setMenuOpen] = useState(false);
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(false);
