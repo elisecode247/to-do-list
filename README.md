@@ -22,4 +22,3 @@ Live: https://elisecode247.github.io/to-do-list/
 - Replace deprecated Tenor API usage
 - Reset all env variables
 - update task to get only incomplete tasks to capture past pending tasks
-- fixed archived subtasks
