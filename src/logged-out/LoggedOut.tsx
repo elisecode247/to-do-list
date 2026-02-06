@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import "./Logged-out.css";
+import "./logged-out.css";
 import GoogleLoginButton from "src/authentication/google-login-button";
 
 export default function LoggedOut({ onSuccessfulLogin }: { onSuccessfulLogin: (token: string) => Promise<void> }) {
