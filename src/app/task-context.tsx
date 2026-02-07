@@ -242,56 +242,101 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
         setItems(prevItems => {
             const activeItem = prevItems.find(i => i.id === activeId);
-            if (!activeItem) return prevItems;
+            const overItem = prevItems.find(i => i.id === overId);
 
-            // items at same tree level
-            const sameLevelItems = prevItems.filter(item =>
-                activeItem.parentUuid
-                    ? item.parentUuid === activeItem.parentUuid
-                    : !item.parentUuid
-            );
+            if (!activeItem || !overItem) return prevItems;
 
-            const oldIndex = sameLevelItems.findIndex(i => i.id === activeId);
-            const newIndex = sameLevelItems.findIndex(i => i.id === overId);
-            if (oldIndex === -1 || newIndex === -1) return prevItems;
+            const oldParent = activeItem.parentUuid ?? null;
+            const newParent = overItem.parentUuid ?? null;
 
-            // reorder visually
-            const reordered = arrayMove(sameLevelItems, oldIndex, newIndex);
+            // Helper: get siblings sorted correctly
+            const getSiblings = (parentUuid: string | null) =>
+                prevItems
+                    .filter(i => (i.parentUuid ?? null) === parentUuid)
+                    .sort((a, b) => a.sortOrder - b.sortOrder);
 
-            // apply new sortOrder
-            const reorderedWithSort = reordered.map((item, index) => ({
+            // Same parent reorder
+            if (oldParent === newParent) {
+                const siblings = getSiblings(oldParent as string | null);
+
+                const oldIndex = siblings.findIndex(i => i.id === activeId);
+                const newIndex = siblings.findIndex(i => i.id === overId);
+
+                if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
+                    return prevItems;
+                }
+
+                const reordered = arrayMove(siblings, oldIndex, newIndex).map((item, index) => ({
+                    ...item,
+                    sortOrder: index,
+                }));
+
+                const otherItems = prevItems.filter(
+                    item => (item.parentUuid ?? null) !== oldParent
+                );
+
+                updateTasksOrder(
+                    reordered.map(({ id, sortOrder, parentUuid }) => ({
+                        id,
+                        sortOrder,
+                        parentUuid: parentUuid ?? null,
+                    }))
+                ).catch(console.error);
+
+                return [...otherItems, ...reordered];
+            }
+
+            // Cross parent move
+            const oldSiblings = getSiblings(oldParent as string | null).filter(i => i.id !== activeId);
+            const newSiblings = getSiblings(newParent as string | null);
+
+            const insertIndex = newSiblings.findIndex(i => i.id === overId);
+            const targetIndex = insertIndex === -1 ? newSiblings.length : insertIndex;
+
+            const movedItem = {
+                ...activeItem,
+                parentUuid: newParent,
+            };
+
+            const updatedNewSiblings = [
+                ...newSiblings.slice(0, targetIndex),
+                movedItem,
+                ...newSiblings.slice(targetIndex),
+            ].map((item, index) => ({
                 ...item,
-                sortOrder: index
+                sortOrder: index,
             }));
 
-            // 🔑 rebuild the FULL list in correct order
-            const otherItems = prevItems.filter(
-                item =>
-                    activeItem.parentUuid
-                        ? item.parentUuid !== activeItem.parentUuid
-                        : item.parentUuid
-            );
+            const updatedOldSiblings = oldSiblings.map((item, index) => ({
+                ...item,
+                sortOrder: index,
+            }));
 
-            const updatedItems = activeItem.parentUuid
-                ? [
-                    ...otherItems.filter(i => i.parentUuid !== activeItem.parentUuid),
-                    ...reorderedWithSort
-                ]
-                : [
-                    ...reorderedWithSort,
-                    ...otherItems
-                ];
-
-            // optimistic DB update
-            updateTasksOrder(
-                reorderedWithSort.map(({ id, sortOrder }) => ({ id, sortOrder }))
-            ).catch(err => {
-                console.error("Failed to update task order:", err);
+            const untouched = prevItems.filter(i => {
+                const p = i.parentUuid ?? null;
+                return p !== oldParent && p !== newParent;
             });
+
+            const updatedItems = [
+                ...untouched,
+                ...updatedOldSiblings,
+                ...updatedNewSiblings,
+            ];
+
+            updateTasksOrder(
+                [...updatedOldSiblings, ...updatedNewSiblings].map(
+                    ({ id, sortOrder, parentUuid }) => ({
+                        id,
+                        sortOrder,
+                        parentUuid: parentUuid ?? null,
+                    })
+                )
+            ).catch(console.error);
 
             return updatedItems;
         });
     };
+
 
 
     type FilterParams = {
