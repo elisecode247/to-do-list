@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export function useDailyHide() {
     const today = new Date();
@@ -38,7 +38,7 @@ export function useDailyHide() {
     };
 
     type isHiddenTodayType = (itemId: string) => boolean;
-    const isHiddenToday: isHiddenTodayType = (itemId: string) => hiddenItems.includes(itemId);
+    const isHiddenToday: isHiddenTodayType = useCallback((itemId: string) => hiddenItems.includes(itemId), [hiddenItems]);
 
     const hiddenCount = hiddenItems.length;
 

@@ -16,6 +16,7 @@ import ArchiveButton from './ArchiveButton';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
 import { MenuSquare } from 'lucide-react';
 import LoggedOut from 'src/logged-out/LoggedOut';
+import SparklesOverlay from './SparklesOverlay';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
@@ -31,7 +32,6 @@ const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-
     async function handleSave() {
         if (!editingItem) return;
 
@@ -43,6 +43,8 @@ const App: FC = () => {
             showToast('Failed to update task. Please try again.', 'error');
         }
     }
+
+    const sparkles = <SparklesOverlay />;
 
     function toggleChecklist() {
         const next = !isActiveList;
@@ -141,6 +143,7 @@ const App: FC = () => {
                             activeFilters={activeFilters}
                             onChangeFilters={handleChangeFilters}
                             onEditItem={handleEditItem}
+                            sparkles={sparkles}
                         />
                     )}
                 </main>

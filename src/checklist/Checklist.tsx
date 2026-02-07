@@ -1,4 +1,4 @@
-import { useState, useMemo, type FC } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -20,6 +20,7 @@ interface ChecklistProps {
     activeFilters: Tag[];
     onChangeFilters: (filters: Tag[]) => void;
     onEditItem: (item: ChecklistItem) => void;
+    sparkles: ReactElement;
 }
 
 const Checklist: FC<ChecklistProps> = ({
@@ -27,6 +28,7 @@ const Checklist: FC<ChecklistProps> = ({
     activeFilters,
     onChangeFilters,
     onEditItem,
+    sparkles
 }) => {
     const {
         items,
@@ -44,6 +46,7 @@ const Checklist: FC<ChecklistProps> = ({
     const [showSparkles, setShowSparkles] = useState(false);
     const [showHidden, setShowHidden] = useState(false);
     const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
+    const sparkleTimeoutRef = useRef<number | null>(null);
 
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
@@ -115,34 +118,40 @@ const Checklist: FC<ChecklistProps> = ({
 
     const displaySparkles = () => {
         setShowSparkles(true);
-        setTimeout(() => setShowSparkles(false), 4000);
+        if (sparkleTimeoutRef.current) {
+            clearTimeout(sparkleTimeoutRef.current);
+        }
+
+        sparkleTimeoutRef.current = window.setTimeout(() => {
+            setShowSparkles(false);
+            sparkleTimeoutRef.current = null;
+        }, 3000)
     }
+
+    useEffect(() => {
+        return () => {
+            if (sparkleTimeoutRef.current) {
+                clearTimeout(sparkleTimeoutRef.current);
+                sparkleTimeoutRef.current = null;
+            }
+        };
+    }, []);
 
     const hiddenItemsAndTasksCount = useMemo(() => {
         const hiddenItemsCount = items.filter(item => {
-                const isCorrectList = isActiveList === !item.isArchived;
-                return isCorrectList && isHiddenToday(item.id as string);
+            const isCorrectList = isActiveList === !item.isArchived;
+            return isCorrectList && isHiddenToday(item.id as string);
         }).length
         const hiddenTasksCount = tasks.filter(task => {
             const isCorrectList = isActiveList === !task.isArchived;
             return isCorrectList && isHiddenToday(task.id);
         }).length
         return hiddenItemsCount + hiddenTasksCount;
-    }, [items, tasks, isHiddenToday]);
+    }, [items, tasks, isHiddenToday, isActiveList]);
 
     return (
         <>
-            {showSparkles && (
-                <div className="sparkles">
-                    {Array.from({ length: 20 }).map((_, i) => (
-                        <span key={i} className="sparkle" style={{
-                            left: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 0.5}s`,
-                            animationDuration: `${1 + Math.random() * 1}s`
-                        }} />
-                    ))}
-                </div>
-            )}
+            {showSparkles && sparkles}
             <NewTaskForm />
             <div className="checklist_toolbar">
                 <div className="checklist_filter-container">

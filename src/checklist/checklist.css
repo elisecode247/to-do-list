@@ -284,6 +284,7 @@
   animation-name: sparkle-fall;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+  animation-duration: 3s;
   z-index: 10000;
 }
 
