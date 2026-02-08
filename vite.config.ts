@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/to-do-list/',
+  base: '/to-do-list',
   plugins: [
     tsconfigPaths(),
     react({

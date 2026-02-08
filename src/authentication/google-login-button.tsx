@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { API_AUTH_URL } from "src/app/constants";
+import { useAuthentication } from "src/authentication/use-authentication";
+
 interface GoogleCredentialResponse {
     credential: string;
     select_by?: string;
 }
 
 interface GoogleLoginButtonProps {
-    onSuccess: (googleIdToken: string) => void;
+    onSuccess?: (googleIdToken: string) => void;
     onError?: (error: unknown) => void;
     backendClientIdEndpoint?: string; // optional backend endpoint
 }
@@ -19,6 +21,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     const buttonRef = useRef<HTMLDivElement>(null);
     const [clientId, setClientId] = useState<string | null>(null);
     const initializedRef = useRef(false); // ensure Google button is initialized once
+    const { setGoogleButtonState } = useAuthentication();
 
     // Fetch client ID from backend
     useEffect(() => {
@@ -29,8 +32,10 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
                 const data = await res.json();
                 if (!data?.clientId) throw new Error("No client ID returned from server");
                 setClientId(data.clientId);
+                setGoogleButtonState('success');
             } catch (err) {
                 console.error("GoogleLoginButton fetch error:", err);
+                setGoogleButtonState('failure')
                 onError?.(err);
             }
         };
@@ -49,9 +54,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
                 callback: (response: GoogleCredentialResponse) => {
                     if (!response.credential) {
                         onError?.("No credential returned from Google");
+                        setGoogleButtonState('failure');
                         return;
                     }
-                    onSuccess(response.credential);
+                    onSuccess?.(response.credential);
+                    setGoogleButtonState('success');
+
                 },
             });
 
@@ -69,6 +77,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         } catch (err) {
             console.error("GoogleLoginButton initialization error:", err);
             onError?.(err);
+            setGoogleButtonState('failure')
         }
     }, [clientId, onSuccess, onError]);
 

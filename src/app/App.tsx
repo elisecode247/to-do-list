@@ -4,7 +4,6 @@ import './settings.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
-import GoogleLoginButton from 'src/authentication/google-login-button';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
@@ -18,6 +17,9 @@ import { MenuSquare } from 'lucide-react';
 import LoggedOut from 'src/logged-out/LoggedOut';
 import SparklesOverlay from './SparklesOverlay';
 import DemoPage from 'src/demo/DemoPage';
+import NotFound from 'src/not-found/NotFound';
+import { Route, Switch } from "wouter";
+import { ROUTES } from 'src/router';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
@@ -33,7 +35,6 @@ const App: FC = () => {
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [isDemo, setIsDemo] = useState(false);
 
     async function handleSave() {
         if (!editingItem) return;
@@ -72,92 +73,90 @@ const App: FC = () => {
     }
 
     const handleLoginSuccess = async (token: string) => {
-        try { await login(token); }
-        catch (err) { console.error(err); }
+        try {
+            await login(token);
+        }
+        catch (err) {
+            console.error(err);
+        }
     };
 
     const handleLogoutClick = () => {
         handleLogout();
     };
-
-    const onEnterDemo = () => {
-        setIsDemo(true);
-    };
-
-    if (isDemo) {
-        return <DemoPage />;
-    } else if (!isAuthenticated) {
-        return <LoggedOut onSuccessfulLogin={handleLoginSuccess} onEnterDemo={onEnterDemo} />;
-    }
-
     return (
-        <>
-            {editingItem ? (
-                <ItemModal
-                    formData={editingItem}
-                    setEditingItem={setEditingItem}
-                    onSave={handleSave}
-                    onClose={() => setEditingItem(null)}
-                />
-            ) : null}
-            {toasts.map(toast => (
-                <Toast
-                    key={toast.id}
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => removeToast(toast.id)}
-                />
-            ))}
-            <div className="app_container">
-                <header className="app_header">
-                    <h1 className="app_h1">For My Today</h1>
-                    <MenuSquare
-                        onClick={() => { setIsSettingOpen(prev => !prev); }}
-                        className="app_header_menu-icon"
-                    />
-                    {isSettingOpen && (
-                        <div className="app_header_settings">
-                            <div className="app_header_button-group">
-                                {isAuthenticated ? (
-                                    <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
-                                ) : (
-                                    <GoogleLoginButton onSuccess={handleLoginSuccess} />
-                                )}
-                                <GoogleCalendarStatus />
-                            </div>
-                        </div>
-                    )}
-                    {isAuthenticated && (
-                        <ArchiveButton
-                            isActiveList={isActiveList}
-                            editingItem={editingItem}
-                            onToggle={toggleChecklist}
+
+        <Switch>
+            <Route path={ROUTES.home}>
+                {!isAuthenticated ? (
+                    <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
+                ) : (<>
+                    {editingItem ? (
+                        <ItemModal
+                            formData={editingItem}
+                            setEditingItem={setEditingItem}
+                            onSave={handleSave}
+                            onClose={() => setEditingItem(null)}
                         />
-                    )}
-                </header>
-                <main className="app_main">
-                    {isLoading ? (
-                        <div className="app_loading-container">
-                            <div aria-busy="true" className="app_loading-spinner"></div>
-                            <p>Loading your tasks...</p>
-                        </div>
-                    ) : error ? (
-                        <ErrorState
-                            message={error}
-                            onRetry={loadTasks}
+                    ) : null}
+                    {toasts.map(toast => (
+                        <Toast
+                            key={toast.id}
+                            message={toast.message}
+                            type={toast.type}
+                            onClose={() => removeToast(toast.id)}
                         />
-                    ) : (
-                        <Checklist
-                            isActiveList={isActiveList}
-                            activeFilters={activeFilters}
-                            onChangeFilters={handleChangeFilters}
-                            onEditItem={handleEditItem}
-                            sparkles={sparkles}
-                        />
-                    )}
-                </main>
-            </div>
-        </>
+                    ))}
+                    <div className="app_container">
+                        <header className="app_header">
+                            <h1 className="app_h1">For My Today</h1>
+                            <MenuSquare
+                                onClick={() => { setIsSettingOpen(prev => !prev); }}
+                                className="app_header_menu-icon"
+                            />
+                            {isSettingOpen && (
+                                <div className="app_header_settings">
+                                    <div className="app_header_button-group">
+                                        <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
+                                        <GoogleCalendarStatus />
+                                    </div>
+                                </div>
+                            )}
+                            <ArchiveButton
+                                isActiveList={isActiveList}
+                                editingItem={editingItem}
+                                onToggle={toggleChecklist}
+                            />
+                        </header>
+                        <main className="app_main">
+                            {isLoading ? (
+                                <div className="app_loading-container">
+                                    <div aria-busy="true" className="app_loading-spinner"></div>
+                                    <p>Loading your tasks...</p>
+                                </div>
+                            ) : error ? (
+                                <ErrorState
+                                    message={error}
+                                    onRetry={loadTasks}
+                                />
+                            ) : (
+                                <Checklist
+                                    isActiveList={isActiveList}
+                                    activeFilters={activeFilters}
+                                    onChangeFilters={handleChangeFilters}
+                                    onEditItem={handleEditItem}
+                                    sparkles={sparkles}
+                                />
+                            )}
+                        </main>
+                    </div>
+                </>)}
+            </Route>
+            <Route path={ROUTES.demo} component={DemoPage} />
+            <Route>
+                <NotFound />
+            </Route>
+        </Switch>
     );
 };
 

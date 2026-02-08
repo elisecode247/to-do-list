@@ -15,6 +15,11 @@ import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
+import GoogleLoginButton from 'src/authentication/google-login-button';
+import { useAuthentication } from 'src/authentication/use-authentication';
+import { useLocation } from "wouter";
+import { ROUTES } from 'src/router';
+
 interface ChecklistProps {
     isActiveList: boolean;
     activeFilters: Tag[];
@@ -39,6 +44,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         reorderItems,
         filterTasks,
         getSubtasks,
+        reset
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
@@ -47,6 +53,8 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const [showHidden, setShowHidden] = useState(false);
     const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
     const sparkleTimeoutRef = useRef<number | null>(null);
+    const { login, googleButtonState } = useAuthentication();
+    const [_location, setLocation] = useLocation();
 
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
@@ -128,6 +136,14 @@ const DemoChecklist: FC<ChecklistProps> = ({
         }, 3000)
     }
 
+    const handleLoginSuccess = async (token: string) => {
+        try {
+            await login(token);
+            setLocation(ROUTES.home);
+        }
+        catch (err) { console.error(err); }
+    };
+
     useEffect(() => {
         return () => {
             if (sparkleTimeoutRef.current) {
@@ -151,137 +167,159 @@ const DemoChecklist: FC<ChecklistProps> = ({
 
     return (
         <>
-            {showSparkles && sparkles}
-            <NewTaskForm />
-            <div className="checklist_toolbar">
-                <div className="checklist_filter-container">
-                    <button
-                        onClick={() => {
-                            const updatedFilters = activeFilters.filter(
-                                (filter) => !isExclusiveTag(filter)
-                            )
-                            onChangeFilters(updatedFilters);
-                        }}
-                        className={`filter-button ${!hasExclusiveFilter
-                            ? 'filter-button-all-active'
-                            : 'filter-button-all'
-                            }`}
-                    >
-                        All ({items.filter(t => {
-                            if (t.isArchived !== !isActiveList) return false;
-                            if (t.parentUuid) return false;
-                            return true;
-                        }).length})
-                    </button>
-                    {TAGS.map(tag => {
-                        const isPriority = tag === PRIORITY_TAG;
-                        const isActive = activeFilters.includes(tag);
-                        return (
-                            <button
-                                key={tag}
-                                onClick={() => {
-                                    const nextFilters = activeFilters.includes(tag)
-                                        ? activeFilters.filter(t => t !== tag)
-                                        : [...activeFilters, tag];
+            {googleButtonState !== 'pending' ? (<>
+                {showSparkles && sparkles}
+                <NewTaskForm />
+                <div className="checklist_toolbar">
+                    <div className="checklist_filter-container">
+                        <button
+                            onClick={() => {
+                                const updatedFilters = activeFilters.filter(
+                                    (filter) => !isExclusiveTag(filter)
+                                )
+                                onChangeFilters(updatedFilters);
+                            }}
+                            className={`filter-button ${!hasExclusiveFilter
+                                ? 'filter-button-all-active'
+                                : 'filter-button-all'
+                                }`}
+                        >
+                            All ({items.filter(t => {
+                                if (t.isArchived !== !isActiveList) return false;
+                                if (t.parentUuid) return false;
+                                return true;
+                            }).length})
+                        </button>
+                        {TAGS.map(tag => {
+                            const isPriority = tag === PRIORITY_TAG;
+                            const isActive = activeFilters.includes(tag);
+                            return (
+                                <button
+                                    key={tag}
+                                    onClick={() => {
+                                        const nextFilters = activeFilters.includes(tag)
+                                            ? activeFilters.filter(t => t !== tag)
+                                            : [...activeFilters, tag];
 
-                                    onChangeFilters(nextFilters);
-                                }}
-                                className={`
+                                        onChangeFilters(nextFilters);
+                                    }}
+                                    className={`
                                 filter-button
                                 ${!isPriority && isActive ? getTagColor(tag) + 'filter-button-active' : ''}
                                 ${isPriority ? 'filter-button--priority' : ''}
                                 ${isPriority && isActive ? 'filter-button--priority-active' : ''}
                                 `}
-                            >
-                                {isPriority ? '⭐ ' : ''}
-                                {tag} ({items.filter(t => {
-                                    if (t.isArchived !== !isActiveList) return false;
-                                    if (t.parentUuid) return false;
-                                    return t.tags.includes(tag);
-                                }).length})
-                            </button>
-                        )
-                    })}
-                </div>
+                                >
+                                    {isPriority ? '⭐ ' : ''}
+                                    {tag} ({items.filter(t => {
+                                        if (t.isArchived !== !isActiveList) return false;
+                                        if (t.parentUuid) return false;
+                                        return t.tags.includes(tag);
+                                    }).length})
+                                </button>
+                            )
+                        })}
+                    </div>
 
-                <div className="checklist_hide-completed-checkbox-container">
-                    <input
-                        className="checklist_hide-completed-checkbox-input"
-                        type="checkbox"
-                        id="hideCompleted"
-                        checked={hideCompleted}
-                        onChange={(e) => setHideCompleted(e.target.checked)}
+                    <div className="checklist_hide-completed-checkbox-container">
+                        <input
+                            className="checklist_hide-completed-checkbox-input"
+                            type="checkbox"
+                            id="hideCompleted"
+                            checked={hideCompleted}
+                            onChange={(e) => setHideCompleted(e.target.checked)}
+                        />
+                        <label
+                            htmlFor="hideCompleted"
+                            className="checklist_hide-completed-checkbox-label"
+                        >
+                            Hide completed tasks
+                        </label>
+                    </div>
+                    <CategorySelect
+                        id="checklist-filter-category-select"
+                        isFilter={true}
+                        selectedCategory={filterCategory}
+                        onChange={(value: string) => setFilterCategory(value)}
                     />
-                    <label
-                        htmlFor="hideCompleted"
-                        className="checklist_hide-completed-checkbox-label"
-                    >
-                        Hide completed tasks
+                    <label id="show-hidden-tasks-label" htmlFor="show-hidden-tasks">
+                        <input
+                            type="checkbox"
+                            id="show-hidden-tasks"
+                            checked={showHidden === true}
+                            onChange={(e) => setShowHidden(e.target.checked)}
+                        />
+                        Show Hidden ({hiddenItemsAndTasksCount})
                     </label>
                 </div>
-                <CategorySelect
-                    id="checklist-filter-category-select"
-                    isFilter={true}
-                    selectedCategory={filterCategory}
-                    onChange={(value: string) => setFilterCategory(value)}
-                />
-                <label id="show-hidden-tasks-label" htmlFor="show-hidden-tasks">
-                    <input
-                        type="checkbox"
-                        id="show-hidden-tasks"
-                        checked={showHidden === true}
-                        onChange={(e) => setShowHidden(e.target.checked)}
-                    />
-                    Show Hidden ({hiddenItemsAndTasksCount})
-                </label>
-            </div>
-            <DndContext onDragEnd={handleDragEnd}>
-                <div className="checklist_list-container">
-                    {events.map(event => (
-                        <CalendarEventItem
-                            key={event.id}
-                            event={event}
-                        />
-                    ))}
-                    {filteredTasks?.map(task => (
-                        <ScheduledTaskItem
-                            key={task.id}
-                            task={task}
-                            markCompleted={markScheduledTaskCompletion}
-                            isHiddenToday={isHiddenToday}
-                            hideForToday={hideForToday}
-                            unhideForToday={unhideForToday}
-                        />
-                    ))}
-                    <SortableContext items={filteredItems.map(i => i.id)}>
-                        {filteredItems.map(item => (
-                            <SortableItem
-                                hasSubChores={item.hasSubChores}
-                                isActive={isActiveList}
-                                checked={item.done}
-                                key={item.id}
-                                id={item.id}
-                                isHidden={isHiddenToday(item.id as string)}
-                                isHiddenToday={isHiddenToday}
-                                isHideCompleted={hideCompleted}
-                                text={item.text}
-                                note={item.note}
-                                lastCompleted={item.lastCompleted}
-                                deleteItem={deleteItem}
-                                prioritizeItem={prioritizeItem}
-                                toggleChecked={toggleChecked}
-                                handleEdit={handleEdit}
-                                handleHideItem={handleHide}
-                                subtasks={getSubtasks(item.id)}
-                                onMoveItem={handleMoveItem}
-                                tags={item.tags as Tag[]}
-                                onSuccess={displaySparkles}
+                <DndContext onDragEnd={handleDragEnd}>
+                    <div className="checklist_list-container">
+                        {events.map(event => (
+                            <CalendarEventItem
+                                key={event.id}
+                                event={event}
                             />
                         ))}
-                    </SortableContext>
+                        {filteredTasks?.map(task => (
+                            <ScheduledTaskItem
+                                key={task.id}
+                                task={task}
+                                markCompleted={markScheduledTaskCompletion}
+                                isHiddenToday={isHiddenToday}
+                                hideForToday={hideForToday}
+                                unhideForToday={unhideForToday}
+                            />
+                        ))}
+                        <SortableContext items={filteredItems.map(i => i.id)}>
+                            {filteredItems.map(item => (
+                                <SortableItem
+                                    hasSubChores={item.hasSubChores}
+                                    isActive={isActiveList}
+                                    checked={item.done}
+                                    key={item.id}
+                                    id={item.id}
+                                    isHidden={isHiddenToday(item.id as string)}
+                                    isHiddenToday={isHiddenToday}
+                                    isHideCompleted={hideCompleted}
+                                    text={item.text}
+                                    note={item.note}
+                                    lastCompleted={item.lastCompleted}
+                                    deleteItem={deleteItem}
+                                    prioritizeItem={prioritizeItem}
+                                    toggleChecked={toggleChecked}
+                                    handleEdit={handleEdit}
+                                    handleHideItem={handleHide}
+                                    subtasks={getSubtasks(item.id)}
+                                    onMoveItem={handleMoveItem}
+                                    tags={item.tags as Tag[]}
+                                    onSuccess={displaySparkles}
+                                />
+                            ))}
+                        </SortableContext>
 
+                    </div>
+                </DndContext>
+            </>) : null}
+            <div className="demo-actions">
+
+                <div className="google-login-shell">
+                    {googleButtonState === 'pending' ? (
+                        <div className="google-login-fallback">
+                            Loading sign in…
+                        </div>
+                    ) : googleButtonState === 'success' ? (<>
+                        <p className="demo-keep-copy">
+                            Want to keep this space?
+                        </p>
+                    </>) : null}
+                    <GoogleLoginButton onSuccess={handleLoginSuccess} />
                 </div>
-            </DndContext>
+
+
+                <button className="demo-reset" onClick={reset}>
+                    Restore demo tasks
+                </button>
+            </div>
         </>
     )
 }

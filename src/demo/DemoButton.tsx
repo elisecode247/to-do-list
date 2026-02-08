@@ -1,24 +1,17 @@
 import { motion } from "framer-motion";
 import { useContext } from "react";
 import { DemoContext } from "./DemoContext.tsx";
+import { Link } from "wouter";
+import { ROUTES } from 'src/router';
 
-export const DemoButton = ({ onEnterDemo }: { onEnterDemo: () => void }) => {
+export const DemoButton = () => {
 
     const demo = useContext(DemoContext);
     if (!demo) return null;
 
-    const startDemo = () => {
-        // Pre-fill demo items if desired
-        demo.setItems([
-
-        ]);
-        onEnterDemo();
-    };
-
     return (
         <motion.button
             type="button"
-            onClick={startDemo}
             className="logged-out_demo-link"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -26,7 +19,7 @@ export const DemoButton = ({ onEnterDemo }: { onEnterDemo: () => void }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
         >
-            Enter Demo
+            <Link className="demo-link" href={ROUTES.demo}>Enter Demo</Link>
         </motion.button>
     );
 };

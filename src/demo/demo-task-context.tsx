@@ -5,36 +5,10 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useToast } from 'src/toast/use-toast';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
+import { DEMO_TASKS } from './demo-tasks';
 
 const DEMO_STORAGE_KEY = 'demo_checklist_tasks';
-const DEMO_TASKS: ChecklistItem[] = [
-    {
-        id: '1',
-        text: 'Demo Task 1',
-        done: false,
-        lastCompleted: '',
-        note: 'This is a demo note',
-        sortOrder: 0,
-        category: '',
-        tags: [],
-        isArchived: false,
-        parentUuid: null,
-        hasSubChores: false,
-    },
-    {
-        id: '2',
-        text: 'Demo Task 2',
-        done: false,
-        lastCompleted: '',
-        note: '',
-        sortOrder: 1,
-        category: '',
-        tags: [PRIORITY_TAG],
-        isArchived: false,
-        parentUuid: null,
-        hasSubChores: false,
-    },
-];
+
 
 interface TaskContextType {
     items: ChecklistItem[];
@@ -76,10 +50,10 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     }, [items]);
 
     const reset = () => {
-        setItems([]);
         setError(null);
         setIsLoading(false);
         localStorage.removeItem(DEMO_STORAGE_KEY);
+        setItems(DEMO_TASKS);
     };
 
     const loadTasks = () => {

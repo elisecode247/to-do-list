@@ -190,7 +190,6 @@ body::after {
     gap: var(--spacing-md);
     flex-shrink: 0;
     position: relative;
-    margin-bottom: var(--spacing-md);
     min-height: 50px;
 }
 
@@ -208,8 +207,7 @@ body::after {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: glow 15s ease-in-out infinite;
-    position: absolute;
-    top: 0;
+    margin: var(--spacing-md) auto 0 auto;
 }
 
 .app_header_menu-icon {
@@ -336,8 +334,6 @@ body::after {
 
     .app_h1 {
         font-size: 28px;
-        left: 33%;
-        margin: var(--spacing-md) 0 0 var(--spacing-md);
     }
 
     .app_header_button-group {

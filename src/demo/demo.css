@@ -1,0 +1,95 @@
+.demo-keep-copy {
+    margin: 32px auto 12px;
+    max-width: 280px;
+
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+
+    color: var(--color-text-light);
+    letter-spacing: 0.01em;
+
+    user-select: none;
+}
+
+.demo-keep-copy strong {
+    font-weight: 500;
+}
+
+.google-login-shell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.google-login-fallback {
+    height: 44px;
+    min-width: 220px;
+
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: rgba(127, 47, 254, 0.12);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+}
+
+.demo-reset {
+    margin: 16px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 160px;
+    height: 42px;
+
+    background: rgba(127, 47, 254, 0.12);
+    border: 1px solid rgba(180, 160, 255, 0.25);
+    border-radius: 999px;
+
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: rgba(220, 210, 255, 0.8);
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease;
+}
+
+.demo-reset:hover {
+    background: rgba(127, 47, 254, 0.22);
+    border-color: rgba(200, 180, 255, 0.45);
+    color: #ffffff;
+
+    transform: scale(1.04);
+}
+
+.demo-reset:active {
+    transform: scale(0.98);
+}
+
+.demo-reset:focus {
+    outline: none;
+}
+
+.demo-link {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    color: rgba(220, 225, 255, 0.7);
+    cursor: pointer;
+    transition: opacity 0.3s ease, text-shadow 0.3s ease;
+    background: none;
+    border: none;
+    outline: none;
+    text-decoration: none;
+}

@@ -4,11 +4,9 @@ import GoogleLoginButton from "src/authentication/google-login-button";
 import DemoButton from 'src/demo/DemoButton';
 
 export default function LoggedOut({
-    onSuccessfulLogin,
-    onEnterDemo,
+    onSuccessfulLogin
 }: {
     onSuccessfulLogin: (token: string) => Promise<void>;
-    onEnterDemo: () => void;
 }) {
     return (
         <div className="logged-out-root">
@@ -44,7 +42,7 @@ export default function LoggedOut({
                     <div className="google-shell">
                         <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                     </div>
-                    <DemoButton onEnterDemo={onEnterDemo}/>
+                    <DemoButton />
                 </div>
 
                 <motion.p

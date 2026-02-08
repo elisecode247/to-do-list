@@ -6,19 +6,20 @@ import { AuthenticationProvider } from 'src/authentication/authentication-contex
 import { TaskProvider } from 'src/app/task-context.tsx';
 import { DemoProvider } from 'src/demo/DemoContext.tsx';
 import { DemoTaskProvider } from './demo/demo-task-context';
+import { AppRouter } from 'src/router';
 
 createRoot(document.getElementById('app-root')!).render(
-
-    <AuthenticationProvider>
-        <ToastProvider>
-            <DemoProvider>
-                <DemoTaskProvider>
-                    <TaskProvider>
-                        <App />
-                    </TaskProvider>
-                </DemoTaskProvider>
-            </DemoProvider>
-        </ToastProvider>
-    </AuthenticationProvider >
-
+    <AppRouter>
+        <AuthenticationProvider>
+            <ToastProvider>
+                <DemoProvider>
+                    <DemoTaskProvider>
+                        <TaskProvider>
+                            <App />
+                        </TaskProvider>
+                    </DemoTaskProvider>
+                </DemoProvider>
+            </ToastProvider>
+        </AuthenticationProvider >
+    </AppRouter>
 )

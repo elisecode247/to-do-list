@@ -1,0 +1,79 @@
+.not-found {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    background: radial-gradient(circle at top,
+            rgba(127, 47, 254, 0.12),
+            transparent 60%);
+}
+
+.not-found__card {
+    max-width: 420px;
+    text-align: center;
+}
+
+.not-found__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: float 6s ease-in-out infinite;
+}
+
+.not-found__title {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+}
+
+.not-found__description {
+    margin-bottom: 2rem;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+.not-found__actions {
+    display: grid;
+    gap: 0.75rem;
+}
+
+/* Buttons */
+
+.btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn--primary {
+    background: rgba(127, 47, 254, 0.85);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 20px rgba(127, 47, 254, 0.25);
+}
+
+.btn--secondary {
+    background: transparent;
+    color: rgba(127, 47, 254, 0.9);
+    border: 1px solid rgba(127, 47, 254, 0.4);
+}
+
+/* Subtle float animation */
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}

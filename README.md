@@ -28,3 +28,4 @@ Live: https://elisecode247.github.io/to-do-list/
     - add good tasks
 - fix un-hide
 - show priorities even subtasks
+- add text to drag and menu buttons

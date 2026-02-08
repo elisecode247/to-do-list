@@ -1,6 +1,7 @@
 import { useState, type FC } from 'react';
 import 'app/app.css';
 import 'app/settings.css';
+import 'src/demo/demo.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'src/demo/DemoChecklist.tsx';
