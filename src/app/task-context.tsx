@@ -331,11 +331,22 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
             const untouched = prevItems.filter(i => {
                 const p = i.parentUuid ?? null;
-                return p !== oldParent && p !== newParent;
+                return p !== oldParent && p !== newParent && i.id !== activeId;
             });
 
-            const updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
+            let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
 
+            // --- Update hasSubChores dynamically ---
+            const parentIds = [oldParent, newParent].filter(Boolean) as UniqueIdentifier[];
+            updatedItems = updatedItems.map(item => {
+                if (parentIds.includes(item.id)) {
+                    const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
+                    return { ...item, hasSubChores: childCount > 0 };
+                }
+                return item;
+            });
+
+            // Persist order to DB
             updateTasksOrder(
                 [...updatedOldSiblings, ...updatedNewSiblings].map(({ id, sortOrder, parentUuid }) => ({
                     id,
@@ -347,9 +358,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             return updatedItems;
         });
     };
-
-
-
 
     type FilterParams = {
         activeFilters: Tag[];
