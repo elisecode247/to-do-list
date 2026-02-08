@@ -4,7 +4,6 @@ import './settings.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
-import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type Tag } from 'src/checklist/constants';
@@ -12,8 +11,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import ArchiveButton from './ArchiveButton';
-import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
-import { MenuSquare } from 'lucide-react';
+import AccountMenu from './AccountMenu';
 import LoggedOut from 'src/logged-out/LoggedOut';
 import SparklesOverlay from './SparklesOverlay';
 import DemoPage from 'src/demo/DemoPage';
@@ -23,14 +21,12 @@ import { ROUTES } from 'src/router';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { isAuthenticated, login, logout, email } = useAuthentication();
-    const [isSettingOpen, setIsSettingOpen] = useState(false);
+    const { isAuthenticated, login } = useAuthentication();
     const {
         isLoading,
         error,
         loadTasks,
         updateItem,
-        reset
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isActiveList, setActiveChecklist] = useState(true);
@@ -57,13 +53,6 @@ const App: FC = () => {
         setEditingItem(null);
     }
 
-    function handleLogout() {
-        logout();
-        setActiveFilters([]);
-        setActiveChecklist(true);
-        reset();
-    }
-
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
     }
@@ -81,9 +70,11 @@ const App: FC = () => {
         }
     };
 
-    const handleLogoutClick = () => {
-        handleLogout();
-    };
+    function handleLogout() {
+        setActiveFilters([]);
+        setActiveChecklist(true);
+    }
+
     return (
 
         <Switch>
@@ -110,18 +101,7 @@ const App: FC = () => {
                     <div className="app_container">
                         <header className="app_header">
                             <h1 className="app_h1">For My Today</h1>
-                            <MenuSquare
-                                onClick={() => { setIsSettingOpen(prev => !prev); }}
-                                className="app_header_menu-icon"
-                            />
-                            {isSettingOpen && (
-                                <div className="app_header_settings">
-                                    <div className="app_header_button-group">
-                                        <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
-                                        <GoogleCalendarStatus />
-                                    </div>
-                                </div>
-                            )}
+                            <AccountMenu onLogout={handleLogout} />
                             <ArchiveButton
                                 isActiveList={isActiveList}
                                 editingItem={editingItem}

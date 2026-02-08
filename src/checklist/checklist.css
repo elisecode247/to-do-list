@@ -8,6 +8,7 @@
     box-shadow: var(--shadow-sm);
     flex-shrink: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
 }
 
 .checklist_new-item-container.collapsed {
@@ -25,7 +26,6 @@
 }
 
 .checklist_new-item-toggle-button {
-    width: 48px;
     height: 48px;
     border-radius: 24px;
     background: var(--color-primary-dark);
@@ -37,15 +37,16 @@
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
+    padding: var(--spacing-md) var(--spacing-lg);
 }
 
 .checklist_new-item-toggle-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px var(--color-priority);
 }
 
 .checklist_new-item-toggle-button:active {
-    transform: scale(0.95);
+    box-shadow: 0 4px 12px var(--color-priority);
 }
 
 .checklist_new-item-header {

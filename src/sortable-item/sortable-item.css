@@ -63,6 +63,11 @@
     cursor: grabbing;
 }
 
+.sortable-item_drag-handle_label {
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+}
+
 /* Checkbox */
 .sortable-item_checkbox {
     width: 24px;

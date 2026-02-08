@@ -155,11 +155,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <button
                         {...listeners}
                         className="sortable-item_drag-handle"
-                        aria-label="Drag to reorder task"
-                        title="Drag to reorder"
+                        aria-label="Hold to move and reorder task"
+                        title="Hold to move and reorder task"
                         type="button"
                     >
                         <GripVertical size={24} />
+                        <span className="sortable-item_drag-handle_label">Move</span>
                     </button>
                     <input
                         className="sortable-item_checkbox"
@@ -235,12 +236,13 @@ export const SortableItem: FC<SortableItemProps> = ({
                         <div className="sortable-item_menu-wrapper">
                             <button
                                 className="sortable-item_menu-button sortable-item_edit-button"
-                                aria-label="More actions"
+                                aria-label="More task actions"
                                 type="button"
                                 ref={buttonRef}
                                 onMouseEnter={updateMenuPosition}
                             >
                                 <MoreHorizontal size={24} />
+                                <span className="sortable-item_button-text-span">Actions</span>
                             </button>
 
                             <div
