@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef, useEffect, type FC, type ReactElement } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
@@ -46,6 +46,7 @@ const Checklist: FC<ChecklistProps> = ({
     const [showSparkles, setShowSparkles] = useState(false);
     const [showHidden, setShowHidden] = useState(false);
     const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
+    const [active, setActive] = useState<ChecklistItem | null>(null);
     const sparkleTimeoutRef = useRef<number | null>(null);
 
     const hasExclusiveFilter = activeFilters.some(f =>
@@ -78,11 +79,17 @@ const Checklist: FC<ChecklistProps> = ({
         });
     }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden, isHiddenToday]);
 
+    function handleDragStart(event: DragStartEvent) {
+        const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
+        if (!active) return;
+        setActive(active);
+    }
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         reorderItems(active.id, over.id);
+        setActive(null);
     };
 
     const toggleChecked = (id: UniqueIdentifier, checked: boolean) => {
@@ -235,7 +242,7 @@ const Checklist: FC<ChecklistProps> = ({
                     Show Hidden ({hiddenItemsAndTasksCount})
                 </label>
             </div>
-            <DndContext onDragEnd={handleDragEnd}>
+            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
                 <div className="checklist_list-container">
                     {events.map(event => (
                         <CalendarEventItem
@@ -281,6 +288,32 @@ const Checklist: FC<ChecklistProps> = ({
                     </SortableContext>
 
                 </div>
+                <DragOverlay>
+                    {active ? (
+                        <SortableItem
+                            hasSubChores={active.hasSubChores}
+                            isActive={isActiveList}
+                            checked={active.done}
+                            key={active.id}
+                            id={active.id}
+                            isHidden={isHiddenToday(active.id as string)}
+                            isHiddenToday={isHiddenToday}
+                            isHideCompleted={hideCompleted}
+                            text={active.text}
+                            note={active.note}
+                            lastCompleted={active.lastCompleted}
+                            deleteItem={deleteItem}
+                            prioritizeItem={prioritizeItem}
+                            toggleChecked={toggleChecked}
+                            handleEdit={handleEdit}
+                            handleHideItem={handleHide}
+                            subtasks={getSubtasks(active.id)}
+                            onMoveItem={handleMoveItem}
+                            tags={active.tags as Tag[]}
+                            onSuccess={displaySparkles}
+                        />
+                    ) : null}
+                </DragOverlay>
             </DndContext>
         </>
     )
