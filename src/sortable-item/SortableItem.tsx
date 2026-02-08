@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
-import type { FC, Dispatch, SetStateAction, } from 'react';
+import { useRef } from 'react';
+import type { FC, Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import 'sortable-item/sortable-item.css';
@@ -80,6 +81,9 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [showNotes, setShowNotes] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
+    const [alignLeft, setAlignLeft] = useState(false);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+
     const toggleCollapsed = () => setCollapsed(!collapsed);
 
     const style = {
@@ -127,6 +131,17 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Failed to add task. Please try again.', 'error');
         }
     }
+
+    const updateMenuPosition = () => {
+        if (!buttonRef.current) return;
+
+        const buttonRect = buttonRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+
+        // Check if button is in the left half of viewport
+        const isLeftSide = buttonRect.left < viewportWidth / 2;
+        setAlignLeft(isLeftSide);
+    };
 
     return (
         <div
@@ -222,11 +237,20 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 className="sortable-item_menu-button sortable-item_edit-button"
                                 aria-label="More actions"
                                 type="button"
+                                ref={buttonRef}
+                                onMouseEnter={updateMenuPosition}
                             >
                                 <MoreHorizontal size={24} />
                             </button>
 
-                            <div className="sortable-item_menu-dropdown">
+                            <div
+                                className={`sortable-item_menu-dropdown
+                                    ${alignLeft ?
+                                        'sortable-item_menu-dropdown--align-left' :
+                                        ''
+                                    }`
+                                }
+                            >
                                 <button
                                     className="sortable-item_edit-button sortable-item_add-subtask-button"
                                     onClick={() => setOpenNewTaskForm(true)}

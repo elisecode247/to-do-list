@@ -144,6 +144,11 @@
     z-index: 100;
 }
 
+.sortable-item_menu-dropdown--align-left {
+    left: 0;
+    right: auto;
+}
+
 /* open menu on hover OR keyboard focus */
 .sortable-item_menu-wrapper:hover .sortable-item_menu-dropdown,
 .sortable-item_menu-wrapper:focus-within .sortable-item_menu-dropdown {

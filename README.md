@@ -27,3 +27,4 @@ Live: https://elisecode247.github.io/to-do-list/
     - no name shows undefined
     - add good tasks
 - fix un-hide
+- show priorities even subtasks
