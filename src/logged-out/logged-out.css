@@ -50,29 +50,46 @@
 }
 
 .login-orbit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
 }
 
 .login-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  opacity: 0.6;
-  text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+.logged-out_demo-link {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    color: rgba(220, 225, 255, 0.7);
+    cursor: pointer;
+    transition: opacity 0.3s ease, text-shadow 0.3s ease;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.logged-out_demo-link:hover {
+    opacity: 1;
+    transform: scale(1.08);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+
 }
 
 .google-shell {
-  padding: 10px;
-  border-radius: 999px;
-  background: radial-gradient(
-    circle at center,
-    rgba(120,140,255,0.25),
-    rgba(120,140,255,0.05) 70%,
-    transparent
-  );
-  filter: drop-shadow(0 0 14px rgba(120,140,255,0.35));
+    padding: 10px;
+    border-radius: 999px;
+    background: radial-gradient(circle at center,
+            rgba(120, 140, 255, 0.25),
+            rgba(120, 140, 255, 0.05) 70%,
+            transparent);
+    filter: drop-shadow(0 0 14px rgba(120, 140, 255, 0.35));
 }
 
 .footer-hint {

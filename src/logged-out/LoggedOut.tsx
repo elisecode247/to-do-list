@@ -1,8 +1,15 @@
 import { motion } from "framer-motion";
 import "./logged-out.css";
 import GoogleLoginButton from "src/authentication/google-login-button";
+import DemoButton from 'src/demo/DemoButton';
 
-export default function LoggedOut({ onSuccessfulLogin }: { onSuccessfulLogin: (token: string) => Promise<void> }) {
+export default function LoggedOut({
+    onSuccessfulLogin,
+    onEnterDemo,
+}: {
+    onSuccessfulLogin: (token: string) => Promise<void>;
+    onEnterDemo: () => void;
+}) {
     return (
         <div className="logged-out-root">
             <div className="stars" />
@@ -35,10 +42,9 @@ export default function LoggedOut({ onSuccessfulLogin }: { onSuccessfulLogin: (t
                         Enter your space
                     </motion.p>
                     <div className="google-shell">
-                        <GoogleLoginButton
-                            onSuccess={onSuccessfulLogin}
-                        />
+                        <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                     </div>
+                    <DemoButton onEnterDemo={onEnterDemo}/>
                 </div>
 
                 <motion.p

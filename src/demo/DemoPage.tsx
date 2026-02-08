@@ -1,39 +1,27 @@
 import { useState, type FC } from 'react';
-import './app.css';
-import './settings.css';
+import 'app/app.css';
+import 'app/settings.css';
 import { ItemModal } from 'item-modal/ItemModal.tsx';
 import type { ChecklistItem } from 'app/types';
-import Checklist from 'checklist/Checklist.tsx';
-import GoogleLoginButton from 'src/authentication/google-login-button';
-import GoogleLogoutButton from 'src/authentication/google-logout-button';
+import Checklist from 'src/demo/DemoChecklist.tsx';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
 import { type Tag } from 'src/checklist/constants';
-import { useAuthentication } from 'src/authentication/use-authentication';
-import { useTask } from 'src/app/use-task';
+import { useTask } from 'src/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
-import ArchiveButton from './ArchiveButton';
-import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
-import { MenuSquare } from 'lucide-react';
-import LoggedOut from 'src/logged-out/LoggedOut';
-import SparklesOverlay from './SparklesOverlay';
-import DemoPage from 'src/demo/DemoPage';
+import SparklesOverlay from 'src/app/SparklesOverlay';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { isAuthenticated, login, logout, email } = useAuthentication();
-    const [isSettingOpen, setIsSettingOpen] = useState(false);
     const {
         isLoading,
         error,
         loadTasks,
-        updateItem,
-        reset
+        updateItem
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-    const [isActiveList, setActiveChecklist] = useState(true);
+    const [isActiveList, _setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-    const [isDemo, setIsDemo] = useState(false);
 
     async function handleSave() {
         if (!editingItem) return;
@@ -49,45 +37,12 @@ const App: FC = () => {
 
     const sparkles = <SparklesOverlay />;
 
-    function toggleChecklist() {
-        const next = !isActiveList;
-        setActiveChecklist(next);
-        setActiveFilters([]);
-        setEditingItem(null);
-    }
-
-    function handleLogout() {
-        logout();
-        setActiveFilters([]);
-        setActiveChecklist(true);
-        reset();
-    }
-
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
     }
 
     function handleChangeFilters(filters: Tag[]) {
         setActiveFilters(filters);
-    }
-
-    const handleLoginSuccess = async (token: string) => {
-        try { await login(token); }
-        catch (err) { console.error(err); }
-    };
-
-    const handleLogoutClick = () => {
-        handleLogout();
-    };
-
-    const onEnterDemo = () => {
-        setIsDemo(true);
-    };
-
-    if (isDemo) {
-        return <DemoPage />;
-    } else if (!isAuthenticated) {
-        return <LoggedOut onSuccessfulLogin={handleLoginSuccess} onEnterDemo={onEnterDemo} />;
     }
 
     return (
@@ -111,29 +66,6 @@ const App: FC = () => {
             <div className="app_container">
                 <header className="app_header">
                     <h1 className="app_h1">For My Today</h1>
-                    <MenuSquare
-                        onClick={() => { setIsSettingOpen(prev => !prev); }}
-                        className="app_header_menu-icon"
-                    />
-                    {isSettingOpen && (
-                        <div className="app_header_settings">
-                            <div className="app_header_button-group">
-                                {isAuthenticated ? (
-                                    <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
-                                ) : (
-                                    <GoogleLoginButton onSuccess={handleLoginSuccess} />
-                                )}
-                                <GoogleCalendarStatus />
-                            </div>
-                        </div>
-                    )}
-                    {isAuthenticated && (
-                        <ArchiveButton
-                            isActiveList={isActiveList}
-                            editingItem={editingItem}
-                            onToggle={toggleChecklist}
-                        />
-                    )}
                 </header>
                 <main className="app_main">
                     {isLoading ? (
