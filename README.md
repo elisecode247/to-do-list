@@ -21,10 +21,9 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Reset all env variables
 - Split google client id into local and prod
-- hide scheduled tasks for the day in LocalStorage
-- move tasks among levels
 - allow user delete history
 - tabs for active, hidden, scheduled, archived, hidden
 - improve ui for newly logged in user
-    - Welcome Elise! Wave icon
-    - a call to action to add a task
+    - no name shows undefined
+    - add good tasks
+- fix un-hide
