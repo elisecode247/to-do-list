@@ -127,9 +127,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Failed to add task. Please try again.', 'error');
         }
     }
-    if (id === '2f3a7c81-aaa9-46bd-a49d-b9baffcdc765'){
-        console.log('rendered')
-    }
+
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
