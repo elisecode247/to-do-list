@@ -1,22 +1,39 @@
-/* CSS Variables */
 :root {
-    /* Colors */
-    --color-primary: #667eea;
-    --color-primary-dark: #764ba2;
-    --color-text-primary: #333;
-    --color-text-secondary: #666;
-    --color-text-light: #999;
-    --color-background: #f5f5f5;
-    --color-surface: #fff;
-    --color-border: #e0e0e0;
-    --color-border-light: #f0f0f0;
-    --color-priority: #d946ef;
-    --color-success: #ff00a2;
-    --color-warning: #f59e0b;
-    --color-danger: #ef4444;
-    --color-info: #3b82f6;
-    --color-hover: #f9fafb;
-    --color-shadow: rgba(0, 0, 0, 0.1);
+    /* Core Space Palette */
+    --color-primary: #8b5cf6;
+    /* neon purple */
+    --color-primary-dark: #6d28d9;
+    /* deep violet */
+    --color-priority: #ec4899;
+    /* hot pink */
+    --color-success: #22d3ee;
+    /* cyan glow */
+    --color-info: #60a5fa;
+    /* starlight blue */
+    --color-warning: #f472b6;
+    /* pink warning */
+    --color-danger: #fb7185;
+    /* neon coral */
+
+    /* Text */
+    --color-text-primary: #1f1147;
+    --color-text-secondary: #4b3b82;
+    --color-text-light: #8b7bbf;
+
+    /* Surfaces */
+    --color-background: #f7f5ff;
+    /* pale nebula */
+    --color-surface: #ffffff;
+    --color-hover: #f0ecff;
+
+    /* Borders & Shadows */
+    --color-border: #ddd6fe;
+    --color-border-light: #ede9fe;
+    --color-shadow: rgba(139, 92, 246, 0.15);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px var(--color-shadow);
+    --shadow-md: 0 6px 20px rgba(139, 92, 246, 0.18);
 
     /* Spacing */
     --spacing-xs: 8px;
@@ -25,79 +42,86 @@
     --spacing-lg: 20px;
     --spacing-xl: 24px;
 
-    /* Border Radius */
+    /* Radius */
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
     --radius-full: 9999px;
 
-    /* Transitions */
+    /* Motion */
     --transition-fast: 0.2s ease;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 3px var(--color-shadow);
-    --shadow-md: 0 2px 6px var(--color-shadow);
+    /* Tag Frequency (Cosmic Pastels) */
+    --color-tag-daily-bg: #ede9fe;
+    --color-tag-daily-text: #5b21b6;
+    --color-tag-daily-border: #c4b5fd;
 
+    --color-tag-one-time-bg: #fae8ff;
+    --color-tag-one-time-text: #86198f;
+    --color-tag-one-time-border: #f0abfc;
 
-    /* Tag Frequency Colors */
-    --color-tag-daily-bg: #dbeafe;
-    --color-tag-daily-text: #1e40af;
-    --color-tag-daily-border: #93c5fd;
+    --color-tag-occasional-bg: #cffafe;
+    --color-tag-occasional-text: #155e75;
+    --color-tag-occasional-border: #67e8f9;
 
-    --color-tag-one-time-bg: #fef3c7;
-    --color-tag-one-time-text: #92400e;
-    --color-tag-one-time-border: #fde68a;
-
-    --color-tag-occasional-bg: #dcfce7;
-    --color-tag-occasional-text: #166534;
-    --color-tag-occasional-border: #86efac;
-
-    --color-tag-priority-bg: #581c87;
-    --color-tag-priority-text: #e9d5ff;
-    --color-tag-priority-border: #7c3aed;
-
+    --color-tag-priority-bg: #4c1d95;
+    --color-tag-priority-text: #f5d0fe;
+    --color-tag-priority-border: #a855f7;
 }
 
 /* Dark Mode CSS Variables */
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Colors - Dark Mode */
-        --color-primary: #10b981;
-        --color-primary-dark: #059669;
-        --color-text-primary: #f3f4f6;
-        --color-text-secondary: #9ca3af;
-        --color-text-light: #6b7280;
-        --color-background: #111827;
-        --color-surface: #1f2937;
-        --color-border: #374151;
-        --color-border-light: #2d3748;
-        --color-priority: #d946ef;
-        --color-success: #c800ff;
-        --color-warning: #f59e0b;
-        --color-danger: #ef4444;
-        --color-info: #3b82f6;
-        --color-hover: #374151;
-        --color-shadow: rgba(0, 0, 0, 0.3);
+        /* Core Space Palette */
+        --color-primary: #a78bfa;
+        /* glowing lavender */
+        --color-primary-dark: #7c3aed;
+        --color-priority: #f472b6;
+        /* neon pink */
+        --color-success: #22d3ee;
+        --color-info: #7dd3fc;
+        --color-warning: #f9a8d4;
+        --color-danger: #fb7185;
 
-        /* Tag Frequency Colors - Dark Mode */
-        --color-tag-daily-bg: #1e3a8a;
-        --color-tag-daily-text: #93c5fd;
-        --color-tag-daily-border: #1e40af;
+        /* Text */
+        --color-text-primary: #f5f3ff;
+        --color-text-secondary: #c4b5fd;
+        --color-text-light: #8b7bbf;
 
-        --color-tag-one-time-bg: #78350f;
-        --color-tag-one-time-text: #fde68a;
-        --color-tag-one-time-border: #92400e;
+        /* Surfaces */
+        --color-background: #0b061f;
+        /* deep space */
+        --color-surface: #161032;
+        /* folder interior */
+        --color-hover: #221a4d;
 
-        --color-tag-occasional-bg: #14532d;
-        --color-tag-occasional-text: #86efac;
-        --color-tag-occasional-border: #166534;
+        /* Borders & Shadows */
+        --color-border: #2e1065;
+        --color-border-light: #3b0764;
+        --color-shadow: rgba(168, 139, 250, 0.35);
+
+        /* Shadows */
+        --shadow-sm: 0 1px 4px rgba(168, 139, 250, 0.25);
+        --shadow-md: 0 10px 30px rgba(236, 72, 153, 0.25);
+
+        /* Tag Frequency (Neon Chips) */
+        --color-tag-daily-bg: #2e1065;
+        --color-tag-daily-text: #ddd6fe;
+        --color-tag-daily-border: #7c3aed;
+
+        --color-tag-one-time-bg: #4a044e;
+        --color-tag-one-time-text: #f5d0fe;
+        --color-tag-one-time-border: #d946ef;
+
+        --color-tag-occasional-bg: #083344;
+        --color-tag-occasional-text: #67e8f9;
+        --color-tag-occasional-border: #22d3ee;
 
         --color-tag-priority-bg: #581c87;
-        --color-tag-priority-text: #e9d5ff;
-        --color-tag-priority-border: #7c3aed;
+        --color-tag-priority-text: #f0abfc;
+        --color-tag-priority-border: #ec4899;
     }
 
-    /* Body */
     body {
         background-color: var(--color-background);
         color: var(--color-text-primary);

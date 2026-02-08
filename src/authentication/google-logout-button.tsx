@@ -10,6 +10,7 @@ const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
     onLogout,
     email
 }) => {
+    const isEmail = email !== 'undefined';
     const handleLogout = () => {
         // Revoke Google session if available
         if (window.google?.accounts?.id) {
@@ -28,7 +29,7 @@ const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
             <LogOut size={16} />
             <div className="settings-btn-text-wrapper">
                 <span className="settings-btn-title">Log out</span>
-                {email && <span className="settings-btn-subtitle">{email}</span>}
+                {isEmail && <span className="settings-btn-subtitle">{email}</span>}
             </div>
         </button>
     );

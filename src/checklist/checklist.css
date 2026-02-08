@@ -134,7 +134,6 @@
 
 /* Toolbar */
 .checklist_toolbar {
-    margin-bottom: var(--spacing-md);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -235,20 +234,6 @@
     color: white;
     cursor: pointer;
     user-select: none;
-}
-
-/* Show Hidden Checkbox */
-#show-hidden-tasks-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 13px;
-    white-space: nowrap;
-    color: white;
-}
-
-#show-hidden-tasks-label input {
-    margin: 0;
 }
 
 /* List Container */

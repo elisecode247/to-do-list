@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -15,8 +15,9 @@ import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
+import { TABS, default as Tabs } from 'src/checklist/tabs/Tabs';
+
 interface ChecklistProps {
-    isActiveList: boolean;
     activeFilters: Tag[];
     onChangeFilters: (filters: Tag[]) => void;
     onEditItem: (item: ChecklistItem) => void;
@@ -24,7 +25,6 @@ interface ChecklistProps {
 }
 
 const Checklist: FC<ChecklistProps> = ({
-    isActiveList,
     activeFilters,
     onChangeFilters,
     onEditItem,
@@ -44,39 +44,33 @@ const Checklist: FC<ChecklistProps> = ({
     const [hideCompleted, setHideCompleted] = useState(true);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
-    const [showHidden, setShowHidden] = useState(false);
     const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
+    const [activeTab, setActiveTab] = useState(TABS.active);
     const sparkleTimeoutRef = useRef<number | null>(null);
+    const isActiveList = activeTab === TABS.active;
 
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
     );
 
     const filteredTasks = useMemo(() => {
-        return tasks.filter(task => {
-            const isCorrectList = isActiveList === !task.isArchived;
-            const isHidden = showHidden === isHiddenToday(task.id);
-            if (!isCorrectList || !isHidden) return false;
-            return true;
-        });
+        return tasks.map(task => ({ ...task, isHidden: isHiddenToday(task.id)})).filter(task => {
+            if (activeTab === TABS.hidden && task.isHidden) return true;
+            if (activeTab === TABS.scheduled && !task.isHidden) return true;
+            return false;
 
-    }, [tasks, isActiveList, showHidden, isHiddenToday]);
+        });
+    }, [tasks, activeTab, isHiddenToday]);
 
     const filteredItems = useMemo(() => {
-        if (showHidden) {
+        if (activeTab === TABS.hidden) {
             return items.filter(item => {
-                const isCorrectList = isActiveList === !item.isArchived;
-                return isCorrectList && isHiddenToday(item.id as string);
+                return isHiddenToday(item.id as string);
             });
         }
-        const baseItems = filterTasks({ activeFilters, isActiveList, hideCompleted, filterCategory, showHidden });
-        return baseItems.filter(item => {
-            const hidden = isHiddenToday(item.id as string);
-
-            if (showHidden) return hidden;
-            return !hidden;
-        });
-    }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden, isHiddenToday]);
+        const baseItems = filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory });
+        return baseItems;
+    }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -128,6 +122,10 @@ const Checklist: FC<ChecklistProps> = ({
         archiveItem(id);
     };
 
+    const handleTabChange = (tab: SetStateAction<string>) => {
+        setActiveTab(tab);
+    }
+
     const displaySparkles = () => {
         setShowSparkles(true);
         if (sparkleTimeoutRef.current) {
@@ -148,18 +146,6 @@ const Checklist: FC<ChecklistProps> = ({
             }
         };
     }, []);
-
-    const hiddenItemsAndTasksCount = useMemo(() => {
-        const hiddenItemsCount = items.filter(item => {
-            const isCorrectList = isActiveList === !item.isArchived;
-            return isCorrectList && isHiddenToday(item.id as string);
-        }).length
-        const hiddenTasksCount = tasks.filter(task => {
-            const isCorrectList = isActiveList === !task.isArchived;
-            return isCorrectList && isHiddenToday(task.id);
-        }).length
-        return hiddenItemsCount + hiddenTasksCount;
-    }, [items, tasks, isHiddenToday, isActiveList]);
 
     return (
         <>
@@ -237,15 +223,10 @@ const Checklist: FC<ChecklistProps> = ({
                     selectedCategory={filterCategory}
                     onChange={(value: string) => setFilterCategory(value)}
                 />
-                <label id="show-hidden-tasks-label" htmlFor="show-hidden-tasks">
-                    <input
-                        type="checkbox"
-                        id="show-hidden-tasks"
-                        checked={showHidden === true}
-                        onChange={(e) => setShowHidden(e.target.checked)}
-                    />
-                    Show Hidden ({hiddenItemsAndTasksCount})
-                </label>
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
+                />
             </div>
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">

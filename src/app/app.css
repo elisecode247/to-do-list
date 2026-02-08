@@ -256,45 +256,6 @@ body::after {
     width: 100%;
 }
 
-.app_see-archived-checklist-button,
-.app_see-active-checklist-button {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-sm);
-    color: white;
-    padding: var(--spacing-xs) var(--spacing-xs);
-    font-size: 12px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    position: absolute;
-    right: 0;
-    top: 70px;
-}
-
-.app_see-archived-checklist-button:hover:not(:disabled),
-.app_see-active-checklist-button:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.25);
-}
-
-.app_see-archived-checklist-button:active:not(:disabled),
-.app_see-active-checklist-button:active:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.app_see-archived-checklist-button:disabled,
-.app_see-active-checklist-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.app_see-archived-checklist-text {
-    font-size: 13px;
-}
-
 /* Main Content */
 .app_main {
     flex: 1;
@@ -353,10 +314,5 @@ body::after {
 
     .app_header_button-group {
         align-items: flex-end;
-    }
-
-    .app_see-archived-checklist-button,
-    .app_see-active-checklist-button {
-        padding: var(--spacing-xs) var(--spacing-sm);
     }
 }

@@ -22,10 +22,10 @@ Live: https://elisecode247.github.io/to-do-list/
 - Reset all env variables
 - Split google client id into local and prod
 - allow user delete history
-- tabs for active, hidden, scheduled, archived, hidden
+- tabs for active, hidden, scheduled, archived,
 - improve ui for newly logged in user
-    - no name shows undefined
-    - add good tasks
+    - use templates
+- custom categories
 - fix un-hide
-- show priorities even subtasks
-- add text to drag and menu buttons
+- show priorities even in subtasks
+- fix bug fetching "google-client-id" non-stop when logged out and open menu from server shut down

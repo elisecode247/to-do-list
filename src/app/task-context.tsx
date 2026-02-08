@@ -8,6 +8,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
+import { TABS } from 'src/checklist/tabs/Tabs';
 
 interface TaskContextType {
     items: ChecklistItem[];
@@ -24,10 +25,9 @@ interface TaskContextType {
     reset: () => void;
     filterTasks: (params: {
         activeFilters: Tag[];
-        isActiveList: boolean;
+        activeTab: string;
         hideCompleted: boolean;
         filterCategory: string;
-        showHidden: boolean;
     }) => ChecklistItem[];
     getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
 }
@@ -361,22 +361,28 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     type FilterParams = {
         activeFilters: Tag[];
-        isActiveList: boolean;
+        activeTab: string;
         hideCompleted: boolean;
         filterCategory: string;
-        showHidden: boolean;
     };
     const filterTasks = ({
         activeFilters,
-        isActiveList,
+        activeTab,
         hideCompleted,
         filterCategory,
-        showHidden,
     }: FilterParams) => {
+        let filteredItems = [...items];
         if (!items.length) return items;
-        if (showHidden) {
-            return items.filter(task => isActiveList === !task.isArchived && task.isHidden === true);
+        if (activeTab === TABS.active) {
+            filteredItems = items.filter(task => task.isArchived === false);
+        } else if (activeTab === TABS.hidden) {
+            filteredItems =  items.filter(task => task.isHidden === true);
+        } else if (activeTab === TABS.scheduled) {
+            filteredItems = items.filter(task => task.tags.includes('scheduled'));
+        } else if (activeTab === TABS.archived) {
+            filteredItems = items.filter(task => task.isArchived === true);
         }
+        return filteredItems;
         const exclusiveFilters = activeFilters.filter(
             selected => isExclusiveTag(selected)
         );
@@ -384,11 +390,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             selected => !isExclusiveTag(selected)
         );
 
-        return items.filter(task => {
-            if (isActiveList && task.parentUuid) return false;
-            if (isActiveList ? task.isArchived : !task.isArchived) return false;
+        return filteredItems.filter(task => {
+            if (task.parentUuid) return false;
             if (hideCompleted && isDateToday(task.lastCompleted)) return false;
-            if (!showHidden && task.isHidden) return false;
 
             const tagSet = new Set(task.tags);
 

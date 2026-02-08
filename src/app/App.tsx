@@ -10,7 +10,6 @@ import { type Tag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
-import ArchiveButton from './ArchiveButton';
 import AccountMenu from './AccountMenu';
 import LoggedOut from 'src/logged-out/LoggedOut';
 import SparklesOverlay from './SparklesOverlay';
@@ -29,7 +28,6 @@ const App: FC = () => {
         updateItem,
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-    const [isActiveList, setActiveChecklist] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
 
     async function handleSave() {
@@ -45,13 +43,6 @@ const App: FC = () => {
     }
 
     const sparkles = <SparklesOverlay />;
-
-    function toggleChecklist() {
-        const next = !isActiveList;
-        setActiveChecklist(next);
-        setActiveFilters([]);
-        setEditingItem(null);
-    }
 
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
@@ -72,7 +63,6 @@ const App: FC = () => {
 
     function handleLogout() {
         setActiveFilters([]);
-        setActiveChecklist(true);
     }
 
     return (
@@ -102,11 +92,6 @@ const App: FC = () => {
                         <header className="app_header">
                             <h1 className="app_h1">For My Today</h1>
                             <AccountMenu onLogout={handleLogout} />
-                            <ArchiveButton
-                                isActiveList={isActiveList}
-                                editingItem={editingItem}
-                                onToggle={toggleChecklist}
-                            />
                         </header>
                         <main className="app_main">
                             {isLoading ? (
@@ -121,7 +106,6 @@ const App: FC = () => {
                                 />
                             ) : (
                                 <Checklist
-                                    isActiveList={isActiveList}
                                     activeFilters={activeFilters}
                                     onChangeFilters={handleChangeFilters}
                                     onEditItem={handleEditItem}
