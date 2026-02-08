@@ -26,6 +26,7 @@ import {
     BookMinus
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
+import SortableItemPlaceholder from './SortableItemPlaceholder';
 
 interface SortableItemProps {
     id: UniqueIdentifier;
@@ -72,13 +73,14 @@ export const SortableItem: FC<SortableItemProps> = ({
 }) => {
     const { getSubtasks, addItem } = useTask();
     const { showToast } = useToast();
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
         useSortable({ id });
-    const [collapsed, setCollapsed] = useState(true);
-    const toggleCollapsed = () => setCollapsed(!collapsed);
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
+    const [dropZoneOpen, setDropZoneOpen] = useState(false);
+    const toggleCollapsed = () => setCollapsed(!collapsed);
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -88,6 +90,13 @@ export const SortableItem: FC<SortableItemProps> = ({
     const showLastCompleted = !!lastCompleted;
     const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
     const priorityStyle = tags.includes(PRIORITY_TAG) ? 'yellow' : 'none';
+
+    const filteredTasks = subtasks?.filter((t) => {
+        if (isHiddenToday(t.id as string)) return false;
+        if (isHideCompleted && t.done) return false;
+        if (isActive === t.isArchived) return false;
+        return true;
+    });
 
     async function handleAdd(id: UniqueIdentifier) {
         if (!inputText.trim()) {
@@ -118,10 +127,12 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Failed to add task. Please try again.', 'error');
         }
     }
-
+    if (id === '2f3a7c81-aaa9-46bd-a49d-b9baffcdc765'){
+        console.log('rendered')
+    }
     return (
         <div
-            className="sortable-item_drag-wrapper"
+            className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
             ref={setNodeRef}
             style={style}
             {...attributes}
@@ -229,6 +240,19 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     <span className="sortable-item_button-text-span">Add Subtask</span>
                                 </button>
 
+                                {!hasSubChores && (
+                                    <button
+                                        className="sortable-item_hide-button"
+                                        onClick={() => setDropZoneOpen(!dropZoneOpen)}
+                                        aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
+                                    >
+                                        {dropZoneOpen ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                        <span className="sortable-item_button-text-span">
+                                            {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
+                                        </span>
+                                    </button>
+                                )}
+
                                 <button
                                     className="sortable-item_edit-button"
                                     onClick={() => handleEdit(id)}
@@ -325,40 +349,37 @@ export const SortableItem: FC<SortableItemProps> = ({
                 ) : null}
                 {/* RECURSIVE SUBTASKS */}
                 <div className="sortable-item_subtasks-container">
-                    {!collapsed && (
-                        <SortableContext items={subtasks?.map(i => i.id) || []}>
-                            {subtasks?.filter((t) => {
-                                if (isHiddenToday(t.id as string)) return false;
-                                if (isHideCompleted && t.done) return false;
-                                if (isActive === t.isArchived) return false;
-                                return true;
-                            })
-                                ?.map((subtask) => (
-                                    <SortableItem
-                                        key={subtask.id}
-                                        id={subtask.id}
-                                        hasSubChores={subtask.hasSubChores}
-                                        isActive={isActive}
-                                        isHidden={isHiddenToday(subtask.id as string)}
-                                        isHiddenToday={isHiddenToday}
-                                        isHideCompleted={isHideCompleted}
-                                        checked={subtask.done}
-                                        deleteItem={deleteItem}
-                                        prioritizeItem={prioritizeItem}
-                                        text={subtask.text}
-                                        note={subtask.note}
-                                        lastCompleted={subtask.lastCompleted}
-                                        toggleChecked={toggleChecked}
-                                        handleEdit={handleEdit}
-                                        handleHideItem={handleHideItem}
-                                        onMoveItem={onMoveItem}
-                                        tags={subtask.tags as Tag[]}
-                                        onSuccess={onSuccess}
-                                        subtasks={getSubtasks(subtask.id)}
-                                    />
-                                ))}
-                        </SortableContext>
-                    )}
+
+                    <SortableContext items={filteredTasks?.map(i => i.id) || []}>
+                        {!hasSubChores && dropZoneOpen && (
+                            <SortableItemPlaceholder id={id as string} />
+                        )}
+                        {!collapsed && filteredTasks?.map((subtask) => (
+                            <SortableItem
+                                key={subtask.id}
+                                id={subtask.id}
+                                hasSubChores={subtask.hasSubChores}
+                                isActive={isActive}
+                                isHidden={isHiddenToday(subtask.id as string)}
+                                isHiddenToday={isHiddenToday}
+                                isHideCompleted={isHideCompleted}
+                                checked={subtask.done}
+                                deleteItem={deleteItem}
+                                prioritizeItem={prioritizeItem}
+                                text={subtask.text}
+                                note={subtask.note}
+                                lastCompleted={subtask.lastCompleted}
+                                toggleChecked={toggleChecked}
+                                handleEdit={handleEdit}
+                                handleHideItem={handleHideItem}
+                                onMoveItem={onMoveItem}
+                                tags={subtask.tags as Tag[]}
+                                onSuccess={onSuccess}
+                                subtasks={getSubtasks(subtask.id)}
+                            />
+                        ))}
+                    </SortableContext>
+
                 </div>
             </div>
         </div>

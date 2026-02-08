@@ -242,22 +242,36 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
         setItems(prevItems => {
             const activeItem = prevItems.find(i => i.id === activeId);
+
+            if (!activeItem) return prevItems;
+
+            // Detect placeholder dropzone
+            let isFirstSubTask = false;
+            let placeholderParentId: UniqueIdentifier | null = null;
+
+            if (typeof overId === "string" && overId.startsWith("placeholder-")) {
+                isFirstSubTask = true;
+                placeholderParentId = overId.replace("placeholder-", "");
+                overId = placeholderParentId;
+            }
+
             const overItem = prevItems.find(i => i.id === overId);
 
-            if (!activeItem || !overItem) return prevItems;
+            if (!overItem) return prevItems;
 
-            const oldParent = activeItem.parentUuid ?? null;
-            const newParent = overItem.parentUuid ?? null;
+            const oldParent = (activeItem.parentUuid ?? null) as UniqueIdentifier | null;
 
-            // Helper: get siblings sorted correctly
-            const getSiblings = (parentUuid: string | null) =>
+            // If placeholder is used, newParent becomes the *parent task itself*
+            const newParent: UniqueIdentifier | null = isFirstSubTask ? (overItem.id as UniqueIdentifier) : (overItem.parentUuid ?? null);
+
+            const getSiblings = (parentUuid: UniqueIdentifier | null) =>
                 prevItems
                     .filter(i => (i.parentUuid ?? null) === parentUuid)
                     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-            // Same parent reorder
-            if (oldParent === newParent) {
-                const siblings = getSiblings(oldParent as string | null);
+            // SAME PARENT REORDER
+            if (oldParent === newParent && !isFirstSubTask) {
+                const siblings = getSiblings(oldParent);
 
                 const oldIndex = siblings.findIndex(i => i.id === activeId);
                 const newIndex = siblings.findIndex(i => i.id === overId);
@@ -271,9 +285,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                     sortOrder: index,
                 }));
 
-                const otherItems = prevItems.filter(
-                    item => (item.parentUuid ?? null) !== oldParent
-                );
+                const otherItems = prevItems.filter(item => (item.parentUuid ?? null) !== oldParent);
 
                 updateTasksOrder(
                     reordered.map(({ id, sortOrder, parentUuid }) => ({
@@ -286,12 +298,17 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 return [...otherItems, ...reordered];
             }
 
-            // Cross parent move
-            const oldSiblings = getSiblings(oldParent as string | null).filter(i => i.id !== activeId);
-            const newSiblings = getSiblings(newParent as string | null);
+            // CROSS PARENT MOVE
+            const oldSiblings = getSiblings(oldParent).filter(i => i.id !== activeId);
+            const newSiblings = getSiblings(newParent);
 
-            const insertIndex = newSiblings.findIndex(i => i.id === overId);
-            const targetIndex = insertIndex === -1 ? newSiblings.length : insertIndex;
+            // If placeholder dropzone, insert at index 0 always
+            let targetIndex = 0;
+
+            if (!isFirstSubTask) {
+                const insertIndex = newSiblings.findIndex(i => i.id === overId);
+                targetIndex = insertIndex === -1 ? newSiblings.length : insertIndex;
+            }
 
             const movedItem = {
                 ...activeItem,
@@ -317,25 +334,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 return p !== oldParent && p !== newParent;
             });
 
-            const updatedItems = [
-                ...untouched,
-                ...updatedOldSiblings,
-                ...updatedNewSiblings,
-            ];
+            const updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
 
             updateTasksOrder(
-                [...updatedOldSiblings, ...updatedNewSiblings].map(
-                    ({ id, sortOrder, parentUuid }) => ({
-                        id,
-                        sortOrder,
-                        parentUuid: parentUuid ?? null,
-                    })
-                )
+                [...updatedOldSiblings, ...updatedNewSiblings].map(({ id, sortOrder, parentUuid }) => ({
+                    id,
+                    sortOrder,
+                    parentUuid: parentUuid ?? null,
+                }))
             ).catch(console.error);
 
             return updatedItems;
         });
     };
+
 
 
 
