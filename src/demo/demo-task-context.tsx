@@ -4,7 +4,6 @@ import type { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useToast } from 'src/toast/use-toast';
-import { isDateToday } from 'src/utilities/is-date-today';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 
 const DEMO_STORAGE_KEY = 'demo_checklist_tasks';

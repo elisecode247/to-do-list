@@ -46,10 +46,17 @@
     cursor: grab;
     transition: color var(--transition-fast);
     flex-shrink: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: none;
+    -webkit-touch-callout: none
 }
 
 .sortable-item_drag-handle:hover {
     color: var(--color-text-secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .sortable-item_drag-handle:active {
@@ -274,7 +281,7 @@
     }
 
     .sortable-item_drag-handle {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-md);
     }
 
     .sortable-item_checkbox {
@@ -392,14 +399,4 @@
     position: absolute;
     top: 0;
     right: 0;
-}
-
-.sortable-item_drag-wrapper,
-.sortable-item_container,
-.sortable-item_text-container {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    touch-action: pan-y;
 }

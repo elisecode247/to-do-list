@@ -144,7 +144,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         title="Drag to reorder"
                         type="button"
                     >
-                        <GripVertical size={16} />
+                        <GripVertical size={24} />
                     </button>
                     <input
                         className="sortable-item_checkbox"
