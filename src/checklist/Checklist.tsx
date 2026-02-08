@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect, type FC, type ReactElement } from 'react';
 import type { ChecklistItem } from 'app/types.ts';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
@@ -79,6 +79,14 @@ const Checklist: FC<ChecklistProps> = ({
         });
     }, [items, activeFilters, isActiveList, hideCompleted, filterCategory, showHidden, isHiddenToday]);
 
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+                delay: 100,
+            },
+        })
+    );
     function handleDragStart(event: DragStartEvent) {
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
@@ -242,7 +250,7 @@ const Checklist: FC<ChecklistProps> = ({
                     Show Hidden ({hiddenItemsAndTasksCount})
                 </label>
             </div>
-            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
                     {events.map(event => (
                         <CalendarEventItem

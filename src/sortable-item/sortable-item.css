@@ -393,3 +393,13 @@
     top: 0;
     right: 0;
 }
+
+.sortable-item_drag-wrapper,
+.sortable-item_container,
+.sortable-item_text-container {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: pan-y;
+}
