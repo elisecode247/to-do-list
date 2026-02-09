@@ -221,7 +221,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <span className="sortable-item_button-text-span">Notes</span>
                             </button>
                         )}
-
+                        {isActive ? (
                         <button
                             className="sortable-item_hide-button"
                             onClick={() => handleHideItem(id, isHidden)}
@@ -230,8 +230,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                             type="button"
                         >
                             {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
-                            <span className="sortable-item_button-text-span">Hide Today</span>
+                            <span className="sortable-item_button-text-span">
+                                {isHidden ? "Unhide Today" : "Hide Today"}
+                            </span>
                         </button>
+                        ) : null}
 
                         <div className="sortable-item_menu-wrapper">
                             <button

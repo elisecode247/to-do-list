@@ -10,6 +10,13 @@ import { isDateToday } from 'src/utilities/is-date-today';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { TABS } from 'src/checklist/tabs/Tabs';
 
+type FilterParams = {
+    activeFilters: Tag[];
+    activeTab: string;
+    hideCompleted: boolean;
+    filterCategory: string;
+    isHiddenToday: (id: string) => boolean;
+};
 interface TaskContextType {
     items: ChecklistItem[];
     isLoading: boolean;
@@ -23,12 +30,7 @@ interface TaskContextType {
     archiveItem: (id: UniqueIdentifier) => void;
     reorderItems: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
     reset: () => void;
-    filterTasks: (params: {
-        activeFilters: Tag[];
-        activeTab: string;
-        hideCompleted: boolean;
-        filterCategory: string;
-    }) => ChecklistItem[];
+    filterTasks: (params: FilterParams) => ChecklistItem[];
     getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
 }
 
@@ -359,59 +361,73 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    type FilterParams = {
-        activeFilters: Tag[];
-        activeTab: string;
-        hideCompleted: boolean;
-        filterCategory: string;
-    };
     const filterTasks = ({
         activeFilters,
         activeTab,
         hideCompleted,
         filterCategory,
+        isHiddenToday
     }: FilterParams) => {
-        let filteredItems = [...items];
         if (!items.length) return items;
-        if (activeTab === TABS.active) {
-            filteredItems = items.filter(task => task.isArchived === false);
-        } else if (activeTab === TABS.hidden) {
-            filteredItems =  items.filter(task => task.isHidden === true);
-        } else if (activeTab === TABS.scheduled) {
-            filteredItems = items.filter(task => task.tags.includes('scheduled'));
-        } else if (activeTab === TABS.archived) {
-            filteredItems = items.filter(task => task.isArchived === true);
-        }
-        return filteredItems;
-        const exclusiveFilters = activeFilters.filter(
-            selected => isExclusiveTag(selected)
-        );
-        const nonExclusiveFilters = activeFilters.filter(
-            selected => !isExclusiveTag(selected)
+
+        let filteredItems = [...items].map(item =>
+            ({ ...item, isHidden: isHiddenToday(item.id as string)})
         );
 
-        return filteredItems.filter(task => {
+        // --- Tab filtering ---
+        filteredItems = filteredItems.filter(task => {
+            switch (activeTab) {
+                case TABS.active:
+                    return (
+                        !task.isArchived ||
+                        task.tags.includes('scheduled') // TODO  && new Date(task.due) <= today
+                    );
+                case TABS.scheduled:
+                    return task.tags.includes('scheduled');
+                case TABS.hidden:
+                    return task.isHidden;
+                case TABS.archived:
+                    return task.isArchived;
+                case TABS.priority:
+                    return task.tags.includes('priority');
+                default:
+                    return true;
+            }
+        });
+
+        // --- Further filters ---
+        const exclusiveFilters = activeFilters.filter(tag => isExclusiveTag(tag));
+        const nonExclusiveFilters = activeFilters.filter(tag => !isExclusiveTag(tag));
+
+        filteredItems = filteredItems.filter(task => {
+            // skip subtasks
             if (task.parentUuid) return false;
-            if (hideCompleted && isDateToday(task.lastCompleted)) return false;
+
+            // hide completed tasks
+            if (hideCompleted && task.done) return false;
 
             const tagSet = new Set(task.tags);
 
             // OR logic for exclusive tags
-            if (exclusiveFilters.length > 0) {
-                if (!exclusiveFilters.some(tag => tagSet.has(tag))) return false;
-            }
-
-            // AND logic for everything else (priority, etc)
-            for (const tag of nonExclusiveFilters) {
-                if (!tagSet.has(tag)) return false;
-            }
-            if (!isCategoryIncluded(filterCategory, task.category)) {
+            if (exclusiveFilters.length > 0 && !exclusiveFilters.some(tag => tagSet.has(tag))) {
                 return false;
             }
 
+            // AND logic for non-exclusive tags
+            if (!nonExclusiveFilters.every(tag => tagSet.has(tag))) return false;
+
+            // category filter
+            if (!isCategoryIncluded(filterCategory, task.category)) return false;
+
+            // hidden today filter
+            if (activeTab !== TABS.hidden && task.isHidden) return false;
+
             return true;
         });
-    }
+
+        return filteredItems;
+    };
+
 
     const getSubtasks = (parentId: UniqueIdentifier) => {
         if (!parentId) return [];

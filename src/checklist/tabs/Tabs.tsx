@@ -2,6 +2,7 @@ import { useRef } from "react";
 import './tabs.css';
 
 export const TABS = {
+    priority: 'priority',
     active: 'active',
     scheduled: 'scheduled',
     hidden: 'hidden',
@@ -9,10 +10,11 @@ export const TABS = {
 }
 
 const tabOptions = [
-    { id: "active", label: "Active" },
-    { id: "scheduled", label: "Scheduled" },
-    { id: "hidden", label: "Hidden Today" },
-    { id: "archived", label: "Archived" },
+    { id: TABS.priority, label: "Priority"},
+    { id: TABS.active, label: "Active" },
+    { id: TABS.scheduled, label: "Scheduled" },
+    { id: TABS.hidden, label: "Hidden Today" },
+    { id: TABS.archived, label: "Archived" },
 ];
 
 type TabsProps<T extends string> = {

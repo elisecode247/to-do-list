@@ -44,7 +44,7 @@ const Checklist: FC<ChecklistProps> = ({
     const [hideCompleted, setHideCompleted] = useState(true);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
-    const { isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
+    const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
     const [activeTab, setActiveTab] = useState(TABS.active);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.active;
@@ -60,16 +60,10 @@ const Checklist: FC<ChecklistProps> = ({
             return false;
 
         });
-    }, [tasks, activeTab, isHiddenToday]);
+    }, [tasks, activeTab, isHiddenToday, hiddenItems]);
 
     const filteredItems = useMemo(() => {
-        if (activeTab === TABS.hidden) {
-            return items.filter(item => {
-                return isHiddenToday(item.id as string);
-            });
-        }
-        const baseItems = filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory });
-        return baseItems;
+        return filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
 
     const sensors = useSensors(
@@ -165,11 +159,7 @@ const Checklist: FC<ChecklistProps> = ({
                             : 'filter-button-all'
                             }`}
                     >
-                        All ({items.filter(t => {
-                            if (t.isArchived !== !isActiveList) return false;
-                            if (t.parentUuid) return false;
-                            return true;
-                        }).length})
+                        All
                     </button>
                     {TAGS.map(tag => {
                         const isPriority = tag === PRIORITY_TAG;
@@ -192,11 +182,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 `}
                             >
                                 {isPriority ? '⭐ ' : ''}
-                                {tag} ({items.filter(t => {
-                                    if (t.isArchived !== !isActiveList) return false;
-                                    if (t.parentUuid) return false;
-                                    return t.tags.includes(tag);
-                                }).length})
+                                {tag}
                             </button>
                         )
                     })}
@@ -254,7 +240,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 checked={item.done}
                                 key={item.id}
                                 id={item.id}
-                                isHidden={isHiddenToday(item.id as string)}
+                                isHidden={item.isHidden}
                                 isHiddenToday={isHiddenToday}
                                 isHideCompleted={hideCompleted}
                                 text={item.text}

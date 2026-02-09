@@ -1,7 +1,7 @@
 import type { UniqueIdentifier } from '@dnd-kit/core';
 
 export interface ChecklistItem {
-    isHidden?: boolean;
+    isHidden: boolean;
     id: UniqueIdentifier;
     text: string;
     done: boolean;
@@ -13,4 +13,5 @@ export interface ChecklistItem {
     isArchived: boolean;
     hasSubChores: boolean;
     parentUuid: UniqueIdentifier | null;
+    due?: string;
 }
