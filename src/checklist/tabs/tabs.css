@@ -8,11 +8,13 @@
     align-items: flex-end;
     margin-bottom: -1px;
     flex-wrap: wrap-reverse;
+    gap: 4px;
 }
 
 .tab {
     position: relative;
-    padding: 8px 14px 6px;
+    padding: 10px 18px 6px;
+    min-height: 44px;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     border-width: 1px 1px 0px 1px;
     color: var(--color-text-primary);
