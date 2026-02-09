@@ -8,6 +8,7 @@ export const withBase = (path: string) =>
 export const ROUTES = {
     home: '/',
     demo: '/demo',
+    userSettings: '/settings',
 } as const;
 
 

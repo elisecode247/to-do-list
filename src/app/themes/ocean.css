@@ -1,0 +1,230 @@
+:root[data-theme-style="ocean"] {
+    /* Core Ocean Palette */
+    --color-primary: #0ea5e9;
+    /* ocean blue */
+    --color-primary-dark: #0369a1;
+    /* deep sea */
+    --color-primary-dark-hover: #075985;
+    /* waves hover */
+    --color-priority: #facc15;
+    /* sunbeam yellow */
+    --color-success: #06b6d4;
+    /* turquoise glow */
+    --color-info: #38bdf8;
+    /* sky reflection */
+    --color-warning: #fbbf24;
+    /* sandy highlight */
+    --color-danger: #ef4444;
+    /* coral red */
+
+    /* Text */
+    --color-text-primary: #1e3a8a;
+    /* deep ocean text */
+    --color-text-secondary: #1e40af;
+    /* calm waves text */
+
+    /* Surfaces */
+    --color-background: #cffafe;
+    /* light aqua water */
+    --color-surface: #ffffff;
+    /* foam white */
+    --color-hover: #bae6fd;
+    /* shallow water hover */
+
+    /* Borders & Shadows */
+    --color-border: #7dd3fc;
+    --color-border-light: #38bdf8;
+    --color-shadow: rgba(14, 165, 233, 0.15);
+
+    --color-tag-priority-bg: #0369a1;
+    --color-tag-priority-text: #bae6fd;
+    --color-tag-priority-border: #0ea5e9;
+}
+
+:root[data-theme-style="ocean"] body {
+    background:
+        /* soft clouds */
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.6), transparent 40%),
+        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.5), transparent 45%),
+
+        /* sky gradient */
+        linear-gradient(to bottom,
+            #7dd3fc 0%,
+            /* bright sky */
+            #bae6fd 25%,
+            /* haze */
+            #e0f7ff 40%,
+            /* near horizon */
+            transparent 41%),
+
+        /* ocean gradient */
+        linear-gradient(to bottom,
+            transparent 40%,
+            #22d3ee 45%,
+            /* shallow water */
+            #0284c7 70%,
+            /* deep water */
+            #0369a1 100%
+            /* near horizon */
+        );
+
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--color-text-primary);
+}
+
+:root[data-theme-style="ocean"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        radial-gradient(2px 2px at 10% 60%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 30% 55%, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(2px 2px at 60% 65%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 80% 58%, rgba(255, 255, 255, 0.4), transparent);
+
+    animation: waterBubbles 80s linear infinite alternate;
+    opacity: 0.6;
+}
+
+@keyframes waterBubbles {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(-120px, -40px, 0);
+    }
+}
+
+:root[data-theme-style="ocean"] .app_h1 {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+    background: linear-gradient(135deg,
+            #0ea5e9 0%,
+            #38bdf8 50%,
+            #0284c7 100%);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: oceanGlow 12s ease-in-out infinite;
+    margin: var(--spacing-md) auto 0 auto;
+}
+
+@keyframes oceanGlow {
+
+    0%,
+    100% {
+        text-shadow:
+            0 0 8px rgba(14, 165, 233, 0.35),
+            0 0 16px rgba(6, 182, 212, 0.25);
+    }
+
+    50% {
+        text-shadow:
+            0 0 14px rgba(6, 182, 212, 0.45),
+            0 0 24px rgba(14, 165, 233, 0.35);
+    }
+}
+
+/* Dark Mode Ocean */
+:root[data-theme="dark"][data-theme-style="ocean"] {
+    /* Core Ocean Palette */
+    --color-primary: #38bdf8;
+    /* moonlit aqua */
+    --color-primary-dark: #0369a1;
+    /* deep water */
+    --color-primary-dark-hover: #075985;
+    /* waves hover */
+    --color-priority: #facc15;
+    /* sunbeam yellow */
+    --color-success: #06b6d4;
+    /* turquoise glow */
+    --color-info: #0ea5e9;
+    /* deep sky reflection */
+    --color-warning: #fbbf24;
+    /* sandy highlight */
+    --color-danger: #ef4444;
+    /* coral red */
+
+    /* Text */
+    --color-text-primary: #e0f2fe;
+    --color-text-secondary: #bae6fd;
+
+    /* Surfaces */
+    --color-background: #022c3a;
+    /* deep twilight water */
+    --color-surface: #075985;
+    /* dark ocean floor */
+    --color-hover: #0c4a6e;
+    /* damp reef */
+
+    /* Borders & Shadows */
+    --color-border: #0ea5e9;
+    --color-border-light: #38bdf8;
+    --color-shadow: rgba(14, 165, 233, 0.25);
+
+    --shadow-sm: 0 1px 4px rgba(14, 165, 233, 0.2);
+    --shadow-md: 0 10px 30px rgba(3, 105, 161, 0.35);
+
+    --color-tag-priority-bg: #00a2ff;
+    --color-tag-priority-text: #002239;
+    --color-tag-priority-border: #38bdf8;
+}
+
+:root[data-theme-style="ocean"][data-theme="dark"] body {
+    background:
+        /* moonlit water haze */
+        radial-gradient(circle at 70% 15%, rgba(186, 230, 253, 0.15), transparent 45%),
+
+        /* night sky */
+        linear-gradient(to bottom,
+            #022c3a 0%,
+            #035387 30%,
+            #0c4a6e 42%,
+            transparent 53%),
+
+        /* dark ocean */
+        linear-gradient(to bottom,
+            transparent 42%,
+            #075985 50%,
+            #0c4a6e 75%,
+            #022c3a 100%);
+
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: #e0f2fe;
+}
+
+:root[data-theme-style="ocean"][data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        radial-gradient(2px 2px at 20% 65%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 40% 60%, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(2px 2px at 75% 70%, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(1px 1px at 85% 62%, rgba(255, 255, 255, 0.3), transparent);
+
+    animation: oceanBubbles 90s ease-in-out infinite alternate;
+    opacity: 0.5;
+}
+
+@keyframes oceanBubbles {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(-80px, -30px, 0);
+    }
+}

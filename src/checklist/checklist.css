@@ -260,6 +260,7 @@
     overflow-y: auto;
     min-height: 0;
     flex: 1;
+    width: 100%;
 }
 
 .sparkles {

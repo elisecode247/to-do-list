@@ -1,0 +1,46 @@
+.user-settings-container {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+}
+
+/* Appearance Settings */
+
+.settings-section {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+legend {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.radio-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+}
+
+.radio-option input {
+    accent-color: var(--color-primary);
+}

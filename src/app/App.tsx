@@ -16,6 +16,8 @@ import DemoPage from 'src/demo/DemoPage';
 import NotFound from 'src/not-found/NotFound';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
+import UserSettings from 'src/user-settings/UserSettings';
+import 'app/themes/themes.css';
 
 const App: FC = () => {
     const { toasts, showToast, removeToast } = useToast();
@@ -105,6 +107,7 @@ const App: FC = () => {
                 </>)}
             </Route>
             <Route path={ROUTES.demo} component={DemoPage} />
+            <Route path={ROUTES.userSettings} component={UserSettings} />
             <Route>
                 <NotFound />
             </Route>

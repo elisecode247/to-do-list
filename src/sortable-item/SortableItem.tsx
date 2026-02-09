@@ -223,7 +223,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 title="Prioritize task"
                                 type="button"
                             >
-                                <Star size={24} />
+                                {!tags.includes(PRIORITY_TAG) ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
                                 <span className="sortable-item_button-text-span">Priority</span>
                             </button>
 

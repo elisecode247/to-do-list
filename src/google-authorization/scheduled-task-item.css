@@ -107,18 +107,3 @@
     }
 
 }
-
-@media (prefers-color-scheme: dark) {
-    .scheduled-task-item {
-        background-color: var(--color-surface);
-        color: var(--color-text-primary);
-    }
-
-    .scheduled-task-item:hover {
-        background-color: var(--color-surface-hover);
-    }
-
-    .scheduled-task-item .scheduled-task-link {
-        color: #8ab4f8;
-    }
-}

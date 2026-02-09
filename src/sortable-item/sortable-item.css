@@ -133,10 +133,10 @@
 
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--spacing-xs);
 
-    padding: 8px;
-    border-radius: 10px;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-md);
     background: var(--color-background);
     box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
 
@@ -164,7 +164,7 @@
 .sortable-item_menu-dropdown button {
     width: 100%;
     height: auto;
-    padding: 10px 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
 
     display: flex;
     align-items: center;

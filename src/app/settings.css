@@ -29,13 +29,13 @@
     color: var(--color-text-primary);
     font-size: 13px;
     font-weight: 600;
-
+    text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.05s ease;
 }
 
 .settings-btn:hover {
-    background: var(--color-shadow) ;
+    background: var(--color-background-hover) ;
 }
 
 .settings-btn:active {
