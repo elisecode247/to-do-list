@@ -18,8 +18,11 @@ import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import UserSettings from 'src/user-settings/UserSettings';
 import 'app/themes/themes.css';
+import { useTheme } from 'src/user-settings/use-theme';
 
 const App: FC = () => {
+        useTheme();
+
     const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login } = useAuthentication();
     const {

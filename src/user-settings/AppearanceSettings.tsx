@@ -4,16 +4,33 @@ type ThemeMode = 'system' | 'light' | 'dark';
 type ThemeStyle = 'space' | 'nature' | 'ocean';
 type Density = 'comfortable' | 'compact';
 
-function AppearanceSettings() {
-    const [mode, setMode] = useState<ThemeMode>('system');
-    const [style, setStyle] = useState<ThemeStyle>('space');
-    const [density, setDensity] = useState<Density>('comfortable');
+function getStored<T extends string>(key: string, fallback: T): T {
+    if (typeof window === 'undefined') return fallback;
+    return (localStorage.getItem(key) as T) ?? fallback;
+}
 
-    // Apply to <html>
+function AppearanceSettings() {
+    const [mode, setMode] = useState<ThemeMode>(() =>
+        getStored('theme-mode', 'system')
+    );
+
+    const [style, setStyle] = useState<ThemeStyle>(() =>
+        getStored('theme-style', 'space')
+    );
+
+    const [density, setDensity] = useState<Density>(() =>
+        getStored('theme-density', 'comfortable')
+    );
+
+    useEffect(() => {
+        localStorage.setItem('theme-mode', mode);
+        localStorage.setItem('theme-style', style);
+        localStorage.setItem('theme-density', density);
+    }, [mode, style, density]);
+
     useEffect(() => {
         const root = document.documentElement;
 
-        // Theme mode
         if (mode === 'system') {
             root.removeAttribute('data-theme');
         } else {
@@ -32,6 +49,7 @@ function AppearanceSettings() {
             <fieldset>
                 <legend>Mode</legend>
                 <RadioGroup
+                    name="theme-mode"
                     value={mode}
                     onChange={setMode}
                     options={[
@@ -46,6 +64,7 @@ function AppearanceSettings() {
             <fieldset>
                 <legend>Theme</legend>
                 <RadioGroup
+                    name="theme-style"
                     value={style}
                     onChange={setStyle}
                     options={[
@@ -60,6 +79,7 @@ function AppearanceSettings() {
             <fieldset>
                 <legend>Layout Density</legend>
                 <RadioGroup
+                    name="theme-density"
                     value={density}
                     onChange={setDensity}
                     options={[
@@ -73,10 +93,12 @@ function AppearanceSettings() {
 }
 
 function RadioGroup<T extends string>({
+    name,
     value,
     onChange,
     options,
 }: {
+    name: string;
     value: T;
     onChange: (value: T) => void;
     options: { value: T; label: string }[];
@@ -87,7 +109,7 @@ function RadioGroup<T extends string>({
                 <label key={opt.value} className="radio-option">
                     <input
                         type="radio"
-                        name={options[0].value}
+                        name={name}
                         checked={value === opt.value}
                         onChange={() => onChange(opt.value)}
                     />
