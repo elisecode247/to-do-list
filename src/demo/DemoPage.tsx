@@ -7,7 +7,6 @@ import type { ChecklistItem } from 'app/types';
 import Checklist from 'src/demo/DemoChecklist.tsx';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
-import { type Tag } from 'src/checklist/constants';
 import { useTask } from 'src/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
@@ -21,8 +20,6 @@ const App: FC = () => {
         updateItem
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-    const [isActiveList, _setActiveChecklist] = useState(true);
-    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
 
     async function handleSave() {
         if (!editingItem) return;
@@ -40,10 +37,6 @@ const App: FC = () => {
 
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
-    }
-
-    function handleChangeFilters(filters: Tag[]) {
-        setActiveFilters(filters);
     }
 
     return (
@@ -81,9 +74,6 @@ const App: FC = () => {
                         />
                     ) : (
                         <Checklist
-                            isActiveList={isActiveList}
-                            activeFilters={activeFilters}
-                            onChangeFilters={handleChangeFilters}
                             onEditItem={handleEditItem}
                             sparkles={sparkles}
                         />
