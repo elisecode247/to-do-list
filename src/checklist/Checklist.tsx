@@ -59,12 +59,10 @@ const Checklist: FC<ChecklistProps> = ({
 
         });
     }, [tasks, activeTab, isHiddenToday, hiddenItems]);
-    console.log("%c Line:57 🍩 filteredTasks", "color:#3f7cff", filteredTasks);
 
     const filteredItems = useMemo(() => {
         return filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
-    console.log("%c Line:66 🥛 filteredItems", "color:#3f7cff", filteredItems);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 

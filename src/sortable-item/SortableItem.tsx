@@ -23,7 +23,8 @@ import {
     FoldVertical,
     MoreHorizontal,
     BookPlus,
-    BookMinus
+    BookMinus,
+    Star,
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
@@ -156,10 +157,13 @@ export const SortableItem: FC<SortableItemProps> = ({
 
 
     async function delayCheck(e: React.ChangeEvent<HTMLInputElement>) {
-        setAnimate(false);
+        let checked = e.target.checked;
+        if (checked && isHideCompleted) {
+            setAnimate(false);
+        }
         setTimeout(() => {
-            toggleChecked(id, e.target.checked)
-            if (e.target.checked && tags.includes(PRIORITY_TAG)) onSuccess(true);
+            toggleChecked(id, checked)
+            if (checked && tags.includes(PRIORITY_TAG)) onSuccess(true);
         }, 400)
     }
 
@@ -219,6 +223,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 title="Prioritize task"
                                 type="button"
                             >
+                                <Star size={24} />
                                 <span className="sortable-item_button-text-span">Priority</span>
                             </button>
 
