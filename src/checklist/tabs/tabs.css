@@ -6,7 +6,6 @@
 .tablist {
     display: flex;
     align-items: flex-end;
-    margin-bottom: -1px;
     flex-wrap: wrap-reverse;
     gap: 4px;
 }
@@ -17,8 +16,8 @@
     min-height: 44px;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     border-width: 1px 1px 0px 1px;
-    color: var(--color-text-primary);
-    background: var(--color-tab-weighty-bg);
+    color: var(--color-text-light);
+    background: var(--color-shadow);
     cursor: pointer;
     font-weight: 500;
     z-index: 3;
@@ -38,23 +37,20 @@
     font-weight: 650;
     background: var(--color-border);
     color: var(--color-text-secondary);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* ACTIVE TAB (lighter, forward, open folder) */
 .tab.tab-active {
     background: var(--color-background);
+    border-top: 2px solid var(--color-priority);
+    border-left: 2px solid var(--color-priority);
+    border-right: 2px solid var(--color-priority);
     color: var(--color-text-primary);
     opacity: 1;
     z-index: 7;
-    box-shadow: var(--shadow-sm);
-    box-shadow:
-        0 1px 3px var(--color-shadow),
-        0 0 0 1px var(--color-border-light);
 }
 
 /* Focus ring for keyboard users */
 .tab:focus-visible {
-    border-top: 2px solid var(--color-priority);
     background: var(--color-hover);
 }

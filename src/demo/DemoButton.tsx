@@ -15,7 +15,7 @@ export const DemoButton = () => {
             className="logged-out_demo-link"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 4, duration: 3, ease: "easeOut" }}
+            transition={{ delay: 0, duration: 2, ease: "easeOut" }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
         >

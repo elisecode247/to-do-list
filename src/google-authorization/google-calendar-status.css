@@ -67,7 +67,7 @@
 
 .calendar-disconnect-button {
     background-color: var(--color-warning);
-    color: white;
+    color: var(--color-text-light);
     border: none;
     padding: var(--spacing-xs) var(--spacing-xs);
     border-radius: var(--radius-sm);

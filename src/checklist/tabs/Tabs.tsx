@@ -11,7 +11,7 @@ export const TABS = {
 
 const tabOptions = [
     { id: TABS.priority, label: "⭐ Priority", priority: true },
-    { id: TABS.active, label: "Active", priority: true },
+    { id: TABS.active, label: "Today", priority: true },
     { id: TABS.scheduled, label: "Upcoming Schedule", priority: false },
     { id: TABS.hidden, label: "Hidden Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },

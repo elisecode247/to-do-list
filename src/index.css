@@ -3,6 +3,7 @@
     --color-primary: #8b5cf6;
     /* neon purple */
     --color-primary-dark: #6d28d9;
+    --color-primary-dark-hover: rgb(109, 40, 217, .8);
     /* deep violet */
     --color-priority: #ec4899;
     /* hot pink */
@@ -17,11 +18,13 @@
 
     /* Text */
     --color-text-primary: #1f1147;
+    --color-text-dark: #260139;
     --color-text-secondary: #4b3b82;
-    --color-text-light: #8b7bbf;
+    --color-text-light: #e7e1fd;
 
     /* Surfaces */
-    --color-background: #f7f5ff;
+    --color-background: #f2effd;
+    --color-background-hover: rgb(247, 245, 255, .8);
     /* pale nebula */
     --color-surface: #ffffff;
     --color-hover: #f0ecff;
@@ -75,7 +78,8 @@
         /* Core Space Palette */
         --color-primary: #a78bfa;
         /* glowing lavender */
-        --color-primary-dark: #7c3aed;
+        --color-primary-dark: #6314ec;
+        --color-primary-dark-hover: #894fec;
         --color-priority: #f472b6;
         /* neon pink */
         --color-success: #22d3ee;
@@ -86,7 +90,6 @@
         /* Text */
         --color-text-primary: #f5f3ff;
         --color-text-secondary: #c4b5fd;
-        --color-text-light: #8b7bbf;
 
         /* Surfaces */
         --color-background: #0b061f;

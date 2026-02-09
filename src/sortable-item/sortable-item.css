@@ -42,7 +42,7 @@
     padding: var(--spacing-xs);
     background: transparent;
     border: none;
-    color: var(--color-text-light);
+    color: var(--color-text-primary);
     cursor: grab;
     transition: color var(--transition-fast);
     flex-shrink: 0;
@@ -55,7 +55,6 @@
 }
 
 .sortable-item_drag-handle:hover {
-    color: var(--color-text-secondary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -103,9 +102,9 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.3px;
-    color: var(--color-text-light);
+    color: var(--color-text-primary);
     opacity: 0.8;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--color-hover);
     padding: 2px 8px;
     margin-left: var(--spacing-xs);
     border-radius: var(--radius-sm);
@@ -138,7 +137,7 @@
 
     padding: 8px;
     border-radius: 10px;
-    background: white;
+    background: var(--color-background);
     box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
 
     opacity: 0;
@@ -245,7 +244,7 @@
 .calendar-event_hide-button,
 .sortable-item_hide-button:hover {
     background-color: rgba(59, 130, 246, 0.1);
-    color: var(--color-text-light);
+    color: var(--color-text-secondary);
 }
 
 /* Edit Button */
