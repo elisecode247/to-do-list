@@ -6,7 +6,6 @@ import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist.tsx';
 import Toast from 'src/toast/Toast.tsx';
 import ErrorState from 'src/error-state/ErrorState';
-import { type Tag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
@@ -28,7 +27,6 @@ const App: FC = () => {
         updateItem,
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
 
     async function handleSave() {
         if (!editingItem) return;
@@ -48,10 +46,6 @@ const App: FC = () => {
         setEditingItem(item);
     }
 
-    function handleChangeFilters(filters: Tag[]) {
-        setActiveFilters(filters);
-    }
-
     const handleLoginSuccess = async (token: string) => {
         try {
             await login(token);
@@ -60,10 +54,6 @@ const App: FC = () => {
             console.error(err);
         }
     };
-
-    function handleLogout() {
-        setActiveFilters([]);
-    }
 
     return (
 
@@ -91,7 +81,7 @@ const App: FC = () => {
                     <div className="app_container">
                         <header className="app_header">
                             <h1 className="app_h1">For My Today</h1>
-                            <AccountMenu onLogout={handleLogout} />
+                            <AccountMenu />
                         </header>
                         <main className="app_main">
                             {isLoading ? (
@@ -106,8 +96,6 @@ const App: FC = () => {
                                 />
                             ) : (
                                 <Checklist
-                                    activeFilters={activeFilters}
-                                    onChangeFilters={handleChangeFilters}
                                     onEditItem={handleEditItem}
                                     sparkles={sparkles}
                                 />

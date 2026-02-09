@@ -16,7 +16,6 @@ import {
     Edit,
     Archive,
     ListPlus,
-    Star,
     EyeClosed,
     Eye,
     PlusCircle,
@@ -28,9 +27,10 @@ import {
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
-
+import { TABS } from 'src/checklist/tabs/Tabs';
 interface SortableItemProps {
     id: UniqueIdentifier;
+    activeTab: string;
     hasSubChores?: boolean;
     isActive: boolean;
     isHidden: boolean;
@@ -53,6 +53,7 @@ interface SortableItemProps {
 
 export const SortableItem: FC<SortableItemProps> = ({
     id,
+    activeTab,
     hasSubChores = false,
     isActive,
     isHidden,
@@ -93,7 +94,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     };
     const showLastCompleted = !!lastCompleted;
     const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
-    const priorityStyle = tags.includes(PRIORITY_TAG) ? 'yellow' : 'none';
 
     const filteredTasks = subtasks?.filter((t) => {
         if (isHiddenToday(t.id as string)) return false;
@@ -194,7 +194,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                             title="Prioritize task"
                             type="button"
                         >
-                            <Star size={24} fill={priorityStyle} />
                             <span className="sortable-item_button-text-span">Priority</span>
                         </button>
 
@@ -221,7 +220,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <span className="sortable-item_button-text-span">Notes</span>
                             </button>
                         )}
-                        {isActive ? (
+                        {activeTab === TABS.archived ? null : (
                         <button
                             className="sortable-item_hide-button"
                             onClick={() => handleHideItem(id, isHidden)}
@@ -234,7 +233,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 {isHidden ? "Unhide Today" : "Hide Today"}
                             </span>
                         </button>
-                        ) : null}
+                        )}
 
                         <div className="sortable-item_menu-wrapper">
                             <button
@@ -385,6 +384,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <SortableItem
                                 key={subtask.id}
                                 id={subtask.id}
+                                activeTab={activeTab}
                                 hasSubChores={subtask.hasSubChores}
                                 isActive={isActive}
                                 isHidden={isHiddenToday(subtask.id as string)}

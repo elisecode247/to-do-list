@@ -6,17 +6,17 @@
 .tablist {
     display: flex;
     align-items: flex-end;
-    gap: 6px;
-    margin-bottom: -1px; /* connects to checklist */
+    margin-bottom: -1px;
+    flex-wrap: wrap-reverse;
 }
 
 .tab {
     position: relative;
     padding: 8px 14px 6px;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
-    border: none;
-    background: var(--color-border);
-    color: var(--color-text-secondary);
+    border-width: 1px 1px 0px 1px;
+    color: var(--color-text-primary);
+    background: var(--color-tab-weighty-bg);
     cursor: pointer;
     font-weight: 500;
     z-index: 3;
@@ -24,13 +24,19 @@
         background-color var(--transition-fast),
         color var(--transition-fast),
         transform var(--transition-fast),
-        box-shadow var(--transition-fast);
 }
 
 /* HOVER (still inactive) */
 .tab:hover {
     color: var(--color-text-primary);
     background: var(--color-hover);
+}
+
+.tab--weighty {
+    font-weight: 650;
+    background: var(--color-border);
+    color: var(--color-text-secondary);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* ACTIVE TAB (lighter, forward, open folder) */

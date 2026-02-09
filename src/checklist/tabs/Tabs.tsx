@@ -10,11 +10,11 @@ export const TABS = {
 }
 
 const tabOptions = [
-    { id: TABS.priority, label: "Priority"},
-    { id: TABS.active, label: "Active" },
-    { id: TABS.scheduled, label: "Scheduled" },
-    { id: TABS.hidden, label: "Hidden Today" },
-    { id: TABS.archived, label: "Archived" },
+    { id: TABS.priority, label: "⭐ Priority", priority: true },
+    { id: TABS.active, label: "Active", priority: true },
+    { id: TABS.scheduled, label: "Upcoming Schedule", priority: false },
+    { id: TABS.hidden, label: "Hidden Today", priority: false },
+    { id: TABS.archived, label: "Archived", priority: false },
 ];
 
 type TabsProps<T extends string> = {
@@ -68,7 +68,11 @@ function Tabs<T extends string>({
                     tabIndex={value === tab.id ? 0 : -1}
                     onClick={() => onChange(tab.id as T)}
                     onKeyDown={(e) => onKeyDown(e, index)}
-                    className={`tab tab-${value === tab.id ? "active" : "inactive"}`}
+                    className={`
+                        tab
+                        tab-${value === tab.id ? "active" : "inactive"}
+                        ${tab.priority ? "tab--weighty" : ""}
+                    `}
                 >
                     {tab.label}
                 </button>

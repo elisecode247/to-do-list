@@ -4,7 +4,7 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
-import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type Tag, isExclusiveTag } from 'checklist/constants';
+import { EXCLUSIVE_TAGS, type Tag, isExclusiveTag } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
@@ -16,17 +16,13 @@ import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
 import { TABS, default as Tabs } from 'src/checklist/tabs/Tabs';
-
+import EmptyStateFilters from './empty-state/EmptyStateFilters';
 interface ChecklistProps {
-    activeFilters: Tag[];
-    onChangeFilters: (filters: Tag[]) => void;
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
 }
 
 const Checklist: FC<ChecklistProps> = ({
-    activeFilters,
-    onChangeFilters,
     onEditItem,
     sparkles
 }) => {
@@ -42,6 +38,7 @@ const Checklist: FC<ChecklistProps> = ({
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
+    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
     const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
@@ -54,17 +51,22 @@ const Checklist: FC<ChecklistProps> = ({
     );
 
     const filteredTasks = useMemo(() => {
-        return tasks.map(task => ({ ...task, isHidden: isHiddenToday(task.id)})).filter(task => {
+        return tasks.map(task => ({ ...task, isHidden: isHiddenToday(task.id) })).filter(task => {
             if (activeTab === TABS.hidden && task.isHidden) return true;
             if (activeTab === TABS.scheduled && !task.isHidden) return true;
+            if (activeTab === TABS.active && !task.isHidden) return true;
             return false;
 
         });
     }, [tasks, activeTab, isHiddenToday, hiddenItems]);
+        console.log("%c Line:57 🍩 filteredTasks", "color:#3f7cff", filteredTasks);
 
     const filteredItems = useMemo(() => {
         return filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
+        console.log("%c Line:66 🥛 filteredItems", "color:#3f7cff", filteredItems);
+
+    const allItems = [...events, ...filteredTasks, ...filteredItems];
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -132,6 +134,12 @@ const Checklist: FC<ChecklistProps> = ({
         }, 3000)
     }
 
+    function clearFilters() {
+        setActiveFilters([]);
+        setFilterCategory(ALL_CATEGORIES);
+        setHideCompleted(false);
+    }
+
     useEffect(() => {
         return () => {
             if (sparkleTimeoutRef.current) {
@@ -152,7 +160,7 @@ const Checklist: FC<ChecklistProps> = ({
                             const updatedFilters = activeFilters.filter(
                                 (filter) => !isExclusiveTag(filter)
                             )
-                            onChangeFilters(updatedFilters);
+                            setActiveFilters(updatedFilters);
                         }}
                         className={`filter-button ${!hasExclusiveFilter
                             ? 'filter-button-all-active'
@@ -161,8 +169,7 @@ const Checklist: FC<ChecklistProps> = ({
                     >
                         All
                     </button>
-                    {TAGS.map(tag => {
-                        const isPriority = tag === PRIORITY_TAG;
+                    {EXCLUSIVE_TAGS.map(tag => {
                         const isActive = activeFilters.includes(tag);
                         return (
                             <button
@@ -172,16 +179,13 @@ const Checklist: FC<ChecklistProps> = ({
                                         ? activeFilters.filter(t => t !== tag)
                                         : [...activeFilters, tag];
 
-                                    onChangeFilters(nextFilters);
+                                    setActiveFilters(nextFilters);
                                 }}
                                 className={`
-                                filter-button
-                                ${!isPriority && isActive ? getTagColor(tag) + 'filter-button-active' : ''}
-                                ${isPriority ? 'filter-button--priority' : ''}
-                                ${isPriority && isActive ? 'filter-button--priority-active' : ''}
+                                    filter-button
+                                    ${isActive ? getTagColor(tag) + 'filter-button-active' : ''}
                                 `}
                             >
-                                {isPriority ? '⭐ ' : ''}
                                 {tag}
                             </button>
                         )
@@ -216,25 +220,35 @@ const Checklist: FC<ChecklistProps> = ({
             </div>
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
-                    {events.map(event => (
-                        <CalendarEventItem
-                            key={event.id}
-                            event={event}
-                        />
-                    ))}
-                    {filteredTasks?.map(task => (
-                        <ScheduledTaskItem
-                            key={task.id}
-                            task={task}
-                            markCompleted={markScheduledTaskCompletion}
-                            isHiddenToday={isHiddenToday}
-                            hideForToday={hideForToday}
-                            unhideForToday={unhideForToday}
-                        />
-                    ))}
-                    <SortableContext items={filteredItems.map(i => i.id)}>
+                    <SortableContext items={allItems.map(i => i.id)}>
+                        {!allItems.length && (
+                            <EmptyStateFilters
+                                activeFilters={activeFilters}
+                                onClearFilters={clearFilters}
+                                filterCategory={filterCategory}
+                                hideCompleted={hideCompleted}
+
+                            />
+                        )}
+                        {events.map(event => (
+                            <CalendarEventItem
+                                key={event.id}
+                                event={event}
+                            />
+                        ))}
+                        {filteredTasks?.map(task => (
+                            <ScheduledTaskItem
+                                key={task.id}
+                                task={task}
+                                markCompleted={markScheduledTaskCompletion}
+                                isHiddenToday={isHiddenToday}
+                                hideForToday={hideForToday}
+                                unhideForToday={unhideForToday}
+                            />
+                        ))}
                         {filteredItems.map(item => (
                             <SortableItem
+                                activeTab={activeTab}
                                 hasSubChores={item.hasSubChores}
                                 isActive={isActiveList}
                                 checked={item.done}

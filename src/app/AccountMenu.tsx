@@ -5,10 +5,8 @@ import GoogleCalendarStatus from 'src/google-authorization/google-calendar-statu
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useTask } from "./use-task";
 
-interface AccountMenuProps {
-    onLogout: () => void;
-}
-function AccountMenu({ onLogout: onAppLogout }: AccountMenuProps) {
+
+function AccountMenu() {
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const { email, logout } = useAuthentication();
@@ -33,7 +31,6 @@ function AccountMenu({ onLogout: onAppLogout }: AccountMenuProps) {
     function handleLogout() {
         logout();
         reset();
-        onAppLogout()
     }
 
     const handleLogoutClick = () => {
