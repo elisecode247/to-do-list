@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { Home, MenuSquare } from 'lucide-react';
+import { MenuSquare } from 'lucide-react';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
 import { useAuthentication } from "src/authentication/use-authentication";
