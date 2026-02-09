@@ -25,10 +25,12 @@ interface TaskContextType {
     reset: () => void;
     filterTasks: (params: {
         activeFilters: Tag[];
+        activeTab: string;
         isActiveList: boolean;
         hideCompleted: boolean;
         filterCategory: string;
-        showHidden: boolean;
+        showHidden?: boolean;
+        isHiddenToday?: (arg0: string) => boolean;
     }) => ChecklistItem[];
     getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
 }
@@ -140,16 +142,20 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
 
     const filterTasks = ({
         activeFilters,
+        activeTab: _activeTab,
         isActiveList,
         hideCompleted,
         filterCategory,
-        showHidden,
+        showHidden = false,
+        isHiddenToday: _isHiddenToday,
     }: {
         activeFilters: Tag[];
+        activeTab: string;
         isActiveList: boolean;
         hideCompleted: boolean;
         filterCategory: string;
-        showHidden: boolean;
+        showHidden?: boolean;
+        isHiddenToday?: (arg0: string) => boolean;
     }) => {
         if (!items.length) return [];
         return items.filter(task => {
