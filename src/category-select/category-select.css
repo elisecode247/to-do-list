@@ -30,6 +30,7 @@
     color: var(--color-text-primary);
     white-space: nowrap;
     min-width: 150px;
+    min-height: 44px;
 }
 
 .category-select:hover {
@@ -80,10 +81,6 @@
     }
 
     /* Filter specific styles */
-    .category-select_filter {
-        margin: 0;
-        padding: 0;
-    }
 
     .category-select-wrapper_filter {
         margin: 0;

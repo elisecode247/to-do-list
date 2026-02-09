@@ -162,6 +162,8 @@
         transition: all var(--transition-fast);
         background-color: var(--color-surface);
         color: var(--color-text-secondary);
+        min-height: 44px;
+        min-width: 44px;
     }
 
     .filter-button:hover {
