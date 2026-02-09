@@ -22,7 +22,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - Reset all env variables
 - Split google client id into local and prod
 - allow user delete history
-- tabs for active, hidden, scheduled, archived,
 - improve ui for newly logged in user
     - use templates
 - custom categories

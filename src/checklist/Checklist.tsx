@@ -59,12 +59,12 @@ const Checklist: FC<ChecklistProps> = ({
 
         });
     }, [tasks, activeTab, isHiddenToday, hiddenItems]);
-        console.log("%c Line:57 🍩 filteredTasks", "color:#3f7cff", filteredTasks);
+    console.log("%c Line:57 🍩 filteredTasks", "color:#3f7cff", filteredTasks);
 
     const filteredItems = useMemo(() => {
         return filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
-        console.log("%c Line:66 🥛 filteredItems", "color:#3f7cff", filteredItems);
+    console.log("%c Line:66 🥛 filteredItems", "color:#3f7cff", filteredItems);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 
@@ -190,29 +190,28 @@ const Checklist: FC<ChecklistProps> = ({
                             </button>
                         )
                     })}
-                </div>
-
-                <div className="checklist_hide-completed-checkbox-container">
-                    <input
-                        className="checklist_hide-completed-checkbox-input"
-                        type="checkbox"
-                        id="hideCompleted"
-                        checked={hideCompleted}
-                        onChange={(e) => setHideCompleted(e.target.checked)}
+                    <div className="checklist_hide-completed-checkbox-container">
+                        <input
+                            className="checklist_hide-completed-checkbox-input"
+                            type="checkbox"
+                            id="hideCompleted"
+                            checked={hideCompleted}
+                            onChange={(e) => setHideCompleted(e.target.checked)}
+                        />
+                        <label
+                            htmlFor="hideCompleted"
+                            className="checklist_hide-completed-checkbox-label"
+                        >
+                            Hide completed tasks
+                        </label>
+                    </div>
+                    <CategorySelect
+                        id="checklist-filter-category-select"
+                        isFilter={true}
+                        selectedCategory={filterCategory}
+                        onChange={(value: string) => setFilterCategory(value)}
                     />
-                    <label
-                        htmlFor="hideCompleted"
-                        className="checklist_hide-completed-checkbox-label"
-                    >
-                        Hide completed tasks
-                    </label>
                 </div>
-                <CategorySelect
-                    id="checklist-filter-category-select"
-                    isFilter={true}
-                    selectedCategory={filterCategory}
-                    onChange={(value: string) => setFilterCategory(value)}
-                />
                 <Tabs
                     value={activeTab}
                     onChange={handleTabChange}
