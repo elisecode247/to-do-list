@@ -29,3 +29,4 @@ Live: https://elisecode247.github.io/to-do-list/
 - show priorities even in subtasks
 - fix bug fetching "google-client-id" non-stop when logged out and open menu from server shut down
 - take out filterTasks so I can use it for google events and tasks and subtasks
+- show hidden tasks in the scheduled tasks tab

@@ -43,4 +43,6 @@ legend {
 
 .radio-option input {
     accent-color: var(--color-primary);
+    /** safari fix */
+    width: auto;
 }
