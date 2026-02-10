@@ -1,3 +1,5 @@
+export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';
+
 export interface ChecklistItem {
     isHidden: boolean;
     id: string;
@@ -7,7 +9,8 @@ export interface ChecklistItem {
     note: string;
     sortOrder: number;
     category: string;
-    tags: string[];
+    mode: Mode;
+    isPriority: boolean;
     isArchived: boolean;
     hasSubChores: boolean;
     parentUuid: string | null;

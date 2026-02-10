@@ -1,21 +1,11 @@
-export const PRIORITY_TAG = 'priority' as const;
-export const DAILY_TAG = 'daily' as const;
-export const ONE_TIME_TAG = 'one-time' as const;
-export const OCCASIONAL_TAG = 'occasional' as const;
-export const SCHEDULED_TAG = 'scheduled' as const;
+export const DAILY_MODE = 'daily' as const;
+export const ONE_TIME_MODE = 'one-time' as const;
+export const OCCASIONAL_MODE = 'occasional' as const;
+export const SCHEDULED_MODE = 'scheduled' as const;
 
-export const EXCLUSIVE_TAGS = [
-  DAILY_TAG,
-  ONE_TIME_TAG,
-  OCCASIONAL_TAG,
-  SCHEDULED_TAG
+export const MODES = [
+  DAILY_MODE,
+  ONE_TIME_MODE,
+  OCCASIONAL_MODE,
+  SCHEDULED_MODE
 ] as const;
-
-export const TAGS = [...EXCLUSIVE_TAGS, PRIORITY_TAG] as const;
-
-export type Tag = typeof TAGS[number];
-export type ExclusiveTag = typeof EXCLUSIVE_TAGS[number];
-
-export function isExclusiveTag(tag: Tag): tag is ExclusiveTag {
-  return (EXCLUSIVE_TAGS as readonly Tag[]).includes(tag);
-}

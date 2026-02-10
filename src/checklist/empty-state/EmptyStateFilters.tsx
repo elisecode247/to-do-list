@@ -1,13 +1,13 @@
 
 
 import React from 'react';
-import type { Tag } from '../constants';
 import './EmptyStateFilters.css';
 import { Filter } from 'lucide-react';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
+import type { Mode } from 'src/app/types';
 
 interface EmptyStateFiltersProps {
-    activeFilters: Tag[];
+    activeFilters: Mode[];
     filterCategory: string;
     hideCompleted: boolean;
     onClearFilters: () => void;

@@ -4,7 +4,7 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
-import { EXCLUSIVE_TAGS, type Tag, isExclusiveTag } from 'checklist/constants';
+import { MODES } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
@@ -21,7 +21,8 @@ import GoogleLoginButton from 'src/authentication/google-login-button';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useLocation } from "wouter";
 import { ROUTES } from 'src/router';
-import { TAGS } from 'checklist/constants';
+import { type Mode } from 'app/types';
+
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
@@ -44,7 +45,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
-    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
+    const [activeFilters, setActiveFilters] = useState<Mode[]>([]);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
     const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
@@ -55,7 +56,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const [_location, setLocation] = useLocation();
 
     const hasExclusiveFilter = activeFilters.some(f =>
-        EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
+        MODES.includes(f as (typeof MODES)[number])
     );
 
     const filteredTasks = useMemo(() => {
@@ -173,8 +174,8 @@ const DemoChecklist: FC<ChecklistProps> = ({
                         <button
                             onClick={() => {
                                 const updatedFilters = activeFilters.filter(
-                                    (filter) => !isExclusiveTag(filter)
-                                )
+                                    (filter) => !MODES.includes(filter)
+                                );
                                 setActiveFilters(updatedFilters);
                             }}
                             className={`filter-button ${!hasExclusiveFilter
@@ -188,24 +189,23 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 return true;
                             }).length})
                         </button>
-                        {TAGS.map(tag => {
-                            const isActive = activeFilters.includes(tag);
+                        {MODES.map(mode => {
+                            const isActive = activeFilters.includes(mode);
                             return (
                                 <button
-                                    key={tag}
+                                    key={mode}
                                     onClick={() => {
-                                        const nextFilters = activeFilters.includes(tag)
-                                            ? activeFilters.filter(t => t !== tag)
-                                            : [...activeFilters, tag];
-
+                                        const nextFilters = activeFilters.includes(mode)
+                                            ? activeFilters.filter(t => t !== mode)
+                                            : [...activeFilters, mode];
                                     setActiveFilters(nextFilters);
                                 }}
                                 className={`
                                     filter-button
-                                    ${isActive ? getTagColor(tag) + 'filter-button-active' : ''}
+                                    ${isActive ? getTagColor(mode) + 'filter-button-active' : ''}
                                 `}
                             >
-                                {tag}
+                                {mode}
                             </button>
                         )
                     })}
@@ -285,7 +285,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 handleHideItem={handleHide}
                                 subtasks={getSubtasks(item.id)}
                                 onMoveItem={handleMoveItem}
-                                tags={item.tags as Tag[]}
+                                isPriority={item.isPriority}
                                 onSuccess={displaySparkles}
                             />
                         ))}

@@ -4,7 +4,6 @@ import type { FC, Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
-import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
 import { getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem } from 'src/app/types.ts';
 import { useTask } from 'src/app/use-task';
@@ -49,7 +48,7 @@ interface SortableItemProps {
     handleHideItem: (id: string, isHiddenItem: boolean) => void;
     onMoveItem: (id: string) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
-    tags: Array<Tag>
+    isPriority: boolean;
     subtasks?: ChecklistItem[];
 }
 
@@ -71,7 +70,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     handleEdit,
     handleHideItem,
     onMoveItem,
-    tags,
+    isPriority,
     onSuccess,
     subtasks,
 }) => {
@@ -119,7 +118,8 @@ export const SortableItem: FC<SortableItemProps> = ({
             note: '',
             sortOrder: 0,
             category: '',
-            tags: [],
+            mode: 'one-time',
+            isPriority: false,
             isHidden: false,
             isArchived: false,
             hasSubChores: false,
@@ -162,7 +162,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
         setTimeout(() => {
             toggleChecked(id, checked)
-            if (checked && tags.includes(PRIORITY_TAG)) onSuccess(true);
+            if (checked && isPriority) onSuccess(true);
         }, 400)
     }
 
@@ -180,7 +180,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0 }}
                     transition={{ duration: 0.4 }}
-                    className={`sortable-item_container ${tags.includes(PRIORITY_TAG) ? 'tag-priority' : ''}`}
+                    className={`sortable-item_container ${isPriority ? 'tag-priority' : ''}`}
                 >
                     <div className="sortable-item_main-content">
                         <button
@@ -222,7 +222,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 title="Prioritize task"
                                 type="button"
                             >
-                                {!tags.includes(PRIORITY_TAG) ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
+                                {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
                                 <span className="sortable-item_button-text-span">Priority</span>
                             </button>
 
@@ -429,7 +429,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     handleEdit={handleEdit}
                                     handleHideItem={handleHideItem}
                                     onMoveItem={onMoveItem}
-                                    tags={subtask.tags as Tag[]}
+                                    isPriority={subtask.isPriority}
                                     onSuccess={onSuccess}
                                     subtasks={getSubtasks(subtask.id)}
                                 />

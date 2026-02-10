@@ -1,33 +1,34 @@
 import './frequency-button-group.css';
-import { EXCLUSIVE_TAGS, type Tag } from 'checklist/constants';
+import { MODES } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
+import type { Mode } from 'src/app/types';
 
 interface FrequencyButtonGroupProps {
-    newTaskTags: Tag[];
-    onClick: (tag: Tag) => void;
+    mode: Mode;
+    onClick: (mode: Mode) => void;
 }
 
-function FrequencyButtonGroup({ newTaskTags, onClick }: FrequencyButtonGroupProps) {
-    const handleSelect = (frequency: Tag) => {
-        onClick(frequency);
+function FrequencyButtonGroup({ mode, onClick }: FrequencyButtonGroupProps) {
+    const handleSelect = (mode: Mode) => {
+        onClick(mode);
     };
 
     return (
         <div className="frequency-selector__group-wrapper">
             <label>New Task Frequency:</label>
             <div className="frequency-selector__button-group">
-                {EXCLUSIVE_TAGS.map((frequency) => (
+                {MODES.map((modeOption) => (
                     <button
-                        key={frequency}
-                        onClick={() => handleSelect(frequency)}
+                        key={modeOption}
+                        onClick={() => handleSelect(modeOption)}
                         className={`frequency-selector__button
-                            ${newTaskTags.includes(frequency)
+                            ${mode === modeOption
                                 ? `frequency-selector__button--active
-                                    ${getTagColor(frequency)}`
+                                    ${getTagColor(modeOption)}`
                                 : ''
                             }`}
                     >
-                        {frequency}
+                        {modeOption}
                     </button>
                 ))}
             </div>

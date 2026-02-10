@@ -1,10 +1,10 @@
 import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction } from 'react';
-import type { ChecklistItem } from 'app/types.ts';
+import type { ChecklistItem, Mode } from 'app/types.ts';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
-import { EXCLUSIVE_TAGS, type Tag, isExclusiveTag } from 'checklist/constants';
+import { MODES } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import 'checklist/checklist.css';
@@ -38,7 +38,7 @@ const Checklist: FC<ChecklistProps> = ({
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
-    const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
+    const [activeFilters, setActiveFilters] = useState<Mode[]>([]);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
     const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
@@ -47,7 +47,7 @@ const Checklist: FC<ChecklistProps> = ({
     const isActiveList = activeTab === TABS.today;
 
     const hasExclusiveFilter = activeFilters.some(f =>
-        EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
+        MODES.includes(f as (typeof MODES)[number])
     );
 
     const filteredTasks = useMemo(() => {
@@ -156,8 +156,8 @@ const Checklist: FC<ChecklistProps> = ({
                     <button
                         onClick={() => {
                             const updatedFilters = activeFilters.filter(
-                                (filter) => !isExclusiveTag(filter)
-                            )
+                                (filter) => !MODES.includes(filter)
+                            );
                             setActiveFilters(updatedFilters);
                         }}
                         className={`filter-button ${!hasExclusiveFilter
@@ -167,7 +167,7 @@ const Checklist: FC<ChecklistProps> = ({
                     >
                         All
                     </button>
-                    {EXCLUSIVE_TAGS.map(tag => {
+                    {MODES.map(tag => {
                         const isActive = activeFilters.includes(tag);
                         return (
                             <button
@@ -248,6 +248,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 activeTab={activeTab}
                                 hasSubChores={item.hasSubChores}
                                 isActive={isActiveList}
+                                isPriority={item.isPriority}
                                 checked={item.done}
                                 key={item.id}
                                 id={item.id}
@@ -264,7 +265,6 @@ const Checklist: FC<ChecklistProps> = ({
                                 handleHideItem={handleHide}
                                 subtasks={getSubtasks(item.id)}
                                 onMoveItem={handleMoveItem}
-                                tags={item.tags as Tag[]}
                                 onSuccess={displaySparkles}
                             />
                         ))}

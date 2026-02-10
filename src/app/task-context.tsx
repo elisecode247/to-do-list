@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
-import type { ChecklistItem } from 'app/types';
+import type { ChecklistItem, Mode } from 'app/types';
 import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
 import { arrayMove } from '@dnd-kit/sortable';
-import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
@@ -11,7 +10,7 @@ import { TABS } from 'src/checklist/tabs/Tabs';
 
 export type FilterParams = {
     items: ChecklistItem[];
-    activeFilters: Tag[];
+    activeFilters: Mode[];
     activeTab: string;
     hideCompleted: boolean;
     filterCategory: string;
@@ -74,8 +73,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const formattedItems = data.map((item: ChecklistItem) => {
                 return {
                     ...item,
-                    done: isDateToday(item.lastCompleted),
-                    tags: item.tags || [],
+                    done: isDateToday(item.lastCompleted)
                 }
             })
             setItems(formattedItems);
@@ -121,7 +119,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 note: data.note,
                 sortOrder: data.sortOrder,
                 category: data.category,
-                tags: data.tags,
+                mode: data.mode,
                 isArchived: false,
                 parentUuid: data.parentUuid,
                 hasSubChores: data.hasSubChores,
@@ -203,12 +201,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const updated = prev.map(item => {
                 if (item.id !== id) return item;
 
-                const hasPriority = item.tags.includes(PRIORITY_TAG);
                 return {
                     ...item,
-                    tags: hasPriority
-                        ? item.tags.filter(t => t !== PRIORITY_TAG)
-                        : [...item.tags, PRIORITY_TAG]
+                    isPriority: !item.isPriority
                 };
             });
 
@@ -380,25 +375,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             switch (activeTab) {
                 case TABS.today:
                     return (
-                        !task.isArchived ||
-                        task.tags.includes('scheduled') // TODO  && new Date(task.due) <= today
+                        !task.isArchived // TODO  && new Date(task.due) <= today
                     );
                 case TABS.scheduled:
-                    return task.tags.includes('scheduled');
+                    return task.mode === 'scheduled'; // TODO tomorrow and future scheduled tasks
                 case TABS.hidden:
                     return task.isHidden;
                 case TABS.archived:
                     return task.isArchived;
                 case TABS.priority:
-                    return task.tags.includes('priority');
+                    return task.isPriority;
                 default:
                     return true;
             }
         });
-
-        // --- Further filters ---
-        const exclusiveFilters = activeFilters.filter(tag => isExclusiveTag(tag));
-        const nonExclusiveFilters = activeFilters.filter(tag => !isExclusiveTag(tag));
 
         filteredItems = filteredItems.filter(task => {
             // skip subtasks
@@ -407,15 +397,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             // hide completed tasks
             if (hideCompleted && task.done) return false;
 
-            const tagSet = new Set(task.tags);
-
-            // OR logic for exclusive tags
-            if (exclusiveFilters.length > 0 && !exclusiveFilters.some(tag => tagSet.has(tag))) {
+            // OR logic for mode
+            if (activeFilters.length > 0 && !activeFilters.some(filter => filter === task.mode)) {
                 return false;
             }
-
-            // AND logic for non-exclusive tags
-            if (!nonExclusiveFilters.every(tag => tagSet.has(tag))) return false;
 
             // category filter
             if (!isCategoryIncluded(filterCategory, task.category)) return false;

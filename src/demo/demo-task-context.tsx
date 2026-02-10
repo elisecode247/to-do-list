@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
-import type { ChecklistItem } from 'app/types';
+import type { ChecklistItem, Mode } from 'app/types';
 import { arrayMove } from '@dnd-kit/sortable';
-import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useToast } from 'src/toast/use-toast';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { DEMO_TASKS } from './demo-tasks';
@@ -23,7 +22,7 @@ interface TaskContextType {
     reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
     filterTasks: (params: {
-        activeFilters: Tag[];
+        activeFilters: Mode[];
         activeTab: string;
         isActiveList: boolean;
         hideCompleted: boolean;
@@ -122,10 +121,9 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         setItems(prev =>
             prev.map(item => {
                 if (item.id !== id) return item;
-                const hasPriority = item.tags.includes(PRIORITY_TAG);
                 return {
                     ...item,
-                    tags: hasPriority ? item.tags.filter(t => t !== PRIORITY_TAG) : [...item.tags, PRIORITY_TAG],
+                    isPriority: !item.isPriority,
                 };
             })
         );
@@ -148,7 +146,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         showHidden = false,
         isHiddenToday: _isHiddenToday,
     }: {
-        activeFilters: Tag[];
+        activeFilters: Mode[];
         activeTab: string;
         isActiveList: boolean;
         hideCompleted: boolean;
@@ -163,15 +161,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             if (hideCompleted && task.done) return false;
             if (!showHidden && task.isHidden) return false;
 
-            const tagSet = new Set(task.tags);
-
-            // exclusive tags OR logic
-            const exclusiveFilters = activeFilters.filter(isExclusiveTag);
-            if (exclusiveFilters.length && !exclusiveFilters.some(tag => tagSet.has(tag))) return false;
-
-            // non-exclusive tags AND logic
-            const nonExclusiveFilters = activeFilters.filter(t => !isExclusiveTag(t));
-            if (nonExclusiveFilters.some(tag => !tagSet.has(tag))) return false;
+            if (activeFilters.length > 0 && !activeFilters.some(filter => filter === task.mode)) return false;
 
             if (!isCategoryIncluded(filterCategory, task.category)) return false;
 

@@ -2,10 +2,10 @@ import "./scheduled-task-item.css";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { EyeClosed, Eye, BookPlus, BookMinus } from "lucide-react";
-import { type Task } from "src/google-authorization/types";
+import type { ChecklistItem } from "src/app/types";
 
 type ScheduledTaskItemProps = {
-    task: Task;
+    task: ChecklistItem;
     markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
     isHiddenToday: (taskId: string) => boolean;
     hideForToday: (taskId: string) => void;
@@ -26,7 +26,7 @@ const ScheduledTaskItem = ({task, markCompleted, isHiddenToday, hideForToday, un
                     checked={checked}
                     onChange={(e) => {
                         setChecked(e.target.checked);
-                        markCompleted(task.id, task.listId, e.target.checked);
+                        markCompleted(task.id, task.listId ?? '', e.target.checked);
                     }}
                     aria-label={`Mark task as done`}
                     title={checked ? "Mark as not done" : "Mark as done"}

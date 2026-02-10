@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect.tsx';
-import { type Tag } from 'checklist/constants';
 import type { ChecklistItem } from 'app/types.ts';
 import { useTask } from 'src/app/use-task';
+import { type Mode } from 'app/types';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
     const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const [inputText, setInputText] = useState<string>("");
-    const [newTaskTags, setNewTaskTags] = useState<Tag[]>(['daily']);
+    const [mode, setMode] = useState<Mode>('daily');
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
 
@@ -36,7 +36,8 @@ const NewTaskForm = () => {
             note: '',
             sortOrder: 0,
             category: newTaskCategory,
-            tags: newTaskTags,
+            mode,
+            isPriority: false,
             isArchived: false,
             isHidden: false,
             hasSubChores: false,
@@ -46,8 +47,8 @@ const NewTaskForm = () => {
         setInputText('');
     };
 
-    const handleTagClick = (val: string): void => {
-        setNewTaskTags([val as Tag]);
+    const handleModeClick = (val: Mode): void => {
+        setMode(val);
     }
 
     return (
@@ -78,8 +79,8 @@ const NewTaskForm = () => {
                     </button>
                 </div>
                 <FrequencyButtonGroup
-                    newTaskTags={newTaskTags}
-                    onClick={(tag: Tag) => handleTagClick(tag)}
+                    mode={mode}
+                    onClick={(mode: Mode) => handleModeClick(mode)}
                 />
                 <CategorySelect
                     id="checklist-new-item-category-select"

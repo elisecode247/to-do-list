@@ -1,7 +1,7 @@
 import 'item-modal/item-modal.css';
 import { useEffect, useRef, type FC } from 'react';
-import type { ChecklistItem } from 'app/types';
-import { TAGS, EXCLUSIVE_TAGS, PRIORITY_TAG, type ExclusiveTag } from 'checklist/constants';
+import type { ChecklistItem, Mode } from 'app/types';
+import { MODES } from 'checklist/constants';
 import { getTagColor } from 'checklist/utilities/get-tag-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -23,31 +23,19 @@ export const ItemModal: FC<ItemModalProps> = ({
     const modalRef = useRef<HTMLDivElement>(null);
     const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
-    const toggleTag = (tag: string) => {
-        const isExclusive = EXCLUSIVE_TAGS.includes(tag as ExclusiveTag);
-
-        if (isExclusive) {
-            if (formData.tags.includes(tag)) return;
-
-            setEditingItem({
-                ...formData,
-                tags: [
-                    ...formData.tags.filter(
-                        t => !EXCLUSIVE_TAGS.includes(t as ExclusiveTag)
-                    ),
-                    tag,
-                ],
-            });
-            return;
-        }
-
+    const toggleMode = (mode: Mode) => {
         setEditingItem({
             ...formData,
-            tags: formData.tags.includes(tag)
-                ? formData.tags.filter(t => t !== tag)
-                : [...formData.tags, tag],
+            mode: mode
         });
     };
+
+    const togglePriority = () => {
+        setEditingItem({
+            ...formData,
+            isPriority: !formData.isPriority
+        });
+    }
 
     useEffect(() => {
         previouslyFocusedElement.current = document.activeElement as HTMLElement;
@@ -159,24 +147,22 @@ export const ItemModal: FC<ItemModalProps> = ({
                     />
                 </div>
 
-                {/* Tags */}
                 <div className="item-modal_tag-container">
                     <p className="item-modal_tag-label">Schedule (choose one)</p>
 
                     <div className="item-modal_tag-group">
-                        {TAGS.filter(tag =>
-                            EXCLUSIVE_TAGS.includes(tag as ExclusiveTag)
-                        ).map(tag => (
+                        {MODES.map(mode => (
                             <button
-                                key={tag}
-                                onClick={() => toggleTag(tag)}
+                                key={mode}
+                                onClick={() => toggleMode(mode)}
                                 className={`item-modal_tag-button
-                                    ${formData.tags.includes(tag)
-                                        ? getTagColor(tag)
-                                        : 'item-modal_tag-button--inactive'}
+                                    ${formData.mode === mode ?
+                                        getTagColor(mode) :
+                                        'item-modal_tag-button--inactive'
+                                    }
                                 `}
                             >
-                                {tag}
+                                {mode}
                             </button>
                         ))}
                     </div>
@@ -186,21 +172,19 @@ export const ItemModal: FC<ItemModalProps> = ({
                     <p className="item-modal_tag-label">Options</p>
 
                     <div className="item-modal_tag-group">
-                        {TAGS.filter(tag => tag === PRIORITY_TAG).map(tag => (
-                            <button
-                                key={tag}
-                                onClick={() => toggleTag(tag)}
-                                className={`item-modal_tag-button
-                                    item-modal_tag-button--priority
-                                    ${formData.tags.includes(tag)
-                                        ? 'item-modal_tag-button--priority-active'
-                                        : ''}
-                                `}
-                                title="Can be combined with any schedule"
-                            >
-                                ⭐ {tag}
-                            </button>
-                        ))}
+                        <button
+                            key="priority"
+                            onClick={() => togglePriority()}
+                            className={`item-modal_tag-button
+                                item-modal_tag-button--priority
+                                ${formData.isPriority
+                                    ? 'item-modal_tag-button--priority-active'
+                                    : ''}
+                            `}
+                            title="Can be combined with any schedule"
+                        >
+                            ⭐ Priority
+                        </button>
                     </div>
                 </div>
 

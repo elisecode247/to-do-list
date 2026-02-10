@@ -7,8 +7,9 @@ import {
     writeCalendarCache,
     clearCalendarCache,
 } from "./google-calendar-cache";
-import { type Task, type Event } from "src/google-authorization/types";
+import { type Event } from "src/google-authorization/types";
 import { useToast } from "src/toast/use-toast";
+import type { ChecklistItem } from "src/app/types";
 
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
@@ -16,7 +17,7 @@ export function useCalendarIntegration() {
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<Event[]>([]);
-    const [tasks, setTasks] = useState<Task[]>([]);
+    const [tasks, setTasks] = useState<ChecklistItem[]>([]);
 
     const fetchStatus = useCallback(
         async (opts?: { force?: boolean }) => {
