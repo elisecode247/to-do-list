@@ -40,6 +40,26 @@ export async function addTask(task: ChecklistItem): Promise<ChecklistItem> {
     }
 }
 
+export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem> {
+    try {
+        const response = await fetch(`${API_URL}/priority`, {
+            method: "PUT",
+            headers: await authHeaders(),
+            body: JSON.stringify({ id: task.id, priority: task.isPriority }),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Failed to save task:", err);
+        throw err;
+    }
+}
+
 export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
     try {
         const response = await fetch(`${API_URL}`, {

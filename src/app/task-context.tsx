@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
-import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
+import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
@@ -209,7 +209,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
             const changedItem = updated.find(i => i.id === id);
             if (changedItem) {
-                updateTask(changedItem).catch(err => {
+                prioritizeTask(changedItem).catch((err: Error) => {
                     console.error('Failed to prioritize task:', err);
                 });
             }
