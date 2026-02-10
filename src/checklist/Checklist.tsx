@@ -200,7 +200,7 @@ const Checklist: FC<ChecklistProps> = ({
                             htmlFor="hideCompleted"
                             className="checklist_hide-completed-checkbox-label"
                         >
-                            Hide completed tasks
+                            Hide Completed
                         </label>
                     </div>
                     <CategorySelect

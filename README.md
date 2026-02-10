@@ -7,7 +7,8 @@ Live: https://elisecode247.github.io/to-do-list/
 ## Features
 
 - **Frequency-based tagging**: Categorize tasks as daily, one-time, or occasional
-- **Smart filtering**: Quickly view tasks by category with visual counters
+- **Smart filtering**: Quickly view tasks by category with visual counters [See here for rules](./task-filtering-notes.md)
+
 - **Drag and drop**: Easily reorder tasks to match your priorities
 - **Task management**: Check off completed items, edit tasks, or delete them
 - **Archive system**: Keep your list clean while preserving completed tasks
@@ -25,8 +26,8 @@ Live: https://elisecode247.github.io/to-do-list/
 - improve ui for newly logged in user
     - use templates
 - custom categories
-- fix un-hide
+- show hidden subtasks in the hidden tab
 - show priorities even in subtasks
 - fix bug fetching "google-client-id" non-stop when logged out and open menu from server shut down
-- take out filterTasks so I can use it for google events and tasks and subtasks
-- show hidden tasks in the scheduled tasks tab
+- take out filterTasks so I can use it for google events and tasks and subtasks and for testing
+- add unit testing for filtering
