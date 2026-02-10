@@ -1,6 +1,6 @@
 import './frequency-button-group.css';
 import { MODES } from 'checklist/constants';
-import { getTagColor } from 'checklist/utilities/get-tag-color';
+import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import type { Mode } from 'src/app/types';
 
 interface FrequencyButtonGroupProps {
@@ -24,7 +24,7 @@ function FrequencyButtonGroup({ mode, onClick }: FrequencyButtonGroupProps) {
                         className={`frequency-selector__button
                             ${mode === modeOption
                                 ? `frequency-selector__button--active
-                                    ${getTagColor(modeOption)}`
+                                    ${getModeColor(modeOption)}`
                                 : ''
                             }`}
                     >

@@ -6,7 +6,7 @@ import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { MODES } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
-import { getTagColor } from 'checklist/utilities/get-tag-color';
+import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import 'checklist/checklist.css';
 import { useTask } from 'src/demo/use-demo-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
@@ -202,7 +202,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 }}
                                 className={`
                                     filter-button
-                                    ${isActive ? getTagColor(mode) + 'filter-button-active' : ''}
+                                    ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
                                 `}
                             >
                                 {mode}

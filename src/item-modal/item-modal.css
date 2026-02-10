@@ -99,8 +99,8 @@ textarea {
     gap: var(--spacing-xs);
 }
 
-/* Task Tags */
-.item-modal_tag-container {
+/* Task Mode */
+.item-modal_mode-container {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
@@ -108,7 +108,7 @@ textarea {
     align-items: baseline;
 }
 
-.item-modal_tag-button {
+.item-modal_mode-button {
     padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--radius-full);
     font-size: 16px;
@@ -118,17 +118,17 @@ textarea {
     transition: all var(--transition-fast);
 }
 
-.item-modal_tag-button--inactive {
+.item-modal_mode-button--inactive {
     background-color: var(--color-background);
     color: var(--color-text-secondary);
     border: 1px solid var(--color-border);
 }
 
-.item-modal_tag-button--inactive:hover {
+.item-modal_mode-button--inactive:hover {
     background-color: var(--color-hover);
 }
 
-.item-modal_tag-label {
+.item-modal_mode-label {
     font-size: 12px;
     text-transform: uppercase;
     opacity: 0.7;
@@ -136,17 +136,17 @@ textarea {
     color: var(--color-text-secondary);
 }
 
-.item-modal_tag-group {
+.item-modal_mode-group {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
 }
 
-.item-modal_tag-button--priority {
+.item-modal_mode-button--priority {
     border: 2px dotted;
     font-weight: 600;
     background: transparent;
-    color: var(--color-tag-priority-text);
+    color: var(--color-mode-priority-text);
     transition:
         background-color 150ms ease,
         color 150ms ease,
@@ -155,10 +155,10 @@ textarea {
         transform 120ms ease;
 }
 
-.item-modal_tag-button--priority-active {
-    background: var(--color-tag-priority-bg);
-    border-color: var(--color-tag-priority-text);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-tag-priority-text) 25%, transparent);
+.item-modal_mode-button--priority-active {
+    background: var(--color-mode-priority-bg);
+    border-color: var(--color-mode-priority-text);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mode-priority-text) 25%, transparent);
     transform: scale(0.97);
 }
 
@@ -167,7 +167,7 @@ textarea {
         background-color: var(--color-surface);
     }
 
-    .item-modal_tag-label {
+    .item-modal_mode-label {
         color: var(--color-text-primary);
     }
 }

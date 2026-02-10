@@ -180,7 +180,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0 }}
                     transition={{ duration: 0.4 }}
-                    className={`sortable-item_container ${isPriority ? 'tag-priority' : ''}`}
+                    className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 >
                     <div className="sortable-item_main-content">
                         <button

@@ -59,22 +59,22 @@
     /* Motion */
     --transition-fast: 0.2s ease;
 
-    /* Tag Frequency (Cosmic Pastels) */
-    --color-tag-daily-bg: #ede9fe;
-    --color-tag-daily-text: #5b21b6;
-    --color-tag-daily-border: #c4b5fd;
+    /* Mode Frequency (Cosmic Pastels) */
+    --color-mode-daily-bg: #ede9fe;
+    --color-mode-daily-text: #5b21b6;
+    --color-mode-daily-border: #c4b5fd;
 
-    --color-tag-one-time-bg: #fae8ff;
-    --color-tag-one-time-text: #86198f;
-    --color-tag-one-time-border: #f0abfc;
+    --color-mode-one-time-bg: #fae8ff;
+    --color-mode-one-time-text: #86198f;
+    --color-mode-one-time-border: #f0abfc;
 
-    --color-tag-occasional-bg: #cffafe;
-    --color-tag-occasional-text: #155e75;
-    --color-tag-occasional-border: #67e8f9;
+    --color-mode-occasional-bg: #cffafe;
+    --color-mode-occasional-text: #155e75;
+    --color-mode-occasional-border: #67e8f9;
 
-    --color-tag-priority-bg: #4c1d95;
-    --color-tag-priority-text: #f5d0fe;
-    --color-tag-priority-border: #a855f7;
+    --color-mode-priority-bg: #4c1d95;
+    --color-mode-priority-text: #f5d0fe;
+    --color-mode-priority-border: #a855f7;
 
 }
 
@@ -112,22 +112,22 @@
         --shadow-sm: 0 1px 4px rgba(168, 139, 250, 0.25);
         --shadow-md: 0 10px 30px rgba(236, 72, 153, 0.25);
 
-        /* Tag Frequency (Neon Chips) */
-        --color-tag-daily-bg: #2e1065;
-        --color-tag-daily-text: #ddd6fe;
-        --color-tag-daily-border: #7c3aed;
+        /* Mode Frequency (Neon Chips) */
+        --color-mode-daily-bg: #2e1065;
+        --color-mode-daily-text: #ddd6fe;
+        --color-mode-daily-border: #7c3aed;
 
-        --color-tag-one-time-bg: #4a044e;
-        --color-tag-one-time-text: #f5d0fe;
-        --color-tag-one-time-border: #d946ef;
+        --color-mode-one-time-bg: #4a044e;
+        --color-mode-one-time-text: #f5d0fe;
+        --color-mode-one-time-border: #d946ef;
 
-        --color-tag-occasional-bg: #083344;
-        --color-tag-occasional-text: #67e8f9;
-        --color-tag-occasional-border: #22d3ee;
+        --color-mode-occasional-bg: #083344;
+        --color-mode-occasional-text: #67e8f9;
+        --color-mode-occasional-border: #22d3ee;
 
-        --color-tag-priority-bg: #581c87;
-        --color-tag-priority-text: #f0abfc;
-        --color-tag-priority-border: #ec4899;
+        --color-mode-priority-bg: #581c87;
+        --color-mode-priority-text: #f0abfc;
+        --color-mode-priority-border: #ec4899;
 
     }
 }

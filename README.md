@@ -6,7 +6,7 @@ Live: https://elisecode247.github.io/to-do-list/
 
 ## Features
 
-- **Frequency-based tagging**: Categorize tasks as daily, one-time, or occasional
+- **Frequency-based mode**: Categorize tasks as daily, one-time, or occasional
 - **Smart filtering**: Quickly view tasks by category with visual counters [See here for rules](./task-filtering-notes.md)
 
 - **Drag and drop**: Easily reorder tasks to match your priorities

@@ -2,7 +2,7 @@ import 'item-modal/item-modal.css';
 import { useEffect, useRef, type FC } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { MODES } from 'checklist/constants';
-import { getTagColor } from 'checklist/utilities/get-tag-color';
+import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
@@ -147,18 +147,18 @@ export const ItemModal: FC<ItemModalProps> = ({
                     />
                 </div>
 
-                <div className="item-modal_tag-container">
-                    <p className="item-modal_tag-label">Schedule (choose one)</p>
+                <div className="item-modal_mode-container">
+                    <p className="item-modal_mode-label">Schedule (choose one)</p>
 
-                    <div className="item-modal_tag-group">
+                    <div className="item-modal_mode-group">
                         {MODES.map(mode => (
                             <button
                                 key={mode}
                                 onClick={() => toggleMode(mode)}
-                                className={`item-modal_tag-button
+                                className={`item-modal_mode-button
                                     ${formData.mode === mode ?
-                                        getTagColor(mode) :
-                                        'item-modal_tag-button--inactive'
+                                        getModeColor(mode) :
+                                        'item-modal_mode-button--inactive'
                                     }
                                 `}
                             >
@@ -167,18 +167,18 @@ export const ItemModal: FC<ItemModalProps> = ({
                         ))}
                     </div>
                 </div>
-                <div className="item-modal_tag-container">
+                <div className="item-modal_mode-container">
 
-                    <p className="item-modal_tag-label">Options</p>
+                    <p className="item-modal_mode-label">Options</p>
 
-                    <div className="item-modal_tag-group">
+                    <div className="item-modal_mode-group">
                         <button
                             key="priority"
                             onClick={() => togglePriority()}
-                            className={`item-modal_tag-button
-                                item-modal_tag-button--priority
+                            className={`item-modal_mode-button
+                                item-modal_mode-button--priority
                                 ${formData.isPriority
-                                    ? 'item-modal_tag-button--priority-active'
+                                    ? 'item-modal_mode-button--priority-active'
                                     : ''}
                             `}
                             title="Can be combined with any schedule"

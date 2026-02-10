@@ -190,7 +190,7 @@
         border: 2px dotted;
         font-weight: 600;
         background: transparent;
-        color: var(--color-tag-priority-text);
+        color: var(--color-mode-priority-text);
 
         transition:
             background-color 150ms ease,
@@ -201,9 +201,9 @@
     }
 
     .filter-button--priority-active {
-        background: var(--color-tag-priority-bg);
-        border-color: var(--color-tag-priority-text);
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-tag-priority-text) 25%, transparent);
+        background: var(--color-mode-priority-bg);
+        border-color: var(--color-mode-priority-text);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mode-priority-text) 25%, transparent);
     }
 
     .filter-button--priority:active {

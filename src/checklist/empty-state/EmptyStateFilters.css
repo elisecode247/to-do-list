@@ -36,15 +36,15 @@
     margin-bottom: var(--spacing-md);
 }
 
-.filter-tag {
+.filter-mode {
     display: inline-flex;
     align-items: center;
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-full);
     font-size: 14px;
-    background-color: var(--color-tag-daily-bg);
-    color: var(--color-tag-daily-text);
-    border: 1px solid var(--color-tag-daily-border);
+    background-color: var(--color-mode-daily-bg);
+    color: var(--color-mode-daily-text);
+    border: 1px solid var(--color-mode-daily-border);
 }
 
 .clear-filters-btn {
@@ -119,15 +119,15 @@
     margin-bottom: var(--spacing-md);
 }
 
-.filter-tag {
+.filter-mode {
     display: inline-flex;
     align-items: center;
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-full);
     font-size: 14px;
-    background-color: var(--color-tag-daily-bg);
-    color: var(--color-tag-daily-text);
-    border: 1px solid var(--color-tag-daily-border);
+    background-color: var(--color-mode-daily-bg);
+    color: var(--color-mode-daily-text);
+    border: 1px solid var(--color-mode-daily-border);
 }
 
 .clear-filters-btn {

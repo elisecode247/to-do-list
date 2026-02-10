@@ -6,7 +6,7 @@ import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { MODES } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
-import { getTagColor } from 'checklist/utilities/get-tag-color';
+import { getModeColor } from 'src/checklist/utilities/get-mode-color.ts';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
@@ -167,24 +167,24 @@ const Checklist: FC<ChecklistProps> = ({
                     >
                         All
                     </button>
-                    {MODES.map(tag => {
-                        const isActive = activeFilters.includes(tag);
+                    {MODES.map(mode => {
+                        const isActive = activeFilters.includes(mode);
                         return (
                             <button
-                                key={tag}
+                                key={mode}
                                 onClick={() => {
-                                    const nextFilters = activeFilters.includes(tag)
-                                        ? activeFilters.filter(t => t !== tag)
-                                        : [...activeFilters, tag];
+                                    const nextFilters = activeFilters.includes(mode)
+                                        ? activeFilters.filter(t => t !== mode)
+                                        : [...activeFilters, mode];
 
                                     setActiveFilters(nextFilters);
                                 }}
                                 className={`
                                     filter-button
-                                    ${isActive ? getTagColor(tag) + 'filter-button-active' : ''}
+                                    ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
                                 `}
                             >
-                                {tag}
+                                {mode}
                             </button>
                         )
                     })}
