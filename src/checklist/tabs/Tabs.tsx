@@ -3,7 +3,7 @@ import './tabs.css';
 
 export const TABS = {
     priority: 'priority',
-    active: 'active',
+    today: 'today',
     scheduled: 'scheduled',
     hidden: 'hidden',
     archived: 'archived'
@@ -11,7 +11,7 @@ export const TABS = {
 
 const tabOptions = [
     { id: TABS.priority, label: "⭐ Priority", priority: true },
-    { id: TABS.active, label: "Today", priority: true },
+    { id: TABS.today, label: "Today", priority: true },
     { id: TABS.scheduled, label: "Scheduled", priority: false },
     { id: TABS.hidden, label: "Hidden Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },

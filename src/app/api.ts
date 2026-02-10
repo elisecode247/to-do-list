@@ -1,4 +1,3 @@
-import type { UniqueIdentifier } from "@dnd-kit/core";
 import { API_URL } from "app/constants";
 import { type ChecklistItem } from "app/types";
 import { authHeaders } from "src/authentication/authentication-api";
@@ -62,7 +61,7 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
 }
 
 export async function updateTasksOrder(
-    orders: { id: UniqueIdentifier; sortOrder: number }[]
+    orders: { id: string; sortOrder: number }[]
 ): Promise<void> {
     const response = await fetch(`${API_URL}/order`, {
         method: "PUT",
@@ -77,7 +76,7 @@ export async function updateTasksOrder(
     return response.json();
 }
 
-export async function deleteTask(id: UniqueIdentifier): Promise<void> {
+export async function deleteTask(id: string): Promise<void> {
     try {
         const response = await fetch(`${API_URL}/${id}`, {
             method: "DELETE",

@@ -1,12 +1,11 @@
 import { type Dispatch, type SetStateAction } from 'react';
-import type { UniqueIdentifier } from '@dnd-kit/core';
 import type { ChecklistItem } from 'app/types.ts';
 import { updateTask } from 'app/api';
 
 export const updateItemByIdAndSync = async (
     items: ChecklistItem[],
     setList: Dispatch<SetStateAction<ChecklistItem[]>>,
-    id: UniqueIdentifier,
+    id: string,
     updater: (item: ChecklistItem) => ChecklistItem
 ) => {
     const prevItem = items.find(item => item.id === id);

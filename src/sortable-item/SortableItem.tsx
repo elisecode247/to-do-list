@@ -2,7 +2,6 @@ import { useSortable } from '@dnd-kit/sortable';
 import { useRef } from 'react';
 import type { FC, Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
-import type { UniqueIdentifier } from '@dnd-kit/core';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIORITY_TAG, type Tag } from 'src/checklist/constants';
@@ -32,7 +31,7 @@ import { TABS } from 'src/checklist/tabs/Tabs';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface SortableItemProps {
-    id: UniqueIdentifier;
+    id: string;
     activeTab: string;
     hasSubChores?: boolean;
     isActive: boolean;
@@ -40,15 +39,15 @@ interface SortableItemProps {
     isHiddenToday: (id: string) => boolean;
     isHideCompleted: boolean;
     checked: boolean;
-    deleteItem: (id: UniqueIdentifier) => void;
-    prioritizeItem: (id: UniqueIdentifier) => void;
+    deleteItem: (id: string) => void;
+    prioritizeItem: (id: string) => void;
     text: string;
     note: string;
     lastCompleted: string;
-    toggleChecked: (id: UniqueIdentifier, checked: boolean) => void;
-    handleEdit: (id: UniqueIdentifier) => void;
-    handleHideItem: (id: UniqueIdentifier, isHiddenItem: boolean) => void;
-    onMoveItem: (id: UniqueIdentifier) => void;
+    toggleChecked: (id: string, checked: boolean) => void;
+    handleEdit: (id: string) => void;
+    handleHideItem: (id: string, isHiddenItem: boolean) => void;
+    onMoveItem: (id: string) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     tags: Array<Tag>
     subtasks?: ChecklistItem[];
@@ -107,7 +106,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         return true;
     });
 
-    async function handleAdd(id: UniqueIdentifier) {
+    async function handleAdd(id: string) {
         if (!inputText.trim()) {
             showToast('Task details cannot be empty.', 'error');
             return;

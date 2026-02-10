@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { fetchTasks, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
-import type { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useAuthentication } from 'src/authentication/use-authentication';
@@ -10,7 +9,8 @@ import { isDateToday } from 'src/utilities/is-date-today';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { TABS } from 'src/checklist/tabs/Tabs';
 
-type FilterParams = {
+export type FilterParams = {
+    items: ChecklistItem[];
     activeFilters: Tag[];
     activeTab: string;
     hideCompleted: boolean;
@@ -24,14 +24,14 @@ interface TaskContextType {
     loadTasks: (cancelled?: boolean) => void;
     addItem: (newItem: ChecklistItem) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;
-    deleteItem: (id: UniqueIdentifier) => void;
-    toggleItem: (id: UniqueIdentifier, checked: boolean) => void;
-    prioritizeItem: (id: UniqueIdentifier) => void;
-    archiveItem: (id: UniqueIdentifier) => void;
-    reorderItems: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
+    deleteItem: (id: string) => void;
+    toggleItem: (id: string, checked: boolean) => void;
+    prioritizeItem: (id: string) => void;
+    archiveItem: (id: string) => void;
+    reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
     filterTasks: (params: FilterParams) => ChecklistItem[];
-    getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
+    getSubtasks: (parentId: string) => ChecklistItem[];
 }
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -146,7 +146,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const deleteItem = (id: UniqueIdentifier) => {
+    const deleteItem = (id: string) => {
         deleteTask(id).then(() => {
             setItems(prev => {
                 // update hasSubChores of parent has last subtask deleted
@@ -168,7 +168,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
 
 
-    const toggleItem = (id: UniqueIdentifier, checked: boolean) => {
+    const toggleItem = (id: string, checked: boolean) => {
         if (!checked) {
             const confirmed = confirm(
                 'If you uncheck, you will lose the last completed date. Are you sure?'
@@ -198,7 +198,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const prioritizeItem = (id: UniqueIdentifier) => {
+    const prioritizeItem = (id: string) => {
         setItems(prev => {
             const updated = prev.map(item => {
                 if (item.id !== id) return item;
@@ -223,7 +223,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const archiveItem = (id: UniqueIdentifier) => {
+    const archiveItem = (id: string) => {
         updateTask({
             ...items.find(item => item.id === id)!,
             isArchived: !items.find(item => item.id === id)!.isArchived,
@@ -241,7 +241,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
+    const reorderItems = (activeId: string, overId: string) => {
         setItems(prevItems => {
             const activeItem = prevItems.find(i => i.id === activeId);
 
@@ -249,7 +249,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
             // Detect placeholder dropzone
             let isFirstSubTask = false;
-            let placeholderParentId: UniqueIdentifier | null = null;
+            let placeholderParentId: string | null = null;
 
             if (typeof overId === "string" && overId.startsWith("placeholder-")) {
                 isFirstSubTask = true;
@@ -261,12 +261,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
             if (!overItem) return prevItems;
 
-            const oldParent = (activeItem.parentUuid ?? null) as UniqueIdentifier | null;
+            const oldParent = (activeItem.parentUuid ?? null) as string | null;
 
             // If placeholder is used, newParent becomes the *parent task itself*
-            const newParent: UniqueIdentifier | null = isFirstSubTask ? (overItem.id as UniqueIdentifier) : (overItem.parentUuid ?? null);
+            const newParent: string | null = isFirstSubTask ? (overItem.id as string) : (overItem.parentUuid ?? null);
 
-            const getSiblings = (parentUuid: UniqueIdentifier | null) =>
+            const getSiblings = (parentUuid: string | null) =>
                 prevItems
                     .filter(i => (i.parentUuid ?? null) === parentUuid)
                     .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -339,7 +339,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
 
             // --- Update hasSubChores dynamically ---
-            const parentIds = [oldParent, newParent].filter(Boolean) as UniqueIdentifier[];
+            const parentIds = [oldParent, newParent].filter(Boolean) as string[];
             updatedItems = updatedItems.map(item => {
                 if (parentIds.includes(item.id)) {
                     const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
@@ -362,6 +362,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const filterTasks = ({
+        items,
         activeFilters,
         activeTab,
         hideCompleted,
@@ -377,7 +378,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         // --- Tab filtering ---
         filteredItems = filteredItems.filter(task => {
             switch (activeTab) {
-                case TABS.active:
+                case TABS.today:
                     return (
                         !task.isArchived ||
                         task.tags.includes('scheduled') // TODO  && new Date(task.due) <= today
@@ -429,7 +430,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
 
-    const getSubtasks = (parentId: UniqueIdentifier) => {
+    const getSubtasks = (parentId: string) => {
         if (!parentId) return [];
         return items.filter(item => item.parentUuid === parentId);
     }

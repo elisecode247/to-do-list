@@ -1,8 +1,6 @@
-import type { UniqueIdentifier } from '@dnd-kit/core';
-
 export interface ChecklistItem {
     isHidden: boolean;
-    id: UniqueIdentifier;
+    id: string;
     text: string;
     done: boolean;
     lastCompleted: string;
@@ -12,6 +10,8 @@ export interface ChecklistItem {
     tags: string[];
     isArchived: boolean;
     hasSubChores: boolean;
-    parentUuid: UniqueIdentifier | null;
+    parentUuid: string | null;
+    /** google properties */
     due?: string;
+    listId?: string;
 }

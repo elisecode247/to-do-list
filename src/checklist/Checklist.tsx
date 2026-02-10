@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type 
 import type { ChecklistItem } from 'app/types.ts';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import type { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem.tsx';
 import { EXCLUSIVE_TAGS, type Tag, isExclusiveTag } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect.tsx';
@@ -42,9 +42,9 @@ const Checklist: FC<ChecklistProps> = ({
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
     const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
-    const [activeTab, setActiveTab] = useState(TABS.active);
+    const [activeTab, setActiveTab] = useState(TABS.today);
     const sparkleTimeoutRef = useRef<number | null>(null);
-    const isActiveList = activeTab === TABS.active;
+    const isActiveList = activeTab === TABS.today;
 
     const hasExclusiveFilter = activeFilters.some(f =>
         EXCLUSIVE_TAGS.includes(f as (typeof EXCLUSIVE_TAGS)[number])
@@ -54,14 +54,14 @@ const Checklist: FC<ChecklistProps> = ({
         return tasks.map(task => ({ ...task, isHidden: isHiddenToday(task.id) })).filter(task => {
             if (activeTab === TABS.hidden && task.isHidden) return true;
             if (activeTab === TABS.scheduled && !task.isHidden) return true;
-            if (activeTab === TABS.active && !task.isHidden) return true;
+            if (activeTab === TABS.today && !task.isHidden) return true;
             return false;
 
         });
     }, [tasks, activeTab, isHiddenToday, hiddenItems]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
+        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
@@ -82,15 +82,15 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        reorderItems(active.id, over.id);
+        reorderItems(active.id as string, over.id as string);
     };
 
-    const toggleChecked = (id: UniqueIdentifier, checked: boolean) => {
+    const toggleChecked = (id: string, checked: boolean) => {
         toggleItem(id, checked);
     };
 
 
-    const handleEdit = (id: UniqueIdentifier) => {
+    const handleEdit = (id: string) => {
         const selectedItem = items.find(item => item.id === id);
         if (!selectedItem) return;
 
@@ -104,7 +104,7 @@ const Checklist: FC<ChecklistProps> = ({
         onEditItem(formattedItem);
     };
 
-    const handleHide = (id: UniqueIdentifier, isHiddenItem: boolean) => {
+    const handleHide = (id: string, isHiddenItem: boolean) => {
         if (isHiddenItem) {
             unhideForToday(id as string);
         } else {
@@ -112,7 +112,7 @@ const Checklist: FC<ChecklistProps> = ({
         }
     };
 
-    const handleMoveItem = (id: UniqueIdentifier) => {
+    const handleMoveItem = (id: string) => {
         archiveItem(id);
     };
 

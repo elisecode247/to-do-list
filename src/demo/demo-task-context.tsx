@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
-import type { UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { PRIORITY_TAG, type Tag, isExclusiveTag } from 'src/checklist/constants';
 import { useToast } from 'src/toast/use-toast';
@@ -17,11 +16,11 @@ interface TaskContextType {
     loadTasks: () => void;
     addItem: (newItem: ChecklistItem) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;
-    deleteItem: (id: UniqueIdentifier) => void;
-    toggleItem: (id: UniqueIdentifier, checked: boolean) => void;
-    prioritizeItem: (id: UniqueIdentifier) => void;
-    archiveItem: (id: UniqueIdentifier) => void;
-    reorderItems: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
+    deleteItem: (id: string) => void;
+    toggleItem: (id: string, checked: boolean) => void;
+    prioritizeItem: (id: string) => void;
+    archiveItem: (id: string) => void;
+    reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
     filterTasks: (params: {
         activeFilters: Tag[];
@@ -32,7 +31,7 @@ interface TaskContextType {
         showHidden?: boolean;
         isHiddenToday?: (arg0: string) => boolean;
     }) => ChecklistItem[];
-    getSubtasks: (parentId: UniqueIdentifier) => ChecklistItem[];
+    getSubtasks: (parentId: string) => ChecklistItem[];
 }
 
 export const DemoTaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -95,7 +94,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         showToast('Task added', 'success');
     };
 
-    const deleteItem = (id: UniqueIdentifier) => {
+    const deleteItem = (id: string) => {
         setItems(prev => {
             let deleted = prev.find(item => item.id === id);
             let parentSubCount = prev.filter(i => i.parentUuid === deleted?.parentUuid).length;
@@ -109,7 +108,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         showToast('Task deleted', 'success');
     };
 
-    const toggleItem = (id: UniqueIdentifier, checked: boolean) => {
+    const toggleItem = (id: string, checked: boolean) => {
         setItems(prev =>
             prev.map(item =>
                 item.id === id
@@ -119,7 +118,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         );
     };
 
-    const prioritizeItem = (id: UniqueIdentifier) => {
+    const prioritizeItem = (id: string) => {
         setItems(prev =>
             prev.map(item => {
                 if (item.id !== id) return item;
@@ -132,7 +131,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         );
     };
 
-    const archiveItem = (id: UniqueIdentifier) => {
+    const archiveItem = (id: string) => {
         setItems(prev =>
             prev.map(item =>
                 item.id === id ? { ...item, isArchived: !item.isArchived } : item
@@ -180,17 +179,17 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const getSubtasks = (parentId: UniqueIdentifier) => {
+    const getSubtasks = (parentId: string) => {
         return items.filter(item => item.parentUuid === parentId);
     };
 
-    const reorderItems = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
+    const reorderItems = (activeId: string, overId: string) => {
         setItems(prevItems => {
             const activeItem = prevItems.find(i => i.id === activeId);
             if (!activeItem) return prevItems;
 
             let isFirstSubTask = false;
-            let placeholderParentId: UniqueIdentifier | null = null;
+            let placeholderParentId: string | null = null;
 
             // Detect placeholder dropzone
             if (typeof overId === 'string' && overId.startsWith('placeholder-')) {
@@ -203,9 +202,9 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             if (!overItem) return prevItems;
 
             const oldParent = activeItem.parentUuid ?? null;
-            const newParent: UniqueIdentifier | null = isFirstSubTask ? overItem.id : overItem.parentUuid ?? null;
+            const newParent: string | null = isFirstSubTask ? overItem.id : overItem.parentUuid ?? null;
 
-            const getSiblings = (parentUuid: UniqueIdentifier | null) =>
+            const getSiblings = (parentUuid: string | null) =>
                 prevItems
                     .filter(i => (i.parentUuid ?? null) === parentUuid)
                     .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -254,7 +253,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
 
             // Update hasSubChores dynamically
-            const parentIds = [oldParent, newParent].filter(Boolean) as UniqueIdentifier[];
+            const parentIds = [oldParent, newParent].filter(Boolean) as string[];
             updatedItems = updatedItems.map(item => {
                 if (parentIds.includes(item.id)) {
                     const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
