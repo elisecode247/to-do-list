@@ -42,37 +42,18 @@
 }
 
 :root[data-theme-style="ocean"] body {
-    background:
-        /* soft clouds */
-        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.6), transparent 40%),
-        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.5), transparent 45%),
-
-        /* sky gradient */
-        linear-gradient(to bottom,
-            #7dd3fc 0%,
-            /* bright sky */
-            #bae6fd 25%,
-            /* haze */
-            #e0f7ff 40%,
-            /* near horizon */
-            transparent 41%),
-
-        /* ocean gradient */
-        linear-gradient(to bottom,
-            transparent 40%,
-            #22d3ee 45%,
-            /* shallow water */
-            #0284c7 70%,
-            /* deep water */
-            #0369a1 100%
-            /* near horizon */
-        );
-
+    background: linear-gradient(to bottom,
+            #22d3ee 0%,
+            #06b6d4 30%,
+            #0891b2 60%,
+            #0e7490 100%);
     background-attachment: fixed;
-    background-repeat: no-repeat;
     color: var(--color-text-primary);
+    position: relative;
+    overflow: hidden;
 }
 
+/* Light caustics/shimmers on water surface */
 :root[data-theme-style="ocean"] body::before {
     content: '';
     position: fixed;
@@ -80,57 +61,86 @@
     pointer-events: none;
 
     background-image:
-        radial-gradient(2px 2px at 10% 60%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 30% 55%, rgba(255, 255, 255, 0.35), transparent),
-        radial-gradient(2px 2px at 60% 65%, rgba(255, 255, 255, 0.3), transparent),
-        radial-gradient(1px 1px at 80% 58%, rgba(255, 255, 255, 0.4), transparent);
+        radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
+        radial-gradient(ellipse 500px 350px at 70% 50%, rgba(255, 255, 255, 0.12), transparent 50%),
+        radial-gradient(ellipse 550px 380px at 45% 70%, rgba(255, 255, 255, 0.1), transparent 50%),
+        radial-gradient(ellipse 450px 320px at 80% 25%, rgba(255, 255, 255, 0.13), transparent 50%);
 
-    animation: waterBubbles 80s linear infinite alternate;
+    animation: waterShimmer 15s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+/* Sunlight rays penetrating water */
+:root[data-theme-style="ocean"] body::after {
+    content: '';
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(160deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.03) 49%,
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.03) 51%,
+            transparent 52%,
+            transparent 100%),
+        linear-gradient(155deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.025) 49%,
+            rgba(255, 255, 255, 0.06) 50%,
+            rgba(255, 255, 255, 0.025) 51%,
+            transparent 52%,
+            transparent 100%),
+        linear-gradient(165deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.02) 49%,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.02) 51%,
+            transparent 52%,
+            transparent 100%);
+
+    background-size: 100% 100%;
+    animation: lightRays 20s ease-in-out infinite;
     opacity: 0.6;
 }
 
-@keyframes waterBubbles {
-    from {
-        transform: translate3d(0, 0, 0);
-    }
-
-    to {
-        transform: translate3d(-120px, -40px, 0);
-    }
-}
-
-:root[data-theme-style="ocean"] .app_h1 {
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-
-    background: linear-gradient(135deg,
-            #0ea5e9 0%,
-            #38bdf8 50%,
-            #0284c7 100%);
-
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    animation: oceanGlow 12s ease-in-out infinite;
-    margin: var(--spacing-md) auto 0 auto;
-}
-
-@keyframes oceanGlow {
+@keyframes waterShimmer {
 
     0%,
     100% {
-        text-shadow:
-            0 0 8px rgba(14, 165, 233, 0.35),
-            0 0 16px rgba(6, 182, 212, 0.25);
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+
+    25% {
+        transform: translate(30px, -20px) scale(1.05);
+        opacity: 0.9;
     }
 
     50% {
-        text-shadow:
-            0 0 14px rgba(6, 182, 212, 0.45),
-            0 0 24px rgba(14, 165, 233, 0.35);
+        transform: translate(-20px, 15px) scale(0.98);
+        opacity: 0.7;
+    }
+
+    75% {
+        transform: translate(15px, -25px) scale(1.02);
+        opacity: 0.85;
+    }
+}
+
+@keyframes lightRays {
+
+    0%,
+    100% {
+        transform: rotate(0deg) translateX(0);
+    }
+
+    50% {
+        transform: rotate(2deg) translateX(-30px);
     }
 }
 
@@ -180,29 +190,18 @@
 }
 
 :root[data-theme-style="ocean"][data-theme="dark"] body {
-    background:
-        /* moonlit water haze */
-        radial-gradient(circle at 70% 15%, rgba(186, 230, 253, 0.15), transparent 45%),
-
-        /* night sky */
-        linear-gradient(to bottom,
-            #022c3a 0%,
-            #035387 30%,
-            #0c4a6e 42%,
-            transparent 53%),
-
-        /* dark ocean */
-        linear-gradient(to bottom,
-            transparent 42%,
-            #075985 50%,
-            #0c4a6e 75%,
-            #022c3a 100%);
-
+    background: linear-gradient(to bottom,
+            #001a24 0%,
+            #022c3a 30%,
+            #023d52 60%,
+            #024b63 100%);
     background-attachment: fixed;
-    background-repeat: no-repeat;
     color: #e0f2fe;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Dark mode: Moonlight shimmers on water */
 :root[data-theme-style="ocean"][data-theme="dark"] body::before {
     content: '';
     position: fixed;
@@ -210,21 +209,123 @@
     pointer-events: none;
 
     background-image:
-        radial-gradient(2px 2px at 20% 65%, rgba(255, 255, 255, 0.3), transparent),
-        radial-gradient(1px 1px at 40% 60%, rgba(255, 255, 255, 0.35), transparent),
-        radial-gradient(2px 2px at 75% 70%, rgba(255, 255, 255, 0.25), transparent),
-        radial-gradient(1px 1px at 85% 62%, rgba(255, 255, 255, 0.3), transparent);
+        radial-gradient(ellipse 700px 450px at 25% 35%, rgba(56, 189, 248, 0.08), transparent 50%),
+        radial-gradient(ellipse 600px 400px at 75% 55%, rgba(6, 182, 212, 0.06), transparent 50%),
+        radial-gradient(ellipse 650px 420px at 50% 75%, rgba(34, 211, 238, 0.05), transparent 50%),
+        radial-gradient(ellipse 550px 380px at 85% 30%, rgba(56, 189, 248, 0.07), transparent 50%);
 
-    animation: oceanBubbles 90s ease-in-out infinite alternate;
+    animation: darkWaterShimmer 18s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+@keyframes darkWaterShimmer {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.7;
+    }
+
+    25% {
+        transform: translate(-25px, 20px) scale(1.03);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(20px, -15px) scale(0.97);
+        opacity: 0.6;
+    }
+
+    75% {
+        transform: translate(-20px, 25px) scale(1.02);
+        opacity: 0.75;
+    }
+}
+
+/* Dark mode: Subtle moonlight rays */
+:root[data-theme-style="ocean"][data-theme="dark"] body::after {
+    content: '';
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(158deg,
+            transparent 0%,
+            transparent 48.5%,
+            rgba(186, 230, 253, 0.02) 49%,
+            rgba(186, 230, 253, 0.05) 50%,
+            rgba(186, 230, 253, 0.02) 51%,
+            transparent 51.5%,
+            transparent 100%),
+        linear-gradient(153deg,
+            transparent 0%,
+            transparent 48.5%,
+            rgba(186, 230, 253, 0.015) 49%,
+            rgba(186, 230, 253, 0.04) 50%,
+            rgba(186, 230, 253, 0.015) 51%,
+            transparent 51.5%,
+            transparent 100%),
+        linear-gradient(163deg,
+            transparent 0%,
+            transparent 48.5%,
+            rgba(186, 230, 253, 0.01) 49%,
+            rgba(186, 230, 253, 0.03) 50%,
+            rgba(186, 230, 253, 0.01) 51%,
+            transparent 51.5%,
+            transparent 100%);
+
+    background-size: 100% 100%;
+    animation: moonlightRays 22s ease-in-out infinite;
     opacity: 0.5;
 }
 
-@keyframes oceanBubbles {
-    from {
-        transform: translate3d(0, 0, 0);
+@keyframes moonlightRays {
+
+    0%,
+    100% {
+        transform: rotate(0deg) translateX(0);
     }
 
-    to {
-        transform: translate3d(-80px, -30px, 0);
+    50% {
+        transform: rotate(-1.5deg) translateX(25px);
+    }
+}
+
+
+:root[data-theme-style="ocean"] .app_h1 {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+    background: linear-gradient(135deg,
+            #ffffff 0%,
+            #f0f9ff 50%,
+            #e0f2fe 100%);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.5);
+
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+
+    animation: oceanGlow 12s ease-in-out infinite;
+    margin: var(--spacing-md) auto 0 auto;
+}
+
+@keyframes oceanGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15)) brightness(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2)) brightness(1.1);
     }
 }
