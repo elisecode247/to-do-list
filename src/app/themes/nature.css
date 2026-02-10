@@ -35,38 +35,20 @@
 }
 
 :root[data-theme-style="nature"] body {
-    background:
-        /* soft clouds */
-        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.6), transparent 40%),
-        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.5), transparent 45%),
-
-        /* sky gradient */
-        linear-gradient(to bottom,
-            #7dd3fc 0%,
-            /* bright sky */
-            #bae6fd 25%,
-            /* haze */
-            #e0f2fe 40%,
-            /* near horizon */
-            transparent 41%),
-
-        /* field gradient */
-        linear-gradient(to bottom,
-            transparent 40%,
-            #bbf7d0 45%,
-            /* light grass */
-            #4ade80 70%,
-            /* rich green */
-            #166534 100%
-            /* deep field */
-        );
-
+    background: linear-gradient(to bottom,
+            #15803d 0%,
+            #166534 30%,
+            #14532d 60%,
+            #052e16 100%
+    );
     background-attachment: fixed;
-    background-repeat: no-repeat;
     color: var(--color-text-primary);
+    position: relative;
+    overflow: hidden;
 }
 
 
+/* Moonlight through trees */
 :root[data-theme-style="nature"] body::before {
     content: '';
     position: fixed;
@@ -74,25 +56,64 @@
     pointer-events: none;
 
     background-image:
-        radial-gradient(2px 2px at 10% 60%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 30% 55%, rgba(255, 255, 255, 0.35), transparent),
-        radial-gradient(2px 2px at 60% 65%, rgba(255, 255, 255, 0.3), transparent),
-        radial-gradient(1px 1px at 80% 58%, rgba(255, 255, 255, 0.4), transparent);
+        radial-gradient(ellipse 900px 650px at 20% 25%, rgba(186, 230, 253, 0.06), transparent 60%),
+        radial-gradient(ellipse 700px 550px at 75% 40%, rgba(224, 242, 254, 0.05), transparent 55%),
+        radial-gradient(ellipse 800px 600px at 45% 65%, rgba(186, 230, 253, 0.04), transparent 58%),
+        radial-gradient(ellipse 600px 500px at 85% 80%, rgba(224, 242, 254, 0.045), transparent 50%);
 
-    animation: pollenFloat 80s linear infinite alternate;
+    animation: moonlightShift 25s ease-in-out infinite;
     opacity: 0.6;
 }
 
-@keyframes pollenFloat {
-    from {
-        transform: translate3d(0, 0, 0);
+@keyframes moonlightShift {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
     }
-
-    to {
-        transform: translate3d(-120px, -40px, 0);
+    50% {
+        transform: translate(-15px, 10px) scale(1.03);
+        opacity: 0.7;
     }
 }
 
+/* Fireflies dancing */
+:root[data-theme-style="nature"] body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        radial-gradient(circle 4px at 15% 30%, rgba(250, 204, 21, 0.8), transparent),
+        radial-gradient(circle 3px at 45% 50%, rgba(251, 191, 36, 0.7), transparent),
+        radial-gradient(circle 5px at 75% 35%, rgba(250, 204, 21, 0.75), transparent),
+        radial-gradient(circle 3px at 25% 70%, rgba(251, 191, 36, 0.65), transparent),
+        radial-gradient(circle 4px at 85% 65%, rgba(250, 204, 21, 0.7), transparent),
+        radial-gradient(circle 3px at 60% 80%, rgba(251, 191, 36, 0.8), transparent),
+        radial-gradient(circle 4px at 35% 25%, rgba(250, 204, 21, 0.6), transparent),
+        radial-gradient(circle 5px at 90% 45%, rgba(251, 191, 36, 0.75), transparent);
+
+    animation: firefliesDance 15s ease-in-out infinite;
+}
+
+@keyframes firefliesDance {
+    0%, 100% {
+        opacity: 0.4;
+        transform: translate(0, 0);
+    }
+    25% {
+        opacity: 0.8;
+        transform: translate(20px, -15px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translate(-10px, 10px);
+    }
+    75% {
+        opacity: 0.9;
+        transform: translate(15px, -20px);
+    }
+}
 
 :root[data-theme-style="nature"] .app_h1 {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -101,20 +122,31 @@
     letter-spacing: 0.5px;
 
     background: linear-gradient(135deg,
-            #16a34a 0%,
-            #84cc16 50%,
-            #22c55e 100%);
+            #fef3c7 0%,
+            #fde68a 50%,
+            #fcd34d 100%);
 
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 
-    animation: natureGlow 12s ease-in-out infinite;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+
+    animation: sunlightGlow 12s ease-in-out infinite;
     margin: var(--spacing-md) auto 0 auto;
 }
 
+@keyframes sunlightGlow {
+    0%, 100% {
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) brightness(1);
+    }
+    50% {
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4)) brightness(1.15);
+    }
+}
+
+/* Dark Mode - Moonlit Forest */
 :root[data-theme="dark"][data-theme-style="nature"] {
-    /* Core Nature Palette */
     --color-primary: #86efac;
     --color-primary-dark: #166534;
     --color-primary-dark-hover: #15803d;
@@ -124,25 +156,20 @@
     --color-warning: #fbbf24;
     --color-danger: #f87171;
 
-    /* Text */
     --color-text-primary: #e5e7eb;
     --color-text-secondary: #9ca3af;
 
-    /* Surfaces */
     --color-background: #020617;
     --color-surface: #052e16;
     --color-hover: #064e3b;
 
-    /* Borders & Shadows */
     --color-border: #14532d;
     --color-border-light: #166534;
     --color-shadow: rgba(34, 197, 94, 0.25);
 
-    /* Shadows */
     --shadow-sm: 0 1px 4px rgba(34, 197, 94, 0.2);
     --shadow-md: 0 10px 30px rgba(20, 83, 45, 0.35);
 
-    /* Tag Frequency (Earthy Chips) */
     --color-tag-daily-bg: #064e3b;
     --color-tag-daily-text: #d1fae5;
     --color-tag-daily-border: #22c55e;
@@ -158,82 +185,17 @@
     --color-tag-priority-bg: #3f6212;
     --color-tag-priority-text: #ecfccb;
     --color-tag-priority-border: #a3e635;
-
-    --color-tag-priority-bg: #3f6212;      /* deep olive */
-    --color-tag-priority-text: #ecfccb;    /* soft lime text */
-    --color-tag-priority-border: #a3e635;  /* bright green border */
 }
 
 :root[data-theme-style="nature"][data-theme="dark"] body {
-    background:
-        /* moon haze */
-        radial-gradient(circle at 70% 15%, rgba(186, 230, 253, 0.15), transparent 45%),
-
-        /* night sky */
-        linear-gradient(to bottom,
-            #020617 0%,
-            /* near-black blue */
-            #0f172a 30%,
-            /* deep indigo */
-            #1e293b 42%,
-            /* horizon glow */
-            transparent 53%),
-
-        /* moonlit field */
-        linear-gradient(to bottom,
-            transparent 42%,
-            #052e16 50%,
-            /* cool grass */
-            #022c22 75%,
-            /* forest green */
-            #020617 100%
-            /* fade to dark */
-        );
-
+    background: linear-gradient(to bottom,
+            #001a0f 0%,
+            #052e16 30%,
+            #14532d 60%,
+            #022c22 100%
+    );
     background-attachment: fixed;
-    background-repeat: no-repeat;
     color: #e5e7eb;
-    /* soft gray-white */
-}
-
-:root[data-theme-style="nature"][data-theme="dark"] body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-
-    background-image:
-        radial-gradient(2px 2px at 20% 65%, white, transparent),
-        radial-gradient(1px 1px at 40% 60%, white, transparent),
-        radial-gradient(2px 2px at 75% 70%, white, transparent),
-        radial-gradient(1px 1px at 85% 62%, white, transparent);
-
-    animation: fireflies 90s ease-in-out infinite alternate;
-    opacity: 0.5;
-}
-
-@keyframes fireflies {
-    from {
-        transform: translate3d(0, 0, 0);
-    }
-
-    to {
-        transform: translate3d(-80px, -30px, 0);
-    }
-}
-
-@keyframes natureGlow {
-
-    0%,
-    100% {
-        text-shadow:
-            0 0 8px rgba(34, 197, 94, 0.35),
-            0 0 16px rgba(132, 204, 22, 0.25);
-    }
-
-    50% {
-        text-shadow:
-            0 0 14px rgba(22, 163, 74, 0.45),
-            0 0 24px rgba(74, 222, 128, 0.35);
-    }
+    position: relative;
+    overflow: hidden;
 }
