@@ -7,10 +7,11 @@ import { useTask } from "./use-task";
 import { Link, useLocation } from "wouter";
 import { ROUTES } from "src/router";
 
+
 function AccountMenu() {
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const { email, logout } = useAuthentication();
+    const { email, logout, isAuthenticated } = useAuthentication();
     const { reset } = useTask();
     const [location] = useLocation();
 
@@ -39,6 +40,8 @@ function AccountMenu() {
         handleLogout();
     };
 
+    if (!isAuthenticated) return null
+
     return (
         <div ref={menuRef}>
             <button
@@ -50,24 +53,22 @@ function AccountMenu() {
                 <MenuSquare className="app_header_menu-icon" />
             </button>
 
-            {isSettingOpen && (
-                (
-                    <div className="app_header_settings">
-                        <div className="app_header_button-group">
-                            <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
-                            {location !== ROUTES.userSettings && (
-                                <Link href={ROUTES.userSettings}
-                                    id="user-settings-button"
-                                    className="settings-btn"
-                                >
-                                    User Settings
-                                </Link>
-                            )}
-                            <GoogleCalendarStatus />
-                        </div>
+            {isSettingOpen && isAuthenticated ? (
+                <div className="app_header_settings">
+                    <div className="app_header_button-group">
+                        <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
+                        {location !== ROUTES.userSettings && (
+                            <Link href={ROUTES.userSettings}
+                                id="user-settings-button"
+                                className="settings-btn"
+                            >
+                                User Settings
+                            </Link>
+                        )}
+                        <GoogleCalendarStatus />
                     </div>
-                )
-            )}
+                </div>
+            ) : null}
         </div>
     );
 }

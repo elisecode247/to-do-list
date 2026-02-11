@@ -29,16 +29,6 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 }
 
 export async function logout(): Promise<void> {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-
-    if (refreshToken) {
-        fetch(API_AUTH_URL + "/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken }),
-        }).catch(() => {});
-    }
-
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(TOKEN_EXPIRES_KEY);
