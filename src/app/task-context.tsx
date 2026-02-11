@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
-import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
+import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask, toggleHideToday } from 'app/api';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
@@ -335,6 +335,30 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         return items.filter(item => item.parentUuid === parentId);
     }
 
+    const hideForToday = async (id: string) => {
+        try {
+            setItems(prev => {
+                toggleHideToday(id, true)
+                return prev.map(item => item.id === id ? { ...item, isHidden: true } : item);
+            });
+        } catch (err) {
+            console.error('Failed to hide task for today:', err);
+            showToast('Failed to hide task for today. Please try again.', 'error');
+        }
+    };
+
+    const unhideForToday = async (id: string) => {
+        try {
+            setItems(prev => {
+                toggleHideToday(id, false)
+                return prev.map(item => item.id === id ? { ...item, isHidden: false } : item);
+            });
+        } catch (err) {
+            console.error('Failed to unhide task for today:', err);
+            showToast('Failed to unhide task for today. Please try again.', 'error');
+        }
+    };
+
     return (
         <TaskContext.Provider value={{
             items,
@@ -350,6 +374,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             reorderItems,
             reset,
             getSubtasks,
+            hideForToday,
+            unhideForToday
         }}>
             {children}
         </TaskContext.Provider>

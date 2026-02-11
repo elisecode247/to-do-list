@@ -21,6 +21,8 @@ export interface TaskContextType {
     reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];
+    hideForToday: (id: string) => void;
+    unhideForToday: (id: string) => void;
 }
 
 export const DemoTaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -214,6 +216,22 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
+    const hideForToday = (id: string) => {
+        setItems(prev =>
+            prev.map(item =>
+                item.id === id ? { ...item, isHidden: true } : item
+            )
+        );
+    };
+
+    const unhideForToday = (id: string) => {
+        setItems(prev =>
+            prev.map(item =>
+                item.id === id ? { ...item, isHidden: false } : item
+            )
+        );
+    };
+
     return (
         <DemoTaskContext.Provider
             value={{
@@ -230,6 +248,8 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
                 reorderItems,
                 reset,
                 getSubtasks,
+                hideForToday,
+                unhideForToday,
             }}
         >
             {children}

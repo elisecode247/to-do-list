@@ -14,7 +14,6 @@ import NewTaskForm from 'src/demo/DemoAddForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
-import { useDailyHide } from 'src/app/use-hide-task';
 import { default as Tabs } from 'src/checklist/tabs/Tabs';
 import { TABS, type Tab } from 'src/checklist/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
@@ -42,14 +41,15 @@ const DemoChecklist: FC<ChecklistProps> = ({
         archiveItem,
         reorderItems,
         getSubtasks,
-        reset
+        reset,
+        hideForToday,
+        unhideForToday,
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
     const [activeFilters, setActiveFilters] = useState<Mode[]>([]);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
-    const { hiddenItems, isHiddenToday, hideForToday, unhideForToday } = useDailyHide();
     const [activeTab, setActiveTab] = useState(TABS.today);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.today;
@@ -61,18 +61,18 @@ const DemoChecklist: FC<ChecklistProps> = ({
     );
 
     const filteredTasks = useMemo(() => {
-        return tasks.map(task => ({ ...task, isHidden: isHiddenToday(task.id) })).filter(task => {
+        return tasks.filter(task => {
             if (activeTab === TABS.hidden && task.isHidden) return true;
             if (activeTab === TABS.scheduled && !task.isHidden) return true;
             if (activeTab === TABS.today && !task.isHidden) return true;
             return false;
 
         });
-    }, [tasks, activeTab, isHiddenToday, hiddenItems]);
+    }, [tasks, activeTab]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
-    }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
+        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory });
+    }, [items, activeFilters, activeTab, hideCompleted, filterCategory]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 
@@ -260,7 +260,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 key={task.id}
                                 task={task}
                                 markCompleted={markScheduledTaskCompletion}
-                                isHiddenToday={isHiddenToday}
                                 hideForToday={hideForToday}
                                 unhideForToday={unhideForToday}
                             />

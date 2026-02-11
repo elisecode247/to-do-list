@@ -7,16 +7,15 @@ import type { ChecklistItem } from "src/app/types";
 type ScheduledTaskItemProps = {
     task: ChecklistItem;
     markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
-    isHiddenToday: (taskId: string) => boolean;
     hideForToday: (taskId: string) => void;
     unhideForToday: (taskId: string) => void;
 }
-const ScheduledTaskItem = ({task, markCompleted, isHiddenToday, hideForToday, unhideForToday }: ScheduledTaskItemProps) => {
+const ScheduledTaskItem = ({task, markCompleted, hideForToday, unhideForToday }: ScheduledTaskItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const [checked, setChecked] = useState(task.done);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const sanitizedHTML = DOMPurify.sanitize(task.note || '');
-    const isHidden = isHiddenToday(task.id);
+    const isHidden = task.isHidden;
     return (
         <div className="scheduled-task-item">
             <div className="scheduled-task_main-content">

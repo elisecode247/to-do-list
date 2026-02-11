@@ -46,7 +46,6 @@ const makeParams = (
     activeFilters: [],
     hideCompleted: false,
     filterCategory: 'all',
-    isHiddenToday: () => false,
     ...overrides,
 });
 
@@ -70,13 +69,12 @@ describe('filterTasks – empty state', () => {
 // --------------------
 describe('filterTasks – hidden behavior', () => {
     it('includes only hidden tasks in Hidden tab', () => {
-        const task = makeTask();
+        const task = makeTask({ isHidden: true });
 
         const result = filterTasks(
             makeParams({
                 items: [task],
                 activeTab: TAB_HIDDEN,
-                isHiddenToday: () => true,
             })
         );
 
@@ -85,13 +83,12 @@ describe('filterTasks – hidden behavior', () => {
     });
 
     it('excludes hidden tasks from Today tab', () => {
-        const task = makeTask();
+        const task = makeTask({ isHidden: true });
 
         const result = filterTasks(
             makeParams({
                 items: [task],
                 activeTab: TAB_TODAY,
-                isHiddenToday: () => true,
             })
         );
 

@@ -114,3 +114,22 @@ export async function deleteTask(id: string): Promise<void> {
         throw err;
     }
 }
+
+export async function toggleHideToday(id: string, hide: boolean): Promise<void> {
+    try {
+        const response = await fetch(`${API_URL}/hideToday`, {
+            method: "PUT",
+            headers: await authHeaders(),
+            body: JSON.stringify({ id, hide }),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+        await response.json();
+    } catch (err) {
+        console.error("Failed to toggle hide today:", err);
+        throw err;
+    }
+}

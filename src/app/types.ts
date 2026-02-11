@@ -25,7 +25,6 @@ export type FilterParams = {
     activeTab: Tab;
     hideCompleted: boolean;
     filterCategory: string;
-    isHiddenToday: (id: string) => boolean;
 };
 export interface TaskContextType {
     items: ChecklistItem[];
@@ -41,4 +40,6 @@ export interface TaskContextType {
     reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];
+    hideForToday: (id: string) => void;
+    unhideForToday: (id: string) => void;
 }

@@ -8,16 +8,10 @@ export function filterTasks({
     activeFilters,
     hideCompleted,
     filterCategory,
-    isHiddenToday,
 }: FilterParams): ChecklistItem[] {
     if (!items.length) return [];
 
-    return items
-        .map(task => ({
-            ...task,
-            isHidden: isHiddenToday(task.id),
-        }))
-        .filter(task =>
+    return items.filter(task =>
             matchTab(task, activeTab) &&
             matchTabSpecificRules(task, activeTab) &&
             matchCommonFilters(task, {
