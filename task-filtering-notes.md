@@ -12,10 +12,6 @@ Filters are applied in the following order: Archived and Hidden Today tasks are 
 2. Apply Tab selection
 3. Apply Category, Mode, and Completion filters
 
-## Priority Highlighting
-
-Tasks marked **Priority** are visually highlighted in all Tabs.
-
 ## Tab Filters
 
 - **Today**: Tasks due today or earlier, including unscheduled tasks, that are not archived or hidden.

@@ -1,12 +1,12 @@
 import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction } from 'react';
-import type { ChecklistItem, Mode } from 'app/types.ts';
+import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { SortableItem } from 'sortable-item/SortableItem.tsx';
+import { SortableItem } from 'sortable-item/SortableItem';
 import { MODES } from 'checklist/constants';
-import CategorySelect from 'category-select/CategorySelect.tsx';
-import { getModeColor } from 'src/checklist/utilities/get-mode-color.ts';
+import CategorySelect from 'category-select/CategorySelect';
+import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
@@ -15,8 +15,11 @@ import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
-import { TABS, default as Tabs } from 'src/checklist/tabs/Tabs';
+import Tabs from 'src/checklist/tabs/Tabs';
+import { TABS } from 'src/checklist/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
+import { filterTasks } from 'src/app/utilities/filter-tasks';
+
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
@@ -33,7 +36,6 @@ const Checklist: FC<ChecklistProps> = ({
         prioritizeItem,
         archiveItem,
         reorderItems,
-        filterTasks,
         getSubtasks,
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
@@ -63,6 +65,7 @@ const Checklist: FC<ChecklistProps> = ({
     const filteredItems = useMemo(() => {
         return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
+        console.log("%c Line:66 🥛 filteredItems", "color:#ea7e5c", filteredItems);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 

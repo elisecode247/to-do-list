@@ -8,7 +8,7 @@ import { DEMO_TASKS } from './demo-tasks';
 const DEMO_STORAGE_KEY = 'demo_checklist_tasks';
 
 
-interface TaskContextType {
+export interface TaskContextType {
     items: ChecklistItem[];
     isLoading: boolean;
     error: string | null;
@@ -163,7 +163,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
 
             if (activeFilters.length > 0 && !activeFilters.some(filter => filter === task.mode)) return false;
 
-            if (!isCategoryIncluded(filterCategory, task.category)) return false;
+            if (!isCategoryIncluded(filterCategory, task.category, task.parentUuid)) return false;
 
             return true;
         });

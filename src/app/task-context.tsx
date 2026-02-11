@@ -1,37 +1,13 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
-import type { ChecklistItem, Mode } from 'app/types';
+import type { ChecklistItem } from 'app/types';
 import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask } from 'app/api';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
-import { TABS } from 'src/checklist/tabs/Tabs';
-
-export type FilterParams = {
-    items: ChecklistItem[];
-    activeFilters: Mode[];
-    activeTab: string;
-    hideCompleted: boolean;
-    filterCategory: string;
-    isHiddenToday: (id: string) => boolean;
-};
-interface TaskContextType {
-    items: ChecklistItem[];
-    isLoading: boolean;
-    error: string | null;
-    loadTasks: (cancelled?: boolean) => void;
-    addItem: (newItem: ChecklistItem) => Promise<void>;
-    updateItem: (item: ChecklistItem) => Promise<void>;
-    deleteItem: (id: string) => void;
-    toggleItem: (id: string, checked: boolean) => void;
-    prioritizeItem: (id: string) => void;
-    archiveItem: (id: string) => void;
-    reorderItems: (activeId: string, overId: string) => void;
-    reset: () => void;
-    filterTasks: (params: FilterParams) => ChecklistItem[];
-    getSubtasks: (parentId: string) => ChecklistItem[];
-}
+import { TABS } from 'src/checklist/tabs/types';
+import type { FilterParams, TaskContextType } from 'app/types';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -403,7 +379,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             }
 
             // category filter
-            if (!isCategoryIncluded(filterCategory, task.category)) return false;
+            if (!isCategoryIncluded(filterCategory, task.category, task.parentUuid)) return false;
 
             // hidden today filter
             if (activeTab !== TABS.hidden && task.isHidden) return false;

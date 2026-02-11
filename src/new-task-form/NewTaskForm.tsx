@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
-import CategorySelect from 'category-select/CategorySelect.tsx';
-import type { ChecklistItem } from 'app/types.ts';
+import CategorySelect from 'category-select/CategorySelect';
+import type { ChecklistItem } from 'app/types';
 import { useTask } from 'src/app/use-task';
 import { type Mode } from 'app/types';
 

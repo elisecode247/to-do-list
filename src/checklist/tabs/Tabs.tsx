@@ -1,13 +1,6 @@
 import { useRef } from "react";
 import './tabs.css';
-
-export const TABS = {
-    priority: 'priority',
-    today: 'today',
-    scheduled: 'scheduled',
-    hidden: 'hidden',
-    archived: 'archived'
-}
+import { TABS } from "./types";
 
 const tabOptions = [
     { id: TABS.priority, label: "⭐ Priority", priority: true },

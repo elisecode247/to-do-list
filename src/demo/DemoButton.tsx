@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useContext } from "react";
-import { DemoContext } from "./DemoContext.tsx";
+import { DemoContext } from "./DemoContext";
 import { Link } from "wouter";
 import { ROUTES } from 'src/router';
 

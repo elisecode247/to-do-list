@@ -5,9 +5,9 @@ import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { getDaysFromNow } from 'src/utilities/days-ago';
-import type { ChecklistItem } from 'src/app/types.ts';
+import type { ChecklistItem } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
-import { useToast } from 'src/toast/use-toast.tsx';
+import { useToast } from 'src/toast/use-toast';
 import {
     GripVertical,
     Trash,
@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
-import { TABS } from 'src/checklist/tabs/Tabs';
+import { TABS } from 'src/checklist/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface SortableItemProps {

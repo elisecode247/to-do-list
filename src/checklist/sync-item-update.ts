@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction } from 'react';
-import type { ChecklistItem } from 'app/types.ts';
+import type { ChecklistItem } from 'app/types';
 import { updateTask } from 'app/api';
 
 export const updateItemByIdAndSync = async (

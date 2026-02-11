@@ -3,7 +3,7 @@ import { loginWithGoogle, logout as logoutAPI } from 'src/authentication/authent
 import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
 
 
-interface AuthenticationContextType {
+export interface AuthenticationContextType {
     isAuthenticated: boolean;
     login: (token: string) => Promise<void>;
     logout: () => void;

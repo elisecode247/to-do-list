@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from 'react';
-import Toast from 'src/toast/Toast.tsx';
+import Toast from 'src/toast/Toast';
 import type { ToastMessage, ToastContextType } from 'src/toast/types';
 
 

@@ -1,10 +1,10 @@
 import { useState, type FC } from 'react';
 import './app.css';
 import './settings.css';
-import { ItemModal } from 'item-modal/ItemModal.tsx';
+import { ItemModal } from 'item-modal/ItemModal';
 import type { ChecklistItem } from 'app/types';
-import Checklist from 'checklist/Checklist.tsx';
-import Toast from 'src/toast/Toast.tsx';
+import Checklist from 'checklist/Checklist';
+import Toast from 'src/toast/Toast';
 import ErrorState from 'src/error-state/ErrorState';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useTask } from 'src/app/use-task';
