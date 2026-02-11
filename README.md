@@ -16,14 +16,15 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- Include AI task breakdown and add to separate checklist
-- Move frontend code to Railway
-- Refresh token in HttpOnly Secure SameSite cookie
-- Access token in memory
-- Reset all env variables
-- Split google client id into local and prod
 - allow user delete history
+- custom categories
+- Split google client id into local and prod
+- Include AI task breakdown and add to separate checklist
 - improve ui for newly logged in user
     - use templates
-- custom categories
 - scheduled tasks
+- Reset all env variables
+- Access token in memory
+- Refresh token in HttpOnly Secure SameSite cookie
+- Move frontend code to Railway
+
