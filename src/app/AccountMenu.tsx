@@ -43,7 +43,7 @@ function AccountMenu() {
     if (!isAuthenticated) return null
 
     return (
-        <div ref={menuRef}>
+        <div className="account-menu-container" ref={menuRef}>
             <button
                 aria-label="Account menu"
                 onClick={() => setIsSettingOpen(prev => !prev)}

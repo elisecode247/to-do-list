@@ -315,7 +315,7 @@
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
 
     animation: oceanGlow 12s ease-in-out infinite;
-    margin: var(--spacing-md) auto 0 auto;
+    margin: 0 0 0 var(--spacing-md);
 }
 
 @keyframes oceanGlow {

@@ -307,5 +307,5 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: glow 15s ease-in-out infinite;
-    margin: var(--spacing-md) auto 0 auto;
+    margin: 0 0 0 var(--spacing-md);
 }

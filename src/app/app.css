@@ -51,6 +51,18 @@
     order: 1;
 }
 
+.account-menu-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-sm);
+    z-index: 10;
+}
+
 .app_header_settings {
     position: absolute;
     top: 40px;
@@ -126,6 +138,7 @@
 
     .app_h1 {
         font-size: 28px;
+        margin: var(--spacing-sm) auto 0 auto !important;
     }
 
     .app_header_button-group {
