@@ -8,7 +8,7 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
         const response = await fetch(API_AUTH_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token }),
+            body: JSON.stringify({ token, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
         });
 
         if (!response.ok) {
