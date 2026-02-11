@@ -35,7 +35,6 @@ interface SortableItemProps {
     hasSubChores?: boolean;
     isActive: boolean;
     isHidden: boolean;
-    isHiddenToday: (id: string) => boolean;
     isHideCompleted: boolean;
     checked: boolean;
     deleteItem: (id: string) => void;
@@ -58,7 +57,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     hasSubChores = false,
     isActive,
     isHidden,
-    isHiddenToday,
     isHideCompleted,
     checked,
     deleteItem,
@@ -99,7 +97,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
 
     const filteredTasks = subtasks?.filter((t) => {
-        if (isHiddenToday(t.id as string)) return false;
+        if (t.isHidden) return false;
         if (isHideCompleted && t.done) return false;
         return true;
     });
@@ -415,8 +413,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     activeTab={activeTab}
                                     hasSubChores={subtask.hasSubChores}
                                     isActive={isActive}
-                                    isHidden={isHiddenToday(subtask.id as string)}
-                                    isHiddenToday={isHiddenToday}
+                                    isHidden={subtask.isHidden}
                                     isHideCompleted={isHideCompleted}
                                     checked={subtask.done}
                                     deleteItem={deleteItem}

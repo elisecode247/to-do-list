@@ -274,7 +274,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 key={item.id}
                                 id={item.id}
                                 isHidden={item.isHidden}
-                                isHiddenToday={isHiddenToday}
                                 isHideCompleted={hideCompleted}
                                 text={item.text}
                                 note={item.note}
