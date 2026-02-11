@@ -7,13 +7,18 @@ import { useToast } from "src/toast/use-toast";
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
-    const { loading, connected, refreshStatus, disconnectCalendar } = useCalendarIntegration();
+    const { loading, connected, refreshStatus, disconnectCalendar, isError, setIsError } = useCalendarIntegration();
     const { showToast } = useToast();
 
     if (loading) return null;
     if (!isAuthenticated) return null;
 
+    function handleSuccess() {
+        refreshStatus();
+    }
+
     function handleConnectionError(err: unknown) {
+        setIsError(true);
         console.error("Error connecting to Google Calendar:", err);
         showToast("There was an error connecting to Google Calendar. Please try again.");
     }
@@ -38,7 +43,7 @@ const GoogleCalendarStatus = () => {
                     </>
                 )}
             </button>
-
+            {!isError ? (
             <div className="settings-panel">
                 <div className="settings-panel-header">
                     <h4>Google Calendar</h4>
@@ -56,12 +61,30 @@ const GoogleCalendarStatus = () => {
                         </button>
                     ) : (
                         <GoogleCalendarConnectButton
-                            onSuccess={refreshStatus}
+                            onSuccess={handleSuccess}
                             onError={(err) => handleConnectionError(err)}
                         />
                     )}
                 </div>
             </div>
+            ) : (
+                <div className="settings-panel">
+                    <div className="settings-panel-header">
+                        <h4>Google Calendar</h4>
+                        <p>There was an error checking your calendar connection. Please try again.</p>
+                    </div>
+
+                    <div className="settings-panel-actions">
+                        <button
+                            type="button"
+                            className="settings-btn settings-btn--secondary"
+                            onClick={refreshStatus}
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -18,6 +18,7 @@ export function useCalendarIntegration() {
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<Event[]>([]);
     const [tasks, setTasks] = useState<ChecklistItem[]>([]);
+    const [isError, setIsError] = useState(false);
 
     const fetchStatus = useCallback(
         async (opts?: { force?: boolean }) => {
@@ -51,6 +52,7 @@ export function useCalendarIntegration() {
             } catch (err) {
                 console.error("Calendar status check failed:", err);
                 setConnected(false);
+                setIsError(true);
                 return false;
             } finally {
                 setLoading(false);
@@ -150,6 +152,8 @@ export function useCalendarIntegration() {
         loadCalendarEvents,
         markScheduledTaskCompletion,
         events,
-        tasks
+        tasks,
+        isError,
+        setIsError,
     };
 }
