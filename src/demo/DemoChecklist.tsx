@@ -16,13 +16,14 @@ import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
 import { default as Tabs } from 'src/checklist/tabs/Tabs';
-import { TABS } from 'src/checklist/tabs/types';
+import { TABS, type Tab } from 'src/checklist/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useLocation } from "wouter";
 import { ROUTES } from 'src/router';
 import { type Mode } from 'app/types';
+import { filterTasks } from 'src/app/utilities/filter-tasks';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -40,7 +41,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
         prioritizeItem,
         archiveItem,
         reorderItems,
-        filterTasks,
         getSubtasks,
         reset
     } = useTask();
@@ -71,7 +71,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     }, [tasks, activeTab, isHiddenToday, hiddenItems]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ activeFilters, isActiveList, activeTab, hideCompleted, filterCategory, isHiddenToday });
+        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
@@ -126,7 +126,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         archiveItem(id);
     };
 
-    const handleTabChange = (tab: SetStateAction<string>) => {
+    const handleTabChange = (tab: SetStateAction<Tab>) => {
         setActiveTab(tab);
     }
 

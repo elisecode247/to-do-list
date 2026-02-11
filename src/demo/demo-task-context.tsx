@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
-import type { ChecklistItem, Mode } from 'app/types';
+import type { ChecklistItem } from 'app/types';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useToast } from 'src/toast/use-toast';
-import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { DEMO_TASKS } from './demo-tasks';
 
 const DEMO_STORAGE_KEY = 'demo_checklist_tasks';
@@ -21,15 +20,6 @@ export interface TaskContextType {
     archiveItem: (id: string) => void;
     reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
-    filterTasks: (params: {
-        activeFilters: Mode[];
-        activeTab: string;
-        isActiveList: boolean;
-        hideCompleted: boolean;
-        filterCategory: string;
-        showHidden?: boolean;
-        isHiddenToday?: (arg0: string) => boolean;
-    }) => ChecklistItem[];
     getSubtasks: (parentId: string) => ChecklistItem[];
 }
 
@@ -137,38 +127,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         );
     };
 
-    const filterTasks = ({
-        activeFilters,
-        activeTab: _activeTab,
-        isActiveList,
-        hideCompleted,
-        filterCategory,
-        showHidden = false,
-        isHiddenToday: _isHiddenToday,
-    }: {
-        activeFilters: Mode[];
-        activeTab: string;
-        isActiveList: boolean;
-        hideCompleted: boolean;
-        filterCategory: string;
-        showHidden?: boolean;
-        isHiddenToday?: (arg0: string) => boolean;
-    }) => {
-        if (!items.length) return [];
-        return items.filter(task => {
-            if (isActiveList && task.parentUuid) return false;
-            if (isActiveList ? task.isArchived : !task.isArchived) return false;
-            if (hideCompleted && task.done) return false;
-            if (!showHidden && task.isHidden) return false;
-
-            if (activeFilters.length > 0 && !activeFilters.some(filter => filter === task.mode)) return false;
-
-            if (!isCategoryIncluded(filterCategory, task.category, task.parentUuid)) return false;
-
-            return true;
-        });
-    };
-
     const getSubtasks = (parentId: string) => {
         return items.filter(item => item.parentUuid === parentId);
     };
@@ -271,7 +229,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
                 archiveItem,
                 reorderItems,
                 reset,
-                filterTasks,
                 getSubtasks,
             }}
         >

@@ -5,9 +5,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
-import { isCategoryIncluded } from 'src/category-select/category-constants';
-import { TABS } from 'src/checklist/tabs/types';
-import type { FilterParams, TaskContextType } from 'app/types';
+import type { TaskContextType } from 'app/types';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -332,65 +330,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const filterTasks = ({
-        items,
-        activeFilters,
-        activeTab,
-        hideCompleted,
-        filterCategory,
-        isHiddenToday
-    }: FilterParams) => {
-        if (!items.length) return items;
-
-        let filteredItems = [...items].map(item =>
-            ({ ...item, isHidden: isHiddenToday(item.id as string)})
-        );
-
-        // --- Tab filtering ---
-        filteredItems = filteredItems.filter(task => {
-            switch (activeTab) {
-                case TABS.today:
-                    return (
-                        !task.isArchived // TODO  && new Date(task.due) <= today
-                    );
-                case TABS.scheduled:
-                    return task.mode === 'scheduled'; // TODO tomorrow and future scheduled tasks
-                case TABS.hidden:
-                    return task.isHidden;
-                case TABS.archived:
-                    return task.isArchived;
-                case TABS.priority:
-                    return task.isPriority;
-                default:
-                    return true;
-            }
-        });
-
-        filteredItems = filteredItems.filter(task => {
-            // skip subtasks
-            if (task.parentUuid) return false;
-
-            // hide completed tasks
-            if (hideCompleted && task.done) return false;
-
-            // OR logic for mode
-            if (activeFilters.length > 0 && !activeFilters.some(filter => filter === task.mode)) {
-                return false;
-            }
-
-            // category filter
-            if (!isCategoryIncluded(filterCategory, task.category, task.parentUuid)) return false;
-
-            // hidden today filter
-            if (activeTab !== TABS.hidden && task.isHidden) return false;
-
-            return true;
-        });
-
-        return filteredItems;
-    };
-
-
     const getSubtasks = (parentId: string) => {
         if (!parentId) return [];
         return items.filter(item => item.parentUuid === parentId);
@@ -410,7 +349,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             archiveItem,
             reorderItems,
             reset,
-            filterTasks,
             getSubtasks,
         }}>
             {children}

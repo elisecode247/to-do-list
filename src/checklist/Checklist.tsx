@@ -16,7 +16,7 @@ import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { useDailyHide } from 'src/app/use-hide-task';
 import Tabs from 'src/checklist/tabs/Tabs';
-import { TABS } from 'src/checklist/tabs/types';
+import { TABS, type Tab } from 'src/checklist/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 
@@ -65,7 +65,6 @@ const Checklist: FC<ChecklistProps> = ({
     const filteredItems = useMemo(() => {
         return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory, isHiddenToday]);
-        console.log("%c Line:66 🥛 filteredItems", "color:#ea7e5c", filteredItems);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 
@@ -119,7 +118,7 @@ const Checklist: FC<ChecklistProps> = ({
         archiveItem(id);
     };
 
-    const handleTabChange = (tab: SetStateAction<string>) => {
+    const handleTabChange = (tab: SetStateAction<Tab>) => {
         setActiveTab(tab);
     }
 

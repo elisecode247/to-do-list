@@ -20,8 +20,7 @@ export const categories = {
 
 type CategoryType = typeof categoryArray[number] | '' | typeof ALL_CATEGORIES;
 
-export const isCategoryIncluded = (selectedCategory: CategoryType, taskCategory: CategoryType, parentUuid: string | null) => {
-    if (parentUuid) return true; // skip subtasks for category filter
+export const isCategoryIncluded = (selectedCategory: CategoryType, taskCategory: CategoryType) => {
     if (selectedCategory === ALL_CATEGORIES) return true;
     if (selectedCategory.includes("") && taskCategory === "") return true;
     if (selectedCategory === taskCategory) return true;

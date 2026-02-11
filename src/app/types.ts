@@ -1,5 +1,5 @@
+import { type Tab } from "src/checklist/tabs/types";
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';
-
 export interface ChecklistItem {
     isHidden: boolean;
     id: string;
@@ -22,7 +22,7 @@ export interface ChecklistItem {
 export type FilterParams = {
     items: ChecklistItem[];
     activeFilters: Mode[];
-    activeTab: string;
+    activeTab: Tab;
     hideCompleted: boolean;
     filterCategory: string;
     isHiddenToday: (id: string) => boolean;
@@ -40,6 +40,5 @@ export interface TaskContextType {
     archiveItem: (id: string) => void;
     reorderItems: (activeId: string, overId: string) => void;
     reset: () => void;
-    filterTasks: (params: FilterParams) => ChecklistItem[];
     getSubtasks: (parentId: string) => ChecklistItem[];
 }

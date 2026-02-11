@@ -101,7 +101,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     const filteredTasks = subtasks?.filter((t) => {
         if (isHiddenToday(t.id as string)) return false;
         if (isHideCompleted && t.done) return false;
-        if (isActive === t.isArchived) return false;
         return true;
     });
 

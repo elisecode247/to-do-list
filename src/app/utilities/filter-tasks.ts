@@ -11,71 +11,81 @@ export function filterTasks({
     isHiddenToday,
 }: FilterParams): ChecklistItem[] {
     if (!items.length) return [];
-    console.log("%c Line:13 🥟 items", "color:#93c0a4", items);
 
-    // Add isHidden property to each task
-    let filteredItems = items.map(task => ({
-        ...task,
-        isHidden: isHiddenToday(task.id),
-    }))
-
-        console.log("%c Line:17 🍤 filteredItems", "color:#f5ce50", filteredItems);
-
-    // --- Tab filtering ---
-    filteredItems = filteredItems.filter(task => matchTab(task, activeTab))
-    console.log("%c Line:25 🍫 filteredItems", "color:#42b983", filteredItems);
-
-    // --- Mode & other filters ---
-    filteredItems = filteredItems.filter(task =>
-        matchFilters(task, { activeFilters, hideCompleted, filterCategory, activeTab })
-    )
-        console.log("%c Line:29 🍆 filteredItems", "color:#7f2b82", filteredItems);
-
-    return filteredItems;
+    return items
+        .map(task => ({
+            ...task,
+            isHidden: isHiddenToday(task.id),
+        }))
+        .filter(task =>
+            matchTab(task, activeTab) &&
+            matchTabSpecificRules(task, activeTab) &&
+            matchCommonFilters(task, {
+                activeFilters,
+                hideCompleted,
+                filterCategory,
+            })
+        );
 }
+
 
 /** Helper: Tab filter logic */
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
     switch (activeTab) {
         case TABS.today:
-            return !task.isArchived && !task.isHidden
+            return !task.isArchived
         case TABS.scheduled:
-            return task.mode === 'scheduled' && !task.isHidden;
+            return task.mode === 'scheduled';
         case TABS.hidden:
             return task.isHidden
         case TABS.archived:
-            return task.isArchived  && !task.isHidden
+            return task.isArchived
         case TABS.priority:
-            return task.isPriority && !task.isHidden
+            return task.isPriority
         default:
-            return true
+            return true;
     }
 }
 
-/** Helper: Mode, Completion, Category filter logic */
-function matchFilters(
+function matchTabSpecificRules(
     task: ChecklistItem,
-    { activeFilters, hideCompleted, filterCategory, activeTab }: Omit<FilterParams, 'items' | 'isHiddenToday'>
+    activeTab: string
 ): boolean {
-    // skip subtasks for main filters
-    if (task.parentUuid) return false;
-
-    // hide completed
-
-    if (hideCompleted && task.done) return false;
-    console.log("%c Line:68 🌭 filterCategory", "color:#6ec1c2", filterCategory);
-
-    // Category filter
-    if (!isCategoryIncluded(filterCategory, task.category, task.parentUuid)) return false;
-
-    // Hidden filter (for all tabs except Hidden)
-    if (activeTab !== TABS.hidden && task.isHidden) return false
-
-    // Active filters (tags/modes)
-    if (activeFilters.length > 0) {
-        // OR logic: task must have at least one activeFilter tag
-        if (!activeFilters.some(tag => tag === task.mode)) return false
+    switch (activeTab) {
+        case TABS.hidden:
+            return task.isHidden;
+        case TABS.priority:
+        case TABS.archived:
+            return !task.isHidden;
+        case TABS.today:
+        case TABS.scheduled:
+            return !isSubtask(task) && !task.isHidden;
+        default:
+            return true;
     }
+}
 
-    return true
+function matchCommonFilters(
+    task: ChecklistItem,
+    {
+        activeFilters,
+        hideCompleted,
+        filterCategory,
+    }: {
+        activeFilters: string[];
+        hideCompleted: boolean;
+        filterCategory: string;
+    }
+): boolean {
+    if (isCompleted(hideCompleted, task)) return false;
+    if (!isCategory(filterCategory, task)) return false;
+    if (!hasMode(activeFilters, task)) return false;
+    return true;
+}
+
+const isSubtask = (task: ChecklistItem): boolean => !!task.parentUuid;
+const isCompleted = (hideCompleted: boolean, task: ChecklistItem): boolean => hideCompleted && task.done;
+const isCategory = (selectedCategory: string, task: ChecklistItem): boolean => isCategoryIncluded(selectedCategory, task.category);
+const hasMode = (activeFilters: string[], task: ChecklistItem): boolean => {
+    return activeFilters.length === 0 || activeFilters.includes(task.mode);
 }
