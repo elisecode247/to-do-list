@@ -2,6 +2,8 @@
 
 An app so simple to use you will actually use it. Whether you have daily routines, one-time errands, or occasional tasks, this app will defog your mind.
 
+Goal is not task management but *gentle remembering without emotional penalty.*
+
 Live: https://elisecode247.github.io/to-do-list/
 
 ## Features

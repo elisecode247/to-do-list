@@ -12,14 +12,13 @@ export function filterTasks({
     if (!items.length) return [];
 
     return items.filter(task =>
-            matchTab(task, activeTab) &&
-            matchTabSpecificRules(task, activeTab) &&
-            matchCommonFilters(task, {
-                activeFilters,
-                hideCompleted,
-                filterCategory,
-            })
-        );
+        matchTab(task, activeTab) &&
+        matchCommonFilters(task, {
+            activeFilters,
+            hideCompleted,
+            filterCategory,
+        })
+    );
 }
 
 
@@ -27,33 +26,20 @@ export function filterTasks({
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
     switch (activeTab) {
         case TABS.today:
-            return !task.isArchived
-        case TABS.scheduled:
-            return task.mode === 'scheduled';
-        case TABS.hidden:
-            return task.isHidden
-        case TABS.archived:
-            return task.isArchived
-        case TABS.priority:
-            return task.isPriority
-        default:
-            return true;
-    }
-}
+            return !task.isArchived && !task.isHidden && !isSubtask(task);
 
-function matchTabSpecificRules(
-    task: ChecklistItem,
-    activeTab: string
-): boolean {
-    switch (activeTab) {
+        case TABS.scheduled:
+            return task.mode === 'scheduled' && !task.isHidden && !isSubtask(task);
+
         case TABS.hidden:
             return task.isHidden;
-        case TABS.priority:
+
         case TABS.archived:
-            return !task.isHidden;
-        case TABS.today:
-        case TABS.scheduled:
-            return !isSubtask(task) && !task.isHidden;
+            return task.isArchived && !task.isHidden;
+
+        case TABS.priority:
+            return task.isPriority && !task.isHidden;
+
         default:
             return true;
     }
