@@ -97,7 +97,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
 
     const filteredTasks = subtasks?.filter((t) => {
-        if (t.isHidden) return false;
+        if (t.isHidden || t.isArchived) return false;
         if (isHideCompleted && t.done) return false;
         return true;
     });

@@ -19,15 +19,15 @@ Live: https://elisecode247.github.io/to-do-list/
 
 ### To do
 - allow user delete history
-- custom categories
 - Split google client id into local and prod
-- Include AI task breakdown and add to separate checklist
 - improve ui for newly logged in user
     - use templates
-- scheduled tasks
 - Reset all env variables
 - Access token in memory
 - Refresh token in HttpOnly Secure SameSite cookie
 - Move frontend code to Railway
-- bug: archived subtasks displaying
+- Include AI task breakdown and add to separate checklist
+- scheduled tasks
+- custom categories
+- all tab with search
 
