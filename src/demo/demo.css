@@ -16,6 +16,10 @@
     font-weight: 500;
 }
 
+.demo-actions {
+    margin: auto;
+}
+
 .google-login-shell {
     display: flex;
     flex-direction: column;
