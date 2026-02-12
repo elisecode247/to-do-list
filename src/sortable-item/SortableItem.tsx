@@ -33,6 +33,7 @@ interface SortableItemProps {
     id: string;
     activeTab: string;
     hasSubChores?: boolean;
+    isSubChore?: boolean;
     isActive: boolean;
     isHidden: boolean;
     isHideCompleted: boolean;
@@ -55,6 +56,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     id,
     activeTab,
     hasSubChores = false,
+    isSubChore = false,
     isActive,
     isHidden,
     isHideCompleted,
@@ -115,6 +117,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             note: '',
             sortOrder: 0,
             tabSortOrder: {},
+            categoryId: null,
             category: '',
             mode: 'one-time',
             isPriority: false,
@@ -204,6 +207,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                         <div className="sortable-item_text-container">
                             <span className="sortable-item_text">
+                                {isSubChore && <span className="sortable-item_subtask-indicator">Subtask: </span>}
                                 {text}
                                 {showLastCompleted && (
                                     <span className="sortable-item_last-completed-text">

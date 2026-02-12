@@ -95,6 +95,12 @@
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
+    .sortable-item_subtask-indicator {
+        font-size: 0.8em;
+        font-weight: 500;
+        color: var(--color-text-primary);
+        margin: 0 0 0 4px;
+    }
 }
 
 .sortable-item_last-completed-text {

@@ -254,6 +254,7 @@ const Checklist: FC<ChecklistProps> = ({
                             <SortableItem
                                 activeTab={activeTab}
                                 hasSubChores={item.hasSubChores}
+                                isSubChore={!!item.parentUuid}
                                 isActive={isActiveList}
                                 isPriority={item.isPriority}
                                 checked={item.done}
