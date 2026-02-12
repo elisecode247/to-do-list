@@ -117,7 +117,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             note: '',
             sortOrder: 0,
             tabSortOrder: {},
-            categoryId: null,
+            categoryUuid: null,
             category: '',
             mode: 'one-time',
             isPriority: false,

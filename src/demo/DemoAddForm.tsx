@@ -36,6 +36,7 @@ const DemoNewTaskForm = () => {
             sortOrder: 0,
             tabSortOrder: {},
             category: newTaskCategory,
+            categoryUuid: null,
             mode,
             isPriority: false,
             isArchived: false,

@@ -10,7 +10,7 @@ export const categoryArray = [
 
 export const categories = {
     "work": "Work",
-    "housework": "Housework",
+    "housework": "Home",
     "self-care": "Self-Care",
     "people": "People",
     "pets": "Pets",

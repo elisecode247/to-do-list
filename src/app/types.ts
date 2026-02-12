@@ -10,7 +10,7 @@ export interface ChecklistItem {
     sortOrder: number;
     tabSortOrder: { [tabName: string]: number };
     category: string;
-    categoryId: number | null;
+    categoryUuid: number | null;
     mode: Mode;
     isPriority: boolean;
     isArchived: boolean;
