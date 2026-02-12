@@ -256,7 +256,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 >
                                     {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
                                     <span className="sortable-item_button-text-span">
-                                        {isHidden ? "Unhide Today" : "Hide Today"}
+                                        {isHidden ? "Move to Today" : "Not Today"}
                                     </span>
                                 </button>
                             )}

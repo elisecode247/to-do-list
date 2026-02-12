@@ -6,7 +6,7 @@ const tabOptions = [
     { id: TABS.priority, label: "⭐ Priority", priority: true },
     { id: TABS.today, label: "Today", priority: true },
     { id: TABS.scheduled, label: "Scheduled", priority: false },
-    { id: TABS.hidden, label: "Hidden Today", priority: false },
+    { id: TABS.hidden, label: "Not Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },
 ];
 

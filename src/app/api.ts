@@ -129,7 +129,7 @@ export async function toggleHideToday(id: string, hide: boolean): Promise<void> 
         }
         await response.json();
     } catch (err) {
-        console.error("Failed to toggle hide today:", err);
+        console.error("Failed to toggle 'Not Today'", err);
         throw err;
     }
 }
