@@ -63,7 +63,13 @@ const Checklist: FC<ChecklistProps> = ({
     }, [tasks, activeTab]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory });
+        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory })
+            .sort((a, b) => {
+                if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
+                    return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
+                }
+                return a.sortOrder - b.sortOrder;
+            });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
@@ -84,7 +90,7 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        reorderItems(active.id as string, over.id as string);
+        reorderItems(activeTab, active.id as string, over.id as string);
     };
 
     const toggleChecked = (id: string, checked: boolean) => {

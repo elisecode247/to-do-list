@@ -1,11 +1,12 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask, toggleHideToday } from 'app/api';
-import { arrayMove } from '@dnd-kit/sortable';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
+import { type Tab } from 'src/checklist/tabs/types';
+import { getReorderedItems } from './utilities/get-reorder-items';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -210,123 +211,18 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const reorderItems = (activeId: string, overId: string) => {
+    const reorderItems = (activeTab: Tab, activeId: string, overId: string) => {
         setItems(prevItems => {
-            const activeItem = prevItems.find(i => i.id === activeId);
+            const reordered = getReorderedItems({ items: prevItems, activeTab, activeId, overId });
 
-            if (!activeItem) return prevItems;
+            // Persist canonical order if needed
+            const toPersist = reordered
+                .filter(i => i.parentUuid !== null) // only canonical tasks
+                .map(({ id, sortOrder, parentUuid }) => ({ id, sortOrder, parentUuid }));
 
-            // Detect placeholder dropzone
-            let isFirstSubTask = false;
-            let placeholderParentId: string | null = null;
+            updateTasksOrder(toPersist).catch(console.error);
 
-            if (typeof overId === "string" && overId.startsWith("placeholder-")) {
-                isFirstSubTask = true;
-                placeholderParentId = overId.replace("placeholder-", "");
-                overId = placeholderParentId;
-            }
-
-            const overItem = prevItems.find(i => i.id === overId);
-
-            if (!overItem) return prevItems;
-
-            const oldParent = (activeItem.parentUuid ?? null) as string | null;
-
-            // If placeholder is used, newParent becomes the *parent task itself*
-            const newParent: string | null = isFirstSubTask ? (overItem.id as string) : (overItem.parentUuid ?? null);
-
-            const getSiblings = (parentUuid: string | null) =>
-                prevItems
-                    .filter(i => (i.parentUuid ?? null) === parentUuid)
-                    .sort((a, b) => a.sortOrder - b.sortOrder);
-
-            // SAME PARENT REORDER
-            if (oldParent === newParent && !isFirstSubTask) {
-                const siblings = getSiblings(oldParent);
-
-                const oldIndex = siblings.findIndex(i => i.id === activeId);
-                const newIndex = siblings.findIndex(i => i.id === overId);
-
-                if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
-                    return prevItems;
-                }
-
-                const reordered = arrayMove(siblings, oldIndex, newIndex).map((item, index) => ({
-                    ...item,
-                    sortOrder: index,
-                }));
-
-                const otherItems = prevItems.filter(item => (item.parentUuid ?? null) !== oldParent);
-
-                updateTasksOrder(
-                    reordered.map(({ id, sortOrder, parentUuid }) => ({
-                        id,
-                        sortOrder,
-                        parentUuid: parentUuid ?? null,
-                    }))
-                ).catch(console.error);
-
-                return [...otherItems, ...reordered];
-            }
-
-            // CROSS PARENT MOVE
-            const oldSiblings = getSiblings(oldParent).filter(i => i.id !== activeId);
-            const newSiblings = getSiblings(newParent);
-
-            // If placeholder dropzone, insert at index 0 always
-            let targetIndex = 0;
-
-            if (!isFirstSubTask) {
-                const insertIndex = newSiblings.findIndex(i => i.id === overId);
-                targetIndex = insertIndex === -1 ? newSiblings.length : insertIndex;
-            }
-
-            const movedItem = {
-                ...activeItem,
-                parentUuid: newParent,
-            };
-
-            const updatedNewSiblings = [
-                ...newSiblings.slice(0, targetIndex),
-                movedItem,
-                ...newSiblings.slice(targetIndex),
-            ].map((item, index) => ({
-                ...item,
-                sortOrder: index,
-            }));
-
-            const updatedOldSiblings = oldSiblings.map((item, index) => ({
-                ...item,
-                sortOrder: index,
-            }));
-
-            const untouched = prevItems.filter(i => {
-                const p = i.parentUuid ?? null;
-                return p !== oldParent && p !== newParent && i.id !== activeId;
-            });
-
-            let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
-
-            // --- Update hasSubChores dynamically ---
-            const parentIds = [oldParent, newParent].filter(Boolean) as string[];
-            updatedItems = updatedItems.map(item => {
-                if (parentIds.includes(item.id)) {
-                    const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
-                    return { ...item, hasSubChores: childCount > 0 };
-                }
-                return item;
-            });
-
-            // Persist order to DB
-            updateTasksOrder(
-                [...updatedOldSiblings, ...updatedNewSiblings].map(({ id, sortOrder, parentUuid }) => ({
-                    id,
-                    sortOrder,
-                    parentUuid: parentUuid ?? null,
-                }))
-            ).catch(console.error);
-
-            return updatedItems;
+            return reordered;
         });
     };
 

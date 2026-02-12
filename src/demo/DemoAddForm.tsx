@@ -34,6 +34,7 @@ const DemoNewTaskForm = () => {
             lastCompleted: '',
             note: '',
             sortOrder: 0,
+            tabSortOrder: {},
             category: newTaskCategory,
             mode,
             isPriority: false,

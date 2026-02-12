@@ -8,6 +8,7 @@ export interface ChecklistItem {
     lastCompleted: string;
     note: string;
     sortOrder: number;
+    tabSortOrder: { [tabName: string]: number };
     category: string;
     mode: Mode;
     isPriority: boolean;
@@ -37,7 +38,7 @@ export interface TaskContextType {
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;
     archiveItem: (id: string) => void;
-    reorderItems: (activeId: string, overId: string) => void;
+    reorderItems: (activeTab: Tab, activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];
     hideForToday: (id: string) => void;

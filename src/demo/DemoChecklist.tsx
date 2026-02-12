@@ -71,7 +71,13 @@ const DemoChecklist: FC<ChecklistProps> = ({
     }, [tasks, activeTab]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory });
+        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory })
+            .sort((a, b) => {
+                if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
+                    return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
+                }
+                return a.sortOrder - b.sortOrder;
+            });
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];

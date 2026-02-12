@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
-import { filterTasks } from './filter-tasks';
+import { filterTasks } from 'app/utilities/filter-tasks';
 import {
     TAB_TODAY,
     TAB_SCHEDULED,
@@ -28,6 +28,7 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     lastCompleted: '',
     note: '',
     sortOrder: 0,
+    tabSortOrder: {},
     category: 'home',
     mode: 'one-time',
     isPriority: false,

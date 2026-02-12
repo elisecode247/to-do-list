@@ -114,6 +114,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             lastCompleted: '',
             note: '',
             sortOrder: 0,
+            tabSortOrder: {},
             category: '',
             mode: 'one-time',
             isPriority: false,
