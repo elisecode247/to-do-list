@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -86,12 +86,12 @@ const Checklist: FC<ChecklistProps> = ({
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
     }
-    const handleDragEnd = (event: DragEndEvent) => {
+    const handleDragEnd = useCallback((event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         reorderItems(activeTab, active.id as string, over.id as string);
-    };
+    }, [activeTab, reorderItems]);
 
     const toggleChecked = (id: string, checked: boolean) => {
         toggleItem(id, checked);

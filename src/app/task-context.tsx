@@ -5,7 +5,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
-import { type Tab } from 'src/checklist/tabs/types';
+import { type Tab, TABS } from 'src/checklist/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -213,12 +213,39 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const reorderItems = (activeTab: Tab, activeId: string, overId: string) => {
         setItems(prevItems => {
-            const reordered = getReorderedItems({ items: prevItems, activeTab, activeId, overId });
+            const reordered = getReorderedItems({
+                items: prevItems,
+                activeTab,
+                activeId,
+                overId,
+            });
 
-            // Persist canonical order if needed
-            const toPersist = reordered
-                .filter(i => i.parentUuid !== null) // only canonical tasks
-                .map(({ id, sortOrder, parentUuid }) => ({ id, sortOrder, parentUuid }));
+            // If nothing changed, don't persist
+            if (reordered === prevItems) return prevItems;
+
+            // TAB only reorder
+            if (
+                activeTab === TABS.priority ||
+                activeTab === TABS.hidden ||
+                activeTab === TABS.archived
+            ) {
+                const toPersist = reordered.map((item, index) => ({
+                    id: item.id,
+                    tabName: activeTab,
+                    tabSortOrder: item.tabSortOrder?.[activeTab] ?? index,
+                }));
+
+                updateTasksOrder(toPersist).catch(console.error);
+
+                return reordered;
+            }
+
+            /* Structural Reorder (moving tasks between parents or to root level) */
+            const toPersist = reordered.map(({ id, sortOrder, parentUuid }) => ({
+                id,
+                sortOrder,
+                parentUuid: parentUuid ?? null,
+            }));
 
             updateTasksOrder(toPersist).catch(console.error);
 

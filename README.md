@@ -29,4 +29,5 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Refresh token in HttpOnly Secure SameSite cookie
 - Move frontend code to Railway
+- bug: archived subtasks displaying
 

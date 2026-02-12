@@ -81,7 +81,7 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
 }
 
 export async function updateTasksOrder(
-    orders: { id: string; sortOrder: number }[]
+    orders: { id: string; sortOrder?: number, tabSortOrder?: number }[]
 ): Promise<void> {
     const response = await fetch(`${API_URL}/order`, {
         method: "PUT",
