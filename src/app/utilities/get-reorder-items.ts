@@ -3,16 +3,16 @@ import { type Tab, TABS } from "src/checklist/tabs/types";
 import { arrayMove } from "@dnd-kit/sortable";
 
 interface ReorderParams {
-    items: ChecklistItem[];
+    filteredItems: ChecklistItem[];
     activeTab: Tab;
     activeId: string;
     overId: string;
 }
 
-export function getReorderedItems({ items, activeTab, activeId, overId }: ReorderParams): ChecklistItem[] {
-    const activeItem = items.find(i => i.id === activeId);
+export function getReorderedItems({ filteredItems, activeTab, activeId, overId }: ReorderParams): ChecklistItem[] {
+    const activeItem = filteredItems.find(i => i.id === activeId);
 
-    if (!activeItem) return items;
+    if (!activeItem) return filteredItems;
 
     // Detect placeholder dropzone
     let isFirstSubTask = false;
@@ -24,20 +24,20 @@ export function getReorderedItems({ items, activeTab, activeId, overId }: Reorde
         overId = placeholderParentId;
     }
 
-    const overItem = items.find(i => i.id === overId);
+    const overItem = filteredItems.find(i => i.id === overId);
 
-    if (!overItem) return items;
+    if (!overItem) return filteredItems;
 
     if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
         // Reorder only within tabSortOrder
-        const sorted = [...items].sort(
+        const sorted = [...filteredItems].sort(
             (a, b) => (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0)
         );
 
         const oldIndex = sorted.findIndex(i => i.id === activeId);
         const newIndex = sorted.findIndex(i => i.id === overId);
 
-        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return items;
+        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return filteredItems;
 
         const reordered = arrayMove(sorted, oldIndex, newIndex).map((item, index) => ({
             ...item,
@@ -53,7 +53,7 @@ export function getReorderedItems({ items, activeTab, activeId, overId }: Reorde
     const newParent: string | null = isFirstSubTask ? (overItem.id as string) : (overItem.parentUuid ?? null);
 
     const getSiblings = (parentUuid: string | null) =>
-        items
+        filteredItems
             .filter(i => (i.parentUuid ?? null) === parentUuid)
             .sort((a, b) => a.sortOrder - b.sortOrder);
 
@@ -65,7 +65,7 @@ export function getReorderedItems({ items, activeTab, activeId, overId }: Reorde
         const newIndex = siblings.findIndex(i => i.id === overId);
 
         if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
-            return items;
+            return filteredItems;
         }
 
         const reordered = arrayMove(siblings, oldIndex, newIndex).map((item, index) => ({
@@ -73,7 +73,7 @@ export function getReorderedItems({ items, activeTab, activeId, overId }: Reorde
             sortOrder: index,
         }));
 
-        const otherItems = items.filter(item => (item.parentUuid ?? null) !== oldParent);
+        const otherItems = filteredItems.filter(item => (item.parentUuid ?? null) !== oldParent);
 
         return [...otherItems, ...reordered];
     }
@@ -109,7 +109,7 @@ export function getReorderedItems({ items, activeTab, activeId, overId }: Reorde
         sortOrder: index,
     }));
 
-    const untouched = items.filter(i => {
+    const untouched = filteredItems.filter(i => {
         const p = i.parentUuid ?? null;
         return p !== oldParent && p !== newParent && i.id !== activeId;
     });

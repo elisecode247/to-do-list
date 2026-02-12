@@ -211,10 +211,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const reorderItems = (activeTab: Tab, activeId: string, overId: string) => {
+    const reorderItems = (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => {
         setItems(prevItems => {
             const reordered = getReorderedItems({
-                items: prevItems,
+                filteredItems,
                 activeTab,
                 activeId,
                 overId,

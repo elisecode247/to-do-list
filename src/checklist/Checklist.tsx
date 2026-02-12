@@ -90,8 +90,8 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        reorderItems(activeTab, active.id as string, over.id as string);
-    }, [activeTab, reorderItems]);
+        reorderItems(filteredItems, activeTab, active.id as string, over.id as string);
+    }, [activeTab, filteredItems, reorderItems]);
 
     const toggleChecked = (id: string, checked: boolean) => {
         toggleItem(id, checked);

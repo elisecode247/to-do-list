@@ -29,42 +29,42 @@ const makeBaseItems = (): ChecklistItem[] => [
 
 describe("Guard conditions", () => {
     it("returns original array if active item not found", () => {
-        const items = makeBaseItems();
+        const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
-            items,
+            filteredItems,
             activeTab: TABS.today,
             activeId: "Z",
             overId: "A",
         });
 
-        expect(result).toBe(items);
+        expect(result).toBe(filteredItems);
     });
 
     it("returns original array if over item not found", () => {
-        const items = makeBaseItems();
+        const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
-            items,
+            filteredItems,
             activeTab: TABS.today,
             activeId: "A",
             overId: "Z",
         });
 
-        expect(result).toBe(items);
+        expect(result).toBe(filteredItems);
     });
 
     it("returns original array if dropped on itself", () => {
-        const items = makeBaseItems();
+        const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
-            items,
+            filteredItems,
             activeTab: TABS.today,
             activeId: "B",
             overId: "B",
         });
 
-        expect(result).toEqual(items);
+        expect(result).toEqual(filteredItems);
     });
 
     describe("Tab-based reordering (priority/hidden/archived)", () => {
@@ -75,10 +75,10 @@ describe("Guard conditions", () => {
         ];
 
         it("reorders in priority tab", () => {
-            const items = makeItems();
+            const filteredItems = makeItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: "priority",
                 activeId: "C",
                 overId: "A",
@@ -90,13 +90,13 @@ describe("Guard conditions", () => {
         });
 
         it("reorders in hidden tab", () => {
-            const items = [
+            const filteredItems = [
                 makeTask({ id: "A", parentUuid: null, sortOrder: 0, tabSortOrder: { hidden: 0 } }),
                 makeTask({ id: "B", parentUuid: null, sortOrder: 1, tabSortOrder: { hidden: 1 } }),
             ];
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: "hidden",
                 activeId: "B",
                 overId: "A",
@@ -108,10 +108,10 @@ describe("Guard conditions", () => {
     });
     describe("Same parent reorder", () => {
         it("reorders root level siblings", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
                 overId: "A",
@@ -124,10 +124,10 @@ describe("Guard conditions", () => {
         });
 
         it("reorders subtasks within same parent", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "D",
                 overId: "C",
@@ -142,10 +142,10 @@ describe("Guard conditions", () => {
     });
     describe("Cross parent move", () => {
         it("moves subtask to root", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
                 overId: "B",
@@ -156,10 +156,10 @@ describe("Guard conditions", () => {
         });
 
         it("moves root task into another parent", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
                 overId: "C",
@@ -171,10 +171,10 @@ describe("Guard conditions", () => {
     });
     describe("Placeholder dropzone", () => {
         it("inserts as first subtask when using placeholder", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
                 overId: "placeholder-A",
@@ -189,13 +189,13 @@ describe("Guard conditions", () => {
     });
     describe("hasSubChores recalculation", () => {
         it("removes hasSubChores when last child removed", () => {
-            const items: ChecklistItem[] = [
+            const filteredItems: ChecklistItem[] = [
                 makeTask({ id: "A", parentUuid: null, sortOrder: 0, hasSubChores: true }),
                 makeTask({ id: "C", parentUuid: "A", sortOrder: 0 }),
             ];
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
                 overId: "placeholder-C", // move under itself (simulate root)
@@ -206,13 +206,13 @@ describe("Guard conditions", () => {
         });
 
         it("adds hasSubChores when child added", () => {
-            const items: ChecklistItem[] = [
+            const filteredItems: ChecklistItem[] = [
                 makeTask({ id: "A", parentUuid: null, sortOrder: 0, hasSubChores: false }),
                 makeTask({ id: "B", parentUuid: null, sortOrder: 1 }),
             ];
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
                 overId: "placeholder-A",
@@ -224,23 +224,23 @@ describe("Guard conditions", () => {
     });
     describe("Integrity checks", () => {
         it("never loses tasks", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
                 overId: "B",
             });
 
-            expect(result).toHaveLength(items.length);
+            expect(result).toHaveLength(filteredItems.length);
         });
 
         it("never duplicates tasks", () => {
-            const items = makeBaseItems();
+            const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
-                items,
+                filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
                 overId: "B",
