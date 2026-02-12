@@ -20,8 +20,12 @@ import UserSettings from 'src/user-settings/UserSettings';
 import 'app/themes/themes.css';
 import { useTheme } from 'src/user-settings/use-theme';
 
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const App: FC = () => {
-        useTheme();
+    useTheme();
+    const now = new Date();
+    const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
 
     const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login } = useAuthentication();
@@ -86,6 +90,10 @@ const App: FC = () => {
                     <div className="app_container">
                         <header className="app_header">
                             <h1 className="app_h1">For My Today</h1>
+                            <p className="app_subtitle">
+                                {dayOfWeekName}
+                                {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                            </p>
                             <AccountMenu />
                         </header>
                         <main className="app_main">

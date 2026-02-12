@@ -164,3 +164,28 @@ body::after {
     animation: glow 15s ease-in-out infinite;
     margin: 0 0 0 var(--spacing-md);
 }
+
+
+.app_subtitle {
+    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg,
+            #c4b5fd 0%,
+            #f9a8d4 50%,
+            #c4b5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.75;
+    margin: var(--spacing-xs) 0 0 var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .app_subtitle {
+        font-size: 18px;
+        margin: var(--spacing-xs) auto 0 auto;
+    }
+}
