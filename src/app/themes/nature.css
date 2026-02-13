@@ -41,9 +41,9 @@ color-scheme: light dark;
     --color-mode-occasional-text: light-dark(#92400e, #fde68a);
     --color-mode-occasional-border: light-dark(#f59e0b, #facc15);
 
-    --color-mode-priority-bg: light-dark(#99ff13, #3f6212);
+    --color-mode-priority-bg: light-dark(#96ee89, #177200);
     --color-mode-priority-text: light-dark(#324a01, #ecfccb);
-    --color-mode-priority-border: light-dark(#a3e635, #a3e635);
+    --color-mode-priority-border: light-dark(#395d00, #a3e635);
 }
 
 :root[data-theme-style="nature"] body {

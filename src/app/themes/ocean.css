@@ -2,7 +2,7 @@
     color-scheme: light dark;
 
     /* Core Ocean Palette */
-    --color-primary: light-dark(#0ea5e9, #38bdf8);
+    --color-primary: light-dark(#11FFFF, #38bdf8);
     /* ocean blue / moonlit aqua */
 
     --color-primary-dark: light-dark(#0369a1, #0369a1);
@@ -31,7 +31,7 @@
     --color-text-secondary: light-dark(#1e40af, #bae6fd);
 
     /* Surfaces */
-    --color-background: light-dark(#cffafe, #022c3a);
+    --color-background: light-dark(#33ddee, #022c3a);
     /* light aqua water / deep twilight water */
 
     --color-surface: light-dark(#ffffff, #075985);
@@ -48,143 +48,71 @@
     --shadow-sm: light-dark(0 1px 4px rgba(14, 165, 233, 0.15), 0 1px 4px rgba(14, 165, 233, 0.2));
     --shadow-md: light-dark(0 10px 30px rgba(14, 165, 233, 0.25), 0 10px 30px rgba(3, 105, 161, 0.35));
 
-    --color-mode-priority-bg: light-dark(#0369a1, #00a2ff);
-    --color-mode-priority-text: light-dark(#bae6fd, #002239);
-    --color-mode-priority-border: light-dark(#0ea5e9, #38bdf8);
+    --color-mode-priority-bg: light-dark(#33ffdd, #00a2ff);
+    --color-mode-priority-text: light-dark(#003e60, #002239);
+    --color-mode-priority-border: light-dark(#003148, #8adeff);
 }
 
 :root[data-theme-style="ocean"] body {
-    background: light-dark(linear-gradient(to bottom,
-                #22d3ee 0%,
-                #06b6d4 30%,
-                #0891b2 60%,
-                #0e7490 100%),
-            linear-gradient(to bottom,
-                #001a24 0%,
-                #022c3a 30%,
-                #023d52 60%,
-                #024b63 100%));
-
+    background:
+        linear-gradient(to bottom,
+            #001a24 0%,
+            #022c3a 30%,
+            #023d52 60%,
+            #024b63 100%);
     background-attachment: fixed;
     color: var(--color-text-primary);
     position: relative;
     overflow: hidden;
 }
 
-/* Light caustics/shimmers on water surface */
-:root[data-theme-style="ocean"] body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-
-    background-image: light-dark(radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
-            radial-gradient(ellipse 700px 450px at 25% 35%, rgba(56, 189, 248, 0.08), transparent 50%)),
-        light-dark(radial-gradient(ellipse 500px 350px at 70% 50%, rgba(255, 255, 255, 0.12), transparent 50%),
-            radial-gradient(ellipse 600px 400px at 75% 55%, rgba(6, 182, 212, 0.06), transparent 50%)),
-        light-dark(radial-gradient(ellipse 550px 380px at 45% 70%, rgba(255, 255, 255, 0.1), transparent 50%),
-            radial-gradient(ellipse 650px 420px at 50% 75%, rgba(34, 211, 238, 0.05), transparent 50%)),
-        light-dark(radial-gradient(ellipse 450px 320px at 80% 25%, rgba(255, 255, 255, 0.13), transparent 50%),
-            radial-gradient(ellipse 550px 380px at 85% 30%, rgba(56, 189, 248, 0.07), transparent 50%));
-
-    animation: waterShimmer 15s ease-in-out infinite;
-    opacity: light-dark(0.8, 0.7);
-}
-
-/* Sunlight rays penetrating water */
+/* Sunlight rays / light penetration for Ocean Theme */
 :root[data-theme-style="ocean"] body::after {
     content: '';
     position: fixed;
     inset: -20%;
     pointer-events: none;
-
-    background-image: light-dark(linear-gradient(160deg,
-                transparent 0%,
-                transparent 48%,
-                rgba(255, 255, 255, 0.03) 49%,
-                rgba(255, 255, 255, 0.08) 50%,
-                rgba(255, 255, 255, 0.03) 51%,
-                transparent 52%,
-                transparent 100%),
-            linear-gradient(158deg,
-                transparent 0%,
-                transparent 48.5%,
-                rgba(186, 230, 253, 0.02) 49%,
-                rgba(186, 230, 253, 0.05) 50%,
-                rgba(186, 230, 253, 0.02) 51%,
-                transparent 51.5%,
-                transparent 100%)),
-        light-dark(linear-gradient(155deg,
-                transparent 0%,
-                transparent 48%,
-                rgba(255, 255, 255, 0.025) 49%,
-                rgba(255, 255, 255, 0.06) 50%,
-                rgba(255, 255, 255, 0.025) 51%,
-                transparent 52%,
-                transparent 100%),
-            linear-gradient(153deg,
-                transparent 0%,
-                transparent 48.5%,
-                rgba(186, 230, 253, 0.015) 49%,
-                rgba(186, 230, 253, 0.04) 50%,
-                rgba(186, 230, 253, 0.015) 51%,
-                transparent 51.5%,
-                transparent 100%)),
-        light-dark(linear-gradient(165deg,
-                transparent 0%,
-                transparent 48%,
-                rgba(255, 255, 255, 0.02) 49%,
-                rgba(255, 255, 255, 0.05) 50%,
-                rgba(255, 255, 255, 0.02) 51%,
-                transparent 52%,
-                transparent 100%),
-            linear-gradient(163deg,
-                transparent 0%,
-                transparent 48.5%,
-                rgba(186, 230, 253, 0.01) 49%,
-                rgba(186, 230, 253, 0.03) 50%,
-                rgba(186, 230, 253, 0.01) 51%,
-                transparent 51.5%,
-                transparent 100%));
-
+    z-index: 1;
     background-size: 100% 100%;
-    animation: lightRays 20s ease-in-out infinite;
-    opacity: light-dark(0.6, 0.5);
+    animation: lightRays 12s ease-in-out infinite;
+    background-image:
+        radial-gradient(circle 250px at 20% 25%, rgba(255,255,255,0.15) 0%, transparent 80%),
+        radial-gradient(circle 300px at 75% 20%, rgba(51,187,204,0.12) 0%, transparent 85%),
+        radial-gradient(circle 200px at 50% 80%, rgba(51,255,221,0.13) 0%, transparent 90%),
+        radial-gradient(circle 280px at 30% 60%, rgba(17,255,255,0.1) 0%, transparent 85%),
+        radial-gradient(circle 220px at 80% 50%, rgba(51,221,238,0.12) 0%, transparent 90%),
+        radial-gradient(circle 260px at 10% 70%, rgba(119,170,187,0.1) 0%, transparent 85%),
+        radial-gradient(circle 240px at 60% 30%, rgba(51,255,221,0.08) 0%, transparent 85%),
+        linear-gradient(160deg, transparent 0%, transparent 48%, rgba(17, 255, 255, 0.12) 50%, transparent 52%, transparent 100%),
+        linear-gradient(140deg, transparent 0%, transparent 48%, rgba(51, 221, 238, 0.1) 50%, transparent 52%, transparent 100%),
+        linear-gradient(130deg, transparent 0%, transparent 47%, rgba(51, 255, 221, 0.1) 50%, transparent 53%, transparent 100%),
+        linear-gradient(150deg, transparent 0%, transparent 49%, rgba(51, 187, 204, 0.08) 50%, transparent 51%, transparent 100%),
+        linear-gradient(165deg, transparent 0%, transparent 48%, rgba(17, 255, 255, 0.09) 50%, transparent 52%, transparent 100%);
+    opacity: 0.75;
 }
 
-@keyframes waterShimmer {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-        opacity: 0.8;
-    }
-
-    25% {
-        transform: translate(30px, -20px) scale(1.05);
-        opacity: 0.9;
-    }
-
-    50% {
-        transform: translate(-20px, 15px) scale(0.98);
-        opacity: 0.7;
-    }
-
-    75% {
-        transform: translate(15px, -25px) scale(1.02);
-        opacity: 0.85;
-    }
-}
-
+/* Sunlight rays animation */
 @keyframes lightRays {
 
     0%,
     100% {
-        transform: rotate(0deg) translateX(0);
+        transform: rotate(0deg) translateX(0) translateY(0);
+        opacity: 1;
+    }
+
+    25% {
+        transform: rotate(2deg) translateX(-25px) translateY(10px);
+        opacity: 0.9;
     }
 
     50% {
-        transform: rotate(2deg) translateX(-30px);
+        transform: rotate(-2deg) translateX(25px) translateY(-10px);
+        opacity: 1;
+    }
+
+    75% {
+        transform: rotate(1deg) translateX(-15px) translateY(5px);
+        opacity: 0.95;
     }
 }
 
@@ -209,7 +137,7 @@
 
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
 
-    animation: oceanGlow 12s ease-in-out infinite;
+    animation: oceanGlow 5s ease-in-out infinite;
     margin: 0 0 0 var(--spacing-md);
 }
 
@@ -221,6 +149,6 @@
     }
 
     50% {
-        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2)) brightness(1.1);
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.9)) brightness(1.1);
     }
 }

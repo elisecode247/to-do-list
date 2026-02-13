@@ -65,9 +65,9 @@
     --color-mode-occasional-text: light-dark(#155e75, #67e8f9);
     --color-mode-occasional-border: light-dark(#67e8f9, #22d3ee);
 
-    --color-mode-priority-bg: light-dark(#d6baff, #581c87);
-    --color-mode-priority-text: light-dark(#450156, #f0abfc);
-    --color-mode-priority-border: light-dark(#a855f7, #ec4899);
+    --color-mode-priority-bg: light-dark(#b0a7ff, #581c87);
+    --color-mode-priority-text: light-dark(#2f003b, #f0abfc);
+    --color-mode-priority-border: light-dark(#38016b, #ec4899);
 }
 
 

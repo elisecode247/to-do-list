@@ -94,6 +94,7 @@
         font-size: 14px;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        color: var(--color-text-primary);
     }
     .sortable-item_subtask-indicator {
         font-size: 0.8em;
@@ -143,7 +144,7 @@
 
     padding: var(--spacing-xs);
     border-radius: var(--radius-md);
-    background: var(--color-background);
+    background: var(--color-surface);
     box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
 
     opacity: 0;
@@ -275,12 +276,12 @@
 
 /* Priority Button */
 .sortable-item_priority-button {
-    color: var(--color-warning);
+    color: var(--color-mode-priority-text);
 }
 
 .sortable-item_priority-button:hover {
     background-color: rgba(239, 68, 68, 0.1);
-    color: var(--color-warning);
+    color: var(--color-mode-priority-border);
 }
 
 /* Responsive adjustments for larger screens */

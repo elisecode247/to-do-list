@@ -16,7 +16,7 @@
     min-height: 44px;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     border-width: 1px 1px 0px 1px;
-    color: var(--color-text-light);
+    color: var(--color-text-primary);
     background: var(--color-shadow);
     cursor: pointer;
     font-weight: 500;
@@ -45,7 +45,7 @@
     border-top: 2px solid var(--color-priority);
     border-left: 2px solid var(--color-priority);
     border-right: 2px solid var(--color-priority);
-    color: var(--color-text-primary);
+    color: var(--color-priority);
     opacity: 1;
     z-index: 7;
 }

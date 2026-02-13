@@ -29,7 +29,7 @@
     /* Borders & Shadows */
     --color-border: light-dark(#d1d5db, #374151);
     --color-border-light: light-dark(#e5e7eb, #4b5563);
-    --color-shadow: light-dark(rgba(0,0,0,0.1), rgba(0,0,0,0.35));
+    --color-shadow: light-dark(rgba(97, 97, 97, 0.328), rgba(3, 3, 3, 0.35));
 
     /* Shadows */
     --shadow-sm: light-dark(0 1px 4px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.25));
@@ -64,9 +64,9 @@
     --color-mode-occasional-text: light-dark(#065f46, #d1fae5);
     --color-mode-occasional-border: light-dark(#34d399, #10b981);
 
-    --color-mode-priority-bg: light-dark(#fee2e2, #991b1b);
-    --color-mode-priority-text: light-dark(#991b1b, #fee2e2);
-    --color-mode-priority-border: light-dark(#f87171, #ef4444);
+    --color-mode-priority-bg: light-dark(#9ed5f9, #04275f);
+    --color-mode-priority-text: light-dark(#000c8d, #b7beff);
+    --color-mode-priority-border: light-dark(#1d178b, #888ff1);
 }
 
 body::before {

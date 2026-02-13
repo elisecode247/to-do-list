@@ -29,5 +29,5 @@ Live: https://elisecode247.github.io/to-do-list/
 - Include AI task breakdown and add to separate checklist
 - scheduled tasks
 - custom categories
-- all tab with search
+- ask user to delete or archive completed one-time task
 

@@ -268,7 +268,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                             <div className="sortable-item_menu-wrapper">
                                 <button
-                                    className="sortable-item_menu-button sortable-item_edit-button"
+                                    className="sortable-item_menu-button sortable-item_hide-button"
                                     aria-label="More task actions"
                                     type="button"
                                     ref={buttonRef}
