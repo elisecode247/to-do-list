@@ -1,44 +1,42 @@
-:root[data-theme="light"][data-theme-style="space"] {
+:root[data-theme-style="space"] {
+    color-scheme: light dark;
+
     /* Core Space Palette */
-    --color-primary: #8b5cf6;
-    /* neon purple */
-    --color-primary-dark: #6d28d9;
-    --color-primary-dark-hover: rgb(109, 40, 217, .8);
-    /* deep violet */
-    --color-priority: #ec4899;
-    /* hot pink */
-    --color-success: #22d3ee;
-    /* cyan glow */
-    --color-info: #60a5fa;
-    /* starlight blue */
-    --color-warning: #f472b6;
-    /* pink warning */
-    --color-danger: #fb7185;
-    /* neon coral */
+    --color-primary: light-dark(#8b5cf6, #a78bfa);
+    --color-primary-dark: light-dark(#6d28d9, #6314ec);
+    --color-primary-dark-hover: light-dark(rgb(109, 40, 217, .8), #894fec);
+
+    --color-priority: light-dark(#ec4899, #f472b6);
+    --color-success: light-dark(#22d3ee, #22d3ee);
+    --color-info: light-dark(#60a5fa, #7dd3fc);
+    --color-warning: light-dark(#f472b6, #f9a8d4);
+    --color-danger: light-dark(#fb7185, #fb7185);
 
     /* Text */
-    --color-text-primary: #1f1147;
-    --color-text-dark: #260139;
-    --color-text-secondary: #4b3b82;
-    --color-text-light: #e7e1fd;
+    --color-text-primary: light-dark(#1f1147, #f5f3ff);
+    --color-text-dark: light-dark(#260139, #f5f3ff);
+    --color-text-secondary: light-dark(#4b3b82, #c4b5fd);
+    --color-text-light: light-dark(#e7e1fd, #f5f3ff);
 
     /* Surfaces */
-    --color-background: #f2effd;
-    --color-background-hover: rgb(247, 245, 255, .8);
-    /* pale nebula */
-    --color-surface: #ffffff;
-    --color-hover: #f0ecff;
+    --color-background: light-dark(#f2effd, #0b061f);
+    --color-background-hover: light-dark(rgb(247, 245, 255, .8), #221a4d);
+    --color-surface: light-dark(#ffffff, #161032);
+    --color-hover: light-dark(#f0ecff, #221a4d);
 
     /* Borders & Shadows */
-    --color-border: #ddd6fe;
-    --color-border-light: #ede9fe;
-    --color-shadow: rgba(139, 92, 246, 0.15);
+    --color-border: light-dark(#ddd6fe, #2e1065);
+    --color-border-light: light-dark(#ede9fe, #3b0764);
+    --color-shadow: light-dark(rgba(139, 92, 246, 0.15), rgba(168, 139, 250, 0.35));
 
     /* Shadows */
-    --shadow-sm: 0 1px 3px var(--color-shadow);
-    --shadow-md: 0 6px 20px rgba(139, 92, 246, 0.18);
+    --shadow-sm: light-dark(0 1px 3px rgba(139, 92, 246, 0.15),
+            0 1px 4px rgba(168, 139, 250, 0.25));
 
-    /* Spacing */
+    --shadow-md: light-dark(0 6px 20px rgba(139, 92, 246, 0.18),
+            0 10px 30px rgba(236, 72, 153, 0.25));
+
+    /* Spacing (same in both) */
     --spacing-xs: 8px;
     --spacing-sm: 12px;
     --spacing-md: 16px;
@@ -54,76 +52,24 @@
     /* Motion */
     --transition-fast: 0.2s ease;
 
-    /* Mode Frequency (Cosmic Pastels) */
-    --color-mode-daily-bg: #ede9fe;
-    --color-mode-daily-text: #5b21b6;
-    --color-mode-daily-border: #c4b5fd;
+    /* Mode Frequency */
+    --color-mode-daily-bg: light-dark(#ede9fe, #2e1065);
+    --color-mode-daily-text: light-dark(#5b21b6, #ddd6fe);
+    --color-mode-daily-border: light-dark(#c4b5fd, #7c3aed);
 
-    --color-mode-one-time-bg: #fae8ff;
-    --color-mode-one-time-text: #86198f;
-    --color-mode-one-time-border: #f0abfc;
+    --color-mode-one-time-bg: light-dark(#fae8ff, #4a044e);
+    --color-mode-one-time-text: light-dark(#86198f, #f5d0fe);
+    --color-mode-one-time-border: light-dark(#f0abfc, #d946ef);
 
-    --color-mode-occasional-bg: #cffafe;
-    --color-mode-occasional-text: #155e75;
-    --color-mode-occasional-border: #67e8f9;
+    --color-mode-occasional-bg: light-dark(#cffafe, #083344);
+    --color-mode-occasional-text: light-dark(#155e75, #67e8f9);
+    --color-mode-occasional-border: light-dark(#67e8f9, #22d3ee);
 
-    --color-mode-priority-bg: #d6baff;
-    --color-mode-priority-text: #450156;
-    --color-mode-priority-border: #a855f7;
-
+    --color-mode-priority-bg: light-dark(#d6baff, #581c87);
+    --color-mode-priority-text: light-dark(#450156, #f0abfc);
+    --color-mode-priority-border: light-dark(#a855f7, #ec4899);
 }
 
-:root[data-theme="dark"][data-theme-style="space"] {
-    /* Core Space Palette */
-    --color-primary: #a78bfa;
-    /* glowing lavender */
-    --color-primary-dark: #6314ec;
-    --color-primary-dark-hover: #894fec;
-    --color-priority: #f472b6;
-    /* neon pink */
-    --color-success: #22d3ee;
-    --color-info: #7dd3fc;
-    --color-warning: #f9a8d4;
-    --color-danger: #fb7185;
-
-    /* Text */
-    --color-text-primary: #f5f3ff;
-    --color-text-secondary: #c4b5fd;
-
-    /* Surfaces */
-    --color-background: #0b061f;
-    /* deep space */
-    --color-surface: #161032;
-    /* folder interior */
-    --color-hover: #221a4d;
-
-    /* Borders & Shadows */
-    --color-border: #2e1065;
-    --color-border-light: #3b0764;
-    --color-shadow: rgba(168, 139, 250, 0.35);
-
-    /* Shadows */
-    --shadow-sm: 0 1px 4px rgba(168, 139, 250, 0.25);
-    --shadow-md: 0 10px 30px rgba(236, 72, 153, 0.25);
-
-    /* Mode Frequency (Neon Chips) */
-    --color-mode-daily-bg: #2e1065;
-    --color-mode-daily-text: #ddd6fe;
-    --color-mode-daily-border: #7c3aed;
-
-    --color-mode-one-time-bg: #4a044e;
-    --color-mode-one-time-text: #f5d0fe;
-    --color-mode-one-time-border: #d946ef;
-
-    --color-mode-occasional-bg: #083344;
-    --color-mode-occasional-text: #67e8f9;
-    --color-mode-occasional-border: #22d3ee;
-
-    --color-mode-priority-bg: #581c87;
-    --color-mode-priority-text: #f0abfc;
-    --color-mode-priority-border: #ec4899;
-
-}
 
 :root[data-theme-style="space"] body {
     background:

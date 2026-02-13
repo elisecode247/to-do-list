@@ -3,46 +3,37 @@
 @import './ocean.css';
 @import './density.css';
 
-:root {
-    /* Core Space Palette */
-    --color-primary: #8b5cf6;
-    /* neon purple */
-    --color-primary-dark: #6d28d9;
-    --color-primary-dark-hover: rgb(109, 40, 217, .8);
-    /* deep violet */
-    --color-priority: #ec4899;
-    /* hot pink */
-    --color-success: #22d3ee;
-    /* cyan glow */
-    --color-info: #60a5fa;
-    /* starlight blue */
-    --color-warning: #f472b6;
-    /* pink warning */
-    --color-danger: #fb7185;
-    --color-danger-hover: #ff0429;
-    /* neon coral */
+/* Calm Theme - Light / Dark */
+:root[data-theme-style="calm"] {
+    /* Core Calm Palette */
+    --color-primary: #5b9bd5; /* calm blue */
+    --color-primary-dark: #3a78b4; /* deeper blue */
+    --color-primary-dark-hover: #2e5e8c; /* hover shade */
+    --color-priority: #fbbf24; /* soft yellow for emphasis */
+    --color-success: #34d399; /* mint green */
+    --color-info: #60a5fa; /* sky blue */
+    --color-warning: #fcd34d; /* mellow yellow */
+    --color-danger: #f87171; /* gentle red */
 
     /* Text */
-    --color-text-primary: #1f1147;
-    --color-text-dark: #260139;
-    --color-text-secondary: #4b3b82;
-    --color-text-light: #e7e1fd;
+    --color-text-primary: #1f2937; /* dark slate */
+    --color-text-secondary: #4b5563; /* medium slate */
+    --color-text-light: #f9fafb; /* off-white */
 
     /* Surfaces */
-    --color-background: #f2effd;
-    --color-background-hover: rgb(247, 245, 255, .8);
-    /* pale nebula */
-    --color-surface: #ffffff;
-    --color-hover: #f0ecff;
+    --color-background: #f0f4f8; /* soft off-white */
+    --color-surface: #ffffff; /* card / panel */
+    --color-hover: #e2e8f0; /* subtle hover */
+    --color-background-hover: #e0f2fe; /* optional highlight */
 
     /* Borders & Shadows */
-    --color-border: #ddd6fe;
-    --color-border-light: #ede9fe;
-    --color-shadow: rgba(139, 92, 246, 0.15);
+    --color-border: #d1d5db; /* light gray border */
+    --color-border-light: #e5e7eb; /* lighter border */
+    --color-shadow: rgba(0, 0, 0, 0.1);
 
     /* Shadows */
-    --shadow-sm: 0 1px 3px var(--color-shadow);
-    --shadow-md: 0 6px 20px rgba(139, 92, 246, 0.18);
+    --shadow-sm: 0 1px 4px var(--color-shadow);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.15);
 
     /* Spacing */
     --spacing-xs: 8px;
@@ -60,84 +51,74 @@
     /* Motion */
     --transition-fast: 0.2s ease;
 
-    /* Mode Frequency (Cosmic Pastels) */
-    --color-mode-daily-bg: #ede9fe;
-    --color-mode-daily-text: #5b21b6;
-    --color-mode-daily-border: #c4b5fd;
+    /* Mode Frequency (Task Colors) */
+    --color-mode-daily-bg: #dbeafe;
+    --color-mode-daily-text: #1e40af;
+    --color-mode-daily-border: #93c5fd;
 
-    --color-mode-one-time-bg: #fae8ff;
-    --color-mode-one-time-text: #86198f;
-    --color-mode-one-time-border: #f0abfc;
+    --color-mode-one-time-bg: #fef3c7;
+    --color-mode-one-time-text: #78350f;
+    --color-mode-one-time-border: #fbbf24;
 
-    --color-mode-occasional-bg: #cffafe;
-    --color-mode-occasional-text: #155e75;
-    --color-mode-occasional-border: #67e8f9;
+    --color-mode-occasional-bg: #d1fae5;
+    --color-mode-occasional-text: #065f46;
+    --color-mode-occasional-border: #34d399;
 
-    --color-mode-priority-bg: #4c1d95;
-    --color-mode-priority-text: #f5d0fe;
-    --color-mode-priority-border: #a855f7;
-
+    --color-mode-priority-bg: #fee2e2;
+    --color-mode-priority-text: #991b1b;
+    --color-mode-priority-border: #f87171;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Core Space Palette */
-        --color-primary: #a78bfa;
-        /* glowing lavender */
-        --color-primary-dark: #6314ec;
-        --color-primary-dark-hover: #894fec;
-        --color-priority: #f472b6;
-        /* neon pink */
-        --color-success: #22d3ee;
-        --color-info: #7dd3fc;
-        --color-warning: #f9a8d4;
-        --color-danger: #fb7185;
+/* Dark Mode Calm */
+:root[data-theme-style="calm"][data-theme="dark"] {
+    /* Core Calm Palette */
+    --color-primary: #3a78b4; /* deeper blue */
+    --color-primary-dark: #1e3a8a;
+    --color-primary-dark-hover: #16325e;
+    --color-priority: #facc15; /* mellow yellow */
+    --color-success: #10b981; /* mint green */
+    --color-info: #3b82f6; /* sky blue */
+    --color-warning: #fcd34d;
+    --color-danger: #ef4444;
 
-        /* Text */
-        --color-text-primary: #f5f3ff;
-        --color-text-secondary: #c4b5fd;
+    /* Text */
+    --color-text-primary: #f3f4f6; /* light slate */
+    --color-text-secondary: #d1d5db; /* soft gray */
+    --color-text-light: #ffffff;
 
-        /* Surfaces */
-        --color-background: #0b061f;
-        /* deep space */
-        --color-surface: #161032;
-        /* folder interior */
-        --color-hover: #221a4d;
+    /* Surfaces */
+    --color-background: #111827; /* very dark gray */
+    --color-surface: #1f2937; /* card / panel */
+    --color-hover: #374151; /* subtle hover */
+    --color-background-hover: #1e3a8a; /* optional highlight */
 
-        /* Borders & Shadows */
-        --color-border: #2e1065;
-        --color-border-light: #3b0764;
-        --color-shadow: rgba(168, 139, 250, 0.35);
+    /* Borders & Shadows */
+    --color-border: #374151;
+    --color-border-light: #4b5563;
+    --color-shadow: rgba(0, 0, 0, 0.35);
 
-        /* Shadows */
-        --shadow-sm: 0 1px 4px rgba(168, 139, 250, 0.25);
-        --shadow-md: 0 10px 30px rgba(236, 72, 153, 0.25);
+    /* Shadows */
+    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
 
-        /* Mode Frequency (Neon Chips) */
-        --color-mode-daily-bg: #2e1065;
-        --color-mode-daily-text: #ddd6fe;
-        --color-mode-daily-border: #7c3aed;
+    /* Mode Frequency (Task Colors) */
+    --color-mode-daily-bg: #1e3a8a;
+    --color-mode-daily-text: #dbeafe;
+    --color-mode-daily-border: #3b82f6;
 
-        --color-mode-one-time-bg: #4a044e;
-        --color-mode-one-time-text: #f5d0fe;
-        --color-mode-one-time-border: #d946ef;
+    --color-mode-one-time-bg: #78350f;
+    --color-mode-one-time-text: #fde68a;
+    --color-mode-one-time-border: #fbbf24;
 
-        --color-mode-occasional-bg: #083344;
-        --color-mode-occasional-text: #67e8f9;
-        --color-mode-occasional-border: #22d3ee;
+    --color-mode-occasional-bg: #065f46;
+    --color-mode-occasional-text: #d1fae5;
+    --color-mode-occasional-border: #10b981;
 
-        --color-mode-priority-bg: #581c87;
-        --color-mode-priority-text: #f0abfc;
-        --color-mode-priority-border: #ec4899;
-
-    }
+    --color-mode-priority-bg: #991b1b;
+    --color-mode-priority-text: #fee2e2;
+    --color-mode-priority-border: #ef4444;
 }
 
-
-body {
-    background: none;
-    background-color: black;
-}
 
 body::before {
     content: '';
@@ -149,23 +130,20 @@ body::after {
     background: none;
 }
 
+:root:focus-visible {
+    outline: 3px solid light-dark(#2563eb, #60a5fa);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
 .app_h1 {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    background: linear-gradient(135deg,
-            #a78bfa 0%,
-            #ec4899 50%,
-            #8b5cf6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: glow 15s ease-in-out infinite;
     margin: 0 0 0 var(--spacing-md);
 }
-
 
 .app_subtitle {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -173,20 +151,7 @@ body::after {
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    background: linear-gradient(135deg,
-            #c4b5fd 0%,
-            #f9a8d4 50%,
-            #c4b5fd 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
     opacity: 0.75;
     margin: var(--spacing-xs) 0 0 var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-    .app_subtitle {
-        font-size: 18px;
-        margin: var(--spacing-xs) auto 0 auto;
-    }
+    color: var(--color-text-primary)
 }

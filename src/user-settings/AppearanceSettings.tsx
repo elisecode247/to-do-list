@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useTheme } from './use-theme';
 
 type ThemeMode = 'system' | 'light' | 'dark';
-type ThemeStyle = 'space' | 'nature' | 'ocean';
+type ThemeStyle = 'calm' | 'space' | 'nature' | 'ocean';
 type Density = 'comfortable' | 'compact';
 
 function getStored<T extends string>(key: string, fallback: T): T {
@@ -15,30 +16,34 @@ function AppearanceSettings() {
     );
 
     const [style, setStyle] = useState<ThemeStyle>(() =>
-        getStored('theme-style', 'space')
+        getStored('theme-style', 'calm')
     );
 
     const [density, setDensity] = useState<Density>(() =>
         getStored('theme-density', 'comfortable')
     );
 
+    const { updateTheme } = useTheme();
+
+    function handleSetMode(newMode: ThemeMode) {
+        setMode(newMode);
+        updateTheme({ mode: newMode });
+    }
+
+    function handleSetStyle(newStyle: ThemeStyle) {
+        setStyle(newStyle);
+        updateTheme({ style: newStyle });
+    }
+
+    function handleSetDensity(newDensity: Density) {
+        setDensity(newDensity);
+        updateTheme({ density: newDensity });
+    }
+
     useEffect(() => {
         localStorage.setItem('theme-mode', mode);
         localStorage.setItem('theme-style', style);
         localStorage.setItem('theme-density', density);
-    }, [mode, style, density]);
-
-    useEffect(() => {
-        const root = document.documentElement;
-
-        if (mode === 'system') {
-            root.removeAttribute('data-theme');
-        } else {
-            root.setAttribute('data-theme', mode);
-        }
-
-        root.setAttribute('data-theme-style', style);
-        root.setAttribute('data-density', density);
     }, [mode, style, density]);
 
     return (
@@ -51,7 +56,7 @@ function AppearanceSettings() {
                 <RadioGroup
                     name="theme-mode"
                     value={mode}
-                    onChange={setMode}
+                    onChange={handleSetMode}
                     options={[
                         { value: 'system', label: 'System' },
                         { value: 'light', label: 'Light' },
@@ -66,8 +71,9 @@ function AppearanceSettings() {
                 <RadioGroup
                     name="theme-style"
                     value={style}
-                    onChange={setStyle}
+                    onChange={handleSetStyle}
                     options={[
+                        { value: 'calm', label: 'Calm' },
                         { value: 'space', label: 'Space' },
                         { value: 'nature', label: 'Nature' },
                         { value: 'ocean', label: 'Ocean' },
@@ -81,7 +87,7 @@ function AppearanceSettings() {
                 <RadioGroup
                     name="theme-density"
                     value={density}
-                    onChange={setDensity}
+                    onChange={handleSetDensity}
                     options={[
                         { value: 'comfortable', label: 'Comfortable' },
                         { value: 'compact', label: 'Compact' },

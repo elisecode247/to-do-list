@@ -1,37 +1,49 @@
 :root[data-theme-style="nature"] {
-    --color-primary: #16a34a;
-    /* vibrant green */
-    --color-primary-dark: #15803d;
-    --color-primary-dark-hover: #166534;
-    --color-priority: #f59e0b;
-    /* amber alert */
-    --color-success: #22c55e;
-    /* emerald glow */
-    --color-info: #3b82f6;
-    /* sky blue */
-    --color-warning: #fbbf24;
-    /* sunflower yellow */
-    --color-danger: #ef4444;
-    /* red alert */
+color-scheme: light dark;
+    /* Brand */
+    --color-primary: light-dark(#16a34a, #86efac);
+    --color-primary-dark: light-dark(#15803d, #166534);
+    --color-primary-dark-hover: light-dark(#166534, #15803d);
+
+    --color-priority: light-dark(#f59e0b, #facc15);
+    --color-success: light-dark(#22c55e, #22c55e);
+    --color-info: light-dark(#3b82f6, #38bdf8);
+    --color-warning: light-dark(#fbbf24, #fbbf24);
+    --color-danger: light-dark(#ef4444, #f87171);
 
     /* Text */
-    --color-text-primary: #1f2937;
-    --color-text-secondary: #4b5563;
+    --color-text-primary: light-dark(#1f2937, #e5e7eb);
+    --color-text-secondary: light-dark(#4b5563, #9ca3af);
 
     /* Surfaces */
-    --color-background: #ecfccb;
-    /* light lime */
-    --color-surface: #ffffff;
-    --color-hover: #d9f99d;
+    --color-background: light-dark(#f0fdf4, #020617);
+    --color-surface: light-dark(#ffffff, #052e16);
+    --color-hover: light-dark(#d9f99d, #064e3b);
 
     /* Borders & Shadows */
-    --color-border: #bbf7d0;
-    --color-border-light: #bef264;
-    --color-shadow: rgba(22, 163, 74, 0.15);
+    --color-border: light-dark(#bbf7d0, #14532d);
+    --color-border-light: light-dark(#bef264, #166534);
+    --color-shadow: light-dark(rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.25));
 
-    --color-mode-priority-bg: #99ff13;
-    --color-mode-priority-text: #324a01;
-    --color-mode-priority-border: #a3e635;
+    --shadow-sm: light-dark(0 1px 4px rgba(22, 163, 74, 0.15), 0 1px 4px rgba(34, 197, 94, 0.2));
+    --shadow-md: light-dark(0 10px 30px rgba(22, 163, 74, 0.2), 0 10px 30px rgba(20, 83, 45, 0.35));
+
+    /* Mode Colors */
+    --color-mode-daily-bg: light-dark(#d1fae5, #064e3b);
+    --color-mode-daily-text: light-dark(#065f46, #d1fae5);
+    --color-mode-daily-border: light-dark(#22c55e, #22c55e);
+
+    --color-mode-one-time-bg: light-dark(#eff6ff, #1e293b);
+    --color-mode-one-time-text: light-dark(#1e3a8a, #e5e7eb);
+    --color-mode-one-time-border: light-dark(#3b82f6, #38bdf8);
+
+    --color-mode-occasional-bg: light-dark(#fef3c7, #422006);
+    --color-mode-occasional-text: light-dark(#92400e, #fde68a);
+    --color-mode-occasional-border: light-dark(#f59e0b, #facc15);
+
+    --color-mode-priority-bg: light-dark(#99ff13, #3f6212);
+    --color-mode-priority-text: light-dark(#324a01, #ecfccb);
+    --color-mode-priority-border: light-dark(#a3e635, #a3e635);
 }
 
 :root[data-theme-style="nature"] body {
@@ -39,8 +51,7 @@
             #15803d 0%,
             #166534 30%,
             #14532d 60%,
-            #052e16 100%
-    );
+            #052e16 100%);
     background-attachment: fixed;
     color: var(--color-text-primary);
     position: relative;
@@ -66,10 +77,13 @@
 }
 
 @keyframes moonlightShift {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
         opacity: 0.6;
     }
+
     50% {
         transform: translate(-15px, 10px) scale(1.03);
         opacity: 0.7;
@@ -97,18 +111,23 @@
 }
 
 @keyframes firefliesDance {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.4;
         transform: translate(0, 0);
     }
+
     25% {
         opacity: 0.8;
         transform: translate(20px, -15px);
     }
+
     50% {
         opacity: 0.5;
         transform: translate(-10px, 10px);
     }
+
     75% {
         opacity: 0.9;
         transform: translate(15px, -20px);
@@ -137,65 +156,13 @@
 }
 
 @keyframes sunlightGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) brightness(1);
     }
+
     50% {
         filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4)) brightness(1.15);
     }
-}
-
-/* Dark Mode - Moonlit Forest */
-:root[data-theme="dark"][data-theme-style="nature"] {
-    --color-primary: #86efac;
-    --color-primary-dark: #166534;
-    --color-primary-dark-hover: #15803d;
-    --color-priority: #facc15;
-    --color-success: #22c55e;
-    --color-info: #38bdf8;
-    --color-warning: #fbbf24;
-    --color-danger: #f87171;
-
-    --color-text-primary: #e5e7eb;
-    --color-text-secondary: #9ca3af;
-
-    --color-background: #020617;
-    --color-surface: #052e16;
-    --color-hover: #064e3b;
-
-    --color-border: #14532d;
-    --color-border-light: #166534;
-    --color-shadow: rgba(34, 197, 94, 0.25);
-
-    --shadow-sm: 0 1px 4px rgba(34, 197, 94, 0.2);
-    --shadow-md: 0 10px 30px rgba(20, 83, 45, 0.35);
-
-    --color-mode-daily-bg: #064e3b;
-    --color-mode-daily-text: #d1fae5;
-    --color-mode-daily-border: #22c55e;
-
-    --color-mode-one-time-bg: #1e293b;
-    --color-mode-one-time-text: #e5e7eb;
-    --color-mode-one-time-border: #38bdf8;
-
-    --color-mode-occasional-bg: #422006;
-    --color-mode-occasional-text: #fde68a;
-    --color-mode-occasional-border: #facc15;
-
-    --color-mode-priority-bg: #3f6212;
-    --color-mode-priority-text: #ecfccb;
-    --color-mode-priority-border: #a3e635;
-}
-
-:root[data-theme-style="nature"][data-theme="dark"] body {
-    background: linear-gradient(to bottom,
-            #001a0f 0%,
-            #052e16 30%,
-            #14532d 60%,
-            #022c22 100%
-    );
-    background-attachment: fixed;
-    color: #e5e7eb;
-    position: relative;
-    overflow: hidden;
 }
