@@ -55,7 +55,7 @@ export function useTheme() {
         if (theme.mode !== 'system') return;
 
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const listener = (e: MediaQueryListEvent) => {
+        const listener = () => {
             applyTheme(theme); // re-apply theme on system change
         };
         mediaQuery.addEventListener('change', listener);
