@@ -9,7 +9,12 @@ interface ReorderParams {
     overId: string;
 }
 
-export function getReorderedItems({ filteredItems, activeTab, activeId, overId }: ReorderParams): ChecklistItem[] {
+export function getReorderedItems({
+    filteredItems,
+    activeTab,
+    activeId,
+    overId,
+}: ReorderParams): ChecklistItem[] {
     const activeItem = filteredItems.find(i => i.id === activeId);
 
     if (!activeItem) return filteredItems;
@@ -28,36 +33,51 @@ export function getReorderedItems({ filteredItems, activeTab, activeId, overId }
 
     if (!overItem) return filteredItems;
 
-    if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
-        // Reorder only within tabSortOrder
+    if (
+        activeTab === TABS.priority ||
+        activeTab === TABS.hidden ||
+        activeTab === TABS.archived
+    ) {
         const sorted = [...filteredItems].sort(
-            (a, b) => (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0)
+            (a, b) =>
+                (a.tabSortOrder?.[activeTab] ?? 0) -
+                (b.tabSortOrder?.[activeTab] ?? 0)
         );
 
         const oldIndex = sorted.findIndex(i => i.id === activeId);
         const newIndex = sorted.findIndex(i => i.id === overId);
 
-        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return filteredItems;
+        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
+            return filteredItems;
+        }
 
-        const reordered = arrayMove(sorted, oldIndex, newIndex).map((item, index) => ({
-            ...item,
-            tabSortOrder: { ...item.tabSortOrder, [activeTab]: index },
-        }));
+        const reordered = arrayMove(sorted, oldIndex, newIndex).map(
+            (item, index) => ({
+                ...item,
+                tabSortOrder: {
+                    ...item.tabSortOrder,
+                    [activeTab]: index,
+                },
+            })
+        );
 
         return reordered;
     }
 
-    const oldParent = (activeItem.parentUuid ?? null) as string | null;
+    // STRUCTURAL REORDER
+    const oldParent = activeItem.parentUuid ?? null;
 
     // If placeholder is used, newParent becomes the *parent task itself*
-    const newParent: string | null = isFirstSubTask ? (overItem.id as string) : (overItem.parentUuid ?? null);
+    const newParent = isFirstSubTask
+        ? overItem.id
+        : overItem.parentUuid ?? null;
 
     const getSiblings = (parentUuid: string | null) =>
         filteredItems
             .filter(i => (i.parentUuid ?? null) === parentUuid)
             .sort((a, b) => a.sortOrder - b.sortOrder);
 
-    // SAME PARENT REORDER
+    // SAME PARENT REORDER (including first subtask placeholder)
     if (oldParent === newParent && !isFirstSubTask) {
         const siblings = getSiblings(oldParent);
 
@@ -68,14 +88,30 @@ export function getReorderedItems({ filteredItems, activeTab, activeId, overId }
             return filteredItems;
         }
 
-        const reordered = arrayMove(siblings, oldIndex, newIndex).map((item, index) => ({
-            ...item,
-            sortOrder: index,
-        }));
+        const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex).map(
+            (item, index) => ({
+                ...item,
+                sortOrder: index,
+            })
+        );
 
-        const otherItems = filteredItems.filter(item => (item.parentUuid ?? null) !== oldParent);
+        const siblingIds = new Set(reorderedSiblings.map(i => i.id));
 
-        return [...otherItems, ...reordered];
+        // Remove old siblings from array
+        const withoutSiblings = filteredItems.filter(
+            item => !siblingIds.has(item.id)
+        );
+
+        // Insert reordered siblings back in correct place
+        // Find first index where siblings originally appeared
+        const firstSiblingIndex = filteredItems.findIndex(
+            item => (item.parentUuid ?? null) === oldParent
+        );
+
+        const result = [...withoutSiblings];
+        result.splice(firstSiblingIndex, 0, ...reorderedSiblings);
+
+        return result;
     }
 
     // CROSS PARENT MOVE
@@ -109,19 +145,34 @@ export function getReorderedItems({ filteredItems, activeTab, activeId, overId }
         sortOrder: index,
     }));
 
-    const untouched = filteredItems.filter(i => {
-        const p = i.parentUuid ?? null;
-        return p !== oldParent && p !== newParent && i.id !== activeId;
+    const affectedIds = new Set([
+        ...updatedNewSiblings.map(i => i.id),
+        ...updatedOldSiblings.map(i => i.id),
+    ]);
+
+    let updatedItems = filteredItems.map(item => {
+        if (affectedIds.has(item.id)) {
+            return (
+                updatedNewSiblings.find(i => i.id === item.id) ||
+                updatedOldSiblings.find(i => i.id === item.id) ||
+                item
+            );
+        }
+        return item;
     });
 
-    let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
-
-    // --- Update hasSubChores dynamically ---
+    // Update hasSubChores safely
     const parentIds = [oldParent, newParent].filter(Boolean) as string[];
     updatedItems = updatedItems.map(item => {
         if (parentIds.includes(item.id)) {
-            const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
-            return { ...item, hasSubChores: childCount > 0 };
+            const childCount = updatedItems.filter(
+                i => i.parentUuid === item.id
+            ).length;
+
+            return {
+                ...item,
+                hasSubChores: childCount > 0,
+            };
         }
         return item;
     });

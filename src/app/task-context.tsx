@@ -5,7 +5,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
-import { type Tab, TABS } from 'src/checklist/tabs/types';
+import { type Tab } from 'src/checklist/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -210,46 +210,51 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             showToast('Failed to update task archive status. Please try again.', 'error');
         });
     }
-
-    const reorderItems = (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => {
-        setItems(prevItems => {
-            const reordered = getReorderedItems({
+    const reorderItems = (
+        filteredItems: ChecklistItem[],
+        activeTab: Tab,
+        activeId: string,
+        overId: string
+    ) => {
+        setItems(prev => {
+            // 1. Reorder only the visible subset
+            const reorderedSubset = getReorderedItems({
                 filteredItems,
                 activeTab,
                 activeId,
-                overId,
+                overId
             });
 
-            // If nothing changed, don't persist
-            if (reordered === prevItems) return prevItems;
+            // 2. Merge subset changes back into canonical state
+            const updatedMap = new Map(
+                reorderedSubset.map((i: ChecklistItem) => [i.id, i])
+            );
 
-            // TAB only reorder
-            if (
-                activeTab === TABS.priority ||
-                activeTab === TABS.hidden ||
-                activeTab === TABS.archived
-            ) {
-                const toPersist = reordered.map((item, index) => ({
-                    id: item.id,
-                    tabName: activeTab,
-                    tabSortOrder: item.tabSortOrder?.[activeTab] ?? index,
-                }));
+            const updated = prev.map((item: ChecklistItem) =>
+                updatedMap.get(item.id) ?? item
+            );
 
-                updateTasksOrder(toPersist).catch(console.error);
+            // 3. Persist only changed items
+            const changed = reorderedSubset.filter((item: ChecklistItem) => {
+                const old = prev.find((p: ChecklistItem) => p.id === item.id);
+                return (
+                    old?.sortOrder !== item.sortOrder ||
+                    old?.parentUuid !== item.parentUuid ||
+                    old?.tabSortOrder !== item.tabSortOrder
+                );
+            });
 
-                return reordered;
+            if (changed.length > 0) {
+                updateTasksOrder(
+                    changed.map((i: { id: string; sortOrder: number; parentUuid: string | null; }) => ({
+                        id: i.id,
+                        sortOrder: i.sortOrder,
+                        parentUuid: i.parentUuid ?? null,
+                    }))
+                ).catch(console.error);
             }
 
-            /* Structural Reorder (moving tasks between parents or to root level) */
-            const toPersist = reordered.map(({ id, sortOrder, parentUuid }) => ({
-                id,
-                sortOrder,
-                parentUuid: parentUuid ?? null,
-            }));
-
-            updateTasksOrder(toPersist).catch(console.error);
-
-            return reordered;
+            return updated;
         });
     };
 
