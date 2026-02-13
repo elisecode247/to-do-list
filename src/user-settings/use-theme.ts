@@ -51,6 +51,17 @@ export function useTheme() {
         localStorage.setItem('theme-density', theme.density);
     }, [theme, applyTheme]);
 
+    useLayoutEffect(() => {
+        if (theme.mode !== 'system') return;
+
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const listener = (e: MediaQueryListEvent) => {
+            applyTheme(theme); // re-apply theme on system change
+        };
+        mediaQuery.addEventListener('change', listener);
+        return () => mediaQuery.removeEventListener('change', listener);
+    }, [theme, applyTheme]);
+
     // Listen for changes from other tabs/windows
     useLayoutEffect(() => {
         const handleStorage = (e: StorageEvent) => {
