@@ -2,12 +2,15 @@ import { motion } from "framer-motion";
 import "./logged-out.css";
 import GoogleLoginButton from "src/authentication/google-login-button";
 import DemoButton from 'src/demo/DemoButton';
+import { useTheme } from "src/themes/use-theme";
+import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from "src/themes/constants";
 
 export default function LoggedOut({
     onSuccessfulLogin
 }: {
     onSuccessfulLogin: (token: string) => Promise<void>;
 }) {
+    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
     return (
         <div className="logged-out-root">
             <div className="stars" />

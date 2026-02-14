@@ -1,59 +1,18 @@
-import { useState, type FC } from 'react';
+import { type FC } from 'react';
 import './app.css';
 import './settings.css';
-import { ItemModal } from 'item-modal/ItemModal';
-import type { ChecklistItem } from 'app/types';
-import Checklist from 'checklist/Checklist';
-import Toast from 'src/toast/Toast';
-import ErrorState from 'src/error-state/ErrorState';
 import { useAuthentication } from 'src/authentication/use-authentication';
-import { useTask } from 'src/app/use-task';
-import { useToast } from 'src/toast/use-toast';
-import AccountMenu from './AccountMenu';
 import LoggedOut from 'src/logged-out/LoggedOut';
-import SparklesOverlay from './SparklesOverlay';
+import LoggedIn from 'src/logged-in/LoggedIn';
 import DemoPage from 'src/demo/DemoPage';
 import NotFound from 'src/not-found/NotFound';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import UserSettings from 'src/user-settings/UserSettings';
-import 'app/themes/themes.css';
-import { useTheme } from 'src/user-settings/use-theme';
-
-const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+import 'src/themes/themes.css';
 
 const App: FC = () => {
-    useTheme();
-    const now = new Date();
-    const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
-
-    const { toasts, showToast, removeToast } = useToast();
     const { isAuthenticated, login } = useAuthentication();
-    const {
-        isLoading,
-        error,
-        loadTasks,
-        updateItem,
-    } = useTask();
-    const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-
-    async function handleSave() {
-        if (!editingItem) return;
-
-        try {
-            await updateItem(editingItem);
-            setEditingItem(null);
-            showToast('Task updated successfully', 'success');
-        } catch {
-            showToast('Failed to update task. Please try again.', 'error');
-        }
-    }
-
-    const sparkles = <SparklesOverlay />;
-
-    function handleEditItem(item: ChecklistItem) {
-        setEditingItem(item);
-    }
 
     const handleLoginSuccess = async (token: string) => {
         try {
@@ -70,52 +29,7 @@ const App: FC = () => {
             <Route path={ROUTES.home}>
                 {!isAuthenticated ? (
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
-                ) : (<>
-                    {editingItem ? (
-                        <ItemModal
-                            formData={editingItem}
-                            setEditingItem={setEditingItem}
-                            onSave={handleSave}
-                            onClose={() => setEditingItem(null)}
-                        />
-                    ) : null}
-                    {toasts.map(toast => (
-                        <Toast
-                            key={toast.id}
-                            message={toast.message}
-                            type={toast.type}
-                            onClose={() => removeToast(toast.id)}
-                        />
-                    ))}
-                    <div className="app_container">
-                        <header className="app_header">
-                            <h1 className="app_h1">For My Today</h1>
-                            <p className="app_subtitle">
-                                {dayOfWeekName}
-                                {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-                            </p>
-                            <AccountMenu />
-                        </header>
-                        <main className="app_main">
-                            {isLoading ? (
-                                <div className="app_loading-container">
-                                    <div aria-busy="true" className="app_loading-spinner"></div>
-                                    <p>Loading your tasks...</p>
-                                </div>
-                            ) : error ? (
-                                <ErrorState
-                                    message={error}
-                                    onRetry={loadTasks}
-                                />
-                            ) : (
-                                <Checklist
-                                    onEditItem={handleEditItem}
-                                    sparkles={sparkles}
-                                />
-                            )}
-                        </main>
-                    </div>
-                </>)}
+                ) : <LoggedIn />}
             </Route>
             <Route path={ROUTES.demo} component={DemoPage} />
             <Route path={ROUTES.userSettings} component={UserSettings} />

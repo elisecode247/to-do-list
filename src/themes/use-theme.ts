@@ -1,23 +1,29 @@
-import { useLayoutEffect, useState, useCallback } from 'react';
+import { useLayoutEffect, useState, useCallback, useMemo } from 'react';
+import type { ThemeMode, ThemeStyle, Density, ThemeState } from './types';
 
-type ThemeMode = 'system' | 'light' | 'dark';
-type ThemeStyle = 'calm' | 'space' | 'nature' | 'ocean';
-type Density = 'comfortable' | 'compact';
+export function useTheme(
+    overrideMode?: ThemeMode,
+    overrideStyle?: ThemeStyle,
+    overrideDensity?: Density
+) {
+    const hasOverride =
+        overrideMode !== undefined &&
+        overrideStyle !== undefined &&
+        overrideDensity !== undefined;
 
-interface ThemeState {
-    mode: ThemeMode;
-    style: ThemeStyle;
-    density: Density;
-}
-
-export function useTheme() {
     const getStoredTheme = (): ThemeState => ({
         mode: (localStorage.getItem('theme-mode') as ThemeMode) || 'system',
         style: (localStorage.getItem('theme-style') as ThemeStyle) || 'calm',
         density: (localStorage.getItem('theme-density') as Density) || 'comfortable',
     });
 
-    const [theme, setTheme] = useState<ThemeState>(getStoredTheme);
+    const storedTheme = useMemo(getStoredTheme, []);
+
+    const [theme, setTheme] = useState<ThemeState>(
+        hasOverride
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity! }
+            : storedTheme
+    );
 
     const applyTheme = useCallback(({ mode, style, density }: ThemeState) => {
         const root = document.documentElement;
@@ -43,27 +49,38 @@ export function useTheme() {
         root.setAttribute('data-density', density);
     }, []);
 
-    // Apply theme whenever it changes
+    // Apply theme whenever stored theme or override changes
     useLayoutEffect(() => {
-        applyTheme(theme);
+        if (hasOverride) {
+            applyTheme({ mode: overrideMode!, style: overrideStyle!, density: overrideDensity! });
+        } else {
+            applyTheme(theme);
+        }
+    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity, applyTheme]);
+
+    // Persist only when NOT overridden
+    useLayoutEffect(() => {
+        if (hasOverride) return;
         localStorage.setItem('theme-mode', theme.mode);
         localStorage.setItem('theme-style', theme.style);
         localStorage.setItem('theme-density', theme.density);
-    }, [theme, applyTheme]);
+    }, [theme, hasOverride]);
 
+    // System mode listener only when NOT overridden
     useLayoutEffect(() => {
+        if (hasOverride) return;
         if (theme.mode !== 'system') return;
 
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const listener = () => {
-            applyTheme(theme); // re-apply theme on system change
-        };
+        const listener = () => applyTheme(theme);
         mediaQuery.addEventListener('change', listener);
         return () => mediaQuery.removeEventListener('change', listener);
-    }, [theme, applyTheme]);
+    }, [theme, hasOverride, applyTheme]);
 
-    // Listen for changes from other tabs/windows
+    // Storage listener only when NOT overridden
     useLayoutEffect(() => {
+        if (hasOverride) return;
+
         const handleStorage = (e: StorageEvent) => {
             if (
                 e.key === 'theme-mode' ||
@@ -73,14 +90,15 @@ export function useTheme() {
                 setTheme(getStoredTheme());
             }
         };
+
         window.addEventListener('storage', handleStorage);
         return () => window.removeEventListener('storage', handleStorage);
-    }, []);
+    }, [hasOverride]);
 
-    // Helper to update theme programmatically
     const updateTheme = useCallback((updates: Partial<ThemeState>) => {
+        if (hasOverride) return;
         setTheme(prev => ({ ...prev, ...updates }));
-    }, []);
+    }, [hasOverride]);
 
     return { ...theme, updateTheme };
 }

@@ -4,8 +4,10 @@ import { Home } from "lucide-react";
 import { ROUTES } from "src/router";
 import './UserSettings.css';
 import AppearanceSettings from "src/user-settings/AppearanceSettings";
+import { useTheme } from "src/themes/use-theme";
 
 function UserSettings() {
+    useTheme();
     const [location] = useLocation();
     return (
         <div className="app_container">

@@ -10,8 +10,11 @@ import ErrorState from 'src/error-state/ErrorState';
 import { useTask } from 'src/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
+import { useTheme } from 'src/themes/use-theme';
+import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from 'src/themes/constants';
 
 const App: FC = () => {
+    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
     const { toasts, showToast, removeToast } = useToast();
     const {
         isLoading,

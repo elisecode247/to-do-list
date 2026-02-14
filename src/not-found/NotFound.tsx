@@ -2,8 +2,11 @@ import { Link } from 'wouter';
 import { ROUTES } from 'src/router';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import './not-found.css';
+import { useTheme } from 'src/themes/use-theme';
+import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from 'src/themes/constants';
 
 export function NotFound() {
+    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
     const { isAuthenticated } = useAuthentication();
 
     return (

@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useTheme } from './use-theme';
-
-type ThemeMode = 'system' | 'light' | 'dark';
-type ThemeStyle = 'calm' | 'space' | 'nature' | 'ocean';
-type Density = 'comfortable' | 'compact';
+import { useTheme } from 'src/themes/use-theme';
+import type { ThemeMode, ThemeStyle, Density } from 'src/themes/types';
 
 function getStored<T extends string>(key: string, fallback: T): T {
     if (typeof window === 'undefined') return fallback;
