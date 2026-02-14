@@ -7,6 +7,7 @@ import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
 import { type Tab } from 'src/checklist/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
+import { ONE_TIME_MODE } from 'src/checklist/constants';
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -86,19 +87,23 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const addItem = async (newItem: ChecklistItem) => {
         try {
             const data = await addTask(newItem);
-            const formattedTask = {
+            const formattedTask: ChecklistItem = {
                 id: data.id,
+                isPriority: data.isPriority ?? false,
+                isHidden: data.isHidden ?? false,
                 done: false,
                 text: data.text,
                 lastCompleted: data.lastCompleted,
-                note: data.note,
-                sortOrder: data.sortOrder,
+                note: data.note ?? '',
+                sortOrder: data.sortOrder ?? 0,
+                tabSortOrder: data.tabSortOrder ?? {},
                 category: data.category,
-                mode: data.mode,
+                categoryUuid: data.categoryUuid ?? null,
+                mode: data.mode ?? ONE_TIME_MODE,
                 isArchived: false,
                 parentUuid: data.parentUuid,
                 hasSubChores: data.hasSubChores,
-            } as ChecklistItem;
+            };
 
             setItems(prev => {
                 let updatedPrev = [...prev];
