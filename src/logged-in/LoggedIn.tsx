@@ -10,6 +10,7 @@ import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
 import { useTheme } from 'src/themes/use-theme';
 import AccountMenu from 'app/AccountMenu';
+import NewTaskForm from 'src/new-task-form/NewTaskForm';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -70,6 +71,7 @@ const LoggedIn: React.FC = () => {
                     {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                 </p>
                 <AccountMenu />
+                <NewTaskForm />
             </header>
             <main className="app_main">
                 {isLoading ? (

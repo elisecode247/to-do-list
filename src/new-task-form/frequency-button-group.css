@@ -61,6 +61,7 @@
         flex-direction: row;
         align-items: center;
         gap: var(--spacing-sm);
+        flex-wrap: wrap;
     }
 
     .frequency-selector__group-wrapper label {

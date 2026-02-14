@@ -29,7 +29,20 @@ Live: https://elisecode247.github.io/to-do-list/
 - Include AI task breakdown and add to separate checklist
 - scheduled tasks
 - custom categories
+    - default to parent category on subtasks
 - ask user to delete or archive completed one-time task
 - save appearance settings to database
 - allow notes to be edited in expanded list item
-- new item modal portal
+- move toasts out of TaskContext
+    - show error toasts for all methods
+    - show success toast on add, delete, edit
+- add undo to delete and uncheck
+- show "Day Complete" if Today tab only has completed tasks and they are filtered out
+- change mode filters to match one
+- bulk action of categories for each task
+    - new route "Bulk Actions"?
+- on input focus, show options underneath
+- add search
+- ui improvements
+    - add icon to tabs and make them look like gmail?
+- refresh button in header

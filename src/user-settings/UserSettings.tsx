@@ -17,7 +17,7 @@ function UserSettings() {
             </header>
             <div className="user-settings-container">
                 {location !== ROUTES.home && (
-                    <Link href={ROUTES.home} className="settings-btn">
+                    <Link href={ROUTES.home} className="settings-btn settings-btn--primary">
                         <Home size={24} />
                         <span>Back to Home</span>
                     </Link>

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, useCallback, useMemo } from 'react';
+import { useLayoutEffect, useEffect, useState, useCallback, useMemo } from 'react';
 import type { ThemeMode, ThemeStyle, Density, ThemeState } from './types';
 
 export function useTheme(
@@ -51,36 +51,31 @@ export function useTheme(
 
     // Apply theme whenever stored theme or override changes
     useLayoutEffect(() => {
-        if (hasOverride) {
-            applyTheme({ mode: overrideMode!, style: overrideStyle!, density: overrideDensity! });
-        } else {
-            applyTheme(theme);
-        }
+        const nextTheme = hasOverride
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity! }
+            : theme;
+
+        applyTheme(nextTheme);
     }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity, applyTheme]);
 
-    // Persist only when NOT overridden
-    useLayoutEffect(() => {
+
+    useEffect(() => {
         if (hasOverride) return;
+
+        // Persist
         localStorage.setItem('theme-mode', theme.mode);
         localStorage.setItem('theme-style', theme.style);
         localStorage.setItem('theme-density', theme.density);
-    }, [theme, hasOverride]);
 
-    // System mode listener only when NOT overridden
-    useLayoutEffect(() => {
-        if (hasOverride) return;
-        if (theme.mode !== 'system') return;
-
+        // System mode listener
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const listener = () => applyTheme(theme);
-        mediaQuery.addEventListener('change', listener);
-        return () => mediaQuery.removeEventListener('change', listener);
-    }, [theme, hasOverride, applyTheme]);
+        const handleSystemChange = () => {
+            if (theme.mode === 'system') {
+                applyTheme(theme);
+            }
+        };
 
-    // Storage listener only when NOT overridden
-    useLayoutEffect(() => {
-        if (hasOverride) return;
-
+        // Storage listener
         const handleStorage = (e: StorageEvent) => {
             if (
                 e.key === 'theme-mode' ||
@@ -91,9 +86,15 @@ export function useTheme(
             }
         };
 
+        mediaQuery.addEventListener('change', handleSystemChange);
         window.addEventListener('storage', handleStorage);
-        return () => window.removeEventListener('storage', handleStorage);
-    }, [hasOverride]);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleSystemChange);
+            window.removeEventListener('storage', handleStorage);
+        };
+    }, [theme, hasOverride, applyTheme]);
+
 
     const updateTheme = useCallback((updates: Partial<ThemeState>) => {
         if (hasOverride) return;

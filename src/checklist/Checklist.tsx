@@ -10,7 +10,6 @@ import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
-import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
@@ -18,6 +17,7 @@ import Tabs from 'src/checklist/tabs/Tabs';
 import { TABS, type Tab } from 'src/checklist/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
+import { Filter } from 'lucide-react';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -47,6 +47,7 @@ const Checklist: FC<ChecklistProps> = ({
     const [activeTab, setActiveTab] = useState(TABS.today);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.today;
+    const [showFilters, setShowFilters] = useState(false);
 
     const hasExclusiveFilter = activeFilters.some(f =>
         MODES.includes(f as (typeof MODES)[number])
@@ -158,65 +159,75 @@ const Checklist: FC<ChecklistProps> = ({
     return (
         <>
             {showSparkles && sparkles}
-            <NewTaskForm />
+
             <div className="checklist_toolbar">
                 <div className="checklist_filter-container">
                     <button
-                        onClick={() => {
-                            const updatedFilters = activeFilters.filter(
-                                (filter) => !MODES.includes(filter)
-                            );
-                            setActiveFilters(updatedFilters);
-                        }}
-                        className={`filter-button ${!hasExclusiveFilter
-                            ? 'filter-button-all-active'
-                            : 'filter-button-all'
-                            }`}
+                        className="filter-toggle-icon-button"
+                        onClick={() => setShowFilters(!showFilters)}
                     >
-                        All
+                        <Filter size={24} />Filters
                     </button>
-                    {MODES.map(mode => {
-                        const isActive = activeFilters.includes(mode);
-                        return (
+                    {showFilters && (
+                        <>
                             <button
-                                key={mode}
                                 onClick={() => {
-                                    const nextFilters = activeFilters.includes(mode)
-                                        ? activeFilters.filter(t => t !== mode)
-                                        : [...activeFilters, mode];
-
-                                    setActiveFilters(nextFilters);
+                                    const updatedFilters = activeFilters.filter(
+                                        (filter) => !MODES.includes(filter)
+                                    );
+                                    setActiveFilters(updatedFilters);
                                 }}
-                                className={`
-                                    filter-button
-                                    ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
-                                `}
+                                className={`filter-button ${!hasExclusiveFilter
+                                    ? 'filter-button-all-active'
+                                    : 'filter-button-all'
+                                    }`}
                             >
-                                {mode}
+                                All
                             </button>
-                        )
-                    })}
-                    <div className="checklist_hide-completed-checkbox-container">
-                        <input
-                            className="checklist_hide-completed-checkbox-input"
-                            type="checkbox"
-                            id="hideCompleted"
-                            checked={hideCompleted}
-                            onChange={(e) => setHideCompleted(e.target.checked)}
-                        />
-                        <label
-                            htmlFor="hideCompleted"
-                            className="checklist_hide-completed-checkbox-label"
-                        >
-                            Hide Completed
-                        </label>
-                    </div>
-                    <CategorySelect
-                        id="checklist-filter-category-select"
-                        isFilter={true}
-                        selectedCategory={filterCategory}
-                        onChange={(value: string) => setFilterCategory(value)}
-                    />
+                            {MODES.map(mode => {
+                                const isActive = activeFilters.includes(mode);
+                                return (
+                                    <button
+                                        key={mode}
+                                        onClick={() => {
+                                            const nextFilters = activeFilters.includes(mode)
+                                                ? activeFilters.filter(t => t !== mode)
+                                                : [...activeFilters, mode];
+
+                                            setActiveFilters(nextFilters);
+                                        }}
+                                        className={`
+                                        filter-button
+                                        ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
+                                    `}
+                                    >
+                                        {mode}
+                                    </button>
+                                )
+                            })}
+                            <div className="checklist_hide-completed-checkbox-container">
+                                <input
+                                    className="checklist_hide-completed-checkbox-input"
+                                    type="checkbox"
+                                    id="hideCompleted"
+                                    checked={hideCompleted}
+                                    onChange={(e) => setHideCompleted(e.target.checked)}
+                                />
+                                <label
+                                    htmlFor="hideCompleted"
+                                    className="checklist_hide-completed-checkbox-label"
+                                >
+                                    Hide Completed
+                                </label>
+                            </div>
+                            <CategorySelect
+                                id="checklist-filter-category-select"
+                                isFilter={true}
+                                selectedCategory={filterCategory}
+                                onChange={(value: string) => setFilterCategory(value)}
+                            />
+                        </>
+                    )}
                 </div>
                 <Tabs
                     value={activeTab}

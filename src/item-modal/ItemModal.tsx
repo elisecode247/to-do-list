@@ -6,6 +6,7 @@ import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
+import { createPortal } from 'react-dom';
 
 type ItemModalProps = {
     formData: ChecklistItem;
@@ -84,7 +85,7 @@ export const ItemModal: FC<ItemModalProps> = ({
         };
     }, []);
 
-    return (
+    return createPortal(
         <div className="modal-overlay">
             <div
                 className="modal"
@@ -209,5 +210,5 @@ export const ItemModal: FC<ItemModalProps> = ({
                 </div>
             </div>
         </div>
-    );
+    , document.body);
 };

@@ -12,8 +12,13 @@ import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
 import { useTheme } from 'src/themes/use-theme';
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from 'src/themes/constants';
+import NewTaskForm from 'src/new-task-form/NewTaskForm';
+
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const App: FC = () => {
+    const now = new Date();
+    const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
     useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
     const { toasts, showToast, removeToast } = useToast();
     const {
@@ -63,6 +68,11 @@ const App: FC = () => {
             <div className="app_container">
                 <header className="app_header">
                     <h1 className="app_h1">For My Today</h1>
+                    <p className="app_subtitle">
+                        {dayOfWeekName}
+                        {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                    </p>
+                    <NewTaskForm />
                 </header>
                 <main className="app_main">
                     {isLoading ? (
@@ -83,8 +93,7 @@ const App: FC = () => {
                     )}
                 </main>
             </div>
-        </>
-    );
+        </>);
 };
 
 export default App;
