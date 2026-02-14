@@ -3,10 +3,12 @@ import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import type { ChecklistItem } from 'app/types';
 import { useTask } from 'src/app/use-task';
+import { useToast } from 'src/toast/use-toast';
 import { type Mode } from 'app/types';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
+    const { showToast } = useToast();
     const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const [inputText, setInputText] = useState<string>("");
     const [mode, setMode] = useState<Mode>('daily');
@@ -24,7 +26,7 @@ const NewTaskForm = () => {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [isAddSectionExpanded]);
 
-    const handleAddItem = (): void => {
+    const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
         if (!text) return;
 
@@ -45,8 +47,13 @@ const NewTaskForm = () => {
             hasSubChores: false,
             parentUuid: null
         };
-        addItem(newItem);
-        setInputText('');
+        try {
+            await addItem(newItem);
+            showToast('Task added ✨', 'success');
+            setInputText('');
+        } catch (err) {
+            showToast('Failed to add task. Please try again.', 'error');
+        }
     };
 
     const handleModeClick = (val: Mode): void => {

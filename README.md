@@ -31,3 +31,5 @@ Live: https://elisecode247.github.io/to-do-list/
 - custom categories
 - ask user to delete or archive completed one-time task
 - save appearance settings to database
+- allow notes to be edited in expanded list item
+- new item modal portal

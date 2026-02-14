@@ -120,7 +120,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             });
         } catch (err) {
             console.error('Failed to add task:', err);
-            showToast('Failed to add task. Please try again.', 'error');
+            throw err;
         }
     }
 
