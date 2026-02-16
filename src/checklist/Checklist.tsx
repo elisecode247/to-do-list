@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback, act } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -50,6 +50,7 @@ const Checklist: FC<ChecklistProps> = ({
     const isActiveList = activeTab === TABS.today;
     const [showFilters, setShowFilters] = useState(false);
     const { showToast } = useToast();
+    const completedDayRef = useRef(false);
 
     const hasExclusiveFilter = activeFilters.some(f =>
         MODES.includes(f as (typeof MODES)[number])
@@ -76,6 +77,8 @@ const Checklist: FC<ChecklistProps> = ({
     }, [items, activeFilters, activeTab, hideCompleted, filterCategory]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
+    const completedDay = items.filter(i => i.done).length &&
+        filteredItems.length === 0 && activeTab === TABS.today;
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -174,6 +177,13 @@ const Checklist: FC<ChecklistProps> = ({
         };
     }, []);
 
+    useEffect(() => {
+        if (!completedDayRef.current && completedDay && activeTab === TABS.today) {
+            displaySparkles();
+            completedDayRef.current = !!completedDay;
+        }
+    }, [completedDay, activeTab]);
+
     return (
         <>
             {showSparkles && sparkles}
@@ -261,7 +271,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 onClearFilters={clearFilters}
                                 filterCategory={filterCategory}
                                 hideCompleted={hideCompleted}
-
+                                type={completedDay ? 'completedDay' : 'noTasks'}
                             />
                         )}
                         {events.map(event => (

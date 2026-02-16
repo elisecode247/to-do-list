@@ -37,7 +37,6 @@ Live: https://elisecode247.github.io/to-do-list/
     - show error toasts for all methods
     - show success toast on add, delete, edit
 - add undo to delete and uncheck
-- show "Day Complete" if Today tab only has completed tasks and they are filtered out
 - bulk action of categories for each task
     - new route "Bulk Actions"?
 - on input focus, show options underneath

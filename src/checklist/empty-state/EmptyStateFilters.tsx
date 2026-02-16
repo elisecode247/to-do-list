@@ -11,18 +11,26 @@ interface EmptyStateFiltersProps {
     filterCategory: string;
     hideCompleted: boolean;
     onClearFilters: () => void;
+    type?: 'completedDay' | 'noTasks';
 }
+
+const completedDayMessage = 'That’s everything for today!\n' +
+    'You can view completed tasks by unchecking "Hide Completed"' +
+    'in the filters above.';
 
 const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     activeFilters,
     filterCategory,
     hideCompleted,
     onClearFilters,
+    type = 'noTasks',
 }) => {
 
     return (
         <div className="empty-state">
-            <h3 className="empty-state-title">No tasks found</h3>
+            <h3 className="empty-state-title">
+                {type === 'completedDay' ? completedDayMessage : "No tasks match your filters"}
+            </h3>
 
             {(activeFilters.length || filterCategory !== ALL_CATEGORIES || hideCompleted) ? (
                 <>
