@@ -18,6 +18,7 @@ import { TABS, type Tab } from 'src/checklist/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { Filter } from 'lucide-react';
+import { useToast } from 'src/toast/use-toast';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -48,6 +49,7 @@ const Checklist: FC<ChecklistProps> = ({
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.today;
     const [showFilters, setShowFilters] = useState(false);
+    const { showToast } = useToast();
 
     const hasExclusiveFilter = activeFilters.some(f =>
         MODES.includes(f as (typeof MODES)[number])
@@ -94,8 +96,19 @@ const Checklist: FC<ChecklistProps> = ({
         reorderItems(filteredItems, activeTab, active.id as string, over.id as string);
     }, [activeTab, filteredItems, reorderItems]);
 
-    const toggleChecked = (id: string, checked: boolean) => {
-        toggleItem(id, checked);
+    const toggleChecked = async (id: string, checked: boolean) => {
+        if (!checked) {
+            const confirmed = confirm('If you uncheck, you will lose ' +
+                'the last completed date. Are you sure?'
+            );
+            if (!confirmed) return;
+        }
+        try {
+            await toggleItem(id, checked);
+        } catch (err) {
+            console.error('Failed to toggle task:', err);
+            showToast('Failed to update task status. Please try again.', 'error');
+        }
     };
 
 
@@ -113,11 +126,16 @@ const Checklist: FC<ChecklistProps> = ({
         onEditItem(formattedItem);
     };
 
-    const handleHide = (id: string, isHiddenItem: boolean) => {
-        if (isHiddenItem) {
-            unhideForToday(id as string);
-        } else {
-            hideForToday(id as string);
+    const handleHide = async (id: string, isHiddenItem: boolean) => {
+        try {
+            if (isHiddenItem) {
+                await unhideForToday(id as string);
+            } else {
+                await hideForToday(id as string);
+            }
+        } catch (err) {
+            console.error('Failed to update task visibility:', err);
+            showToast('Failed to update task visibility. Please try again.', 'error');
         }
     };
 

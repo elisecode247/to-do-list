@@ -29,9 +29,7 @@ function Tabs<T extends string>({
             if (!el) return;
 
             const firstTop = el.children[0]?.getBoundingClientRect().top;
-            console.log("%c Line:32 🍋 firstTop", "color:#42b983", firstTop);
             const lastTop = el.children[el.children.length - 1]?.getBoundingClientRect().top;
-            console.log("%c Line:34 🍢 lastTop", "color:#ed9ec7", lastTop);
 
             const wrapped = firstTop > lastTop;
             setIsWrapped(wrapped);

@@ -27,8 +27,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         let cancelled = false;
 
-        const fetchData = () => loadTasks(cancelled);
-        fetchData();
+        loadTasks(cancelled);
 
         return () => {
             cancelled = true;
@@ -66,19 +65,23 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const updateItem = async (item: ChecklistItem) => {
-        const prevItems = [...items];
-        setItems(prev =>
-            prev.map(i => (i.id === item.id ? item : i))
-        );
+    const updateItem = async (updatedItem: ChecklistItem) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            previousItem = prev.find(i => i.id === updatedItem.id);
+            return prev.map(i => i.id === updatedItem.id ? updatedItem : i);
+        });
 
         try {
-            await updateTask(item);
-            setItems(prev =>
-                prev.map(i => (i.id === item.id ? item : i))
-            );
+            await updateTask(updatedItem);
         } catch (error) {
-            setItems(prevItems);
+            // rollback only that item
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i => i.id === previousItem!.id ? previousItem! : i)
+                );
+            }
             throw error;
         }
     };
@@ -146,35 +149,46 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
 
 
-    const toggleItem = (id: string, checked: boolean) => {
-        if (!checked) {
-            const confirmed = confirm(
-                'If you uncheck, you will lose the last completed date. Are you sure?'
-            );
-            if (!confirmed) return;
-        }
+    const toggleItem = async (id: string, checked: boolean) => {
+        let previousItem: ChecklistItem | undefined;
 
-        updateTask({
-            ...items.find(item => item.id === id)!,
-            done: checked,
-            lastCompleted: checked ? new Date().toISOString() : '',
-        }).then(() => {
-            setItems(prev =>
-                prev.map(item =>
-                    item.id === id
-                        ? {
-                            ...item,
-                            done: checked,
-                            lastCompleted: checked ? new Date().toISOString() : '',
-                        }
-                        : item
-                )
+        setItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) {
+                return prev;
+            }
+
+            previousItem = item;
+
+            return prev.map(i =>
+                i.id === id
+                    ? {
+                        ...i,
+                        done: checked,
+                        lastCompleted: checked ? new Date().toISOString() : '',
+                    }
+                    : i
             );
-        }).catch((err) => {
-            console.error('Failed to toggle task:', err);
-            showToast('Failed to update task status. Please try again.', 'error');
         });
+
+        try {
+            await updateTask({
+                ...previousItem!,
+                done: checked,
+                lastCompleted: checked ? new Date().toISOString() : '',
+            });
+        } catch (err) {
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i =>
+                        i.id === id ? previousItem! : i
+                    )
+                );
+            }
+            throw err;
+        };
     }
+
 
     const prioritizeItem = (id: string) => {
         setItems(prev => {
@@ -269,14 +283,30 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const hideForToday = async (id: string) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) return prev;
+
+            previousItem = item;
+
+            return prev.map(i =>
+                i.id === id ? { ...i, isHidden: true } : i
+            );
+        });
+
         try {
-            setItems(prev => {
-                toggleHideToday(id, true)
-                return prev.map(item => item.id === id ? { ...item, isHidden: true } : item);
-            });
+            await toggleHideToday(id, true);
         } catch (err) {
-            console.error('Failed to hide task for today:', err);
-            showToast('Failed to hide task for today. Please try again.', 'error');
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i =>
+                        i.id === id ? previousItem! : i
+                    )
+                );
+            }
+            throw err;
         }
     };
 
@@ -288,7 +318,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             });
         } catch (err) {
             console.error('Failed to unhide task for today:', err);
-            showToast('Failed to unhide task for today. Please try again.', 'error');
+            throw err;
         }
     };
 

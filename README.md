@@ -38,11 +38,21 @@ Live: https://elisecode247.github.io/to-do-list/
     - show success toast on add, delete, edit
 - add undo to delete and uncheck
 - show "Day Complete" if Today tab only has completed tasks and they are filtered out
-- change mode filters to match one
 - bulk action of categories for each task
     - new route "Bulk Actions"?
 - on input focus, show options underneath
-- add search
-- ui improvements
-    - add icon to tabs and make them look like gmail?
+- ui improvement
+    - left panel for filters
+    - tabs
+        - add "all"
+        - add "completed"
+- ux improvement
+    - change mode filters to match one
+    - default to one-time for new tasks
+    - new child tasks inherit parent data
+    - move completed one-time tasks to archived
 - refresh button in header
+- bug: subtask reordering
+    - visible filtered tasks not on subtasks
+    - visible filtered tasks only in Priority tab
+- move toast to top center
