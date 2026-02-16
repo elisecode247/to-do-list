@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback, act } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
