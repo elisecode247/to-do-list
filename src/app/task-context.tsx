@@ -225,15 +225,16 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             console.error('Failed to archive task:', err);
         });
     }
-    const reorderItems = (
+    const sortItems = (
         filteredItems: ChecklistItem[],
         activeTab: Tab,
         activeId: string,
         overId: string
     ) => {
         setItems(prev => {
-            // 1. Reorder only the visible subset
-            const reorderedSubset = getReorderedItems({
+            // Determine sort subset, either tab-specific or subtasks
+            const sortedSubset = getReorderedItems({
+                allItems: prev,
                 filteredItems,
                 activeTab,
                 activeId,
@@ -242,7 +243,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
             // 2. Merge subset changes back into canonical state
             const updatedMap = new Map(
-                reorderedSubset.map((i: ChecklistItem) => [i.id, i])
+                sortedSubset.map((i: ChecklistItem) => [i.id, i])
             );
 
             const updated = prev.map((item: ChecklistItem) =>
@@ -250,7 +251,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             );
 
             // 3. Persist only changed items
-            const changed = reorderedSubset.filter((item: ChecklistItem) => {
+            const changed = sortedSubset.filter((item: ChecklistItem) => {
                 const old = prev.find((p: ChecklistItem) => p.id === item.id);
                 return (
                     old?.sortOrder !== item.sortOrder ||
@@ -275,7 +276,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const getSubtasks = (parentId: string) => {
         if (!parentId) return [];
-        return items.filter(item => item.parentUuid === parentId);
+        return items.filter(item => item.parentUuid === parentId)
+            .sort((a, b) => a.sortOrder - b.sortOrder);
     }
 
     const hideForToday = async (id: string) => {
@@ -330,7 +332,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             toggleItem,
             prioritizeItem,
             archiveItem,
-            reorderItems,
+            sortItems,
             reset,
             getSubtasks,
             hideForToday,

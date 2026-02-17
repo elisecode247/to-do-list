@@ -39,7 +39,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         toggleItem,
         prioritizeItem,
         archiveItem,
-        reorderItems,
+        sortItems,
         getSubtasks,
         reset,
         hideForToday,
@@ -99,7 +99,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        reorderItems(active.id as string, over.id as string);
+        sortItems(active.id as string, over.id as string);
     };
 
     const toggleChecked = (id: string, checked: boolean) => {

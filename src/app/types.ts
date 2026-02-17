@@ -39,7 +39,7 @@ export interface TaskContextType {
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;
     archiveItem: (id: string) => void;
-    reorderItems: (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => void;
+    sortItems: (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];
     hideForToday: (id: string) => void;

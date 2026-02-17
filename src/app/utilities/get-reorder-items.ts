@@ -3,6 +3,7 @@ import { type Tab, TABS } from "src/checklist/tabs/types";
 import { arrayMove } from "@dnd-kit/sortable";
 
 interface ReorderParams {
+    allItems: ChecklistItem[];
     filteredItems: ChecklistItem[];
     activeTab: Tab;
     activeId: string;
@@ -10,14 +11,16 @@ interface ReorderParams {
 }
 
 export function getReorderedItems({
+    allItems,
     filteredItems,
     activeTab,
     activeId,
     overId,
 }: ReorderParams): ChecklistItem[] {
-    const activeItem = filteredItems.find(i => i.id === activeId);
-
-    if (!activeItem) return filteredItems;
+    const activeItem = allItems.find(i => i.id === activeId);
+    const overItem   = allItems.find(i => i.id === overId);
+    const isSubtask = !filteredItems.find(i => i.id === activeId);
+    if (!activeItem) return allItems;
 
     // Detect placeholder dropzone
     let isFirstSubTask = false;
@@ -29,14 +32,14 @@ export function getReorderedItems({
         overId = placeholderParentId;
     }
 
-    const overItem = filteredItems.find(i => i.id === overId);
 
-    if (!overItem) return filteredItems;
+    if (!overItem) return allItems;
 
     if (
+        !isSubtask && (
         activeTab === TABS.priority ||
         activeTab === TABS.hidden ||
-        activeTab === TABS.archived
+        activeTab === TABS.archived)
     ) {
         const sorted = [...filteredItems].sort(
             (a, b) =>
@@ -48,7 +51,7 @@ export function getReorderedItems({
         const newIndex = sorted.findIndex(i => i.id === overId);
 
         if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
-            return filteredItems;
+            return allItems;
         }
 
         const reordered = arrayMove(sorted, oldIndex, newIndex).map(
@@ -73,7 +76,7 @@ export function getReorderedItems({
         : overItem.parentUuid ?? null;
 
     const getSiblings = (parentUuid: string | null) =>
-        filteredItems
+        allItems
             .filter(i => (i.parentUuid ?? null) === parentUuid)
             .sort((a, b) => a.sortOrder - b.sortOrder);
 
@@ -98,13 +101,13 @@ export function getReorderedItems({
         const siblingIds = new Set(reorderedSiblings.map(i => i.id));
 
         // Remove old siblings from array
-        const withoutSiblings = filteredItems.filter(
+        const withoutSiblings = allItems.filter(
             item => !siblingIds.has(item.id)
         );
 
         // Insert reordered siblings back in correct place
         // Find first index where siblings originally appeared
-        const firstSiblingIndex = filteredItems.findIndex(
+        const firstSiblingIndex = allItems.findIndex(
             item => (item.parentUuid ?? null) === oldParent
         );
 
@@ -150,7 +153,7 @@ export function getReorderedItems({
         ...updatedOldSiblings.map(i => i.id),
     ]);
 
-    let updatedItems = filteredItems.map(item => {
+    let updatedItems = allItems.map(item => {
         if (affectedIds.has(item.id)) {
             return (
                 updatedNewSiblings.find(i => i.id === item.id) ||

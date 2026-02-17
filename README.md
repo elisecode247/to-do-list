@@ -48,6 +48,3 @@ Live: https://elisecode247.github.io/to-do-list/
     - new child tasks inherit parent data
     - move completed one-time tasks to archived
 - refresh button in header
-- bug: subtask reordering
-    - visible filtered tasks not on subtasks
-    - visible filtered tasks only in Priority tab

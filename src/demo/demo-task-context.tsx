@@ -18,7 +18,7 @@ export interface TaskContextType {
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;
     archiveItem: (id: string) => void;
-    reorderItems: (activeId: string, overId: string) => void;
+    sortItems: (activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];
     hideForToday: (id: string) => void;
@@ -133,7 +133,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         return items.filter(item => item.parentUuid === parentId);
     };
 
-    const reorderItems = (activeId: string, overId: string) => {
+    const sortItems = (activeId: string, overId: string) => {
         setItems(prevItems => {
             const activeItem = prevItems.find(i => i.id === activeId);
             if (!activeItem) return prevItems;
@@ -245,7 +245,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
                 toggleItem,
                 prioritizeItem,
                 archiveItem,
-                reorderItems,
+                sortItems,
                 reset,
                 getSubtasks,
                 hideForToday,

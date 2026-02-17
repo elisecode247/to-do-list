@@ -35,7 +35,7 @@ const Checklist: FC<ChecklistProps> = ({
         toggleItem,
         prioritizeItem,
         archiveItem,
-        reorderItems,
+        sortItems,
         getSubtasks,
         hideForToday,
         unhideForToday,
@@ -96,8 +96,8 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        reorderItems(filteredItems, activeTab, active.id as string, over.id as string);
-    }, [activeTab, filteredItems, reorderItems]);
+        sortItems(filteredItems, activeTab, active.id as string, over.id as string);
+    }, [activeTab, filteredItems, sortItems]);
 
     const toggleChecked = async (id: string, checked: boolean) => {
         if (!checked) {
