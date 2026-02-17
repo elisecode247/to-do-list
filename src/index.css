@@ -49,3 +49,10 @@ body {
     color: var(--color-mode-occasional-text);
     border-color: var(--color-mode-occasional-border);
 }
+
+/* Priority Mode */
+.mode-priority {
+    background-color: var(--color-mode-priority-bg);
+    color: var(--color-mode-priority-text);
+    border-color: var(--color-mode-priority-border);
+}
