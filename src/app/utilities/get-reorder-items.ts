@@ -18,7 +18,6 @@ export function getReorderedItems({
     overId,
 }: ReorderParams): ChecklistItem[] {
     const activeItem = allItems.find(i => i.id === activeId);
-    const overItem   = allItems.find(i => i.id === overId);
     const isSubtask = !filteredItems.find(i => i.id === activeId);
     if (!activeItem) return allItems;
 
@@ -26,12 +25,14 @@ export function getReorderedItems({
     let isFirstSubTask = false;
     let placeholderParentId: string | null = null;
 
+    // detect if overId is a placeholder before finding overItem
     if (typeof overId === "string" && overId.startsWith("placeholder-")) {
         isFirstSubTask = true;
         placeholderParentId = overId.replace("placeholder-", "");
         overId = placeholderParentId;
     }
 
+    const overItem   = allItems.find(i => i.id === overId);
 
     if (!overItem) return allItems;
 

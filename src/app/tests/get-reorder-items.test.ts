@@ -33,6 +33,7 @@ describe("Guard conditions", () => {
         const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
+            allItems: filteredItems,
             filteredItems,
             activeTab: TABS.today,
             activeId: "Z",
@@ -46,6 +47,7 @@ describe("Guard conditions", () => {
         const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
+            allItems: filteredItems,
             filteredItems,
             activeTab: TABS.today,
             activeId: "A",
@@ -59,6 +61,7 @@ describe("Guard conditions", () => {
         const filteredItems = makeBaseItems();
 
         const result = getReorderedItems({
+            allItems: filteredItems,
             filteredItems,
             activeTab: TABS.today,
             activeId: "B",
@@ -67,6 +70,24 @@ describe("Guard conditions", () => {
 
         expect(result).toEqual(filteredItems);
     });
+
+    it("returns original array if active item is the same as over item", () => {
+
+        const filteredItems = makeBaseItems();
+
+        const result = getReorderedItems({
+            allItems: filteredItems,
+            filteredItems,
+            activeTab: TABS.today,
+            activeId: "C",
+            overId: "C",
+        });
+
+        expect(result).toEqual(filteredItems);
+    });
+});
+
+describe("Reordering logic", () => {
 
     describe("Tab-based reordering (priority/hidden/archived)", () => {
         const makeItems = (): ChecklistItem[] => [
@@ -79,6 +100,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: "priority",
                 activeId: "C",
@@ -97,6 +119,7 @@ describe("Guard conditions", () => {
             ];
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: "hidden",
                 activeId: "B",
@@ -112,6 +135,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
@@ -128,6 +152,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "D",
@@ -146,6 +171,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
@@ -160,6 +186,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
@@ -175,6 +202,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
@@ -196,6 +224,7 @@ describe("Guard conditions", () => {
             ];
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
@@ -213,6 +242,7 @@ describe("Guard conditions", () => {
             ];
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "B",
@@ -228,6 +258,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
@@ -241,6 +272,7 @@ describe("Guard conditions", () => {
             const filteredItems = makeBaseItems();
 
             const result = getReorderedItems({
+                allItems: filteredItems,
                 filteredItems,
                 activeTab: TABS.today,
                 activeId: "C",
