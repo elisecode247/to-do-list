@@ -58,30 +58,6 @@
         box-shadow: var(--shadow-sm);
     }
 
-    .filter-button--priority {
-        border: 2px dotted;
-        font-weight: 600;
-        background: transparent;
-        color: var(--color-mode-priority-text);
-
-        transition:
-            background-color 150ms ease,
-            color 150ms ease,
-            border-color 150ms ease,
-            box-shadow 150ms ease,
-            transform 120ms ease;
-    }
-
-    .filter-button--priority-active {
-        background: var(--color-mode-priority-bg);
-        border-color: var(--color-mode-priority-text);
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mode-priority-text) 25%, transparent);
-    }
-
-    .filter-button--priority:active {
-        transform: scale(0.97);
-    }
-
 }
 
 /* Hide Completed Checkbox */

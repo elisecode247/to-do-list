@@ -166,3 +166,9 @@ color-scheme: light dark;
         filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4)) brightness(1.15);
     }
 }
+
+:root[data-theme-style="nature"] .app_subtitle{
+    font-size: 14px;
+    color: var(--color-text-light);
+    margin: var(--spacing-xs) 0;
+}

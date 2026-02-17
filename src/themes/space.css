@@ -255,3 +255,9 @@
     animation: glow 15s ease-in-out infinite;
     margin: 0 0 0 var(--spacing-md);
 }
+
+:root[data-theme-style="space"] .app_subtitle{
+    font-size: 14px;
+    color: var(--color-text-light);
+    margin: var(--spacing-xs) 0;
+}

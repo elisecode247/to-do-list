@@ -19,10 +19,12 @@
     --color-text-primary: light-dark(#1f2937, #f3f4f6); /* dark / light slate */
     --color-text-secondary: light-dark(#4b5563, #d1d5db); /* medium / soft gray */
     --color-text-light: light-dark(#f9fafb, #ffffff);
+    --color-text-dark-light: light-dark(#111827, #e5e7eb);
 
     /* Surfaces */
     --color-background: light-dark(#f0f4f8, #111827); /* soft white / very dark gray */
     --color-surface: light-dark(#ffffff, #1f2937); /* card / panel */
+    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(31, 41, 55, 0.8)); /* for overlays and modals */
     --color-hover: light-dark(#e2e8f0, #374151); /* subtle hover */
     --color-background-hover: light-dark(#e0f2fe, #1e3a8a); /* optional highlight */
 
@@ -102,5 +104,5 @@ body::after {
     text-transform: uppercase;
     opacity: 0.75;
     margin: var(--spacing-xs) 0 0 var(--spacing-md);
-    color: var(--color-text-primary)
+    color: var(--color-text-dark-light);
 }

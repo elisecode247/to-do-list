@@ -49,7 +49,7 @@
     --shadow-md: light-dark(0 10px 30px rgba(14, 165, 233, 0.25), 0 10px 30px rgba(3, 105, 161, 0.35));
 
     --color-mode-priority-bg: light-dark(#33ffdd, #00a2ff);
-    --color-mode-priority-text: light-dark(#003e60, #002239);
+    --color-mode-priority-text: light-dark(#003e60, #78c9ff);
     --color-mode-priority-border: light-dark(#003148, #8adeff);
 }
 
@@ -151,4 +151,11 @@
     50% {
         filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.9)) brightness(1.1);
     }
+}
+
+
+:root[data-theme-style="ocean"] .app_subtitle{
+    font-size: 14px;
+    color: var(--color-text-light);
+    margin: var(--spacing-xs) 0;
 }
