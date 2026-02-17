@@ -167,6 +167,17 @@ export const SortableItem: FC<SortableItemProps> = ({
         }, 400)
     }
 
+    async function handleDeleteTask() {
+        const answer = confirm("Are you sure?");
+        if (!answer) return;
+        try {
+            await deleteItem(id);
+            showToast('Task deleted successfully', 'success');
+        } catch (err) {
+            showToast('Failed to delete task. Please try again.', 'error');
+        }
+    }
+
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
@@ -347,11 +358,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                                     <button
                                         className="sortable-item_delete-button"
-                                        onClick={() => {
-                                            const answer = confirm("Are you sure?");
-                                            if (!answer) return;
-                                            deleteItem(id);
-                                        }}
+                                        onClick={handleDeleteTask}
                                         aria-label="Delete task"
                                         title="Delete task"
                                         type="button"

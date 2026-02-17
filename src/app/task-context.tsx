@@ -2,7 +2,6 @@ import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask, toggleHideToday } from 'app/api';
 import { useAuthentication } from 'src/authentication/use-authentication';
-import { useToast } from 'src/toast/use-toast';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
 import { type Tab } from 'src/checklist/tabs/types';
@@ -13,7 +12,6 @@ export const TaskContext = createContext<TaskContextType | undefined>(undefined)
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
-    const { showToast } = useToast();
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(enabled);
     const [error, setError] = useState<string | null>(null);
@@ -141,10 +139,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 });
                 return updatedPrev.filter(item => item.id !== id);
             });
-            showToast('Task deleted successfully', 'success');
         }).catch((err) => {
             console.error('Failed to delete task:', err);
-            showToast('Task could not be deleted. Please try again.', 'error');
+            throw err;
         });
     }
 
@@ -226,7 +223,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             );
         }).catch((err) => {
             console.error('Failed to archive task:', err);
-            showToast('Failed to update task archive status. Please try again.', 'error');
         });
     }
     const reorderItems = (

@@ -33,9 +33,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - ask user to delete or archive completed one-time task
 - save appearance settings to database
 - allow notes to be edited in expanded list item
-- move toasts out of TaskContext
-    - show error toasts for all methods
-    - show success toast on add, delete, edit
 - add undo to delete and uncheck
 - bulk action of categories for each task
     - new route "Bulk Actions"?
@@ -54,4 +51,3 @@ Live: https://elisecode247.github.io/to-do-list/
 - bug: subtask reordering
     - visible filtered tasks not on subtasks
     - visible filtered tasks only in Priority tab
-- move toast to top center

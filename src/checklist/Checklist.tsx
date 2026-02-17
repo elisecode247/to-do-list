@@ -142,8 +142,13 @@ const Checklist: FC<ChecklistProps> = ({
         }
     };
 
-    const handleMoveItem = (id: string) => {
-        archiveItem(id);
+    const handleMoveItem = async (id: string) => {
+        try {
+            await archiveItem(id);
+            showToast('Task archived successfully', 'success');
+        } catch (err) {
+            showToast('Failed to archive task. Please try again.', 'error');
+        }
     };
 
     const handleTabChange = (tab: SetStateAction<Tab>) => {
