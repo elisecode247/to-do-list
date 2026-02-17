@@ -15,6 +15,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(enabled);
     const [error, setError] = useState<string | null>(null);
+    const [loadDate, setLoadDate] = useState<Date | null>(null);
 
     useEffect(() => {
         setIsLoading(enabled);
@@ -26,6 +27,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         let cancelled = false;
 
         loadTasks(cancelled);
+        setLoadDate(new Date());
 
         return () => {
             cancelled = true;
@@ -336,7 +338,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             reset,
             getSubtasks,
             hideForToday,
-            unhideForToday
+            unhideForToday,
+            loadDate,
         }}>
             {children}
         </TaskContext.Provider>

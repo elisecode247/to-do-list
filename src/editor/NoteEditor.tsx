@@ -7,7 +7,6 @@ import {
     type MDXEditorMethods
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import { useEffect } from 'react';
 
 interface NoteEditorProps {
     initialMarkdown: string;
@@ -15,12 +14,6 @@ interface NoteEditorProps {
     readOnly: boolean;
 }
 const NoteEditor = ({ initialMarkdown, ref, readOnly = false }: NoteEditorProps) => {
-
-    useEffect(() => {
-        if (ref && typeof ref !== 'function') {
-            console.log("editorRef.current:", ref.current);
-        }
-    }, [ref]);
 
     return (
         <MDXEditor

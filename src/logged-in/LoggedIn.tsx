@@ -26,6 +26,7 @@ const LoggedIn: React.FC = () => {
         error,
         loadTasks,
         updateItem,
+        loadDate,
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
 
@@ -69,6 +70,8 @@ const LoggedIn: React.FC = () => {
                 <p className="app_subtitle">
                     {dayOfWeekName}
                     {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                    <br />
+                    {loadDate ? ` (Last updated: ${loadDate.toLocaleTimeString()})` : ''}
                 </p>
                 <AccountMenu />
                 <NewTaskForm />

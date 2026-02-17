@@ -44,4 +44,5 @@ export interface TaskContextType {
     getSubtasks: (parentId: string) => ChecklistItem[];
     hideForToday: (id: string) => void;
     unhideForToday: (id: string) => void;
+    loadDate: Date | null;
 }

@@ -182,9 +182,6 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }
 
-    if (id === '34e6164d-8f0f-4c15-bef9-81d824c2f570') {
-        console.log("%c Line:183 🍭 item", "color:#4fff4B", note);
-    }
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
