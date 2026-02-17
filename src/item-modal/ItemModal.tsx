@@ -7,11 +7,13 @@ import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
 import { createPortal } from 'react-dom';
+import NoteEditor from 'src/editor/NoteEditor';
+import { type MDXEditorMethods } from '@mdxeditor/editor';
 
 type ItemModalProps = {
     formData: ChecklistItem;
     setEditingItem: (item: ChecklistItem) => void;
-    onSave: () => void;
+    onSave: (item: ChecklistItem) => void;
     onClose: () => void;
 };
 
@@ -23,6 +25,15 @@ export const ItemModal: FC<ItemModalProps> = ({
 }) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+    const noteRef = useRef<MDXEditorMethods>(null)
+
+    const handleSave = async () => {
+        let note = noteRef.current?.getMarkdown()
+        onSave({
+            ...formData,
+            note: note ?? formData.note ?? '',
+        });
+    }
 
     const toggleMode = (mode: Mode) => {
         setEditingItem({
@@ -139,12 +150,10 @@ export const ItemModal: FC<ItemModalProps> = ({
                 {/* Notes */}
                 <div className="form-group">
                     <label>Notes</label>
-                    <textarea
-                        value={formData.note ?? ''}
-                        onChange={e =>
-                            setEditingItem({ ...formData, note: e.target.value })
-                        }
-                        rows={4}
+                    <NoteEditor
+                        ref={noteRef}
+                        initialMarkdown={formData.note ?? ''}
+                        readOnly={false}
                     />
                 </div>
 
@@ -201,7 +210,7 @@ export const ItemModal: FC<ItemModalProps> = ({
                     </button>
                     <button
                         className="item-modal_button btn-primary"
-                        onClick={onSave}
+                        onClick={handleSave}
                         type="button"
                         aria-label="Save changes"
                     >

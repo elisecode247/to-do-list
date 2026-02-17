@@ -68,7 +68,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         setItems(prev => {
             previousItem = prev.find(i => i.id === updatedItem.id);
-            return prev.map(i => i.id === updatedItem.id ? updatedItem : i);
+            return prev.map(i => i.id === updatedItem.id ? {...updatedItem} : i);
         });
 
         try {

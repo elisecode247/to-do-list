@@ -29,11 +29,11 @@ const LoggedIn: React.FC = () => {
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
 
-    async function handleSave() {
+    async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
 
         try {
-            await updateItem(editingItem);
+            await updateItem(saveItem);
             setEditingItem(null);
             showToast('Task updated successfully', 'success');
         } catch {

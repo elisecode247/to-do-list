@@ -28,6 +28,8 @@ import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
 import { TABS } from 'src/checklist/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
+import NoteEditor from 'src/editor/NoteEditor';
+import { type MDXEditorMethods } from '@mdxeditor/editor';
 
 interface SortableItemProps {
     id: string;
@@ -87,6 +89,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [animate, setAnimate] = useState(true);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const noteRef = useRef<MDXEditorMethods>(null)
+
 
     const toggleCollapsed = () => setCollapsed(!collapsed);
 
@@ -178,6 +182,9 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }
 
+    if (id === '34e6164d-8f0f-4c15-bef9-81d824c2f570') {
+        console.log("%c Line:183 🍭 item", "color:#4fff4B", note);
+    }
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
@@ -373,7 +380,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </div>
                     {showNotes && (
                         <div className="sortable-item_note">
-                            {note}
+                            <NoteEditor
+                                key={note} // force remount to reset internal state when note changes
+                                initialMarkdown={note ?? ''}
+                                ref={noteRef}
+                                readOnly={true}
+                            />
                         </div>
                     )}
                     {openNewTaskForm ? (
