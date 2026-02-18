@@ -42,3 +42,4 @@ Live: https://elisecode247.github.io/to-do-list/
             - add "completed"
 - ux improvement
     - change mode filters to match one
+    - keyboard esc for editor inside modals

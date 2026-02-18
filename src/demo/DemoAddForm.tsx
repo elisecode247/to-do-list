@@ -53,10 +53,10 @@ const DemoNewTaskForm = () => {
     }
 
     return (
-        <div className={`checklist_new-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
+        <div className={`new-task-form-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
             {!isAddSectionExpanded && (
                 <button
-                    className="checklist_new-item-toggle-button"
+                    className="new-task-form-toggle-button"
                     onClick={() => setIsAddSectionExpanded(true)}
                     aria-label="Add new item"
                 >
@@ -67,10 +67,10 @@ const DemoNewTaskForm = () => {
                 </button>
             )}
             {isAddSectionExpanded && (<>
-                <div className="checklist_new-item-header">
-                    <span className="checklist_new-item-title">New Task</span>
+                <div className="new-task-form-item-header">
+                    <span className="new-task-form-title">New Task</span>
                     <button
-                        className="checklist_new-item-close-button"
+                        className="new-task-form-close-button"
                         onClick={() => setIsAddSectionExpanded(false)}
                         aria-label="Close"
                     >
@@ -84,14 +84,14 @@ const DemoNewTaskForm = () => {
                     onClick={(mode: Mode) => handleModeClick(mode)}
                 />
                 <CategorySelect
-                    id="checklist-new-item-category-select"
+                    id="new-task-form-category-select"
                     selectedCategory={newTaskCategory}
                     onChange={(category: string) => setNewTaskCategory(category)}
                 />
-                <div className="checklist_new-item-input-row">
+                <div className="new-task-form-input-row">
                     <input
-                        id="checklist-new-item-text-input"
-                        className="checklist_new-item-text-input"
+                        id="new-task-form-text-input"
+                        className="new-task-form-text-input"
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
                         onKeyDown={(e) => {
@@ -104,9 +104,9 @@ const DemoNewTaskForm = () => {
                     />
                     <button
                         disabled={isAddButtonDisabled}
-                        className={`checklist_new-item-add-button
+                        className={`new-task-form-add-button
                             ${isAddButtonDisabled &&
-                            'checklist_new-item-add-button--disabled'}`
+                            'new-task-form-add-button--disabled'}`
                         }
                         onClick={handleAddItem}
                     >

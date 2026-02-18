@@ -145,4 +145,8 @@
     .app_header_button-group {
         align-items: flex-end;
     }
+
+    .app_subtitle {
+        text-align: center;
+    }
 }

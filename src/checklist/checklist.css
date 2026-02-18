@@ -158,13 +158,6 @@
 
 /* Responsive adjustments for larger screens */
 @media (min-width: 768px) {
-    .checklist_new-item-container {
-        padding: var(--spacing-lg);
-    }
-
-    .checklist_new-item-input-row {
-        gap: var(--spacing-sm);
-    }
 
     .checklist_toolbar {
         flex-direction: row;

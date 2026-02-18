@@ -8,6 +8,8 @@ import { type Mode } from 'app/types';
 import './new-task-form.css';
 import { PlusCircle, X } from 'lucide-react'
 import { ONE_TIME_MODE } from 'src/checklist/constants';
+import NoteEditor from 'src/editor/NoteEditor';
+import type { MDXEditorMethods } from '@mdxeditor/editor';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
@@ -18,6 +20,7 @@ const NewTaskForm = () => {
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
+    const noteRef = useRef<MDXEditorMethods | null>(null);
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -33,13 +36,14 @@ const NewTaskForm = () => {
     const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
         if (!text) return;
+        let note = noteRef.current?.getMarkdown()
 
         const newItem: ChecklistItem = {
             id: crypto.randomUUID(),
             text,
             done: false,
             lastCompleted: '',
-            note: '',
+            note: note ?? '',
             sortOrder: 0,
             tabSortOrder: {},
             category: newTaskCategory,
@@ -55,6 +59,9 @@ const NewTaskForm = () => {
             await addItem(newItem);
             showToast('Task added ✨', 'success');
             setInputText('');
+            if (noteRef.current) {
+                noteRef.current.setMarkdown('');
+            }
         } catch (err) {
             showToast('Failed to add task. Please try again.', 'error');
         }
@@ -86,8 +93,8 @@ const NewTaskForm = () => {
 
     return  (<>
         <button
-            className={`checklist_new-item-toggle-button
-                ${isAddSectionExpanded ? 'checklist_new-item-toggle-button--collapsed' : ''}`}
+            className={`new-task-form-toggle-button
+                ${isAddSectionExpanded ? 'new-task-form-toggle-button--collapsed' : ''}`}
             onClick={() => setIsAddSectionExpanded(true)}
             aria-label="Add new task"
         >
@@ -95,14 +102,14 @@ const NewTaskForm = () => {
             Add New Item
         </button>
         <div ref={panelRef} className={
-            `checklist_new-item-container
-            checklist_new-item-container--${isAddSectionExpanded ?
+            `new-task-form-item-container
+            new-task-form-item-container--${isAddSectionExpanded ?
                 'expanded' : 'collapsed'}`}
         >
-            <div className="checklist_new-item-header">
-                <span className="checklist_new-item-title">New Task</span>
+            <div className="new-task-form-item-header">
+                <span className="new-task-form-title">New Task</span>
                 <button
-                    className="checklist_new-item-close-button"
+                    className="new-task-form-close-button"
                     onClick={() => setIsAddSectionExpanded(false)}
                     aria-label="Close"
                 >
@@ -114,14 +121,29 @@ const NewTaskForm = () => {
                 onClick={(mode: Mode) => handleModeClick(mode)}
             />
             <CategorySelect
-                id="checklist-new-item-category-select"
+                id="new-task-form-category-select"
                 selectedCategory={newTaskCategory}
                 onChange={(category: string) => setNewTaskCategory(category)}
             />
-            <div className="checklist_new-item-input-row">
+            <div className="new-task-form-notes-section">
+                <label
+                    htmlFor="new-task-form-notes-input"
+                    className="new-task-form-notes-label"
+                >
+                    Notes
+                </label>
+                <div className="new-task-form-note-container">
+                <NoteEditor
+                    ref={noteRef}
+                    initialMarkdown=""
+                    readOnly={false}
+                />
+                </div>
+            </div>
+            <div className="new-task-form-input-row">
                 <input
-                    id="checklist-new-item-text-input"
-                    className="checklist_new-item-text-input"
+                    id="new-task-form-text-input"
+                    className="new-task-form-text-input"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={(e) => {
@@ -134,9 +156,9 @@ const NewTaskForm = () => {
                 />
                 <button
                     disabled={isAddButtonDisabled}
-                    className={`checklist_new-item-add-button
+                    className={`new-task-form-add-button
                             ${isAddButtonDisabled &&
-                        'checklist_new-item-add-button--disabled'}`
+                        'new-task-form-add-button--disabled'}`
                     }
                     onClick={handleAddItem}
                 >
