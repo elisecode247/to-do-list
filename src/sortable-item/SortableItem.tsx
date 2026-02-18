@@ -5,7 +5,7 @@ import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { getDaysFromNow } from 'src/utilities/days-ago';
-import type { ChecklistItem } from 'src/app/types';
+import type { ChecklistItem, Mode } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import {
@@ -44,6 +44,8 @@ interface SortableItemProps {
     prioritizeItem: (id: string) => void;
     text: string;
     note: string;
+    mode: Mode;
+    category: string;
     lastCompleted: string;
     toggleChecked: (id: string, checked: boolean) => void;
     handleEdit: (id: string) => void;
@@ -67,6 +69,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     prioritizeItem,
     text,
     note,
+    mode,
+    category,
     lastCompleted,
     toggleChecked,
     handleEdit,
@@ -113,6 +117,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Task details cannot be empty.', 'error');
             return;
         }
+        // inherit parent task's category and mode, but not priority or hidden status
         const newChecklistItem: ChecklistItem = {
             id: crypto.randomUUID(),
             text: inputText,
@@ -122,8 +127,8 @@ export const SortableItem: FC<SortableItemProps> = ({
             sortOrder: 0,
             tabSortOrder: {},
             categoryUuid: null,
-            category: '',
-            mode: 'one-time',
+            category: category,
+            mode: mode,
             isPriority: false,
             isHidden: false,
             isArchived: false,
@@ -441,6 +446,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     prioritizeItem={prioritizeItem}
                                     text={subtask.text}
                                     note={subtask.note}
+                                    mode={subtask.mode}
+                                    category={subtask.category}
                                     lastCompleted={subtask.lastCompleted}
                                     toggleChecked={toggleChecked}
                                     handleEdit={handleEdit}
