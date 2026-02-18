@@ -30,21 +30,16 @@ Live: https://elisecode247.github.io/to-do-list/
 - scheduled tasks
 - custom categories
     - default to parent category on subtasks
-- ask user to delete or archive completed one-time task
 - save appearance settings to database
 - allow notes to be edited in expanded list item
 - add undo to delete and uncheck
 - bulk action of categories for each task
     - new route "Bulk Actions"?
-- on input focus, show options underneath
 - ui improvement
     - left panel for filters
-    - tabs
-        - add "all"
-        - add "completed"
+        - tabs
+            - add "all"
+            - add "completed"
 - ux improvement
     - change mode filters to match one
-    - default to one-time for new tasks
     - new child tasks inherit parent data
-    - move completed one-time tasks to archived
-- refresh button in header

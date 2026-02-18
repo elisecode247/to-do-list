@@ -7,13 +7,14 @@ import { useToast } from 'src/toast/use-toast';
 import { type Mode } from 'app/types';
 import './new-task-form.css';
 import { PlusCircle, X } from 'lucide-react'
+import { ONE_TIME_MODE } from 'src/checklist/constants';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
     const { showToast } = useToast();
     const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const [inputText, setInputText] = useState<string>("");
-    const [mode, setMode] = useState<Mode>('daily');
+    const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);

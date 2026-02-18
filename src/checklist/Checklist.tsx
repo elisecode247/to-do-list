@@ -4,7 +4,7 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
-import { MODES } from 'checklist/constants';
+import { MODES, ONE_TIME_MODE } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect';
 import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import 'checklist/checklist.css';
@@ -100,6 +100,7 @@ const Checklist: FC<ChecklistProps> = ({
     }, [activeTab, filteredItems, sortItems]);
 
     const toggleChecked = async (id: string, checked: boolean) => {
+        const selectedItem = items.find(item => item.id === id);
         if (!checked) {
             const confirmed = confirm('If you uncheck, you will lose ' +
                 'the last completed date. Are you sure?'
@@ -108,6 +109,11 @@ const Checklist: FC<ChecklistProps> = ({
         }
         try {
             await toggleItem(id, checked);
+            // archive if item's mode is ONE_TIME_MODE and is being marked completed
+            if (selectedItem?.mode === ONE_TIME_MODE && checked) {
+                await archiveItem(id);
+                showToast('Task archived successfully', 'success');
+            }
         } catch (err) {
             console.error('Failed to toggle task:', err);
             showToast('Failed to update task status. Please try again.', 'error');
