@@ -24,7 +24,7 @@ const NewTaskForm = () => {
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isAddSectionExpanded) {
+            if (e.key === 'Escape' && isAddSectionExpanded && panelRef.current?.contains(document.activeElement)) {
                 setIsAddSectionExpanded(false);
             }
         };
