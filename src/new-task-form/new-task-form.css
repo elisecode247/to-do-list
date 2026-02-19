@@ -182,7 +182,7 @@
         padding: var(--spacing-sm) var(--spacing-xl);
         top: var(--spacing-md);
         bottom: auto;
-        left: 0;
+        left: 3px;
         right: auto;
     }
 

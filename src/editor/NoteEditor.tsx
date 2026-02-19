@@ -6,7 +6,8 @@ import {
     thematicBreakPlugin,
     type MDXEditorMethods
 } from '@mdxeditor/editor'
-import '@mdxeditor/editor/style.css'
+import '@mdxeditor/editor/style.css';
+import './note-editor.css';
 
 interface NoteEditorProps {
     initialMarkdown: string;
@@ -21,6 +22,7 @@ const NoteEditor = ({ initialMarkdown, ref, readOnly = false }: NoteEditorProps)
             markdown={initialMarkdown}
             plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin()]}
             readOnly={readOnly}
+            contentEditableClassName="note-editor-content"
         />
     );
 };

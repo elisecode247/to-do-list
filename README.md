@@ -26,19 +26,16 @@ Live: https://elisecode247.github.io/to-do-list/
 - Access token in memory
 - Refresh token in HttpOnly Secure SameSite cookie
 - Move frontend code to Railway
+- add undo to delete and uncheck
+- suggestions feature (random dice?)
 - Include AI task breakdown and add to separate checklist
-- scheduled tasks
 - custom categories
     - default to parent category on subtasks
-- save appearance settings to database
-- allow notes to be edited in expanded list item
-- add undo to delete and uncheck
-- bulk action of categories for each task
-    - new route "Bulk Actions"?
+- make localStorage persistent longer on mobile
+- scheduled tasks
+- task interval amount
 - ui improvement
     - left panel for filters
         - tabs
             - add "all"
             - add "completed"
-    - notes color contrast
-- suggestions feature (random dice?)
