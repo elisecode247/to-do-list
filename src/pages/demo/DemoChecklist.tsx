@@ -13,8 +13,8 @@ import { useCalendarIntegration } from 'src/google-authorization/use-google-cale
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
-import { default as Tabs } from 'src/checklist/tabs/Tabs';
-import { TABS, type Tab } from 'src/checklist/tabs/types';
+import { default as Tabs } from 'src/app-toolbar/tabs/Tabs';
+import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import GoogleLoginButton from 'src/authentication/google-login-button';
 import { useAuthentication } from 'src/authentication/use-authentication';

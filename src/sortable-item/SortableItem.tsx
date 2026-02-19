@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
-import { TABS } from 'src/checklist/tabs/types';
+import { TABS } from 'src/app-toolbar/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';

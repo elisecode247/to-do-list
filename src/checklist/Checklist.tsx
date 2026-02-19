@@ -4,22 +4,19 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
-import { MODES, ONE_TIME_MODE } from 'checklist/constants';
-import CategorySelect from 'category-select/CategorySelect';
-import { getModeColor } from 'src/checklist/utilities/get-mode-color';
+import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
-import Tabs from 'src/checklist/tabs/Tabs';
-import { TABS, type Tab } from 'src/checklist/tabs/types';
+import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
-import { Filter } from 'lucide-react';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
+import AppToolbar from 'src/app-toolbar/AppToolbar';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -196,74 +193,18 @@ const Checklist: FC<ChecklistProps> = ({
         <>
             {showSparkles && sparkles}
 
-            <div className="checklist_toolbar">
-                <div className="checklist_filter-container">
-                    <button
-                        className="filter-toggle-icon-button"
-                        onClick={() => setShowFilters(!showFilters)}
-                    >
-                        <Filter size={24} />Filters
-                    </button>
-                    {showFilters && (<>
-                        <Tabs
-                            value={activeTab}
-                            onChange={handleTabChange}
-                        />
-                        <div className="mode-filter-button-group">
-                            <button
-                                onClick={() => {
-                                    setModeFilter(ALL_MODES);
-                                }}
-                                className={`filter-button ${modeFilter === ALL_MODES
-                                    ? 'filter-button-all-active'
-                                    : 'filter-button-all'
-                                    }`}
-                            >
-                                All
-                            </button>
-                            {MODES.map(mode => {
-                                const isActive = modeFilter === mode;
-                                return (
-                                    <button
-                                        key={mode}
-                                        onClick={() => {
-                                            setModeFilter(mode);
-                                        }}
-                                        className={`
-                                        filter-button
-                                        ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
-                                    `}
-                                    >
-                                        {mode}
-                                    </button>
-                                )
-                            })}
-                        </div>
-                        <div className="checklist_hide-completed-checkbox-container">
-                            <input
-                                className="checklist_hide-completed-checkbox-input"
-                                type="checkbox"
-                                id="hideCompleted"
-                                checked={hideCompleted}
-                                onChange={(e) => setHideCompleted(e.target.checked)}
-                            />
-                            <label
-                                htmlFor="hideCompleted"
-                                className="checklist_hide-completed-checkbox-label"
-                            >
-                                Hide Completed
-                            </label>
-                        </div>
-                        <CategorySelect
-                            id="checklist-filter-category-select"
-                            isFilter={true}
-                            selectedCategory={filterCategory}
-                            onChange={(value: string) => setFilterCategory(value)}
-                        />
-                    </>
-                    )}
-                </div>
-            </div>
+            <AppToolbar
+                showFilters={showFilters}
+                setShowFilters={setShowFilters}
+                activeTab={activeTab}
+                handleTabChange={handleTabChange}
+                modeFilter={modeFilter}
+                setModeFilter={setModeFilter}
+                hideCompleted={hideCompleted}
+                setHideCompleted={setHideCompleted}
+                filterCategory={filterCategory}
+                setFilterCategory={setFilterCategory}
+            />
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
                     <SortableContext items={allItems.map(i => i.id)}>

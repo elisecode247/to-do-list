@@ -1,7 +1,7 @@
 import type { ChecklistItem, FilterParams } from 'app/types';
 import type { Mode } from 'src/app/types';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
-import { TABS } from 'src/checklist/tabs/types';
+import { TABS } from 'src/app-toolbar/tabs/types';
 import { ALL_MODES } from 'src/checklist/constants';
 
 export function filterTasks({

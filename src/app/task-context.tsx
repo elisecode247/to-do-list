@@ -3,7 +3,7 @@ import type { ChecklistItem } from 'app/types';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
-import { type Tab } from 'src/checklist/tabs/types';
+import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
 import {

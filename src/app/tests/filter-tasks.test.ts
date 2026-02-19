@@ -6,7 +6,7 @@ import {
     TAB_HIDDEN,
     TAB_ARCHIVED,
     TAB_PRIORITY,
-} from 'src/checklist/tabs/types';
+} from 'src/app-toolbar/tabs/types';
 import type { ChecklistItem, FilterParams } from 'app/types';
 import { ALL_MODES, ONE_TIME_MODE, SCHEDULED_MODE } from 'src/checklist/constants';
 

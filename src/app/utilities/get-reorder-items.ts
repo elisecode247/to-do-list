@@ -1,5 +1,5 @@
 import type { ChecklistItem } from "../types";
-import { type Tab, TABS } from "src/checklist/tabs/types";
+import { type Tab, TABS } from "src/app-toolbar/tabs/types";
 import { arrayMove } from "@dnd-kit/sortable";
 
 interface ReorderParams {

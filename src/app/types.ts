@@ -1,4 +1,4 @@
-import { type Tab } from "src/checklist/tabs/types";
+import { type Tab } from "src/app-toolbar/tabs/types";
 import { ALL_MODES } from "src/checklist/constants";
 
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';

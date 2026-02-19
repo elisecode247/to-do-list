@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getReorderedItems } from "app/utilities/get-reorder-items";
-import { TABS } from "src/checklist/tabs/types";
+import { TABS } from "src/app-toolbar/tabs/types";
 import { type ChecklistItem } from "app/types";
 
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({

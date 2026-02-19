@@ -1,120 +1,14 @@
-/* Toolbar */
-.checklist_toolbar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    flex-shrink: 0;
-    align-items: flex-start;
-    width: 100%;
-}
-
-.filter-toggle-icon-button {
-    height: 44px;
-    width: 44px;
-}
-/* Filter Container */
-.checklist_filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: var(--color-background);
-    border-radius: var(--spacing-sm);
-    padding: var(--spacing-xs);
-    gap: var(--spacing-xs);
-}
-
-.mode-filter-button-group {
-    gap: 0;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-}
-
-@layer base {
-    .filter-button {
-        padding: var(--spacing-xs) var(--spacing-sm);
-        border: 1px solid var(--color-border);
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        background-color: var(--color-surface);
-        color: var(--color-text-secondary);
-        min-height: 44px;
-        min-width: 44px;
-    }
-
-    .filter-button:hover {
-        opacity: 0.8;
-    }
-
-    .filter-button-all {
-        background-color: var(--color-surface);
-        color: var(--color-text-secondary);
-    }
-
-    .filter-button-all-active {
-        background-color: var(--color-text-primary);
-        color: var(--color-surface);
-        border-color: var(--color-text-primary);
-    }
-
-    .filter-button-active {
-        opacity: 1;
-        font-weight: 600;
-        box-shadow: var(--shadow-sm);
-        background-color: var(--color-mode-priority-bg);
-        color: var(--color-mode-priority-text);
-    }
-
-    .filter-button:first-of-type {
-        border-top-left-radius: var(--radius-sm);
-        border-bottom-left-radius: var(--radius-sm);
-    }
-
-    .filter-button:last-of-type {
-        border-top-right-radius: var(--radius-sm);
-        border-bottom-right-radius: var(--radius-sm);
-    }
-
-}
-
-/* Hide Completed Checkbox */
-.checklist_hide-completed-checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) 0;
-}
-
-.checklist_hide-completed-checkbox-input {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: var(--color-primary);
-    font-size: 13px;
-}
-
-.checklist_hide-completed-checkbox-input:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-}
-
-.checklist_hide-completed-checkbox-label {
-    font-size: 14px;
-    color: var(--color-text-primary);
-    cursor: pointer;
-    user-select: none;
-}
 /** empty state **/
 .empty-state--filtered {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 16px;
-  color: var(--color-text-muted);
-  font-size: 0.85rem;
-  opacity: 0.8;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    opacity: 0.8;
+    text-align: center;
 }
 
 /* List Container */
@@ -129,66 +23,45 @@
 }
 
 .sparkles {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 9999;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
 }
 
 .sparkle {
-  position: absolute;
-  top: -10px;
+    position: absolute;
+    top: -10px;
 
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
 
-  background: gold;
+    background: gold;
 
-  opacity: 0;
-  transform: scale(0.5);
+    opacity: 0;
+    transform: scale(0.5);
 
-  animation-name: sparkle-fall;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  animation-duration: 3s;
-  z-index: 10000;
+    animation-name: sparkle-fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-duration: 3s;
+    z-index: 10000;
 }
 
 @keyframes sparkle-fall {
-  0% {
-    transform: translateY(0) translateX(0) scale(0.5);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(110vh) translateX(40px) scale(1);
-    opacity: 0;
-  }
-}
-
-
-/* Responsive adjustments for larger screens */
-@media (min-width: 900px) {
-
-    .checklist_toolbar {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--spacing-md);
+    0% {
+        transform: translateY(0) translateX(0) scale(0.5);
+        opacity: 0;
     }
 
-    .checklist_filter-container {
-        gap: var(--spacing-sm);
+    10% {
+        opacity: 1;
     }
 
-    .filter-button {
-        padding: var(--spacing-xs) var(--spacing-md);
-        font-size: 14px;
+    100% {
+        transform: translateY(110vh) translateX(40px) scale(1);
+        opacity: 0;
     }
 }
