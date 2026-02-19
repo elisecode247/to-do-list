@@ -93,7 +93,7 @@ body::after {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 0 0 0 var(--spacing-md);
+    margin: var(--spacing-md);
 }
 
 .app_subtitle {

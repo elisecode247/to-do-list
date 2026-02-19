@@ -180,9 +180,9 @@
     .new-task-form-toggle-button {
         position: absolute;
         padding: var(--spacing-sm) var(--spacing-xl);
-        top: 6px;
+        top: var(--spacing-md);
         bottom: auto;
-        left: 6px;
+        left: 0;
         right: auto;
     }
 

@@ -19,12 +19,16 @@
     position: relative;
     min-height: 50px;
     margin-bottom: var(--spacing-md);
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
 }
 
 .app_h2 {
     color: var(--color-text-primary);
     margin: var(--spacing-md) auto;
 }
+
 .app_header_menu {
     display: inline-flex;
     align-items: center;
@@ -53,7 +57,7 @@
 
 .account-menu-container {
     position: absolute;
-    top: 0;
+    top: var(--spacing-md);
     right: 0;
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -135,6 +139,9 @@
     .app_header {
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        min-width: 768px;
+        margin: 0 auto;
     }
 
     .app_h1 {
@@ -148,5 +155,10 @@
 
     .app_subtitle {
         text-align: center;
+    }
+
+    .account-menu-container {
+        top: var(--spacing-md);
+        right: 0;
     }
 }

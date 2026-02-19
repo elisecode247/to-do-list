@@ -4,48 +4,47 @@
 
 .page_container {
     height: 100vh;
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--color-background);
+    color: var(--color-text-primary);
     display: flex;
     flex-direction: column;
 }
 
-.page_content {
+.page-content {
     height: calc(100vh - 80px); /* Full height minus header */
     width: 100%;
-    max-width: 900px;
+    max-width: 768px;
     margin: 0 auto;
+    padding: 0;
     flex: 1;
 }
 
-/* =========================
-   Header
-========================= */
-
-.app_header {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
-    margin: 0;
+.page-btn--home {
+    position: absolute;
+    top: 45px;
+    left: var(--spacing-md);
 }
 
-.app_h1 {
-    font-weight: 600;
-    margin: 0;
-}
 
 /* =========================
    Page Titles
 ========================= */
 
+.app_subtitle {
+    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin: var(--spacing-xs) 0 0 var(--spacing-md);
+    color: var(--color-text-dark-light);
+}
+
 .page_h2 {
     font-size: 18px;
     font-weight: 600;
-    margin: 0;
+    margin: var(--spacing-xl) 0 0 var(--spacing-md);
 }
 
 /* =========================
@@ -55,16 +54,17 @@
 .page-btn {
     display: inline-flex;
     align-items: center;
-    border-radius: var(--radius);
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
     font-weight: 500;
-
     border: 1px solid transparent;
     cursor: pointer;
     text-decoration: none;
-
-    transition: background 0.15s ease,
-        color 0.15s ease,
-        border 0.15s ease,
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        border var(--transition-fast),
         transform 0.05s ease;
 }
 
@@ -75,21 +75,21 @@
 /* Primary Button */
 .page-btn--primary {
     background: var(--color-primary);
-    color: white;
+    color: var(--color-text-light);
 }
 
 .page-btn--primary:hover {
-    background: var(--color-primary-hover);
+    background: var(--color-primary-dark);
 }
 
-/* Optional Secondary Variant */
-.page-btn--secondary {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-}
 
-.page-btn--secondary:hover {
-    background: var(--color-muted);
-}
+@media (min-width: 768px) {
+    .page-btn--home {
+        top: var(--spacing-md);
+        left: 0;
+    }
 
+    .page_h2 {
+        margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+    }
+}

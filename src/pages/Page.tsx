@@ -17,14 +17,13 @@ function Page({ title, children }: PageProps) {
             <header className="app_header">
                 <h1 className="app_h1">For My Today</h1>
                 <AccountMenu />
-            </header>
-            <div className="page_content">
                 {location !== ROUTES.home && (
-                    <Link href={ROUTES.home} className="page-btn page-btn--primary">
+                    <Link href={ROUTES.home} className="page-btn page-btn--primary page-btn--home">
                         <Home size={24} />
-                        <span>Back to Home</span>
                     </Link>
                 )}
+            </header>
+            <div className="page-content">
                 <h2 className="page_h2">{title}</h2>
                 {children}
             </div>
