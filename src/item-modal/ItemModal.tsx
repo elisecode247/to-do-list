@@ -221,3 +221,5 @@ export const ItemModal: FC<ItemModalProps> = ({
         </div>
     , document.body);
 };
+
+export default ItemModal;

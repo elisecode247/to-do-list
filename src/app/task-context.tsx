@@ -1,12 +1,22 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
-import { fetchTasks, prioritizeTask, updateTask, updateTasksOrder, deleteTask, addTask, toggleHideToday } from 'app/api';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
 import type { TaskContextType } from 'app/types';
 import { type Tab } from 'src/checklist/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
+import {
+    fetchTasks,
+    prioritizeTask,
+    updateTask,
+    updateTasksOrder,
+    deleteTask,
+    addTask,
+    toggleHideToday,
+    bulkUpdateTasks
+} from 'app/api';
+
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -70,7 +80,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         setItems(prev => {
             previousItem = prev.find(i => i.id === updatedItem.id);
-            return prev.map(i => i.id === updatedItem.id ? {...updatedItem} : i);
+            return prev.map(i => i.id === updatedItem.id ? { ...updatedItem } : i);
         });
 
         try {
@@ -86,6 +96,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const bulkUpdate = async (updatedItems: ChecklistItem[]) => {
+        try {
+            await bulkUpdateTasks(updatedItems);
+            setItems(prev => {
+                return prev.map(item => {
+                    const updated = updatedItems.find(i => i.id === item.id);
+                    return updated ? { ...item, ...updated } : item;
+                });
+            });
+
+        } catch (error) {
+            throw error;
+        }
+    };
 
     const addItem = async (newItem: ChecklistItem) => {
         try {
@@ -330,6 +354,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             loadTasks,
             addItem,
             updateItem,
+            bulkUpdate,
             deleteItem,
             toggleItem,
             prioritizeItem,

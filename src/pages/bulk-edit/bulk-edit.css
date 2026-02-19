@@ -1,0 +1,109 @@
+/* =========================
+   Bulk Edit Wrapper
+========================= */
+
+.bulk-edit-container {
+    width: 100%;
+    height: 100%;
+}
+
+.bulk-edit-table-container {
+    width: 100%;
+    height: 65%;
+    overflow: auto;
+}
+
+/* =========================
+   Table Layout
+========================= */
+
+.bulk_table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+/* =========================
+   Header
+========================= */
+
+.bulk_table th {
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.bulk_table tbody {
+    overflow: auto;
+}
+
+/* =========================
+   Rows
+========================= */
+
+.bulk_table td {
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.bulk_table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.bulk_table tbody tr:hover {
+    background: var(--color-muted);
+}
+
+/* Clickable task cell */
+.bulk_task_cell {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.bulk_task_cell:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   Inputs
+========================= */
+
+.bulk_table select {
+    width: 100%;
+    min-width: 80px;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+.bulk_table select:focus,
+.bulk_table input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Checkbox alignment */
+.bulk_checkbox_cell {
+    text-align: center;
+}
+
+.bulk_checkbox_cell input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* =========================
+   Footer
+========================= */
+
+.bulk_footer {
+    display: flex;
+    justify-content: flex-end;
+}

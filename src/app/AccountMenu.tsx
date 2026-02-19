@@ -65,6 +65,14 @@ function AccountMenu() {
                                 User Settings
                             </Link>
                         )}
+                        {location !== ROUTES.bulkEdit && (
+                            <Link href={ROUTES.bulkEdit}
+                                id="bulk-edit-link"
+                                className="settings-btn"
+                            >
+                                Bulk Edit
+                            </Link>
+                        )}
                         <GoogleCalendarStatus />
                     </div>
                 </div>

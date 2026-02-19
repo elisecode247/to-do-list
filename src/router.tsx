@@ -9,6 +9,7 @@ export const ROUTES = {
     home: '/',
     demo: '/demo',
     userSettings: '/settings',
+    bulkEdit: '/bulk-edit',
 } as const;
 
 

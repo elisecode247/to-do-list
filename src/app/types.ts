@@ -37,6 +37,7 @@ export interface TaskContextType {
     loadTasks: (cancelled?: boolean) => void;
     addItem: (newItem: ChecklistItem) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;
+    bulkUpdate: (items: ChecklistItem[]) => Promise<void>;
     deleteItem: (id: string) => void;
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;

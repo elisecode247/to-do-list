@@ -40,6 +40,24 @@ export async function addTask(task: ChecklistItem): Promise<ChecklistItem> {
     }
 }
 
+export async function bulkUpdateTasks(tasks: ChecklistItem[]): Promise<void> {
+    try {
+        const response = await fetch(`${API_URL}/bulk-update`, {
+            method: "PUT",
+            headers: await authHeaders(),
+            body: JSON.stringify({ tasks }),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+    } catch (err) {
+        console.error("Failed to bulk update tasks:", err);
+        throw err;
+    }
+}
+
 export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem> {
     try {
         const response = await fetch(`${API_URL}/priority`, {

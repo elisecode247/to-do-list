@@ -9,6 +9,7 @@ import NotFound from 'src/pages/not-found/NotFound';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import UserSettings from 'src/pages/user-settings/UserSettings';
+import BulkEdit from 'src/pages/bulk-edit/BulkEdit';
 import 'src/themes/themes.css';
 
 const App: FC = () => {
@@ -33,6 +34,7 @@ const App: FC = () => {
             </Route>
             <Route path={ROUTES.demo} component={DemoPage} />
             <Route path={ROUTES.userSettings} component={UserSettings} />
+            <Route path={ROUTES.bulkEdit} component={BulkEdit} />
             <Route>
                 <NotFound />
             </Route>
