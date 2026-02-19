@@ -22,11 +22,16 @@
     gap: var(--spacing-xs);
 }
 
+.mode-filter-button-group {
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
 @layer base {
     .filter-button {
         padding: var(--spacing-xs) var(--spacing-sm);
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-full);
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
@@ -56,6 +61,18 @@
         opacity: 1;
         font-weight: 600;
         box-shadow: var(--shadow-sm);
+        background-color: var(--color-mode-priority-bg);
+        color: var(--color-mode-priority-text);
+    }
+
+    .filter-button:first-of-type {
+        border-top-left-radius: var(--radius-sm);
+        border-bottom-left-radius: var(--radius-sm);
+    }
+
+    .filter-button:last-of-type {
+        border-top-right-radius: var(--radius-sm);
+        border-bottom-right-radius: var(--radius-sm);
     }
 
 }

@@ -23,6 +23,7 @@ import { ROUTES } from 'src/router';
 import { type Mode } from 'app/types';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { Filter } from 'lucide-react';
+import { ALL_MODES } from 'src/checklist/constants';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -47,7 +48,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
-    const [activeFilters, setActiveFilters] = useState<Mode[]>([]);
+    const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [showSparkles, setShowSparkles] = useState(false);
     const [activeTab, setActiveTab] = useState(TABS.today);
@@ -56,10 +57,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const { login, googleButtonState } = useAuthentication();
     const [_location, setLocation] = useLocation();
     const [showFilters, setShowFilters] = useState(false);
-
-    const hasExclusiveFilter = activeFilters.some(f =>
-        MODES.includes(f as (typeof MODES)[number])
-    );
 
     const filteredTasks = useMemo(() => {
         return tasks.filter(task => {
@@ -72,14 +69,14 @@ const DemoChecklist: FC<ChecklistProps> = ({
     }, [tasks, activeTab]);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ items, activeFilters, activeTab, hideCompleted, filterCategory })
+        return filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
             .sort((a, b) => {
                 if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
                     return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
                 }
                 return a.sortOrder - b.sortOrder;
             });
-    }, [items, activeFilters, activeTab, hideCompleted, filterCategory]);
+    }, [items, modeFilter, activeTab, hideCompleted, filterCategory]);
 
     const allItems = [...events, ...filteredTasks, ...filteredItems];
 
@@ -156,7 +153,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     }
 
     function clearFilters() {
-        setActiveFilters([]);
+        setModeFilter(ALL_MODES);
         setFilterCategory(ALL_CATEGORIES);
         setHideCompleted(false);
     }
@@ -194,12 +191,9 @@ const DemoChecklist: FC<ChecklistProps> = ({
                         <>
                             <button
                                 onClick={() => {
-                                    const updatedFilters = activeFilters.filter(
-                                        (filter) => !MODES.includes(filter)
-                                    );
-                                    setActiveFilters(updatedFilters);
+                                    setModeFilter(ALL_MODES);
                                 }}
-                                className={`filter-button ${!hasExclusiveFilter
+                                className={`filter-button ${modeFilter === ALL_MODES
                                     ? 'filter-button-all-active'
                                     : 'filter-button-all'
                                     }`}
@@ -207,16 +201,12 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 All
                             </button>
                             {MODES.map(mode => {
-                                const isActive = activeFilters.includes(mode);
+                                const isActive = modeFilter.includes(mode);
                                 return (
                                     <button
                                         key={mode}
                                         onClick={() => {
-                                            const nextFilters = activeFilters.includes(mode)
-                                                ? activeFilters.filter(t => t !== mode)
-                                                : [...activeFilters, mode];
-
-                                            setActiveFilters(nextFilters);
+                                            setModeFilter(mode);
                                         }}
                                         className={`
                                         filter-button
@@ -261,7 +251,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                     <SortableContext items={allItems.map(i => i.id)}>
                         {!allItems.length && (
                             <EmptyStateFilters
-                                activeFilters={activeFilters}
+                                modeFilter={modeFilter}
                                 onClearFilters={clearFilters}
                                 filterCategory={filterCategory}
                                 hideCompleted={hideCompleted}

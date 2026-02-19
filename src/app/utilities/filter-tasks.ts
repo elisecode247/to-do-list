@@ -1,11 +1,13 @@
 import type { ChecklistItem, FilterParams } from 'app/types';
+import type { Mode } from 'src/app/types';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { TABS } from 'src/checklist/tabs/types';
+import { ALL_MODES } from 'src/checklist/constants';
 
 export function filterTasks({
     items,
     activeTab,
-    activeFilters,
+    modeFilter,
     hideCompleted,
     filterCategory,
 }: FilterParams): ChecklistItem[] {
@@ -14,7 +16,7 @@ export function filterTasks({
     return items.filter(task =>
         matchTab(task, activeTab) &&
         matchCommonFilters(task, {
-            activeFilters,
+            modeFilter,
             hideCompleted,
             filterCategory,
         })
@@ -48,24 +50,24 @@ function matchTab(task: ChecklistItem, activeTab: string): boolean {
 function matchCommonFilters(
     task: ChecklistItem,
     {
-        activeFilters,
+        modeFilter,
         hideCompleted,
         filterCategory,
     }: {
-        activeFilters: string[];
+        modeFilter: Mode | typeof ALL_MODES;
         hideCompleted: boolean;
         filterCategory: string;
     }
 ): boolean {
     if (isCompleted(hideCompleted, task)) return false;
     if (!isCategory(filterCategory, task)) return false;
-    if (!hasMode(activeFilters, task)) return false;
+    if (!isMode(modeFilter, task)) return false;
     return true;
 }
 
 const isSubtask = (task: ChecklistItem): boolean => !!task.parentUuid;
 const isCompleted = (hideCompleted: boolean, task: ChecklistItem): boolean => hideCompleted && task.done;
 const isCategory = (selectedCategory: string, task: ChecklistItem): boolean => isCategoryIncluded(selectedCategory, task.category);
-const hasMode = (activeFilters: string[], task: ChecklistItem): boolean => {
-    return activeFilters.length === 0 || activeFilters.includes(task.mode);
+const isMode = (modeFilter: Mode | typeof ALL_MODES, task: ChecklistItem): boolean => {
+    return modeFilter === ALL_MODES || modeFilter === task.mode;
 }

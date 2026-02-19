@@ -1,4 +1,6 @@
 import { type Tab } from "src/checklist/tabs/types";
+import { ALL_MODES } from "src/checklist/constants";
+
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';
 export interface ChecklistItem {
     isHidden: boolean;
@@ -23,7 +25,7 @@ export interface ChecklistItem {
 
 export type FilterParams = {
     items: ChecklistItem[];
-    activeFilters: Mode[];
+    modeFilter: Mode | typeof ALL_MODES;
     activeTab: Tab;
     hideCompleted: boolean;
     filterCategory: string;

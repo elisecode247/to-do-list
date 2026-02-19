@@ -8,6 +8,7 @@ import {
     TAB_PRIORITY,
 } from 'src/checklist/tabs/types';
 import type { ChecklistItem, FilterParams } from 'app/types';
+import { ALL_MODES, ONE_TIME_MODE, SCHEDULED_MODE } from 'src/checklist/constants';
 
 // --------------------
 // Mock category helper
@@ -31,7 +32,7 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     tabSortOrder: {},
     category: 'home',
     categoryUuid: null,
-    mode: 'one-time',
+    mode: ONE_TIME_MODE,
     isPriority: false,
     isArchived: false,
     hasSubChores: false,
@@ -45,7 +46,7 @@ const makeParams = (
 ): FilterParams => ({
     items: [],
     activeTab: TAB_TODAY,
-    activeFilters: [],
+    modeFilter: ALL_MODES,
     hideCompleted: false,
     filterCategory: 'all',
     ...overrides,
@@ -231,7 +232,7 @@ describe('filterTasks – common filters', () => {
         const result = filterTasks(
             makeParams({
                 items: [daily, scheduled],
-                activeFilters: ['scheduled'],
+                modeFilter: SCHEDULED_MODE,
             })
         );
 

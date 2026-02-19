@@ -5,9 +5,10 @@ import './EmptyStateFilters.css';
 import { Filter } from 'lucide-react';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import type { Mode } from 'src/app/types';
+import { ALL_MODES } from 'src/checklist/constants';
 
 interface EmptyStateFiltersProps {
-    activeFilters: Mode[];
+    modeFilter: Mode | typeof ALL_MODES;
     filterCategory: string;
     hideCompleted: boolean;
     onClearFilters: () => void;
@@ -19,7 +20,7 @@ const completedDayMessage = 'That’s everything for today!\n' +
     'in the filters above.';
 
 const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
-    activeFilters,
+    modeFilter,
     filterCategory,
     hideCompleted,
     onClearFilters,
@@ -32,16 +33,16 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
                 {type === 'completedDay' ? completedDayMessage : "No tasks match your filters"}
             </h3>
 
-            {(activeFilters.length || filterCategory !== ALL_CATEGORIES || hideCompleted) ? (
+            {(modeFilter !== ALL_MODES || filterCategory !== ALL_CATEGORIES || hideCompleted) ? (
                 <>
                 <div className="filters-applied">
                     <span className="filters-applied__label">Filters applied</span>
                     <ul className="filters-applied__list">
-                        {activeFilters.map(filter => (
+                        {modeFilter !== ALL_MODES && (
                             <li className="filters-applied__item">
-                                Frequency Type: {filter}
+                                Frequency Type: {modeFilter}
                             </li>
-                        ))}
+                        )}
                         {filterCategory !== ALL_CATEGORIES && (
                             <li className="filters-applied__item">
                                 Category: {!!filterCategory ? filterCategory : 'No category'}

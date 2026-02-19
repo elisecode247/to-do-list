@@ -41,5 +41,4 @@ Live: https://elisecode247.github.io/to-do-list/
             - add "all"
             - add "completed"
     - notes color contrast
-- ux improvement
-    - change mode filters to match one
+- suggestions feature (random dice?)
