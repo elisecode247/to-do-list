@@ -174,7 +174,7 @@
 
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
 
     .checklist_toolbar {
         flex-direction: row;

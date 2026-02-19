@@ -56,7 +56,7 @@
 }
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .frequency-selector__group-wrapper {
         flex-direction: row;
         align-items: center;

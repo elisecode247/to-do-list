@@ -82,7 +82,7 @@
 }
 
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .page-btn--home {
         top: var(--spacing-md);
         left: 0;

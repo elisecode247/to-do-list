@@ -90,7 +90,7 @@
 }
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .scheduled-task-item {
         padding: var(--spacing-md);
         gap: var(--spacing-sm);

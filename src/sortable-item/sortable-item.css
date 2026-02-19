@@ -285,7 +285,7 @@
 }
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .sortable-item_container {
         padding: var(--spacing-md);
         gap: var(--spacing-sm);

@@ -150,7 +150,7 @@
     color: var(--color-text-primary);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .new-task-form-item-container {
         padding: var(--spacing-lg);
         position: fixed;

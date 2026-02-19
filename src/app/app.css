@@ -129,9 +129,9 @@
 }
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .app_container {
-        max-width: 768px;
+        max-width: 900px;
         margin: 0 auto;
     }
 
@@ -139,7 +139,7 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        min-width: 768px;
+        min-width: 900px;
         margin: 0 auto;
     }
 
