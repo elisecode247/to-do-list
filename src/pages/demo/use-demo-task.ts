@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { DemoTaskContext } from 'src/demo/demo-task-context';
+import { DemoTaskContext } from 'src/pages/demo/demo-task-context';
 
 export function useTask() {
     const context = useContext(DemoTaskContext);

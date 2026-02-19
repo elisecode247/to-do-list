@@ -8,7 +8,7 @@ import { MODES } from 'checklist/constants';
 import CategorySelect from 'category-select/CategorySelect';
 import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import 'checklist/checklist.css';
-import { useTask } from 'src/demo/use-demo-task';
+import { useTask } from 'src/pages/demo/use-demo-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';

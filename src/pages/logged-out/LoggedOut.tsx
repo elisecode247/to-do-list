@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import "./logged-out.css";
 import GoogleLoginButton from "src/authentication/google-login-button";
-import DemoButton from 'src/demo/DemoButton';
+import DemoButton from 'src/pages/demo/DemoButton';
 import { useTheme } from "src/themes/use-theme";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from "src/themes/constants";
 

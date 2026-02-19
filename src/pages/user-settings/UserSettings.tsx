@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Home } from "lucide-react";
 import { ROUTES } from "src/router";
 import './UserSettings.css';
-import AppearanceSettings from "src/user-settings/AppearanceSettings";
+import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import { useTheme } from "src/themes/use-theme";
 
 function UserSettings() {

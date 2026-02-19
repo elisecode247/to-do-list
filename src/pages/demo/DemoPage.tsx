@@ -1,13 +1,13 @@
 import { useState, type FC } from 'react';
 import 'app/app.css';
 import 'app/settings.css';
-import 'src/demo/demo.css';
+import 'src/pages/demo/demo.css';
 import { ItemModal } from 'item-modal/ItemModal';
 import type { ChecklistItem } from 'app/types';
-import Checklist from 'src/demo/DemoChecklist';
+import Checklist from 'src/pages/demo/DemoChecklist';
 import Toast from 'src/toast/Toast';
 import ErrorState from 'src/error-state/ErrorState';
-import { useTask } from 'src/demo/use-demo-task';
+import { useTask } from 'src/pages/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
 import { useTheme } from 'src/themes/use-theme';
