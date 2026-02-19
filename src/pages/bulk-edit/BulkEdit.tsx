@@ -8,22 +8,78 @@ import { MODES } from "src/checklist/constants";
 import { categories } from "src/category-select/category-constants";
 import { useToast } from "src/toast/use-toast";
 import { useTask } from "src/app/use-task";
-import { Trash2 } from "lucide-react";
+
+interface ChecklistItemWithDepth extends ChecklistItem {
+    depth: number;
+}
 
 function BulkEdit() {
     const { showToast } = useToast();
     const { items, updateItem, deleteItem, bulkUpdate } = useTask();
 
     const [localItems, setLocalItems] = useState<ChecklistItem[]>(items);
+    const [showSubtasksFor, setShowSubtasksFor] = useState<Set<string>>(new Set());
     const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
-    const filteredTasks = localItems.filter(item => !item.parentUuid);
+    const filteredTasks = useMemo(() => {
+        // Build parent → children map
+        const parentMap = new Map<string, ChecklistItem[]>();
+        localItems.forEach(item => {
+            if (item.parentUuid) {
+                if (!parentMap.has(item.parentUuid)) parentMap.set(item.parentUuid, []);
+                parentMap.get(item.parentUuid)!.push(item);
+            }
+        });
+
+        // Recursive function to push parent and all descendants
+        const pushWithChildren = (item: ChecklistItem, arr: ChecklistItemWithDepth[], depth: number = 0) => {
+            arr.push({ ...item, depth });
+
+            const children = parentMap.get(item.id);
+            if (children) {
+                // Optional: sort children
+                children.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+                children.forEach(child => pushWithChildren(child, arr, depth + 1));
+            }
+        };
+
+        const sortedTasks: ChecklistItemWithDepth[] = [];
+        localItems.forEach(item => {
+            // only top-level tasks (no parent)
+            if (!item.parentUuid) {
+                pushWithChildren(item, sortedTasks, 0);
+            }
+        });
+
+        // Filter subtasks based on expanded parents
+        return sortedTasks.filter(item => {
+            if (item.parentUuid) {
+                return showSubtasksFor.has(item.parentUuid);
+            }
+            return true;
+        });
+
+    }, [localItems, showSubtasksFor]);
+
 
     // Sync if tasks reload
     useMemo(() => {
         setLocalItems(items);
     }, [items]);
+
+    // add subtask rows below parent task when "View Subtasks" is clicked
+    const displaySubtasks = (task: ChecklistItem) => {
+        setShowSubtasksFor(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(task.id)) {
+                newSet.delete(task.id);
+            } else {
+                newSet.add(task.id);
+            }
+            return newSet;
+        });
+    };
 
     const updateLocal = (
         id: string,
@@ -94,17 +150,25 @@ function BulkEdit() {
                                 <th>Archived</th>
                                 <th>Mode</th>
                                 <th>Category</th>
-                                <th>Delete</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredTasks.map((task, index) => {
                                 const taskCategory = Object.keys(categories).includes(task.category) ? task.category : "";
                                 return (
-                                    <tr key={task.id}>
+                                    <tr
+                                        key={task.id}
+                                        className="bulk-edit-task-row"
+                                        data-depth={task.depth}
+                                    >
                                         <td>{index + 1}</td>
                                         <td>{task.id}</td>
                                         <td className="bulk_task_cell" onClick={() => setSelectedItem(task)}>
+                                            {/** add loop of ↳ for each subtask depth */}
+                                            {Array.from({ length: task.depth }).map((_, i) => (
+                                                <span key={i}>↳</span>
+                                            ))}
                                             {task.text}
                                         </td>
                                         <td className="bulk_checkbox_cell">
@@ -144,8 +208,13 @@ function BulkEdit() {
                                                 ))}
                                             </select>
                                         </td>
-                                        <td>
-                                            <button onClick={() => handleDelete(task.id)}><Trash2 /></button>
+                                        <td className="bulk-edit-actions-cell">
+                                            {task.hasSubChores && (
+                                                <button onClick={() => displaySubtasks(task)}>
+                                                    {showSubtasksFor.has(task.id) ? "Hide Subtasks" : "View Subtasks"}
+                                                </button>
+                                            )}
+                                            <button onClick={() => handleDelete(task.id)}>Delete</button>
                                         </td>
                                     </tr>
                                 )
