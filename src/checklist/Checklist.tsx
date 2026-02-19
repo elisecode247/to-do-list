@@ -205,7 +205,11 @@ const Checklist: FC<ChecklistProps> = ({
                         <Filter size={24} />Filters
                     </button>
                     {showFilters && (<>
-                            <div className="mode-filter-button-group">
+                        <Tabs
+                            value={activeTab}
+                            onChange={handleTabChange}
+                        />
+                        <div className="mode-filter-button-group">
                             <button
                                 onClick={() => {
                                     setModeFilter(ALL_MODES);
@@ -234,35 +238,31 @@ const Checklist: FC<ChecklistProps> = ({
                                     </button>
                                 )
                             })}
-                            </div>
-                            <div className="checklist_hide-completed-checkbox-container">
-                                <input
-                                    className="checklist_hide-completed-checkbox-input"
-                                    type="checkbox"
-                                    id="hideCompleted"
-                                    checked={hideCompleted}
-                                    onChange={(e) => setHideCompleted(e.target.checked)}
-                                />
-                                <label
-                                    htmlFor="hideCompleted"
-                                    className="checklist_hide-completed-checkbox-label"
-                                >
-                                    Hide Completed
-                                </label>
-                            </div>
-                            <CategorySelect
-                                id="checklist-filter-category-select"
-                                isFilter={true}
-                                selectedCategory={filterCategory}
-                                onChange={(value: string) => setFilterCategory(value)}
+                        </div>
+                        <div className="checklist_hide-completed-checkbox-container">
+                            <input
+                                className="checklist_hide-completed-checkbox-input"
+                                type="checkbox"
+                                id="hideCompleted"
+                                checked={hideCompleted}
+                                onChange={(e) => setHideCompleted(e.target.checked)}
                             />
-                        </>
+                            <label
+                                htmlFor="hideCompleted"
+                                className="checklist_hide-completed-checkbox-label"
+                            >
+                                Hide Completed
+                            </label>
+                        </div>
+                        <CategorySelect
+                            id="checklist-filter-category-select"
+                            isFilter={true}
+                            selectedCategory={filterCategory}
+                            onChange={(value: string) => setFilterCategory(value)}
+                        />
+                    </>
                     )}
                 </div>
-                <Tabs
-                    value={activeTab}
-                    onChange={handleTabChange}
-                />
             </div>
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
