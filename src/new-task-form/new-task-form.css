@@ -16,7 +16,8 @@
 }
 
 .new-task-form-toggle-button {
-    height: 48px;
+    grid-area: create;
+    height: 44px;
     background: var(--color-primary-dark);
     color: var(--color-text-light);
     border: none;
@@ -154,7 +155,9 @@
     }
 
     .new-task-form-toggle-button {
-        padding: var(--spacing-sm) var(--spacing-xl);
+        padding: 0 var(--spacing-md);
+        box-sizing: border-box;
+        height: 44px;
     }
 
     .new-task-form-input-row {

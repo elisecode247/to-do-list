@@ -109,20 +109,25 @@ const LoggedIn: React.FC = () => {
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
             <header className="app_header">
                 <button
-                    className="new-task-form-toggle-button"
+                    className="filter-toggle-button"
                     onClick={toggleLeft}
                     aria-label="Toggle filters"
                 >
                     <Filter size={24} />
                     Filters
                 </button>
-                <h1 className="app_h1">For My Today</h1>
-                <p className="app_subtitle">
-                    {dayOfWeekName}
-                    {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-                    <br />
-                    {loadDate ? ` (Last updated: ${loadDate.toLocaleTimeString()})` : ''}
-                </p>
+                <div className="app_header_title">
+                    <h1 className="app_h1">For My Today</h1>
+                    <p className="app_subtitle">
+                        <span>
+                            {dayOfWeekName}
+                            {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                        </span>
+                        <span>
+                        {loadDate ? ` Last updated: ${loadDate.toLocaleTimeString()}` : ''}
+                        </span>
+                    </p>
+                </div>
                 <button
                     className="new-task-form-toggle-button"
                     onClick={toggleRight}

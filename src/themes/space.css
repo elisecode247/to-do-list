@@ -240,11 +240,6 @@
 }
 
 :root[data-theme-style="space"] .app_h1 {
-    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
     background: linear-gradient(135deg,
             #a78bfa 0%,
             #ec4899 50%,
@@ -253,11 +248,8 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: glow 15s ease-in-out infinite;
-    margin: 0 0 0 var(--spacing-md);
 }
 
 :root[data-theme-style="space"] .app_subtitle{
-    font-size: 14px;
     color: var(--color-text-light);
-    margin: var(--spacing-xs) 0;
 }

@@ -49,8 +49,8 @@ function AccountMenu() {
                 onClick={() => setIsSettingOpen(prev => !prev)}
                 className="app_header_menu"
             >
+                <MenuSquare className="app_header_menu-icon" size={24} />
                 <span className="app_header_menu-span">Menu</span>
-                <MenuSquare className="app_header_menu-icon" />
             </button>
 
             {isSettingOpen && isAuthenticated ? (

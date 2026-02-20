@@ -11,7 +11,8 @@
 }
 
 .page-content {
-    height: calc(100vh - 80px); /* Full height minus header */
+    height: calc(100vh - 80px);
+    /* Full height minus header */
     width: 100%;
     margin: 0 auto;
     padding: 0;
@@ -38,6 +39,14 @@
     opacity: 0.75;
     margin: var(--spacing-xs) 0 0 var(--spacing-md);
     color: var(--color-text-dark-light);
+}
+
+.app_subtitle {
+    margin: 0;
+}
+.app_subtitle>span {
+    margin: 0;
+    font-size: 12px;
 }
 
 .page_h2 {
@@ -91,4 +100,10 @@
     .page_h2 {
         margin: var(--spacing-xl) 0 var(--spacing-md) 0;
     }
+
+
+    .app_subtitle>span {
+        margin: 0 var(--spacing-xs);
+    }
+
 }

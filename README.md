@@ -32,10 +32,12 @@ Live: https://elisecode247.github.io/to-do-list/
 - custom categories
     - default to parent category on subtasks
 - make localStorage persistent longer on mobile
+- lost internet connection
 - scheduled tasks
 - task interval amount
 - ui improvement
     - left panel
     - right panel
-    - menu dropdown positioning
+    - menu dropdown positioning and z-index
     - header buttons smaller in mobile
+    - "move" button entire left side of row

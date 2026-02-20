@@ -89,20 +89,12 @@ body::after {
 
 .app_h1 {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: var(--spacing-md);
 }
 
 .app_subtitle {
-    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    opacity: 0.75;
-    margin: var(--spacing-xs) 0 0 var(--spacing-md);
     color: var(--color-text-dark-light);
 }
