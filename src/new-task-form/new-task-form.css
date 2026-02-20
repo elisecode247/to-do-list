@@ -13,6 +13,7 @@
     z-index: 9999;
     height: 35vh;
     overflow: auto;
+    padding: var(--spacing-lg);
 }
 
 .new-task-form-toggle-button {
