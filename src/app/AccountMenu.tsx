@@ -6,6 +6,7 @@ import { useAuthentication } from "src/authentication/use-authentication";
 import { useTask } from "./use-task";
 import { Link, useLocation } from "wouter";
 import { ROUTES } from "src/router";
+import { createPortal } from 'react-dom';
 
 
 function AccountMenu() {
@@ -53,7 +54,7 @@ function AccountMenu() {
                 <span className="app_header_menu-span">Menu</span>
             </button>
 
-            {isSettingOpen && isAuthenticated ? (
+            {isSettingOpen && isAuthenticated ? createPortal(
                 <div className="app_header_settings">
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
@@ -76,7 +77,7 @@ function AccountMenu() {
                         <GoogleCalendarStatus />
                     </div>
                 </div>
-            ) : null}
+            , document.body) : null}
         </div>
     );
 }
