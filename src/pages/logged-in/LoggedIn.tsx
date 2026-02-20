@@ -18,7 +18,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from '../use-is-desktop';
-import { Filter, PlusCircle } from 'lucide-react';
+import { ListFilter, Plus } from 'lucide-react';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -107,13 +107,22 @@ const LoggedIn: React.FC = () => {
             />
         ))}
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
+            {(leftOpen || rightOpen) && (
+                <div
+                    className="panel_backdrop"
+                    onClick={() => {
+                        setLeftOpen(false);
+                        setRightOpen(false);
+                    }}
+                />
+            )}
             <header className="app_header">
                 <button
                     className="filter-toggle-button"
                     onClick={toggleLeft}
                     aria-label="Toggle filters"
                 >
-                    <Filter size={24} />
+                    <ListFilter size={24} />
                     Filters
                 </button>
                 <div className="app_header_title">
@@ -124,17 +133,17 @@ const LoggedIn: React.FC = () => {
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
                         <span>
-                        {loadDate ? ` Last updated: ${loadDate.toLocaleTimeString()}` : ''}
+                            {loadDate ? ` Last updated: ${loadDate.toLocaleTimeString()}` : ''}
                         </span>
                     </p>
                 </div>
                 <button
-                    className="new-task-form-toggle-button"
+                    className={`new-task-form-toggle-button
+                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleRight}
                     aria-label="Add new task"
                 >
-                    <PlusCircle size={24} />
-                    Create
+                    <Plus size={24} strokeWidth={3} />
                 </button>
                 <AccountMenu />
             </header>

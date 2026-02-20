@@ -1,5 +1,5 @@
 :root[data-theme-style="nature"] {
-color-scheme: light dark;
+    color-scheme: light dark;
     /* Brand */
     --color-primary: light-dark(#16a34a, #86efac);
     --color-primary-dark: light-dark(#15803d, #166534);
@@ -44,117 +44,123 @@ color-scheme: light dark;
     --color-mode-priority-bg: light-dark(#96ee89, #177200);
     --color-mode-priority-text: light-dark(#324a01, #ecfccb);
     --color-mode-priority-border: light-dark(#395d00, #a3e635);
-}
 
-:root[data-theme-style="nature"] body {
-    background: linear-gradient(to bottom,
-            #15803d 0%,
-            #166534 30%,
-            #14532d 60%,
-            #052e16 100%);
-    background-attachment: fixed;
-    color: var(--color-text-primary);
-    position: relative;
-    overflow: hidden;
-}
+    body {
+        background: linear-gradient(to bottom,
+                #15803d 0%,
+                #166534 30%,
+                #14532d 60%,
+                #052e16 100%);
+        background-attachment: fixed;
+        color: var(--color-text-primary);
+        position: relative;
+        overflow: hidden;
+    }
 
 
-/* Moonlight through trees */
-:root[data-theme-style="nature"] body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
+    /* Moonlight through trees */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
 
-    background-image:
-        radial-gradient(ellipse 900px 650px at 20% 25%, rgba(186, 230, 253, 0.06), transparent 60%),
-        radial-gradient(ellipse 700px 550px at 75% 40%, rgba(224, 242, 254, 0.05), transparent 55%),
-        radial-gradient(ellipse 800px 600px at 45% 65%, rgba(186, 230, 253, 0.04), transparent 58%),
-        radial-gradient(ellipse 600px 500px at 85% 80%, rgba(224, 242, 254, 0.045), transparent 50%);
+        background-image:
+            radial-gradient(ellipse 900px 650px at 20% 25%, rgba(186, 230, 253, 0.06), transparent 60%),
+            radial-gradient(ellipse 700px 550px at 75% 40%, rgba(224, 242, 254, 0.05), transparent 55%),
+            radial-gradient(ellipse 800px 600px at 45% 65%, rgba(186, 230, 253, 0.04), transparent 58%),
+            radial-gradient(ellipse 600px 500px at 85% 80%, rgba(224, 242, 254, 0.045), transparent 50%);
 
-    animation: moonlightShift 25s ease-in-out infinite;
-    opacity: 0.6;
-}
-
-@keyframes moonlightShift {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
+        animation: moonlightShift 25s ease-in-out infinite;
         opacity: 0.6;
     }
 
-    50% {
-        transform: translate(-15px, 10px) scale(1.03);
-        opacity: 0.7;
-    }
-}
+    @keyframes moonlightShift {
 
-/* Fireflies dancing */
-:root[data-theme-style="nature"] body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
+        0%,
+        100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.6;
+        }
 
-    background-image:
-        radial-gradient(circle 4px at 15% 30%, rgba(250, 204, 21, 0.8), transparent),
-        radial-gradient(circle 3px at 45% 50%, rgba(251, 191, 36, 0.7), transparent),
-        radial-gradient(circle 5px at 75% 35%, rgba(250, 204, 21, 0.75), transparent),
-        radial-gradient(circle 3px at 25% 70%, rgba(251, 191, 36, 0.65), transparent),
-        radial-gradient(circle 4px at 85% 65%, rgba(250, 204, 21, 0.7), transparent),
-        radial-gradient(circle 3px at 60% 80%, rgba(251, 191, 36, 0.8), transparent),
-        radial-gradient(circle 4px at 35% 25%, rgba(250, 204, 21, 0.6), transparent),
-        radial-gradient(circle 5px at 90% 45%, rgba(251, 191, 36, 0.75), transparent);
-
-    animation: firefliesDance 15s ease-in-out infinite;
-}
-
-@keyframes firefliesDance {
-
-    0%,
-    100% {
-        opacity: 0.4;
-        transform: translate(0, 0);
+        50% {
+            transform: translate(-15px, 10px) scale(1.03);
+            opacity: 0.7;
+        }
     }
 
-    25% {
-        opacity: 0.8;
-        transform: translate(20px, -15px);
+    /* Fireflies dancing */
+    body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+
+        background-image:
+            radial-gradient(circle 4px at 15% 30%, rgba(250, 204, 21, 0.8), transparent),
+            radial-gradient(circle 3px at 45% 50%, rgba(251, 191, 36, 0.7), transparent),
+            radial-gradient(circle 5px at 75% 35%, rgba(250, 204, 21, 0.75), transparent),
+            radial-gradient(circle 3px at 25% 70%, rgba(251, 191, 36, 0.65), transparent),
+            radial-gradient(circle 4px at 85% 65%, rgba(250, 204, 21, 0.7), transparent),
+            radial-gradient(circle 3px at 60% 80%, rgba(251, 191, 36, 0.8), transparent),
+            radial-gradient(circle 4px at 35% 25%, rgba(250, 204, 21, 0.6), transparent),
+            radial-gradient(circle 5px at 90% 45%, rgba(251, 191, 36, 0.75), transparent);
+
+        animation: firefliesDance 15s ease-in-out infinite;
     }
 
-    50% {
-        opacity: 0.5;
-        transform: translate(-10px, 10px);
+    @keyframes firefliesDance {
+
+        0%,
+        100% {
+            opacity: 0.4;
+            transform: translate(0, 0);
+        }
+
+        25% {
+            opacity: 0.8;
+            transform: translate(20px, -15px);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: translate(-10px, 10px);
+        }
+
+        75% {
+            opacity: 0.9;
+            transform: translate(15px, -20px);
+        }
     }
 
-    75% {
-        opacity: 0.9;
-        transform: translate(15px, -20px);
-    }
-}
-
-:root[data-theme-style="nature"] .app_h1 {
-    background: linear-gradient(135deg,
-            #fef3c7 0%,
-            #fde68a 50%,
-            #fcd34d 100%);
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-    animation: sunlightGlow 12s ease-in-out infinite;
-}
-
-@keyframes sunlightGlow {
-
-    0%,
-    100% {
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) brightness(1);
+    .app_h1 {
+        background: linear-gradient(135deg,
+                #fef3c7 0%,
+                #fde68a 50%,
+                #fcd34d 100%);
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        animation: sunlightGlow 12s ease-in-out infinite;
     }
 
-    50% {
-        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4)) brightness(1.15);
-    }
-}
+    @keyframes sunlightGlow {
 
-:root[data-theme-style="nature"] .app_subtitle{
-    color: var(--color-text-light);
+        0%,
+        100% {
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) brightness(1);
+        }
+
+        50% {
+            filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4)) brightness(1.15);
+        }
+    }
+
+    .app_subtitle {
+        color: var(--color-text-light);
+    }
+
+    .app_header_menu,
+    .app_header_menu-icon,
+    .app_header_menu-span {
+        color: var(--color-text-light);
+    }
 }

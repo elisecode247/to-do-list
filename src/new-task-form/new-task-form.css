@@ -18,22 +18,30 @@
 .new-task-form-toggle-button {
     grid-area: create;
     height: 44px;
-    background: var(--color-primary-dark);
+    background: var(--color-primary);
+    opacity: 0.9;
     color: var(--color-text-light);
+    font-size: 15px;
+    font-weight: 700;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
     transition: all 0.2s ease;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
+    width: fit-content;
+    margin: auto 0 auto auto;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 99999;
 }
 
 .new-task-form-toggle-button:hover {
-    box-shadow: 0 0px 2px 2px var(--color-priority);
+    box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
 }
 
 .new-task-form-toggle-button:active {
@@ -158,6 +166,14 @@
         padding: 0 var(--spacing-md);
         box-sizing: border-box;
         height: 44px;
+        position: static;
+        z-index: 0;
+        border-radius: var(--radius-md);
+        opacity: 1;
+    }
+
+    .new-task-form-toggle-button::after {
+        content: "Create";
     }
 
     .new-task-form-input-row {

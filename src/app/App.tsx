@@ -10,7 +10,7 @@ import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import UserSettings from 'src/pages/user-settings/UserSettings';
 import BulkEdit from 'src/pages/bulk-edit/BulkEdit';
-import 'src/themes/themes.css';
+import 'app/app.css';
 
 const App: FC = () => {
     const { isAuthenticated, login } = useAuthentication();

@@ -1,4 +1,9 @@
 @import '../themes/themes.css';
+@import '../themes/space.css';
+@import '../themes/nature.css';
+@import '../themes/ocean.css';
+@import '../themes/density.css';
+
 
 /* App Container */
 .app_container {
@@ -10,6 +15,19 @@
     height: 100vh;
 }
 
+/* Backdrop default hidden */
+.panel_backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 900;
+}
+
+/* Bottom sheets above backdrop */
+.left_panel,
+.right_panel {
+    z-index: 1000;
+}
 
 .app_h2 {
     color: var(--color-text-primary);
@@ -21,7 +39,6 @@
     align-items: center;
     gap: 4px;
     background: transparent;
-    color: var(--color-text-primary);
     border: 0;
     outline: 0;
     cursor: pointer;
@@ -37,7 +54,6 @@
     top: 0;
     width: 28px;
     height: 28px;
-    color: var(--color-text-primary);
     order: 1;
 }
 
@@ -47,9 +63,10 @@
     border: 0;
     padding: 0 var(--spacing-sm);
     z-index: 10;
-    margin: auto;
+    margin: auto 0 auto auto;
     height: 44px;
     display: flex;
+    font-size: 16px;
     align-items: center;
 }
 
@@ -115,10 +132,21 @@
     }
 }
 
+.hidden {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .app_container {
         margin: 0 auto;
+    }
+
+    .panel_backdrop {
+        display: none;
     }
 
     .app_header_button-group {
@@ -129,3 +157,5 @@
         margin-left: 0;
     }
 }
+
+
