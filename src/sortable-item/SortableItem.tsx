@@ -91,6 +91,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [alignLeft, setAlignLeft] = useState(false);
     const [animate, setAnimate] = useState(true);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
@@ -148,6 +149,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     const updateMenuPosition = () => {
         if (!buttonRef.current) return;
+        setIsMenuOpen(!isMenuOpen);
 
         const buttonRect = buttonRef.current.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
@@ -292,7 +294,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     aria-label="More task actions"
                                     type="button"
                                     ref={buttonRef}
-                                    onMouseEnter={updateMenuPosition}
+                                    onClick={updateMenuPosition}
                                 >
                                     <MoreHorizontal size={24} />
                                     <span className="sortable-item_button-text-span">Actions</span>
@@ -300,6 +302,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                                 <div
                                     className={`sortable-item_menu-dropdown
+                                    ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}
                                     ${alignLeft ?
                                             'sortable-item_menu-dropdown--align-left' :
                                             ''

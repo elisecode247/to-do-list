@@ -161,11 +161,12 @@
 }
 
 /* open menu on hover OR keyboard focus */
-.sortable-item_menu-wrapper:hover .sortable-item_menu-dropdown,
-.sortable-item_menu-wrapper:focus-within .sortable-item_menu-dropdown {
+.sortable-item_menu-dropdown--open,
+.sortable-item_menu-wrapper:focus-within {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    z-index: 999;
 }
 
 .sortable-item_menu-dropdown button {

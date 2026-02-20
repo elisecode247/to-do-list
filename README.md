@@ -35,7 +35,7 @@ Live: https://elisecode247.github.io/to-do-list/
 - scheduled tasks
 - task interval amount
 - ui improvement
-    - left panel for filters
-        - tabs
-            - add "all"
-            - add "completed"
+    - left panel
+    - right panel
+    - menu dropdown positioning
+    - header buttons smaller in mobile
