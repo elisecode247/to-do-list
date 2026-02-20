@@ -1,0 +1,137 @@
+/* ===== MOBILE DEFAULT ===== */
+
+.app_container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "header"
+        "main";
+    height: 100vh;
+    position: relative;
+}
+
+.app_header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+}
+
+.main_content {
+    grid-area: main;
+    overflow: hidden;
+}
+
+/* Shared bottom-sheet styles */
+.left_panel,
+.right_panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    min-width: 0;
+    height: 35vh;
+    max-height: 650px;
+    color: var(--color-text-primary);
+    background: var(--color-background);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(100%);
+    transition: transform 0.35s ease-out;
+    will-change: transform;
+    overflow: auto;
+    z-index: 9999;
+}
+
+/* Only one visible at a time */
+.app_container.left-open .left_panel {
+    transform: translateY(0);
+}
+
+.app_container.right-open .right_panel {
+    transform: translateY(0);
+}
+
+
+@media (min-width: 900px) {
+
+    .app_container {
+        grid-template-columns: 250px 1fr 250px;
+        grid-template-areas:
+            "header header header"
+            "left   main   right";
+        transition: grid-template-columns 0.15s ease;
+    }
+
+    .left_panel,
+    .right_panel {
+        position: static;
+        transform: none;
+        height: auto;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: hidden;
+        min-width: 0;
+        /* Reset mobile transform */
+        transform: translateY(0);
+
+        /* Prepare for horizontal animation */
+        will-change: transform;
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .left_panel {
+        grid-area: left;
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .right_panel {
+        grid-area: right;
+        right: 0;
+        transform: translateX(100%);
+    }
+
+    .main_content {
+        grid-area: main;
+    }
+
+
+    /* Independent collapse behavior */
+
+    .main_content {
+        overflow: hidden;
+        transition: width 100ms ease-in;
+    }
+
+    .app_container.left-open .left_panel {
+        transform: translateX(0);
+    }
+
+    .app_container.right-open .right_panel {
+        transform: translateX(0);
+    }
+
+    .app_container::after {
+        display: none;
+    }
+
+    /* If left panel is closed */
+    .app_container:not(.left-open) {
+        grid-template-columns: 0 1fr 320px;
+    }
+
+    /* If right panel is closed */
+    .app_container:not(.right-open) {
+        grid-template-columns: 250px 1fr 0;
+    }
+
+    /* Both closed */
+    .app_container:not(.left-open):not(.right-open) {
+        grid-template-columns: 0 1fr 0;
+    }
+
+}

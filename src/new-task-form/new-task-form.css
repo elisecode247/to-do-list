@@ -5,21 +5,14 @@
         0 -8px 24px rgba(0, 0, 0, 0.15),
         0 -2px 6px rgba(0, 0, 0, 0.08);
     flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: var(--spacing-sm);
     width: 100%;
     border-top: 1px solid rgba(255, 255, 255, 0.4);
     position: fixed;
     bottom: 0;
     left: 0;
     z-index: 9999;
-    transform: translateY(0%);
-    transition: transform 0.35s ease-out;
-    will-change: transform;
-}
-
-.new-task-form-item-container--collapsed {
-    transform: translateY(100%);
+    height: 35vh;
+    overflow: auto;
 }
 
 .new-task-form-toggle-button {
@@ -35,11 +28,7 @@
     box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
     transition: all 0.2s ease;
     padding: var(--spacing-md) var(--spacing-lg);
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    z-index: 9999;
-    gap: 8px;
+    gap: var(--spacing-xs);
 }
 
 .new-task-form-toggle-button:hover {
@@ -153,41 +142,19 @@
 @media (min-width: 900px) {
     .new-task-form-item-container {
         padding: var(--spacing-lg);
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: auto;
-        right: 0;
 
-        width: 420px;
+
+        width: 100%;
         height: 100%;
-
-        /* Start hidden */
-        transform: translateX(100%);
-
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
 
         box-shadow:
             -8px 0 24px rgba(0, 0, 0, 0.15),
             -2px 0 6px rgba(0, 0, 0, 0.08);
     }
 
-    .new-task-form-item-container--expanded {
-        transform: translateX(0);
-    }
-
-
     .new-task-form-toggle-button {
-        position: absolute;
         padding: var(--spacing-sm) var(--spacing-xl);
-        top: var(--spacing-md);
-        bottom: auto;
-        left: 3px;
-        right: auto;
-    }
-
-    .new-task-form-toggle-button--collapsed {
-        visibility: hidden;
     }
 
     .new-task-form-input-row {

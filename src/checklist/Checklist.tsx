@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, type SetStateAction, useCallback } from 'react';
+import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -8,7 +8,6 @@ import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
-import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
@@ -16,14 +15,23 @@ import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
-import AppToolbar from 'src/app-toolbar/AppToolbar';
 
 interface ChecklistProps {
+    activeTab: Tab;
+    modeFilter: Mode | typeof ALL_MODES;
+    hideCompleted: boolean;
+    filterCategory: string;
+    clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
 }
 
 const Checklist: FC<ChecklistProps> = ({
+    activeTab,
+    modeFilter,
+    hideCompleted,
+    filterCategory,
+    clearFilters,
     onEditItem,
     sparkles
 }) => {
@@ -39,14 +47,10 @@ const Checklist: FC<ChecklistProps> = ({
         unhideForToday,
     } = useTask();
     const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
-    const [hideCompleted, setHideCompleted] = useState(true);
-    const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
-    const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
+
     const [showSparkles, setShowSparkles] = useState(false);
-    const [activeTab, setActiveTab] = useState(TABS.today);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.today;
-    const [showFilters, setShowFilters] = useState(false);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
 
@@ -151,9 +155,7 @@ const Checklist: FC<ChecklistProps> = ({
         }
     };
 
-    const handleTabChange = (tab: SetStateAction<Tab>) => {
-        setActiveTab(tab);
-    }
+
 
     const displaySparkles = () => {
         setShowSparkles(true);
@@ -165,12 +167,6 @@ const Checklist: FC<ChecklistProps> = ({
             setShowSparkles(false);
             sparkleTimeoutRef.current = null;
         }, 3000)
-    }
-
-    function clearFilters() {
-        setModeFilter(ALL_MODES);
-        setFilterCategory(ALL_CATEGORIES);
-        setHideCompleted(false);
     }
 
     useEffect(() => {
@@ -192,19 +188,6 @@ const Checklist: FC<ChecklistProps> = ({
     return (
         <>
             {showSparkles && sparkles}
-
-            <AppToolbar
-                showFilters={showFilters}
-                setShowFilters={setShowFilters}
-                activeTab={activeTab}
-                handleTabChange={handleTabChange}
-                modeFilter={modeFilter}
-                setModeFilter={setModeFilter}
-                hideCompleted={hideCompleted}
-                setHideCompleted={setHideCompleted}
-                filterCategory={filterCategory}
-                setFilterCategory={setFilterCategory}
-            />
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
                     <SortableContext items={allItems.map(i => i.id)}>

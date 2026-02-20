@@ -16,10 +16,10 @@
 .checklist_filter-container {
     display: flex;
     flex-wrap: wrap;
-    background-color: var(--color-background);
     border-radius: var(--spacing-sm);
     padding: var(--spacing-xs);
     gap: var(--spacing-xs);
+    height: 100%;
 }
 
 .mode-filter-button-group {

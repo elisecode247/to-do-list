@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import type { ChecklistItem } from 'app/types';
@@ -6,7 +6,6 @@ import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import { type Mode } from 'app/types';
 import './new-task-form.css';
-import { PlusCircle, X } from 'lucide-react'
 import { ONE_TIME_MODE } from 'src/checklist/constants';
 import NoteEditor from 'src/editor/NoteEditor';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
@@ -14,24 +13,12 @@ import type { MDXEditorMethods } from '@mdxeditor/editor';
 const NewTaskForm = () => {
     const { addItem } = useTask();
     const { showToast } = useToast();
-    const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
     const [inputText, setInputText] = useState<string>("");
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
     const noteRef = useRef<MDXEditorMethods | null>(null);
-
-    useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isAddSectionExpanded && panelRef.current?.contains(document.activeElement)) {
-                setIsAddSectionExpanded(false);
-            }
-        };
-
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [isAddSectionExpanded]);
 
     const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
@@ -71,50 +58,10 @@ const NewTaskForm = () => {
         setMode(val);
     }
 
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (
-                panelRef?.current &&
-                !panelRef?.current?.contains(event.target as Node)
-            ) {
-                setIsAddSectionExpanded(false);
-            }
-        }
-
-        if (isAddSectionExpanded) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isAddSectionExpanded]);
-
-
     return  (<>
-        <button
-            className={`new-task-form-toggle-button
-                ${isAddSectionExpanded ? 'new-task-form-toggle-button--collapsed' : ''}`}
-            onClick={() => setIsAddSectionExpanded(true)}
-            aria-label="Add new task"
-        >
-            <PlusCircle size={16} />
-            Add New Item
-        </button>
-        <div ref={panelRef} className={
-            `new-task-form-item-container
-            new-task-form-item-container--${isAddSectionExpanded ?
-                'expanded' : 'collapsed'}`}
-        >
+        <div ref={panelRef} className="new-task-form-item-container">
             <div className="new-task-form-item-header">
                 <span className="new-task-form-title">New Task</span>
-                <button
-                    className="new-task-form-close-button"
-                    onClick={() => setIsAddSectionExpanded(false)}
-                    aria-label="Close"
-                >
-                    <X size={16} />
-                </button>
             </div>
             <FrequencyButtonGroup
                 mode={mode}
