@@ -1,7 +1,8 @@
 /* Frequency Selector Wrapper */
 .frequency-selector__group-wrapper {
     display: flex;
-    flex-direction: column;
+    align-items: baseline;
+    flex-direction: row;
     gap: var(--spacing-xs);
     padding: 0;
 }
@@ -17,11 +18,16 @@
 .frequency-selector__button-group {
     display: inline-flex;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-md);
     padding: var(--spacing-xs);
     background-color: var(--color-surface);
     box-shadow: var(--shadow-sm);
     width: fit-content;
+}
+
+.frequency-selector__button-group:focus-within {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* Frequency Button Base */
@@ -29,7 +35,7 @@
     .frequency-selector__button {
         padding: var(--spacing-xs) var(--spacing-md);
         border: none;
-        border-radius: calc(var(--radius-full) - 4px);
+        border-radius: var(--radius-md);
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
@@ -52,6 +58,11 @@
         font-weight: 600;
         color: var(--color-text-light);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .frequency-selector__button--active:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
     }
 }
 

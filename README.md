@@ -25,7 +25,9 @@ Live: https://elisecode247.github.io/to-do-list/
 - Reset all env variables
 - Access token in memory
 - Refresh token in HttpOnly Secure SameSite cookie
-- Move frontend code to Railway
+- Move frontend code to Railway (WPF Chp 3)
+    - set up cdn on Railway https://docs.railway.com/guides/add-a-cdn-using-cloudfront
+    - set max-age to a year for cache-control header (check cdn as well)
 - add undo to delete and uncheck
 - suggestions feature (random dice?)
 - Include AI task breakdown and add to separate checklist

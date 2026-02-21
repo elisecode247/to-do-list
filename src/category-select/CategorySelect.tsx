@@ -17,7 +17,6 @@ const CategorySelect = ({
 
     return (
         <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper_filter' : ''}`}>
-            {!isFilter && <label htmlFor={id}>New Task Category:</label>}
             <select
                 id={id}
                 className={`category-select ${isFilter ? 'category-select_filter' : ''}`}

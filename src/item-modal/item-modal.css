@@ -112,7 +112,7 @@ textarea {
 
 .item-modal_mode-button {
     padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-md);
     font-size: 16px;
     font-weight: 500;
     border: none;

@@ -7,7 +7,6 @@ import { useToast } from 'src/toast/use-toast';
 import { type Mode } from 'app/types';
 import './new-task-form.css';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
-import NoteEditor from 'src/editor/NoteEditor';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
 
 const NewTaskForm = () => {
@@ -72,21 +71,6 @@ const NewTaskForm = () => {
                 selectedCategory={newTaskCategory}
                 onChange={(category: string) => setNewTaskCategory(category)}
             />
-            <div className="new-task-form-notes-section">
-                <label
-                    htmlFor="new-task-form-notes-input"
-                    className="new-task-form-notes-label"
-                >
-                    Notes
-                </label>
-                <div className="new-task-form-note-container">
-                <NoteEditor
-                    ref={noteRef}
-                    initialMarkdown=""
-                    readOnly={false}
-                />
-                </div>
-            </div>
             <div className="new-task-form-input-row">
                 <input
                     id="new-task-form-text-input"

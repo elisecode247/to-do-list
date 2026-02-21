@@ -71,11 +71,11 @@
 
     .filter-button:first-of-type {
         border-top-left-radius: var(--radius-sm);
-        border-bottom-left-radius: var(--radius-sm);
+        border-top-right-radius: var(--radius-sm);
     }
 
     .filter-button:last-of-type {
-        border-top-right-radius: var(--radius-sm);
+        border-bottom-left-radius: var(--radius-sm);
         border-bottom-right-radius: var(--radius-sm);
     }
 

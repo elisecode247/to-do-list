@@ -21,7 +21,7 @@
 .category-select {
     padding: var(--spacing-xs) var(--spacing-md);
     border: 1px solid var(--color-border);
-    border-radius: calc(var(--radius-full) - 4px);
+    border-radius: var(--radius-md);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;

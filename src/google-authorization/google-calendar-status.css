@@ -24,7 +24,7 @@
 .calendar-status {
     font-size: 12px;
     padding: 2px 10px;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-md);
     border: 1px solid transparent;
     white-space: nowrap;
     margin: auto;
