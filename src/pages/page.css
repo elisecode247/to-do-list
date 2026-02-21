@@ -93,7 +93,7 @@
 
 @media (min-width: 900px) {
     .page-btn--home {
-        top: var(--spacing-md);
+        top: 75px;
         left: 0;
     }
 

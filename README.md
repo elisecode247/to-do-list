@@ -37,7 +37,5 @@ Live: https://elisecode247.github.io/to-do-list/
 - lost internet connection
 - scheduled tasks
 - task interval amount
-- ui improvement
-    - fix settings pages layout and menu
 - ux improvement
     - keyboard tabbing
