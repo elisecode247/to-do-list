@@ -36,8 +36,4 @@ Live: https://elisecode247.github.io/to-do-list/
 - scheduled tasks
 - task interval amount
 - ui improvement
-    - left panel
-    - right panel
-    - menu dropdown positioning and z-index
-    - header buttons smaller in mobile
-    - "move" button entire left side of row
+    - fix settings pages layout
