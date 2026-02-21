@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { MenuSquare } from 'lucide-react';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
@@ -15,22 +15,6 @@ function AccountMenu() {
     const { email, logout, isAuthenticated } = useAuthentication();
     const { reset } = useTask();
     const [location] = useLocation();
-
-    // Close menu when clicking outside
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsSettingOpen(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [menuRef]);
-
-
 
     function handleLogout() {
         logout();
@@ -77,7 +61,7 @@ function AccountMenu() {
                         <GoogleCalendarStatus />
                     </div>
                 </div>
-            , document.body) : null}
+                , document.body) : null}
         </div>
     );
 }
