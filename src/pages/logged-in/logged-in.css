@@ -48,6 +48,7 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
     width: fit-content;
+    position: relative;
 }
 
 .filter-toggle-button:hover {
@@ -132,6 +133,23 @@
     border: 1px solid var(--color-mode-priority-border);
     z-index: 10;
     color: var(--color-text-light);
+}
+
+.applied-filter-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1 / 1;
+    padding: 0 var(--spacing-xs);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary);
+    background-color: transparent;
+    color: var(--color-mode-priority-border);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
 }
 
 @media (min-width: 900px) {

@@ -44,6 +44,10 @@ const LoggedIn: React.FC = () => {
     const [leftOpen, setLeftOpen] = useState(isDesktop ? true : false);
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const activeFilterCount =
+        (hideCompleted ? 1 : 0) +
+        (modeFilter === ALL_MODES ? 0 : 1) +
+        (filterCategory === ALL_CATEGORIES ? 0 : 1);
 
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
@@ -126,6 +130,11 @@ const LoggedIn: React.FC = () => {
                 >
                     <ListFilter size={24} />
                     Filters
+                    {activeFilterCount > 0 && (
+                        <span className="applied-filter-count-badge">
+                            {activeFilterCount}
+                        </span>
+                    )}
                 </button>
                 <div className="app_header_title">
                     <h1 className="app_h1">For My Today</h1>
@@ -203,8 +212,7 @@ const LoggedIn: React.FC = () => {
                         .map(tab => (
                             <button
                                 key={tab}
-                                className={`mobile-tab-button ${
-                                    activeTab === tab ? "mobile-tab-button--active" : ""}`}
+                                className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
                                 onClick={() => handleTabChange(tab)}
                             >
                                 {TAB_LABELS[tab]}
