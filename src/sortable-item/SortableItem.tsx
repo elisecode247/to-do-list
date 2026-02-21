@@ -97,7 +97,17 @@ export const SortableItem: FC<SortableItemProps> = ({
     const noteRef = useRef<MDXEditorMethods>(null)
 
 
-    const toggleCollapsed = () => setCollapsed(!collapsed);
+    const toggleNotes = () => {
+        setShowNotes(!showNotes);
+        setCollapsed(true);
+        setOpenNewTaskForm(false);
+    }
+
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+        setShowNotes(false);
+        setOpenNewTaskForm(false);
+    }
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -139,7 +149,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         try {
             await addItem(newChecklistItem);
             setOpenNewTaskForm(false);
-            setCollapsed(false);
+            setCollapsed(true);
             setInputText('');
             showToast('Task added successfully', 'success');
         } catch {
@@ -189,6 +199,12 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }
 
+    function handleOpenTaskForm() {
+        setOpenNewTaskForm(!openNewTaskForm);
+        setShowNotes(false);
+        setCollapsed(true);
+    }
+
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
@@ -205,17 +221,17 @@ export const SortableItem: FC<SortableItemProps> = ({
                     transition={{ duration: 0.4 }}
                     className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 >
+                    <button
+                        {...listeners}
+                        className="sortable-item_drag-handle"
+                        aria-label="Hold to move and reorder task"
+                        title="Hold to move and reorder task"
+                        type="button"
+                    >
+                        <GripVertical size={24} />
+                    </button>
                     <div className="sortable-item_main-content">
-                        <button
-                            {...listeners}
-                            className="sortable-item_drag-handle"
-                            aria-label="Hold to move and reorder task"
-                            title="Hold to move and reorder task"
-                            type="button"
-                        >
-                            <GripVertical size={24} />
-                            <span className="sortable-item_drag-handle_label">Move</span>
-                        </button>
+
                         <input
                             className="sortable-item_checkbox"
                             type="checkbox"
@@ -238,150 +254,149 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 )}
                             </span>
                         </div>
-                        <div className="sortable-item_button-group-container">
+                    </div>
+                    <div className="sortable-item_button-group-container">
+                        <button
+                            className="sortable-item_priority-button"
+                            onClick={() => prioritizeItem(id)}
+                            aria-label="Prioritize task"
+                            title="Prioritize task"
+                            type="button"
+                        >
+                            {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
+                            <span className="sortable-item_button-text-span">Priority</span>
+                        </button>
+
+                        {hasSubChores && (
                             <button
-                                className="sortable-item_priority-button"
-                                onClick={() => prioritizeItem(id)}
-                                aria-label="Prioritize task"
-                                title="Prioritize task"
+                                className="sortable-item_hide-button"
+                                onClick={toggleCollapsed}
+                                aria-label={collapsed ? "Expand task" : "Collapse task"}
+                            >
+                                {collapsed ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                <span className="sortable-item_button-text-span">Subtasks</span>
+                            </button>
+                        )}
+
+                        {!!note?.length && (
+                            <button
+                                className="sortable-item_hide-button"
+                                onClick={toggleNotes}
+                                aria-label="Show notes"
+                                title={showNotes ? "Hide notes" : "Show notes"}
                                 type="button"
                             >
-                                {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
-                                <span className="sortable-item_button-text-span">Priority</span>
+                                {showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                                <span className="sortable-item_button-text-span">Notes</span>
+                            </button>
+                        )}
+                        {activeTab === TABS.archived ? null : (
+                            <button
+                                className="sortable-item_hide-button"
+                                onClick={delayHide}
+                                aria-label="Hide task"
+                                title={isHidden ? "Unhide task for today" : "Hide task for today"}
+                                type="button"
+                            >
+                                {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
+                                <span className="sortable-item_button-text-span">
+                                    {isHidden ? "Move to Today" : "Not Today"}
+                                </span>
+                            </button>
+                        )}
+
+                        <div className="sortable-item_menu-wrapper">
+                            <button
+                                className="sortable-item_menu-button sortable-item_hide-button"
+                                aria-label="More task actions"
+                                type="button"
+                                ref={buttonRef}
+                                onClick={updateMenuPosition}
+                            >
+                                <MoreHorizontal size={24} />
+                                <span className="sortable-item_button-text-span">Actions</span>
                             </button>
 
-                            {hasSubChores && (
-                                <button
-                                    className="sortable-item_hide-button"
-                                    onClick={toggleCollapsed}
-                                    aria-label={collapsed ? "Expand task" : "Collapse task"}
-                                >
-                                    {collapsed ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
-                                    <span className="sortable-item_button-text-span">Subtasks</span>
-                                </button>
-                            )}
-
-                            {!!note?.length && (
-                                <button
-                                    className="sortable-item_hide-button"
-                                    onClick={() => setShowNotes(!showNotes)}
-                                    aria-label="Show notes"
-                                    title={showNotes ? "Hide notes" : "Show notes"}
-                                    type="button"
-                                >
-                                    {showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
-                                    <span className="sortable-item_button-text-span">Notes</span>
-                                </button>
-                            )}
-                            {activeTab === TABS.archived ? null : (
-                                <button
-                                    className="sortable-item_hide-button"
-                                    onClick={delayHide}
-                                    aria-label="Hide task"
-                                    title={isHidden ? "Unhide task for today" : "Hide task for today"}
-                                    type="button"
-                                >
-                                    {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
-                                    <span className="sortable-item_button-text-span">
-                                        {isHidden ? "Move to Today" : "Not Today"}
-                                    </span>
-                                </button>
-                            )}
-
-                            <div className="sortable-item_menu-wrapper">
-                                <button
-                                    className="sortable-item_menu-button sortable-item_hide-button"
-                                    aria-label="More task actions"
-                                    type="button"
-                                    ref={buttonRef}
-                                    onClick={updateMenuPosition}
-                                >
-                                    <MoreHorizontal size={24} />
-                                    <span className="sortable-item_button-text-span">Actions</span>
-                                </button>
-
-                                <div
-                                    className={`sortable-item_menu-dropdown
+                            <div
+                                className={`sortable-item_menu-dropdown
                                     ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}
                                     ${alignLeft ?
-                                            'sortable-item_menu-dropdown--align-left' :
-                                            ''
-                                        }`
-                                    }
+                                        'sortable-item_menu-dropdown--align-left' :
+                                        ''
+                                    }`
+                                }
+                            >
+                                <button
+                                    className="sortable-item_edit-button sortable-item_add-subtask-button"
+                                    onClick={handleOpenTaskForm}
+                                    aria-label="Add subtask"
+                                    title="Add subtask"
+                                    type="button"
                                 >
+                                    <PlusCircle size={24} />
+                                    <span className="sortable-item_button-text-span">Add Subtask</span>
+                                </button>
+
+                                {!hasSubChores && (
                                     <button
-                                        className="sortable-item_edit-button sortable-item_add-subtask-button"
-                                        onClick={() => setOpenNewTaskForm(true)}
-                                        aria-label="Add subtask"
-                                        title="Add subtask"
+                                        className="sortable-item_hide-button"
+                                        onClick={() => setDropZoneOpen(!dropZoneOpen)}
+                                        aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
+                                    >
+                                        {dropZoneOpen ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                        <span className="sortable-item_button-text-span">
+                                            {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
+                                        </span>
+                                    </button>
+                                )}
+
+                                <button
+                                    className="sortable-item_edit-button"
+                                    onClick={() => handleEdit(id)}
+                                    aria-label="Edit task"
+                                    title="Edit task"
+                                    type="button"
+                                >
+                                    <Edit size={24} />
+                                    <span className="sortable-item_button-text-span">Edit</span>
+                                </button>
+
+                                {isActive ? (
+                                    <button
+                                        className="sortable-item_archive-button"
+                                        onClick={() => onMoveItem(id)}
+                                        aria-label="Archive task"
+                                        title="Archive task"
                                         type="button"
                                     >
-                                        <PlusCircle size={24} />
-                                        <span className="sortable-item_button-text-span">Add Subtask</span>
+                                        <Archive size={24} />
+                                        <span className="sortable-item_button-text-span">Archive</span>
                                     </button>
-
-                                    {!hasSubChores && (
-                                        <button
-                                            className="sortable-item_hide-button"
-                                            onClick={() => setDropZoneOpen(!dropZoneOpen)}
-                                            aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
-                                        >
-                                            {dropZoneOpen ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
-                                            <span className="sortable-item_button-text-span">
-                                                {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
-                                            </span>
-                                        </button>
-                                    )}
-
+                                ) : (
                                     <button
-                                        className="sortable-item_edit-button"
-                                        onClick={() => handleEdit(id)}
-                                        aria-label="Edit task"
-                                        title="Edit task"
+                                        className="sortable-item_restore-button"
+                                        onClick={() => onMoveItem(id)}
+                                        aria-label="Restore archived task"
+                                        title="Restore archived task"
                                         type="button"
                                     >
-                                        <Edit size={24} />
-                                        <span className="sortable-item_button-text-span">Edit</span>
+                                        <ListPlus size={24} />
+                                        <span className="sortable-item_button-text-span">Restore</span>
                                     </button>
+                                )}
 
-                                    {isActive ? (
-                                        <button
-                                            className="sortable-item_archive-button"
-                                            onClick={() => onMoveItem(id)}
-                                            aria-label="Archive task"
-                                            title="Archive task"
-                                            type="button"
-                                        >
-                                            <Archive size={24} />
-                                            <span className="sortable-item_button-text-span">Archive</span>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="sortable-item_restore-button"
-                                            onClick={() => onMoveItem(id)}
-                                            aria-label="Restore archived task"
-                                            title="Restore archived task"
-                                            type="button"
-                                        >
-                                            <ListPlus size={24} />
-                                            <span className="sortable-item_button-text-span">Restore</span>
-                                        </button>
-                                    )}
-
-                                    <button
-                                        className="sortable-item_delete-button"
-                                        onClick={handleDeleteTask}
-                                        aria-label="Delete task"
-                                        title="Delete task"
-                                        type="button"
-                                    >
-                                        <Trash size={24} />
-                                        <span className="sortable-item_button-text-span">Delete</span>
-                                    </button>
-                                </div>
+                                <button
+                                    className="sortable-item_delete-button"
+                                    onClick={handleDeleteTask}
+                                    aria-label="Delete task"
+                                    title="Delete task"
+                                    type="button"
+                                >
+                                    <Trash size={24} />
+                                    <span className="sortable-item_button-text-span">Delete</span>
+                                </button>
                             </div>
                         </div>
-
                     </div>
                     {showNotes && (
                         <div className="sortable-item_note">
@@ -398,7 +413,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <h3>New Task</h3>
                             <button
                                 className="sortable-item_new-item-close-button"
-                                onClick={() => setOpenNewTaskForm(false)}
+                                onClick={handleOpenTaskForm}
                                 aria-label="Close"
                             >
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">

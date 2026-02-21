@@ -1,6 +1,13 @@
 /* Item Container */
 @layer base {
     .sortable-item_container {
+        display: grid;
+        grid-template-rows: 55px auto auto;
+        grid-template-columns: 44px auto;
+        grid-template-areas:
+            "drag text"
+            "drag button-group"
+            "subtasks subtasks";
         align-items: center;
         padding: var(--spacing-sm);
         background-color: var(--color-surface--transparent);
@@ -10,6 +17,7 @@
         flex-wrap: wrap;
         position: relative;
         transition: box-shadow 0.3s ease;
+        gap: var(--spacing-xs);
     }
 
     .sortable-item_container:hover {
@@ -20,16 +28,21 @@
     }
 
     .sortable-item_main-content {
+        grid-area: text;
         display: flex;
+        flex-wrap: nowrap;
         align-items: center;
         width: 100%;
         gap: var(--spacing-xs);
-        flex-wrap: wrap;
+        flex: 1;
+        min-width: 0;
+        flex-basis: 100%;
     }
 }
 
 /* Drag Handle */
 .sortable-item_drag-handle {
+    grid-area: drag;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +58,9 @@
     -ms-user-select: none;
     user-select: none;
     touch-action: none;
-    -webkit-touch-callout: none
+    -webkit-touch-callout: none;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
 }
 
 .sortable-item_drag-handle:hover {
@@ -78,9 +93,7 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        min-width: 0;
-        /* Force text container to take full width on mobile when buttons wrap */
-        flex-basis: 100%;
+        min-width: 300px;
         align-items: flex-start;
     }
 
@@ -90,6 +103,7 @@
         overflow-wrap: break-word;
         color: var(--color-text-primary);
     }
+
     .sortable-item_subtask-indicator {
         font-size: 0.8em;
         font-weight: 500;
@@ -113,6 +127,7 @@
 
 /* Button Container */
 .sortable-item_button-group-container {
+    grid-area: button-group;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -333,6 +348,7 @@
 
 /* Subtasks Container */
 .sortable-item_subtasks-container {
+    grid-area: subtasks;
     margin-top: var(--spacing-sm);
     margin-left: calc(40px + var(--spacing-md));
     /* Indent more for each level */
@@ -366,6 +382,7 @@
 }
 
 .sortable-item_note {
+    grid-area: subtasks;
     margin: var(--spacing-xs) 0 0 0;
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 14px;
@@ -378,6 +395,7 @@
 /** New Item Section */
 .sortable-item_new-item-form {
     position: relative;
+    grid-area: subtasks;
 }
 
 .sortable-item_new-item-input-container {

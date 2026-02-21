@@ -68,6 +68,7 @@
     display: flex;
     font-size: 16px;
     align-items: center;
+    z-index: 9999;
 }
 
 .app_header_settings {
