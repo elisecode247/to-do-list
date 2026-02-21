@@ -122,7 +122,7 @@
     background-color: var(--color-hover);
     padding: 2px 8px;
     margin-left: var(--spacing-xs);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
 }
 
 /* Button Container */
@@ -297,12 +297,19 @@
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .sortable-item_container {
-        padding: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-sm) 0 var(--spacing-sm);
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: 44px auto auto;
+        grid-template-areas:
+            "drag text button-group"
+            "subtasks subtasks subtasks";
     }
 
     .sortable-item_text-container {
         /* Reset flex-basis for desktop */
         flex-basis: auto;
+        margin-left: var(--spacing-md);
     }
 
     .sortable-item_drag-handle {
@@ -316,6 +323,15 @@
 
     .sortable-item_text {
         font-size: 15px;
+    }
+
+    .sortable-item_button-group-container {
+        margin-left: auto;
+    }
+
+    .sortable-item_last-completed-text {
+        font-size: 12px;
+        margin-left: var(--spacing-md);
     }
 
     .scheduled-task_hide-button,
