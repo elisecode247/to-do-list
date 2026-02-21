@@ -100,10 +100,11 @@
     width: 340px;
     height: var(--mobile-tab-bar-height);
     border-radius: var(--radius-md);
-    background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);;
+    background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    backdrop-filter: blur(4px);
     border-top: 1px solid var(--color-border);
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     z-index: 500;
 }
@@ -116,14 +117,7 @@
     font-weight: 500;
     cursor: pointer;
     min-width: 100px;
-}
-
-.mobile-tab-button:first-of-type {
-    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-}
-
-.mobile-tab-button:last-of-type {
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+     border-radius: var(--radius-md);
 }
 
 .mobile-tab-button--active:hover,
