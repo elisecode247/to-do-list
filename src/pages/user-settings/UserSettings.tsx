@@ -5,15 +5,22 @@ import { ROUTES } from "src/router";
 import './UserSettings.css';
 import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import { useTheme } from "src/themes/use-theme";
+import { useState } from "react";
 
 function UserSettings() {
     useTheme();
     const [location] = useLocation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+     function toggleMenu() {
+        setIsMenuOpen(prev => !prev);
+    }
     return (
         <div className="app_container">
             <header className="app_header">
                 <h1 className="app_h1">For My Today</h1>
-                <AccountMenu />
+                <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu}
+                />
             </header>
             <div className="user-settings-container">
                 {location !== ROUTES.home && (

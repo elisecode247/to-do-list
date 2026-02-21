@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { MenuSquare } from 'lucide-react';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
@@ -9,8 +9,14 @@ import { ROUTES } from "src/router";
 import { createPortal } from 'react-dom';
 
 
-function AccountMenu() {
-    const [isSettingOpen, setIsSettingOpen] = useState(false);
+interface AccountMenuProps {
+    isMenuOpen: boolean;
+    onMenuToggleOpen: () => void;
+}
+function AccountMenu({
+    isMenuOpen,
+    onMenuToggleOpen
+}: AccountMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null);
     const { email, logout, isAuthenticated } = useAuthentication();
     const { reset } = useTask();
@@ -31,14 +37,14 @@ function AccountMenu() {
         <div className="account-menu-container" ref={menuRef}>
             <button
                 aria-label="Account menu"
-                onClick={() => setIsSettingOpen(prev => !prev)}
+                onClick={onMenuToggleOpen}
                 className="app_header_menu"
             >
                 <MenuSquare className="app_header_menu-icon" size={24} />
                 <span className="app_header_menu-span">Menu</span>
             </button>
 
-            {isSettingOpen && isAuthenticated ? createPortal(
+            {isMenuOpen && isAuthenticated ? createPortal(
                 <div className="app_header_settings">
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />

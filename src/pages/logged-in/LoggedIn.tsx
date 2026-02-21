@@ -43,6 +43,7 @@ const LoggedIn: React.FC = () => {
     const isDesktop = useIsDesktop();
     const [leftOpen, setLeftOpen] = useState(isDesktop ? true : false);
     const [rightOpen, setRightOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
@@ -107,12 +108,13 @@ const LoggedIn: React.FC = () => {
             />
         ))}
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
-            {(leftOpen || rightOpen) && (
+            {(leftOpen || rightOpen || menuOpen) && (
                 <div
                     className="panel_backdrop"
                     onClick={() => {
                         setLeftOpen(false);
                         setRightOpen(false);
+                        setMenuOpen(false);
                     }}
                 />
             )}
@@ -145,7 +147,10 @@ const LoggedIn: React.FC = () => {
                 >
                     <Plus size={24} strokeWidth={3} />
                 </button>
-                <AccountMenu />
+                <AccountMenu
+                    isMenuOpen={menuOpen}
+                    onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
+                />
             </header>
             <aside className="left_panel">
                 <AppToolBar

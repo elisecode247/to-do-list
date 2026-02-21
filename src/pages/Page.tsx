@@ -4,6 +4,7 @@ import { Home } from "lucide-react";
 import { ROUTES } from "src/router";
 import './page.css';
 import { useTheme } from "src/themes/use-theme";
+import { useState } from "react";
 
 interface PageProps {
     title: string;
@@ -12,11 +13,16 @@ interface PageProps {
 function Page({ title, children }: PageProps) {
     useTheme();
     const [location] = useLocation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    function toggleMenu() {
+        setIsMenuOpen(prev => !prev);
+    }
     return (
         <div className="page_container">
             <header className="app_header">
                 <h1 className="app_h1">For My Today</h1>
-                <AccountMenu />
+                <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} />
                 {location !== ROUTES.home && (
                     <Link href={ROUTES.home} className="page-btn page-btn--primary page-btn--home">
                         <Home size={24} />

@@ -36,4 +36,4 @@ Live: https://elisecode247.github.io/to-do-list/
 - scheduled tasks
 - task interval amount
 - ui improvement
-    - fix settings pages layout
+    - fix settings pages layout and menu
