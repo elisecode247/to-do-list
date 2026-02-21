@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useState, useEffect, useRef, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
@@ -25,7 +25,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(enabled);
     const [error, setError] = useState<string | null>(null);
-    const [loadDate, setLoadDate] = useState<Date | null>(null);
+    const loadDateRef = useRef(new Date());
 
     useEffect(() => {
         setIsLoading(enabled);
@@ -37,12 +37,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         let cancelled = false;
 
         loadTasks(cancelled);
-        setLoadDate(new Date());
+        loadDateRef.current = new Date();
         const handleVisibility = () => {
-            if (document.visibilityState === 'visible') {
-
-                setLoadDate(new Date());
+            const staleAfter = 5 * 60 * 1000;
+            if (!loadDateRef.current || new Date().getTime() - loadDateRef.current.getTime() > staleAfter) {
                 loadTasks(cancelled);
+                loadDateRef.current = new Date();
             }
         };
 
@@ -374,7 +374,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             getSubtasks,
             hideForToday,
             unhideForToday,
-            loadDate,
+            loadDate: loadDateRef.current,
         }}>
             {children}
         </TaskContext.Provider>
