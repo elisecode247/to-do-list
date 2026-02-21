@@ -38,9 +38,19 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         loadTasks(cancelled);
         setLoadDate(new Date());
+        const handleVisibility = () => {
+            if (document.visibilityState === 'visible') {
+
+                setLoadDate(new Date());
+                loadTasks(cancelled);
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibility);
 
         return () => {
             cancelled = true;
+            document.removeEventListener('visibilitychange', handleVisibility)
         };
     }, [enabled])
 
