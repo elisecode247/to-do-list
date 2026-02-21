@@ -64,6 +64,10 @@
     --color-mode-priority-bg: light-dark(#C9E8EE, #04275f);
     --color-mode-priority-text: light-dark(#000c8d, #b7beff);
     --color-mode-priority-border: light-dark(#1d178b, #888ff1);
+
+    /** floating action button */
+    --mobile-tab-bar-height: 60px;
+    --fab-spacing: 45px;
 }
 
 body::before {

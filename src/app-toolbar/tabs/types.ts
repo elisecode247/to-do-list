@@ -13,3 +13,11 @@ export const TABS = {
     hidden: TAB_HIDDEN as Tab,
     archived: TAB_ARCHIVED as Tab
 }
+
+export const TAB_LABELS: Record<Tab, string> = {
+    [TAB_PRIORITY]: '⭐ Priority',
+    [TAB_TODAY]: 'Today',
+    [TAB_SCHEDULED]: 'Upcoming',
+    [TAB_HIDDEN]: 'Hidden',
+    [TAB_ARCHIVED]: 'Archived'
+}

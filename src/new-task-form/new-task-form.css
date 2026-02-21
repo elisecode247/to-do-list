@@ -39,7 +39,7 @@
     width: fit-content;
     margin: auto 0 auto auto;
     position: fixed;
-    bottom: 25px;
+    bottom: calc(var(--mobile-tab-bar-height) + var(--fab-spacing));
     right: 25px;
     z-index: 99999;
 }

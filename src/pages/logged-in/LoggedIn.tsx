@@ -12,7 +12,7 @@ import { useTheme } from 'src/themes/use-theme';
 import AccountMenu from 'app/AccountMenu';
 import NewTaskForm from 'src/new-task-form/NewTaskForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
-import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
+import { TABS, TAB_LABELS, type Tab } from 'src/app-toolbar/tabs/types';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
@@ -192,6 +192,26 @@ const LoggedIn: React.FC = () => {
             <aside className="right_panel">
                 <NewTaskForm />
             </aside>
+            {!isDesktop && !leftOpen && !rightOpen && (
+                <nav className="mobile-tab-bar">
+                    {Object.values(TABS)
+                        .filter(tab =>
+                            tab === TABS.priority ||
+                            tab === TABS.today ||
+                            tab === TABS.scheduled
+                        )
+                        .map(tab => (
+                            <button
+                                key={tab}
+                                className={`mobile-tab-button ${
+                                    activeTab === tab ? "mobile-tab-button--active" : ""}`}
+                                onClick={() => handleTabChange(tab)}
+                            >
+                                {TAB_LABELS[tab]}
+                            </button>
+                        ))}
+                </nav>
+            )}
         </div >
     </>)
 
