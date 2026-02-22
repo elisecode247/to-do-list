@@ -36,6 +36,12 @@ Live: https://elisecode247.github.io/to-do-list/
 - make localStorage persistent longer on mobile
 - lost internet connection
 - scheduled tasks
-- task interval amount
+- interval tasks
+    - add interval recurrence to new tasks
+    - calculate nextDue
+        - exclude archived tasks
+        - unit tests
+    - filter today and upcoming tabs using nextDue
+        - unit tests
 - ux improvement
     - keyboard tabbing

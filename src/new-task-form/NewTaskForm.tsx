@@ -1,19 +1,21 @@
 import { useState, useRef } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
-import type { ChecklistItem } from 'app/types';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
-import { type Mode } from 'app/types';
+import { IntervalOptions, type IntervalRecurrence, type Mode } from 'app/types';
 import './new-task-form.css';
-import { ONE_TIME_MODE } from 'src/checklist/constants';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
+import { OCCASIONAL_MODE, ONE_TIME_MODE } from 'src/checklist/constants';
+import { type ChecklistItem, FrequencyType } from 'app/types';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
     const { showToast } = useToast();
     const [inputText, setInputText] = useState<string>("");
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
+    const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
+    const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
@@ -22,7 +24,15 @@ const NewTaskForm = () => {
     const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
         if (!text) return;
-        let note = noteRef.current?.getMarkdown()
+        let note = noteRef.current?.getMarkdown();
+        let recurrence: IntervalRecurrence | null = null;
+        if (mode === OCCASIONAL_MODE) {
+            recurrence = {
+                type: 'interval',
+                count: recurrenceCount,
+                frequency: recurrenceFrequency,
+            };
+        }
 
         const newItem: ChecklistItem = {
             id: crypto.randomUUID(),
@@ -40,7 +50,7 @@ const NewTaskForm = () => {
             isHidden: false,
             hasSubChores: false,
             parentUuid: null,
-            recurrence: null,
+            recurrence,
             nextDue: null,
         };
         try {
@@ -68,6 +78,30 @@ const NewTaskForm = () => {
                 mode={mode}
                 onClick={(mode: Mode) => handleModeClick(mode)}
             />
+            {mode === OCCASIONAL_MODE && (
+                <div className="form-group item-recurrence-container item-recurrence-container--new-task">
+                    <label className="item-modal_recurrence-label">Repeat Every</label>
+                    <input id="item-modal-recurrence-count" type="number"
+                        min={1}
+                        value={recurrenceCount}
+                        onChange={(e) => {
+                            const count = parseInt(e.target.value);
+                            if (isNaN(count) || count < 1) return;
+                            setRecurrenceCount(count);
+                        }}
+                    />
+                    <select
+                        value={recurrenceFrequency}
+                        onChange={(e) => {
+                            setRecurrenceFrequency(e.target.value as FrequencyType);
+                        }}
+                    >
+                        {IntervalOptions.map(option => (
+                            <option key={option.key} value={option.key}>{option.title}(s)</option>
+                        ))}
+                    </select>
+                </div>
+            )}
             <CategorySelect
                 id="new-task-form-category-select"
                 selectedCategory={newTaskCategory}

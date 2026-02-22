@@ -152,6 +152,10 @@
     color: var(--color-text-primary);
 }
 
+.item-recurrence-container--new-task {
+    margin-top: var(--spacing-md);
+}
+
 @media (min-width: 900px) {
     .new-task-form-item-container {
         padding: var(--spacing-lg);
