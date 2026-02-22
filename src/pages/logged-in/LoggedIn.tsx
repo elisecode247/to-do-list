@@ -1,6 +1,6 @@
 
 import React, { useState, type SetStateAction } from 'react';
-import { ItemModal } from 'item-modal/ItemModal';
+import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
 import Toast from 'src/toast/Toast';
@@ -219,7 +219,7 @@ const LoggedIn: React.FC = () => {
             </main>
             <aside className="right_panel">
                 {editingItem ? (
-                    <ItemModal
+                    <EditTaskForm
                         isSaving={isSaving}
                         formData={editingItem}
                         setEditingItem={setEditingItem}

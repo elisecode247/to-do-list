@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ChecklistItem } from "app/types";
-import ItemModal from 'src/item-modal/ItemModal';
+import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import Page from "src/pages/Page";
 import '../page.css';
 import './bulk-edit.css';
@@ -234,7 +234,7 @@ function BulkEdit() {
             </div>
 
             {selectedItem && (
-                <ItemModal
+                <EditTaskForm
                     formData={selectedItem}
                     setEditingItem={(item) => setSelectedItem(item)}
                     onSave={(item) => {

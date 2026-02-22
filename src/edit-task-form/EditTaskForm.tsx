@@ -1,4 +1,4 @@
-import 'item-modal/item-modal.css';
+import 'src/edit-task-form/edit-task-form.css';
 import { useRef, type FC } from 'react';
 import type { ChecklistItem, IntervalRecurrence, Mode } from 'app/types';
 import { MODES, OCCASIONAL_MODE } from 'checklist/constants';
@@ -19,7 +19,7 @@ type ItemModalProps = {
     onClose: () => void;
 };
 
-export const ItemModal: FC<ItemModalProps> = ({
+export const EditTaskForm: FC<ItemModalProps> = ({
     isSaving = false,
     formData,
     setEditingItem,
@@ -236,4 +236,4 @@ export const ItemModal: FC<ItemModalProps> = ({
     );
 };
 
-export default ItemModal;
+export default EditTaskForm;

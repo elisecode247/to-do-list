@@ -2,7 +2,7 @@ import { useState, type FC } from 'react';
 import 'app/app.css';
 import 'app/settings.css';
 import 'src/pages/demo/demo.css';
-import { ItemModal } from 'item-modal/ItemModal';
+import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'src/pages/demo/DemoChecklist';
 import Toast from 'src/toast/Toast';
@@ -50,7 +50,7 @@ const App: FC = () => {
     return (
         <>
             {editingItem ? (
-                <ItemModal
+                <EditTaskForm
                     formData={editingItem}
                     setEditingItem={setEditingItem}
                     onSave={handleSave}
