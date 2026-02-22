@@ -7,17 +7,20 @@ import { useTask } from "./use-task";
 import { Link, useLocation } from "wouter";
 import { ROUTES } from "src/router";
 import { createPortal } from 'react-dom';
-
-
+import { useOnClickOutside } from "usehooks-ts";
 interface AccountMenuProps {
     isMenuOpen: boolean;
     onMenuToggleOpen: () => void;
+    onMenuClose: () => void;
 }
+
 function AccountMenu({
     isMenuOpen,
-    onMenuToggleOpen
+    onMenuToggleOpen,
+    onMenuClose,
 }: AccountMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const { email, logout, isAuthenticated } = useAuthentication();
     const { reset } = useTask();
     const [location] = useLocation();
@@ -30,6 +33,10 @@ function AccountMenu({
     const handleLogoutClick = () => {
         handleLogout();
     };
+
+    useOnClickOutside(dropdownRef as React.RefObject<HTMLDivElement>, () => {
+        if (isMenuOpen) onMenuClose();
+    });
 
     if (!isAuthenticated) return null
 
@@ -45,7 +52,7 @@ function AccountMenu({
             </button>
 
             {isMenuOpen && isAuthenticated ? createPortal(
-                <div className="app_header_settings">
+                <div ref={dropdownRef} className="app_header_settings">
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                         {location !== ROUTES.userSettings && (

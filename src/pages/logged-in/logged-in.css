@@ -67,9 +67,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-
+    overflow-y: auto;
     min-width: 0;
-    height: 35vh;
+    height: 55vh;
     max-height: 650px;
     color: var(--color-text-primary);
     background: var(--color-background);
@@ -165,7 +165,6 @@
         max-height: none;
         border-radius: 0;
         box-shadow: none;
-        overflow: hidden;
         min-width: 0;
         /* Reset mobile transform */
         transform: translateY(0);

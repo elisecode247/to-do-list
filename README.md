@@ -35,9 +35,10 @@ Live: https://elisecode247.github.io/to-do-list/
     - default to parent category on subtasks
 - make localStorage persistent longer on mobile
 - lost internet connection
+- fix calendar status fetch on dropdown
 - scheduled tasks
 - interval tasks
-    - add interval recurrence to new tasks
+    - add interval recurrence to new tasks and edit tasks
     - calculate nextDue
         - exclude archived tasks
         - unit tests

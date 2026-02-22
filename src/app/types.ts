@@ -49,6 +49,7 @@ export type IntervalRecurrence = {
     type: "interval";
     count: number;
     frequency: FrequencyType;
+    startDate: Date;
 }
 
 export type CalendarRecurrence = {

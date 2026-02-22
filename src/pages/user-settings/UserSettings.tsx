@@ -19,7 +19,7 @@ function UserSettings() {
         <div className="app_container">
             <header className="app_header">
                 <h1 className="app_h1">For My Today</h1>
-                <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu}
+                <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)}
                 />
             </header>
             <div className="user-settings-container">

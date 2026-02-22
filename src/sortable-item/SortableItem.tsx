@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { useRef } from 'react';
-import type { FC, Dispatch, SetStateAction } from 'react';
+import type { FC, Dispatch, SetStateAction, RefObject } from 'react';
 import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
@@ -30,6 +30,7 @@ import { TABS } from 'src/app-toolbar/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
+import { useOnClickOutside } from 'usehooks-ts';
 
 interface SortableItemProps {
     id: string;
@@ -92,7 +93,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [alignLeft, setAlignLeft] = useState(false);
     const [animate, setAnimate] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const menuDropdownRef = useRef<HTMLElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
 
@@ -207,6 +208,18 @@ export const SortableItem: FC<SortableItemProps> = ({
         setCollapsed(true);
     }
 
+    function toggleMenuOpen() {
+        if (!isMenuOpen) {
+            updateMenuPosition();
+        } else {
+            setIsMenuOpen(false);
+        }
+    }
+    function handleClickOutsideMenu () {
+        setIsMenuOpen(false);
+    }
+    useOnClickOutside(menuDropdownRef as RefObject<HTMLElement>, handleClickOutsideMenu)
+
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
@@ -313,13 +326,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 aria-label="More task actions"
                                 type="button"
                                 ref={buttonRef}
-                                onClick={updateMenuPosition}
+                                onClick={toggleMenuOpen}
                             >
                                 <MoreHorizontal size={24} />
                                 <span className="sortable-item_button-text-span">Actions</span>
                             </button>
 
                             <div
+                                ref={menuDropdownRef as RefObject<HTMLDivElement>}
                                 className={`sortable-item_menu-dropdown
                                     ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}
                                     ${alignLeft ?
@@ -354,7 +368,10 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                                 <button
                                     className="sortable-item_edit-button"
-                                    onClick={() => handleEdit(id)}
+                                    onClick={() => {
+                                        handleEdit(id);
+                                        setIsMenuOpen(false);
+                                    }}
                                     aria-label="Edit task"
                                     title="Edit task"
                                     type="button"

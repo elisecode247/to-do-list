@@ -58,7 +58,7 @@ const LoggedIn: React.FC = () => {
             await updateItem(saveItem);
             setEditingItem(null);
             showToast('Task updated successfully', 'success');
-        } catch(error) {
+        } catch (error) {
             if (error instanceof Error && error?.message) {
                 showToast(`Failed to update task: ${error.message}`, 'error');
             } else {
@@ -73,6 +73,7 @@ const LoggedIn: React.FC = () => {
 
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
+        setRightOpen(true);
     }
 
     const handleTabChange = (tab: SetStateAction<Tab>) => {
@@ -101,17 +102,25 @@ const LoggedIn: React.FC = () => {
         });
     };
 
+    const toggleAddForm = () => {
+        if (!editingItem) {
+            toggleRight();
+        } else {
+            setEditingItem(null);
+        }
+    }
+
+    const handleCloseEditModal = () => {
+        setEditingItem(null);
+        setRightOpen(false);
+    }
+
+    const handleCloseAccountMenu = () => {
+        setMenuOpen(false);
+    }
+
 
     return (<>
-        {editingItem ? (
-            <ItemModal
-                isSaving={isSaving}
-                formData={editingItem}
-                setEditingItem={setEditingItem}
-                onSave={handleSave}
-                onClose={() => setEditingItem(null)}
-            />
-        ) : null}
         {toasts.map(toast => (
             <Toast
                 key={toast.id}
@@ -160,7 +169,7 @@ const LoggedIn: React.FC = () => {
                 <button
                     className={`new-task-form-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={toggleRight}
+                    onClick={toggleAddForm}
                     aria-label="Add new task"
                 >
                     <Plus size={24} strokeWidth={3} />
@@ -168,6 +177,7 @@ const LoggedIn: React.FC = () => {
                 <AccountMenu
                     isMenuOpen={menuOpen}
                     onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
+                    onMenuClose={handleCloseAccountMenu}
                 />
             </header>
             <aside className="left_panel">
@@ -208,7 +218,15 @@ const LoggedIn: React.FC = () => {
                 )}
             </main>
             <aside className="right_panel">
-                <NewTaskForm />
+                {editingItem ? (
+                    <ItemModal
+                        isSaving={isSaving}
+                        formData={editingItem}
+                        setEditingItem={setEditingItem}
+                        onSave={handleSave}
+                        onClose={handleCloseEditModal}
+                    />
+                ) : <NewTaskForm />}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (
                 <nav className="mobile-tab-bar">

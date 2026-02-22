@@ -1,3 +1,6 @@
+.edit-item-container {
+    padding: var(--spacing-lg);
+}
 .modal-overlay {
     position: fixed;
     top: 0;

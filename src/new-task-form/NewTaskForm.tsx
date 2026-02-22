@@ -31,6 +31,7 @@ const NewTaskForm = () => {
                 type: 'interval',
                 count: recurrenceCount,
                 frequency: recurrenceFrequency,
+                startDate: new Date(),
             };
         }
 
