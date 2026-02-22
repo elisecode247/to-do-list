@@ -38,6 +38,8 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     hasSubChores: false,
     parentUuid: null,
     isHidden: false,
+    recurrence: null,
+    nextDue: null,
     ...overrides,
 });
 

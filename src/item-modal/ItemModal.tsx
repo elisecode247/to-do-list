@@ -1,7 +1,7 @@
 import 'item-modal/item-modal.css';
 import { useEffect, useRef, type FC } from 'react';
-import type { ChecklistItem, Mode } from 'app/types';
-import { MODES } from 'checklist/constants';
+import type { ChecklistItem, IntervalRecurrence, Mode } from 'app/types';
+import { MODES, OCCASIONAL_MODE } from 'checklist/constants';
 import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -9,8 +9,11 @@ import CategorySelect from 'category-select/CategorySelect';
 import { createPortal } from 'react-dom';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
+import { FrequencyType, IntervalOptions } from 'src/app/types';
+import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
 
 type ItemModalProps = {
+    isSaving?: boolean;
     formData: ChecklistItem;
     setEditingItem: (item: ChecklistItem) => void;
     onSave: (item: ChecklistItem) => void;
@@ -18,6 +21,7 @@ type ItemModalProps = {
 };
 
 export const ItemModal: FC<ItemModalProps> = ({
+    isSaving = false,
     formData,
     setEditingItem,
     onSave,
@@ -28,10 +32,19 @@ export const ItemModal: FC<ItemModalProps> = ({
     const noteRef = useRef<MDXEditorMethods>(null)
 
     const handleSave = async () => {
-        let note = noteRef.current?.getMarkdown()
+        let note = noteRef.current?.getMarkdown();
+        let recurrence = formData.recurrence;
+        if (formData.mode === OCCASIONAL_MODE) {
+           recurrence = {
+                type: 'interval',
+                count: getRecurrenceCount(formData.recurrence, 1),
+                frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
+            } as IntervalRecurrence;
+        }
         onSave({
             ...formData,
             note: note ?? formData.note ?? '',
+            recurrence: recurrence ?? formData.recurrence,
         });
     }
 
@@ -177,7 +190,46 @@ export const ItemModal: FC<ItemModalProps> = ({
                         ))}
                     </div>
                 </div>
-                <div className="item-modal_mode-container">
+                {formData.mode === OCCASIONAL_MODE && (
+                    <div className="form-group item-recurrence-container">
+                        <label className="item-modal_recurrence-label">Repeat Every</label>
+                        <input id="item-modal-recurrence-count" type="number"
+                            min={1}
+                            value={getRecurrenceCount(formData.recurrence)}
+                            onChange={(e) => {
+                                const count = parseInt(e.target.value);
+                                if (isNaN(count) || count < 1) return;
+
+                                setEditingItem({
+                                    ...formData,
+                                    recurrence: {
+                                        type: 'interval',
+                                        count,
+                                        frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
+                                    },
+                                });
+                            }}
+                        />
+                        <select
+                            value={(formData?.recurrence?.type === 'interval' ? formData.recurrence.frequency : FrequencyType.Daily)}
+                            onChange={(e) => {
+                                const frequency = e.target.value as IntervalRecurrence['frequency'];
+                                setEditingItem({
+                                    ...formData,
+                                    recurrence: {
+                                        ...formData.recurrence,
+                                        frequency
+                                    } as IntervalRecurrence
+                                })
+                            }}
+                        >
+                            {IntervalOptions.map(option => (
+                                <option key={option.key} value={option.key}>{option.title}(s)</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+                <div>
 
                     <p className="item-modal_mode-label">Options</p>
 
@@ -209,17 +261,18 @@ export const ItemModal: FC<ItemModalProps> = ({
                         Cancel
                     </button>
                     <button
+                        disabled={isSaving}
                         className="item-modal_button btn-primary"
                         onClick={handleSave}
                         type="button"
                         aria-label="Save changes"
                     >
-                        Save
+                        {isSaving ? <span>Saving...</span> : <span>Save</span>}
                     </button>
                 </div>
             </div>
         </div>
-    , document.body);
+        , document.body);
 };
 
 export default ItemModal;

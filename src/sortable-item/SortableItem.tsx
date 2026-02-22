@@ -144,7 +144,9 @@ export const SortableItem: FC<SortableItemProps> = ({
             isHidden: false,
             isArchived: false,
             hasSubChores: false,
-            parentUuid: id
+            parentUuid: id,
+            recurrence: null,
+            nextDue: null
         };
         try {
             await addItem(newChecklistItem);

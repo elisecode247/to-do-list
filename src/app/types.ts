@@ -2,6 +2,69 @@ import { type Tab } from "src/app-toolbar/tabs/types";
 import { ALL_MODES } from "src/checklist/constants";
 
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';
+
+export const EndingConditionType = {
+    None: 'none',
+    EndDate: 'end_date',
+    OccurrencesNumber: 'occurrences_number'
+} as const;
+
+export type EndingConditionType = typeof EndingConditionType[keyof typeof EndingConditionType];
+
+export const FrequencyType = {
+    None: 'none',
+    Hourly: 'hourly',
+    Daily: 'daily',
+    Weekly: 'weekly',
+    Monthly: 'monthly',
+    Annually: 'annually'
+} as const;
+
+export const IntervalOptions: Option[] = [
+    { key: FrequencyType.Hourly, title: 'Hour' },
+    { key: FrequencyType.Daily, title: 'Day' },
+    { key: FrequencyType.Weekly, title: 'Week' },
+    { key: FrequencyType.Monthly, title: 'Month' },
+    { key: FrequencyType.Annually, title: 'Year' },
+];
+
+export type FrequencyType = typeof FrequencyType[keyof typeof FrequencyType];
+
+export interface RecurrenceDay {
+    key: number
+    title: string
+    symbol: string
+}
+
+export interface Option {
+    key: string
+    title: string
+}
+
+export type OneTimeRecurrence = {
+    type: "one-time";
+    dueAt: string;
+}
+export type IntervalRecurrence = {
+    type: "interval";
+    count: number;
+    frequency: FrequencyType;
+}
+
+export type CalendarRecurrence = {
+    type: "calendar";
+    startDate: Date
+    frequency: FrequencyType
+    numberOfRepetitions?: number
+    weekDaysRepetition: Array<number>
+    endingCondition: EndingConditionType
+    endingOccurrencesNumber?: number
+    endDate?: Date
+    isAllDay: boolean
+    startTime?: Date
+    endTime?: Date
+}
+
 export interface ChecklistItem {
     isHidden: boolean;
     id: string;
@@ -18,6 +81,8 @@ export interface ChecklistItem {
     isArchived: boolean;
     hasSubChores: boolean;
     parentUuid: string | null;
+    recurrence: IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null;
+    nextDue: string | null;
     /** google properties */
     due?: string;
     listId?: string;

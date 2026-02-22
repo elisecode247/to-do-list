@@ -39,7 +39,9 @@ const NewTaskForm = () => {
             isArchived: false,
             isHidden: false,
             hasSubChores: false,
-            parentUuid: null
+            parentUuid: null,
+            recurrence: null,
+            nextDue: null,
         };
         try {
             await addItem(newItem);

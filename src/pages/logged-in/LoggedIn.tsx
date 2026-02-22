@@ -44,6 +44,8 @@ const LoggedIn: React.FC = () => {
     const [leftOpen, setLeftOpen] = useState(isDesktop ? true : false);
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
         (modeFilter === ALL_MODES ? 0 : 1) +
@@ -51,13 +53,19 @@ const LoggedIn: React.FC = () => {
 
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
-
+        setIsSaving(true);
         try {
             await updateItem(saveItem);
             setEditingItem(null);
             showToast('Task updated successfully', 'success');
-        } catch {
-            showToast('Failed to update task. Please try again.', 'error');
+        } catch(error) {
+            if (error instanceof Error && error?.message) {
+                showToast(`Failed to update task: ${error.message}`, 'error');
+            } else {
+                showToast('Failed to update task. Please try again.', 'error');
+            }
+        } finally {
+            setIsSaving(false);
         }
     }
 
@@ -97,6 +105,7 @@ const LoggedIn: React.FC = () => {
     return (<>
         {editingItem ? (
             <ItemModal
+                isSaving={isSaving}
                 formData={editingItem}
                 setEditingItem={setEditingItem}
                 onSave={handleSave}

@@ -16,7 +16,9 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     },
     {
         id: "2",
@@ -33,7 +35,9 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     },
     {
         id: "3",
@@ -50,7 +54,9 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     },
     {
         id: "4",
@@ -67,7 +73,9 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     },
     {
         id: "5",
@@ -84,7 +92,9 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     },
     {
         id: "6",
@@ -101,6 +111,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isArchived: false,
         parentUuid: null,
         hasSubChores: false,
-        isHidden: false
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
     }
 ];

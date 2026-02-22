@@ -16,6 +16,13 @@ import {
     toggleHideToday,
     bulkUpdateTasks
 } from 'app/api';
+import type {
+    IntervalRecurrence,
+    CalendarRecurrence,
+    OneTimeRecurrence,
+    FrequencyType,
+    EndingConditionType
+} from 'app/types';
 
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -122,6 +129,36 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const addItem = async (newItem: ChecklistItem) => {
+        function mapRecurrence(rec: any): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence {
+            switch (rec.type) {
+                case 'one-time':
+                    return {
+                        type: 'one-time',
+                        dueAt: rec.dueAt ?? '',
+                    };
+                case 'interval':
+                    return {
+                        type: 'interval',
+                        count: rec.count ?? 1,
+                        frequency: rec.frequency as FrequencyType,
+                    };
+                case 'calendar':
+                    return {
+                        type: 'calendar',
+                        startDate: new Date(rec.startDate),
+                        frequency: rec.frequency as FrequencyType,
+                        weekDaysRepetition: rec.weekDaysRepetition ?? [],
+                        endingCondition: rec.endingCondition as EndingConditionType,
+                        endingOccurrencesNumber: rec.endingOccurrencesNumber,
+                        endDate: rec.endDate ? new Date(rec.endDate) : undefined,
+                        isAllDay: rec.isAllDay ?? false,
+                        startTime: rec.startTime ? new Date(rec.startTime) : undefined,
+                        endTime: rec.endTime ? new Date(rec.endTime) : undefined,
+                    };
+                default:
+                    throw new Error('Unknown recurrence type');
+            }
+        }
         try {
             const data = await addTask(newItem);
             const formattedTask: ChecklistItem = {
@@ -140,6 +177,11 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 isArchived: false,
                 parentUuid: data.parentUuid,
                 hasSubChores: data.hasSubChores,
+                recurrence: data.recurrence ?
+                    mapRecurrence(data.recurrence) :
+                    null,
+                nextDue: data.nextDue,
+                listId: data.listId,
             };
 
             setItems(prev => {

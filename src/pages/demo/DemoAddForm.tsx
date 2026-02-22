@@ -42,7 +42,9 @@ const DemoNewTaskForm = () => {
             isArchived: false,
             isHidden: false,
             hasSubChores: false,
-            parentUuid: null
+            parentUuid: null,
+            recurrence: null,
+            nextDue: null
         };
         addItem(newItem);
         setInputText('');

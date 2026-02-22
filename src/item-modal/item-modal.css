@@ -28,6 +28,7 @@
 
 .form-group {
     margin-bottom: var(--spacing-md);
+    color: var(--color-text-primary);
 }
 
 .form-group>label {
@@ -162,6 +163,17 @@ textarea {
     border-color: var(--color-mode-priority-text);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mode-priority-text) 25%, transparent);
     transform: scale(0.97);
+}
+
+/* Recurrence */
+.item-recurrence-container {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+}
+
+#item-modal-recurrence-count {
+    width: fit-content;
 }
 
 @media (prefers-color-scheme: dark) {
