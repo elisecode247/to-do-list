@@ -25,7 +25,7 @@
     overflow: auto;
 }
 
-.item-modal_text-input {
+.edit-task-form_text-input {
     font-size: 16px;
 }
 
@@ -70,7 +70,7 @@ textarea {
     font-family: inherit;
 }
 
-.item-modal_button {
+.edit-task-form_action-button {
     padding: var(--spacing-xs) var(--spacing-md);
     border: none;
     border-radius: var(--radius-sm);
@@ -98,7 +98,7 @@ textarea {
     opacity: 0.9;
 }
 
-.modal-actions {
+.edit-task-form_actions {
     display: flex;
     justify-content: flex-end;
     margin-top: var(--spacing-lg);
@@ -106,7 +106,7 @@ textarea {
 }
 
 /* Task Mode */
-.item-modal_mode-container {
+.edit-task-form_mode-container {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
@@ -114,7 +114,7 @@ textarea {
     align-items: baseline;
 }
 
-.item-modal_mode-button {
+.edit-task-form_mode-button {
     padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--radius-md);
     font-size: 16px;
@@ -124,17 +124,17 @@ textarea {
     transition: all var(--transition-fast);
 }
 
-.item-modal_mode-button--inactive {
+.edit-task-form_mode-button--inactive {
     background-color: var(--color-background);
     color: var(--color-text-secondary);
     border: 1px solid var(--color-border);
 }
 
-.item-modal_mode-button--inactive:hover {
+.edit-task-form_mode-button--inactive:hover {
     background-color: var(--color-hover);
 }
 
-.item-modal_mode-label {
+.edit-task-form_mode-label {
     font-size: 12px;
     text-transform: uppercase;
     opacity: 0.7;
@@ -142,13 +142,13 @@ textarea {
     color: var(--color-text-secondary);
 }
 
-.item-modal_mode-group {
+.edit-task-form_mode-group {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
 }
 
-.item-modal_mode-button--priority {
+.edit-task-form_mode-button--priority {
     border: 2px dotted;
     font-weight: 600;
     background: transparent;
@@ -161,7 +161,7 @@ textarea {
         transform 120ms ease;
 }
 
-.item-modal_mode-button--priority-active {
+.edit-task-form_mode-button--priority-active {
     background: var(--color-mode-priority-bg);
     border-color: var(--color-mode-priority-text);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mode-priority-text) 25%, transparent);
@@ -175,7 +175,7 @@ textarea {
     gap: var(--spacing-xs);
 }
 
-#item-modal-recurrence-count {
+.edit-task-form_recurrence-count {
     width: fit-content;
 }
 
@@ -184,7 +184,7 @@ textarea {
         background-color: var(--color-surface);
     }
 
-    .item-modal_mode-label {
+    .edit-task-form_mode-label {
         color: var(--color-text-primary);
     }
 }

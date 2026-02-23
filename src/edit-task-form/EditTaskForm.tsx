@@ -11,7 +11,7 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { FrequencyType, IntervalOptions } from 'src/app/types';
 import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
 
-type ItemModalProps = {
+type NewTaskFormProps = {
     isSaving?: boolean;
     formData: ChecklistItem;
     setEditingItem: (item: ChecklistItem) => void;
@@ -19,7 +19,7 @@ type ItemModalProps = {
     onClose: () => void;
 };
 
-export const EditTaskForm: FC<ItemModalProps> = ({
+export const EditTaskForm: FC<NewTaskFormProps> = ({
     isSaving = false,
     formData,
     setEditingItem,
@@ -67,7 +67,7 @@ export const EditTaskForm: FC<ItemModalProps> = ({
             <div className="form-group">
                 <label>Task</label>
                 <input
-                    className="item-modal_text-input"
+                    className="edit-task-form_text-input"
                     type="text"
                     value={formData.text}
                     onChange={(e) =>
@@ -77,7 +77,7 @@ export const EditTaskForm: FC<ItemModalProps> = ({
             </div>
             {/* Category */}
             <CategorySelect
-                id="item-modal-category-select"
+                id={formData.id}
                 isFilter={false}
                 selectedCategory={formData.category}
                 onChange={(category: string) =>
@@ -112,18 +112,18 @@ export const EditTaskForm: FC<ItemModalProps> = ({
                 />
             </div>
 
-            <div className="item-modal_mode-container">
-                <p className="item-modal_mode-label">Schedule (choose one)</p>
+            <div className="edit-task-form_mode-container">
+                <p className="edit-task-form_mode-label">Schedule (choose one)</p>
 
-                <div className="item-modal_mode-group">
+                <div className="edit-task-form_mode-group">
                     {MODES.map(mode => (
                         <button
                             key={mode}
                             onClick={() => toggleMode(mode)}
-                            className={`item-modal_mode-button
+                            className={`edit-task-form_mode-button
                                     ${formData.mode === mode ?
                                     getModeColor(mode) :
-                                    'item-modal_mode-button--inactive'
+                                    'edit-task-form_mode-button--inactive'
                                 }
                                 `}
                         >
@@ -134,8 +134,8 @@ export const EditTaskForm: FC<ItemModalProps> = ({
             </div>
             {formData.mode === OCCASIONAL_MODE && (
                 <div className="form-group item-recurrence-container">
-                    <label className="item-modal_recurrence-label">Repeat Every</label>
-                    <input id="item-modal-recurrence-count" type="number"
+                    <label className="edit-task-form_recurrence-label">Repeat Every</label>
+                    <input className="edit-task-form_recurrence-count" type="number"
                         min={1}
                         value={getRecurrenceCount(formData.recurrence)}
                         onChange={(e) => {
@@ -171,7 +171,7 @@ export const EditTaskForm: FC<ItemModalProps> = ({
                             <option key={option.key} value={option.key}>{option.title}(s)</option>
                         ))}
                     </select>
-                    <label className="item-modal_recurrence-label">
+                    <label className="edit-task-form_recurrence-label">
                         Starting
                     </label>
                     <input
@@ -193,16 +193,16 @@ export const EditTaskForm: FC<ItemModalProps> = ({
             )}
             <div>
 
-                <p className="item-modal_mode-label">Options</p>
+                <p className="edit-task-form_mode-label">Options</p>
 
-                <div className="item-modal_mode-group">
+                <div className="edit-task-form_mode-group">
                     <button
                         key="priority"
                         onClick={() => togglePriority()}
-                        className={`item-modal_mode-button
-                                item-modal_mode-button--priority
+                        className={`edit-task-form_mode-button
+                                edit-task-form_mode-button--priority
                                 ${formData.isPriority
-                                ? 'item-modal_mode-button--priority-active'
+                                ? 'edit-task-form_mode-button--priority-active'
                                 : ''}
                             `}
                         title="Can be combined with any schedule"
@@ -213,18 +213,18 @@ export const EditTaskForm: FC<ItemModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="modal-actions">
+            <div className="edit-task-form_actions">
                 <button
-                    className="item-modal_button btn-secondary"
+                    className="edit-task-form_action-button btn-secondary"
                     onClick={onClose}
                     type="button"
-                    aria-label="Close modal"
+                    aria-label="Close form"
                 >
                     Cancel
                 </button>
                 <button
                     disabled={isSaving}
-                    className="item-modal_button btn-primary"
+                    className="edit-task-form_action-button btn-primary"
                     onClick={handleSave}
                     type="button"
                     aria-label="Save changes"

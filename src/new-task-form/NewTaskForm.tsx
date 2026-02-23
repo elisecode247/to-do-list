@@ -81,8 +81,8 @@ const NewTaskForm = () => {
             />
             {mode === OCCASIONAL_MODE && (
                 <div className="form-group item-recurrence-container item-recurrence-container--new-task">
-                    <label className="item-modal_recurrence-label">Repeat Every</label>
-                    <input id="item-modal-recurrence-count" type="number"
+                    <label className="edit-task-form_recurrence-label">Repeat Every</label>
+                    <input id="edit-task-form_recurrence-count" type="number"
                         min={1}
                         value={recurrenceCount}
                         onChange={(e) => {
@@ -104,7 +104,7 @@ const NewTaskForm = () => {
                 </div>
             )}
             <CategorySelect
-                id="new-task-form-category-select"
+                id={'new-task-form'}
                 selectedCategory={newTaskCategory}
                 onChange={(category: string) => setNewTaskCategory(category)}
             />
