@@ -8,6 +8,8 @@ import './new-task-form.css';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
 import { OCCASIONAL_MODE, ONE_TIME_MODE } from 'src/checklist/constants';
 import { type ChecklistItem, FrequencyType } from 'app/types';
+import { formatDate } from 'src/app/utilities/format-date';
+import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 
 const NewTaskForm = () => {
     const { addItem } = useTask();
@@ -16,6 +18,7 @@ const NewTaskForm = () => {
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
     const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
+    const [recurrenceStartDate, setRecurrenceStartDate] = useState<string>(formatDate(new Date()));
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
@@ -31,7 +34,7 @@ const NewTaskForm = () => {
                 type: 'interval',
                 count: recurrenceCount,
                 frequency: recurrenceFrequency,
-                startDate: new Date(),
+                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
             };
         }
 
@@ -70,7 +73,7 @@ const NewTaskForm = () => {
         setMode(val);
     }
 
-    return  (<>
+    return (<>
         <div ref={panelRef} className="new-task-form-item-container">
             <div className="new-task-form-item-header">
                 <span className="new-task-form-title">New Task</span>
@@ -101,6 +104,21 @@ const NewTaskForm = () => {
                             <option key={option.key} value={option.key}>{option.title}(s)</option>
                         ))}
                     </select>
+                    <div className="form-group">
+                        <label className="edit-task-form_recurrence-label">
+                            Starting
+                        </label>
+                        <input
+                            className="edit-task-form_recurrence-start-date"
+                            type="date"
+                            value={recurrenceStartDate}
+                            onFocus={(e) => e.currentTarget.showPicker?.()}
+                            onClick={(e) => e.currentTarget.showPicker?.()}
+                            onChange={(e) => {
+                                setRecurrenceStartDate(e.target.value);
+                            }}
+                        />
+                    </div>
                 </div>
             )}
             <CategorySelect

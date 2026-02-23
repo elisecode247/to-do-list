@@ -66,6 +66,7 @@ const LoggedIn: React.FC = () => {
             }
         } finally {
             setIsSaving(false);
+            setRightOpen(false);
         }
     }
 

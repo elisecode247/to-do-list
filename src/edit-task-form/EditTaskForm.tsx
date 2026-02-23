@@ -11,7 +11,7 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { FrequencyType, IntervalOptions } from 'src/app/types';
 import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
 
-type NewTaskFormProps = {
+type EditTaskFormProps = {
     isSaving?: boolean;
     formData: ChecklistItem;
     setEditingItem: (item: ChecklistItem) => void;
@@ -19,7 +19,7 @@ type NewTaskFormProps = {
     onClose: () => void;
 };
 
-export const EditTaskForm: FC<NewTaskFormProps> = ({
+export const EditTaskForm: FC<EditTaskFormProps> = ({
     isSaving = false,
     formData,
     setEditingItem,
@@ -27,7 +27,6 @@ export const EditTaskForm: FC<NewTaskFormProps> = ({
     onClose,
 }) => {
     const noteRef = useRef<MDXEditorMethods>(null)
-
     const handleSave = async () => {
         let note = noteRef.current?.getMarkdown();
         let recurrence = formData.recurrence;
@@ -36,6 +35,7 @@ export const EditTaskForm: FC<NewTaskFormProps> = ({
                 type: 'interval',
                 count: getRecurrenceCount(formData.recurrence, 1),
                 frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
+                startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date().toISOString(),
             } as IntervalRecurrence;
         }
         onSave({
@@ -43,6 +43,7 @@ export const EditTaskForm: FC<NewTaskFormProps> = ({
             note: note ?? formData.note ?? '',
             recurrence: recurrence ?? formData.recurrence,
         });
+        onClose();
     }
 
     const toggleMode = (mode: Mode) => {
@@ -133,62 +134,80 @@ export const EditTaskForm: FC<NewTaskFormProps> = ({
                 </div>
             </div>
             {formData.mode === OCCASIONAL_MODE && (
-                <div className="form-group item-recurrence-container">
-                    <label className="edit-task-form_recurrence-label">Repeat Every</label>
-                    <input className="edit-task-form_recurrence-count" type="number"
-                        min={1}
-                        value={getRecurrenceCount(formData.recurrence)}
-                        onChange={(e) => {
-                            const count = parseInt(e.target.value);
-                            if (isNaN(count) || count < 1) return;
+                <div className="item-recurrence-container">
+                    <div className="form-group">
+                        <label
+                            htmlFor={`edit-task-form_recurrence-count-${formData.id}`}
+                            className="edit-task-form_recurrence-label"
+                        >
+                            Repeat Every
+                        </label>
+                        <input
+                            id={`edit-task-form_recurrence-count-${formData.id}`}
+                            className="edit-task-form_recurrence-count"
+                            type="number"
+                            min={1}
+                            max={1000}
+                            value={getRecurrenceCount(formData.recurrence)}
+                            onChange={(e) => {
+                                const count = parseInt(e.target.value);
+                                if (isNaN(count) || count < 1) return;
 
-                            setEditingItem({
-                                ...formData,
-                                recurrence: {
-                                    type: 'interval',
-                                    count,
-                                    frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
-                                    startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date(),
-                                },
-                            });
-                        }}
-                    />
-                    <select
-                        className="category-select"
-                        value={(formData?.recurrence?.type === 'interval' ? formData.recurrence.frequency : FrequencyType.Daily)}
-                        onChange={(e) => {
-                            const frequency = e.target.value as IntervalRecurrence['frequency'];
-                            setEditingItem({
-                                ...formData,
-                                recurrence: {
-                                    ...formData.recurrence,
-                                    frequency
-                                } as IntervalRecurrence
-                            })
-                        }}
-                    >
-                        {IntervalOptions.map(option => (
-                            <option key={option.key} value={option.key}>{option.title}(s)</option>
-                        ))}
-                    </select>
-                    <label className="edit-task-form_recurrence-label">
-                        Starting
-                    </label>
-                    <input
-                        type="date"
-                        value={formatDate(new Date((formData.recurrence as IntervalRecurrence)?.startDate)) ?? ''}
-                        onClick={(e) => e.currentTarget.showPicker?.()}
-                        onFocus={(e) => e.currentTarget.showPicker?.()}
-                        onChange={() => {
-                            setEditingItem({
-                                ...formData,
-                                recurrence: {
-                                    ...(formData.recurrence as IntervalRecurrence),
-                                    startDate: new Date(),
-                                } as IntervalRecurrence
-                            })
-                        }}
-                    />
+                                setEditingItem({
+                                    ...formData,
+                                    recurrence: {
+                                        type: 'interval',
+                                        count,
+                                        frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
+                                        startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date(),
+                                    },
+                                });
+                            }}
+                        />
+
+                        <select
+                            className="category-select edit-task-form_recurrence-frequency"
+                            value={(formData?.recurrence?.type === 'interval' ? formData.recurrence.frequency : FrequencyType.Daily)}
+                            onChange={(e) => {
+                                const frequency = e.target.value as IntervalRecurrence['frequency'];
+                                setEditingItem({
+                                    ...formData,
+                                    recurrence: {
+                                        ...formData.recurrence,
+                                        frequency
+                                    } as IntervalRecurrence
+                                })
+                            }}
+                        >
+                            {IntervalOptions.map(option => (
+                                <option key={option.key} value={option.key}>{option.title}(s)</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label className="edit-task-form_recurrence-label">
+                            Starting
+                        </label>
+                        <input
+                            className="edit-task-form_recurrence-start-date"
+                            type="date"
+                            value={formData.recurrence?.type === 'interval' && formData.recurrence.startDate
+                                ? formatDate(new Date(formData.recurrence.startDate))
+                                : formatDate(new Date())}
+                            onFocus={(e) => e.currentTarget.showPicker?.()}
+                            onClick={(e) => e.currentTarget.showPicker?.()}
+                            onChange={(e) => {
+                                const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
+                                setEditingItem({
+                                    ...formData,
+                                    recurrence: {
+                                        ...(formData.recurrence as IntervalRecurrence),
+                                        startDate: isoDateString ?? '',
+                                    } as IntervalRecurrence
+                                })
+                            }}
+                        />
+                    </div>
                 </div>
             )}
             <div>

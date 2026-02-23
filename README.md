@@ -38,7 +38,7 @@ Live: https://elisecode247.github.io/to-do-list/
 - fix calendar status fetch on dropdown
 - scheduled tasks
 - interval tasks
-    - add interval recurrence to new tasks and edit tasks
+    - add interval recurrence to new tasks and edit tasks DONE
     - calculate nextDue
         - exclude archived tasks
         - unit tests

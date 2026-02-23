@@ -173,9 +173,19 @@ textarea {
     display: flex;
     align-items: baseline;
     gap: var(--spacing-xs);
+    justify-content: flex-start;
+    flex-wrap:wrap;
+}
+.item-recurrence-container > * {
+    flex-basis: 100%;
+    @media (min-width: 500px) {
+        flex-basis: auto;
+    }
 }
 
-.edit-task-form_recurrence-count {
+.edit-task-form_recurrence-count,
+.edit-task-form_recurrence-frequency,
+.edit-task-form_recurrence-start-date {
     width: fit-content;
 }
 

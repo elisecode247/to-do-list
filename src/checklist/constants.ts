@@ -5,8 +5,8 @@ export const SCHEDULED_MODE = 'scheduled' as const;
 export const ALL_MODES = 'all' as const;
 
 export const MODES = [
-  DAILY_MODE,
   ONE_TIME_MODE,
+  DAILY_MODE,
   OCCASIONAL_MODE,
   SCHEDULED_MODE
 ] as const;

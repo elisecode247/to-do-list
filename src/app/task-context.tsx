@@ -141,7 +141,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                         type: 'interval',
                         count: rec.count ?? 1,
                         frequency: rec.frequency as FrequencyType,
-                        startDate: rec.startDate ? new Date(rec.startDate) : new Date(),
+                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
                 case 'calendar':
                     return {
