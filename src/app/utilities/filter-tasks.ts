@@ -28,10 +28,11 @@ export function filterTasks({
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
     switch (activeTab) {
         case TABS.today:
-            return !task.isArchived && !task.isHidden && !isSubtask(task);
+            return !task.isArchived && !task.isHidden && !isSubtask(task) && (!task.nextDue || new Date(task.nextDue) <= new Date());
 
         case TABS.scheduled:
-            return task.mode === 'scheduled' && !task.isHidden && !isSubtask(task);
+            return (task.mode === 'scheduled' || (!!task.nextDue && new Date(task.nextDue) > new Date())) &&
+                !task.isHidden && !isSubtask(task);
 
         case TABS.hidden:
             return task.isHidden;

@@ -4,7 +4,7 @@ import type { FC, Dispatch, SetStateAction, RefObject } from 'react';
 import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
-import { getDaysFromNow } from 'src/utilities/days-ago';
+import { getDaysAgo, getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem, Mode } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
@@ -55,6 +55,7 @@ interface SortableItemProps {
     onSuccess: Dispatch<SetStateAction<boolean>>;
     isPriority: boolean;
     subtasks?: ChecklistItem[];
+    nextDue?: string | null;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -80,6 +81,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     isPriority,
     onSuccess,
     subtasks,
+    nextDue,
 }) => {
     const { getSubtasks, addItem } = useTask();
     const { showToast } = useToast();
@@ -116,7 +118,8 @@ export const SortableItem: FC<SortableItemProps> = ({
         opacity: isDragging ? 0.5 : 1,
     };
     const showLastCompleted = !!lastCompleted;
-    const lastCompletedDate = getDaysFromNow(new Date(lastCompleted));
+    const lastCompletedDate = getDaysAgo(new Date(lastCompleted));
+    const nextDueDate = nextDue ? getDaysFromNow(new Date(nextDue)) : null;
 
     const filteredTasks = subtasks?.filter((t) => {
         if (t.isHidden || t.isArchived) return false;
@@ -265,6 +268,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 {showLastCompleted && (
                                     <span className="sortable-item_last-completed-text">
                                         {lastCompletedDate}
+                                    </span>
+                                )}
+                                {nextDue && (
+                                    <span className="sortable-item_next-due-text">
+                                        {nextDueDate}
                                     </span>
                                 )}
                             </span>

@@ -13,7 +13,6 @@ export type EndingConditionType = typeof EndingConditionType[keyof typeof Ending
 
 export const FrequencyType = {
     None: 'none',
-    Hourly: 'hourly',
     Daily: 'daily',
     Weekly: 'weekly',
     Monthly: 'monthly',
@@ -21,7 +20,6 @@ export const FrequencyType = {
 } as const;
 
 export const IntervalOptions: Option[] = [
-    { key: FrequencyType.Hourly, title: 'Hour' },
     { key: FrequencyType.Daily, title: 'Day' },
     { key: FrequencyType.Weekly, title: 'Week' },
     { key: FrequencyType.Monthly, title: 'Month' },

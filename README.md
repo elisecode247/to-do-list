@@ -41,8 +41,8 @@ Live: https://elisecode247.github.io/to-do-list/
     - add interval recurrence to new tasks and edit tasks DONE
     - calculate nextDue
         - exclude archived tasks
-        - unit tests
-    - filter today and upcoming tabs using nextDue
+        - unit tests DONE
+    - filter today and upcoming tabs using nextDue DONE
         - unit tests
 - ux improvement
     - keyboard tabbing

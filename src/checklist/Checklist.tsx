@@ -69,6 +69,10 @@ const Checklist: FC<ChecklistProps> = ({
             .sort((a, b) => {
                 if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
                     return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
+                } else if (activeTab === TABS.scheduled) {
+                    const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
+                    const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
+                    return aDue - bDue;
                 }
                 return a.sortOrder - b.sortOrder;
             });
@@ -240,6 +244,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 subtasks={getSubtasks(item.id)}
                                 onMoveItem={handleMoveItem}
                                 onSuccess={displaySparkles}
+                                nextDue={item.nextDue}
                             />
                         ))}
                     </SortableContext>
