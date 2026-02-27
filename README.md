@@ -18,27 +18,27 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- allow user delete history
-- Split google client id into local and prod
-- improve ui for newly logged in user
+- bug: fix calendar status fetch on dropdown
+- feature: add undo to delete and uncheck
+- ux: improvements
+    - fix input cursor not moving in new task
+    - put text input on top of mobile panel new task
+    - keyboard tabbing
+    - move filter button to bottom right
+    - lost internet connection
+    - make localStorage persistent longer on mobile
+- feature: scheduled tasks
+- feature: suggestions feature (random dice?)
+- feature: include AI task breakdown and add to separate checklist
+- ux: improve ux for newly logged in user
     - use templates
-- Reset all env variables
-- Access token in memory
-- Refresh token in HttpOnly Secure SameSite cookie
-- Move frontend code to Railway (WPF Chp 3)
+- feature: allow user delete history
+- feature: custom categories
+- security: access token in memory
+- security: refresh token in HttpOnly Secure SameSite cookie
+- tech-debt: split google client id into local and prod
+- chore: reset all env variables
+- infra: move frontend code to Railway (WPF Chp 3)
     - set up cdn on Railway https://docs.railway.com/guides/add-a-cdn-using-cloudfront
     - set max-age to a year for cache-control header (check cdn as well)
-- add undo to delete and uncheck
-- suggestions feature (random dice?)
-- Include AI task breakdown and add to separate checklist
-- custom categories
-    - default to parent category on subtasks
-- make localStorage persistent longer on mobile
-- lost internet connection
-- fix calendar status fetch on dropdown
-- scheduled tasks
-- ux improvement
-    - keyboard tabbing
-    - Put text input on top of mobile panel new task
-    - fix input cursor not moving in new task
-    - move filter button to bottom right
+
