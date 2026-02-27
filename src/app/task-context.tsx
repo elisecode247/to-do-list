@@ -101,7 +101,11 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
 
         try {
-            await updateTask(updatedItem);
+            const updatedTask = await updateTask(updatedItem);
+            setItems(prev => {
+            previousItem = prev.find(i => i.id === updatedItem.id);
+            return prev.map(i => i.id === updatedItem.id ? { ...updatedTask } : i);
+        });
         } catch (error) {
             // rollback only that item
             if (previousItem) {
