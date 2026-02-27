@@ -8,9 +8,9 @@ export function getDaysAgo(date1: Date) {
   const timeDifferenceMs = Math.abs(utcDate2 - utcDate1); // Absolute difference
   const daysDifference = Math.floor(timeDifferenceMs / millisecondsPerDay);
 
-  if (daysDifference === 0) return 'Today';
-  if (daysDifference === 1) return 'Yesterday';
-  return `${daysDifference} days ago`;
+  if (daysDifference === 0) return 'Done Today';
+  if (daysDifference === 1) return 'Done Yesterday';
+  return `Done ${daysDifference} days ago`;
 }
 
 export function getDaysFromNow(date1: Date) {
@@ -23,8 +23,8 @@ export function getDaysFromNow(date1: Date) {
   const timeDifferenceMs = Math.abs(utcDate2 - utcDate1); // Absolute difference
   const daysDifference = Math.floor(timeDifferenceMs / millisecondsPerDay);
 
-  if (daysDifference === 0) return 'Today';
-  if (daysDifference === 1) return 'Tomorrow';
-  return `start on ${date1.toLocaleDateString()}, (${daysDifference} days from now)`;
+  if (daysDifference === 0) return 'Start Today';
+  if (daysDifference === 1) return 'Start Tomorrow';
+  return `Start on ${date1.toLocaleDateString()}, (${daysDifference} days from now)`;
 }
 

@@ -26,9 +26,13 @@ export function filterTasks({
 
 /** Helper: Tab filter logic */
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
+    const isCompletedToday = task.done && new Date(task.lastCompleted).toDateString() === new Date().toDateString();
+    console.log("%c Line:30 🥤 new Date().toDateString()", "color:#b03734", new Date().toDateString());
+    console.log("%c Line:30 🍓 new Date(task.lastCompleted).toDateString()", "color:#93c0a4", new Date(task.lastCompleted).toDateString());
     switch (activeTab) {
         case TABS.today:
-            return !task.isArchived && !task.isHidden && !isSubtask(task) && (!task.nextDue || new Date(task.nextDue) <= new Date());
+            return !task.isArchived && !task.isHidden && !isSubtask(task) &&
+                (!task.nextDue || new Date(task.nextDue) <= new Date() || isCompletedToday);
 
         case TABS.upcoming:
             return (task.mode === 'scheduled' || (!!task.nextDue && new Date(task.nextDue) > new Date())) &&

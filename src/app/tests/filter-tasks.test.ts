@@ -22,6 +22,25 @@ import { isCategoryIncluded } from 'src/category-select/category-constants';
 // --------------------
 // Test helpers
 // --------------------
+/**
+ * Get today's date at midnight in the user's local timezone
+ */
+const getTodayAtMidnight = (): Date => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+};
+
+/**
+ * Create an ISO date string relative to today (in user's local timezone)
+ * @param offset - number of days relative to today (0 = today, 1 = tomorrow, -1 = yesterday)
+ */
+const getDateRelativeToToday = (offset: number): string => {
+    const date = getTodayAtMidnight();
+    date.setDate(date.getDate() + offset);
+    return date.toISOString();
+};
+
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     id: crypto.randomUUID(),
     text: 'Task',
@@ -120,7 +139,7 @@ describe('filterTasks – tab filtering', () => {
 
     it('Today tab excludes tasks with future due dates', () => {
         const futureTask = makeTask({
-            nextDue: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+            nextDue: getDateRelativeToToday(1),
         });
 
         const result = filterTasks(
@@ -148,12 +167,29 @@ describe('filterTasks – tab filtering', () => {
 
     it('Today tab includes tasks with past due dates', () => {
         const pastDue = makeTask({
-            nextDue: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+            nextDue: getDateRelativeToToday(-1),
         });
 
         const result = filterTasks(
             makeParams({
                 items: [pastDue],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toHaveLength(1);
+    });
+
+    it('Today tab includes tasks completed today', () => {
+        const completedToday = makeTask({
+            done: true,
+            lastCompleted: getDateRelativeToToday(0),
+            nextDue: getDateRelativeToToday(1), // nextDue in future to test the fix
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [completedToday],
                 activeTab: TAB_TODAY,
             })
         );
@@ -178,7 +214,7 @@ describe('filterTasks – tab filtering', () => {
     it('Upcoming tab includes upcoming tasks', () => {
         const occasional = makeTask({
             mode: 'occasional',
-            nextDue: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString()
+            nextDue: getDateRelativeToToday(1)
         });
         const daily = makeTask({ mode: 'daily' });
 
@@ -195,7 +231,7 @@ describe('filterTasks – tab filtering', () => {
     it('Upcoming tab excludes non-upcoming tasks', () => {
         const pastDue = makeTask({
             mode: 'occasional',
-            nextDue: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString()
+            nextDue: getDateRelativeToToday(-1)
         });
         const daily = makeTask({ mode: 'daily' });
 
@@ -207,6 +243,23 @@ describe('filterTasks – tab filtering', () => {
         );
 
         expect(result).toHaveLength(0);
+    });
+
+    it('Upcoming tab includes tasks completed today and next due in the future', () => {
+        const completedToday = makeTask({
+            done: true,
+            lastCompleted: getDateRelativeToToday(0),
+            nextDue: getDateRelativeToToday(1), // nextDue in future
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [completedToday],
+                activeTab: TAB_UPCOMING,
+            })
+        );
+
+        expect(result).toHaveLength(1);
     });
 
     it('Upcoming tab excludes hidden tasks', () => {
