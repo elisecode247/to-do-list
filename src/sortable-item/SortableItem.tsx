@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
-import { TABS } from 'src/app-toolbar/tabs/types';
+import { TAB_ARCHIVED, TABS } from 'src/app-toolbar/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
@@ -388,7 +388,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     <span className="sortable-item_button-text-span">Edit</span>
                                 </button>
 
-                                {isActive ? (
+                                {activeTab !== TAB_ARCHIVED ? (
                                     <button
                                         className="sortable-item_archive-button"
                                         onClick={() => onMoveItem(id)}
