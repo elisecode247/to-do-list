@@ -182,6 +182,7 @@ function BulkEdit() {
                                         </td>
                                         <td>
                                             <select
+                                                className="select-input"
                                                 value={task.mode}
                                                 onChange={e =>
                                                     updateLocal(task.id, "mode", e.target.value)
@@ -196,6 +197,7 @@ function BulkEdit() {
                                         </td>
                                         <td>
                                             <select
+                                                className="select-input"
                                                 value={taskCategory}
                                                 onChange={e => {
                                                     updateLocal(task.id, "category", e.target.value)

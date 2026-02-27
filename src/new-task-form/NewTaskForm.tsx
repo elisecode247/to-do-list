@@ -6,7 +6,7 @@ import { useToast } from 'src/toast/use-toast';
 import { IntervalOptions, type IntervalRecurrence, type Mode } from 'app/types';
 import './new-task-form.css';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
-import { OCCASIONAL_MODE, ONE_TIME_MODE } from 'src/checklist/constants';
+import { OCCASIONAL_MODE, ONE_TIME_MODE, SCHEDULED_MODE } from 'src/checklist/constants';
 import { type ChecklistItem, FrequencyType } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -82,34 +82,51 @@ const NewTaskForm = () => {
                 mode={mode}
                 onClick={(mode: Mode) => handleModeClick(mode)}
             />
-            {mode === OCCASIONAL_MODE && (
-                <div className="form-group item-recurrence-container item-recurrence-container--new-task">
-                    <label className="edit-task-form_recurrence-label">Repeat Every</label>
-                    <input id="edit-task-form_recurrence-count" type="number"
-                        min={1}
-                        value={recurrenceCount}
-                        onChange={(e) => {
-                            const count = parseInt(e.target.value);
-                            if (isNaN(count) || count < 1) return;
-                            setRecurrenceCount(count);
-                        }}
-                    />
-                    <select
-                        value={recurrenceFrequency}
-                        onChange={(e) => {
-                            setRecurrenceFrequency(e.target.value as FrequencyType);
-                        }}
-                    >
-                        {IntervalOptions.map(option => (
-                            <option key={option.key} value={option.key}>{option.title}(s)</option>
-                        ))}
-                    </select>
+            {mode !== SCHEDULED_MODE && (
+                <div className="item-recurrence-container item-recurrence-container--new-task">
+                    {mode === OCCASIONAL_MODE && (
+                        <>
+                            <div className="form-group">
+                            <label
+                                className="new-task-form_recurrence-label"
+                                htmlFor="new-task-form_recurrence-count">
+                                Repeat Every
+                            </label>
+                            <input
+                                id="new-task-form_recurrence-count"
+                                className="new-task-form_recurrence-count"
+                                type="number"
+                                min={1}
+                                value={recurrenceCount}
+                                onChange={(e) => {
+                                    const count = parseInt(e.target.value);
+                                    if (isNaN(count) || count < 1) return;
+                                    setRecurrenceCount(count);
+                                }}
+                            />
+                            <select
+                                className="select-input"
+                                value={recurrenceFrequency}
+                                onChange={(e) => {
+                                    setRecurrenceFrequency(e.target.value as FrequencyType);
+                                }}
+                            >
+                                {IntervalOptions.map(option => (
+                                    <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                ))}
+                            </select>
+                            </div>
+                        </>
+                    )}
                     <div className="form-group">
-                        <label className="edit-task-form_recurrence-label">
+                        <label
+                            className="new-task-form_recurrence-label"
+                            htmlFor="new-task-form_recurrence-start-date">
                             Starting
                         </label>
                         <input
-                            className="edit-task-form_recurrence-start-date"
+                            id="new-task-form_recurrence-start-date"
+                            className="new-task-form_recurrence-start-date"
                             type="date"
                             value={recurrenceStartDate}
                             onFocus={(e) => e.currentTarget.showPicker?.()}

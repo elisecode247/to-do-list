@@ -17,41 +17,6 @@
 }
 
 
-/* Category selector styles */
-.category-select {
-    padding: var(--spacing-xs) var(--spacing-md);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background-color: transparent;
-    color: var(--color-text-primary);
-    white-space: nowrap;
-    min-width: 150px;
-    min-height: 44px;
-}
-
-.category-select:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.category-select:active {
-    transform: scale(0.98);
-}
-
-.category-select:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-}
-
-/* Option styling within select */
-.category-select option {
-    background-color: var(--color-surface);
-    color: var(--color-text-primary);
-    padding: var(--spacing-md);
-}
 /* Filter specific styles */
 .category-select_filter {
     margin: 0;

@@ -19,7 +19,7 @@ const CategorySelect = ({
         <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper_filter' : ''}`}>
             <select
                 id={`category-select-${id}`}
-                className={`category-select ${isFilter ? 'category-select_filter' : ''}`}
+                className={`select-input ${isFilter ? 'category-select_filter' : ''}`}
                 value={selectedCategory}
                 onChange={(e) => onChange(e.target.value)}
             >
