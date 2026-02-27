@@ -18,7 +18,7 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- bug: fix calendar status fetch on dropdown
+- show only Google Calendar events in today and Upcoming tabs
 - feature: add undo to delete and uncheck
 - ux: improvements
     - fix input cursor not moving in new task

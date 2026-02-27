@@ -3,25 +3,50 @@ import { useAuthentication } from "src/authentication/use-authentication";
 import { useCalendarIntegration } from "./use-google-calendar";
 import GoogleCalendarConnectButton from "src/google-authorization/google-calendar-button";
 import { CalendarSync, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useToast } from "src/toast/use-toast";
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
     const { loading, connected, refreshStatus, disconnectCalendar, isError, setIsError } = useCalendarIntegration();
     const { showToast } = useToast();
+    const hasShownConnectionErrorRef = useRef(false);
+    const didMountRef = useRef(false);
 
     if (loading) return null;
     if (!isAuthenticated) return null;
 
     function handleSuccess() {
+        hasShownConnectionErrorRef.current = false;
+        setIsError(false);
         refreshStatus();
+    }
+
+    async function handleDisconnect() {
+        hasShownConnectionErrorRef.current = false;
+        setIsError(false);
+        await disconnectCalendar();
     }
 
     function handleConnectionError(err: unknown) {
         setIsError(true);
         console.error("Error connecting to Google Calendar:", err);
-        showToast("There was an error connecting to Google Calendar. Please try again.");
+        if (!hasShownConnectionErrorRef.current) {
+            showToast("There was an error connecting to Google Calendar. Please try again.");
+            hasShownConnectionErrorRef.current = true;
+        }
     }
+
+    useEffect(() => {
+        if (!didMountRef.current) {
+            didMountRef.current = true;
+            return;
+        }
+
+        if (!isError) {
+            hasShownConnectionErrorRef.current = false;
+        }
+    }, [isError]);
 
     return (
         <div className="settings-dropdown">
@@ -55,7 +80,7 @@ const GoogleCalendarStatus = () => {
                         <button
                             type="button"
                             className="settings-btn settings-btn--secondary"
-                            onClick={disconnectCalendar}
+                            onClick={handleDisconnect}
                         >
                             Disconnect Calendar
                         </button>
@@ -78,7 +103,9 @@ const GoogleCalendarStatus = () => {
                         <button
                             type="button"
                             className="settings-btn settings-btn--secondary"
-                            onClick={refreshStatus}
+                            onClick={() => {
+                                refreshStatus();
+                            }}
                         >
                             Retry
                         </button>

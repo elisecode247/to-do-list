@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { API_AUTH_URL } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
 import { useAuthentication } from "src/authentication/use-authentication";
@@ -19,9 +19,9 @@ export function useCalendarIntegration() {
     const [events, setEvents] = useState<Event[]>([]);
     const [tasks, setTasks] = useState<ChecklistItem[]>([]);
     const [isError, setIsError] = useState(false);
+    const hasShownEventsErrorRef = useRef(false);
 
-    const fetchStatus = useCallback(
-        async (opts?: { force?: boolean }) => {
+    const fetchStatus = useCallback(async (opts?: { force?: boolean }) => {
 
             if (!isAuthenticated) {
                 setConnected(false);
@@ -48,6 +48,7 @@ export function useCalendarIntegration() {
                 const isConnected = res.ok && Boolean((await res.json())?.connected);
                 setConnected(isConnected);
                 writeCalendarCache(isConnected);
+                setIsError(false);
                 return isConnected;
             } catch (err) {
                 console.error("Calendar status check failed:", err);
@@ -83,27 +84,12 @@ export function useCalendarIntegration() {
         }
     }, [isAuthenticated]);
 
-    useEffect(() => {
-        const initializeCalendar = async () => {
-            if (isAuthenticated) {
-                await fetchStatus();
-                await loadCalendarEvents();
-            } else {
-                setConnected(false);
-                setLoading(false);
-                setEvents([]);
-                setTasks([]);
-                clearCalendarCache();
-            }
-        };
-        initializeCalendar();
-    }, [isAuthenticated, fetchStatus, connected]);
-
     const loadCalendarEvents = useCallback(async () => {
         if (!isAuthenticated) return [];
         if (!connected) {
             setEvents([]);
             setTasks([]);
+            hasShownEventsErrorRef.current = false;
             return [];
         }
 
@@ -116,9 +102,13 @@ export function useCalendarIntegration() {
             const jsonObject = await res.json();
             setEvents(jsonObject.events);
             setTasks(jsonObject.tasks);
+            hasShownEventsErrorRef.current = false;
         } catch (err) {
             console.error("Loading calendar events failed:", err);
-            showToast("Failed to load calendar events and tasks", "error");
+            if (!hasShownEventsErrorRef.current) {
+                showToast("Failed to load calendar events and tasks", "error");
+                hasShownEventsErrorRef.current = true;
+            }
             setEvents([]);
             setTasks([]);
         }
@@ -141,8 +131,22 @@ export function useCalendarIntegration() {
         },
         [isAuthenticated]
     );
+    useEffect(() => {
+        const initializeCalendar = async () => {
 
-
+            if (isAuthenticated) {
+                await fetchStatus();
+                await loadCalendarEvents();
+            } else {
+                setConnected(false);
+                setLoading(false);
+                setEvents([]);
+                setTasks([]);
+                clearCalendarCache();
+            }
+        };
+        initializeCalendar();
+    }, [isAuthenticated, fetchStatus, loadCalendarEvents, connected]);
 
     return {
         connected,
