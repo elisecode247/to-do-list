@@ -184,7 +184,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
 
     async function delayCheck(e: React.ChangeEvent<HTMLInputElement>) {
-        let checked = e.target.checked;
+        const checked = e.target.checked;
         if (checked && isHideCompleted) {
             setAnimate(false);
         }
@@ -201,6 +201,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             await deleteItem(id);
             showToast('Task deleted successfully', 'success');
         } catch (err) {
+            console.error('Failed to delete task:', err);
             showToast('Failed to delete task. Please try again.', 'error');
         }
     }

@@ -28,7 +28,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
 }) => {
     const noteRef = useRef<MDXEditorMethods>(null)
     const handleSave = async () => {
-        let note = noteRef.current?.getMarkdown();
+        const note = noteRef.current?.getMarkdown();
         let recurrence = formData.recurrence;
         if (formData.mode === OCCASIONAL_MODE) {
             recurrence = {

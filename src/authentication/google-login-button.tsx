@@ -40,7 +40,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
             }
         };
         fetchClientId();
-    }, [backendClientIdEndpoint, onError]);
+    }, [backendClientIdEndpoint, onError, setGoogleButtonState]);
 
     // Initialize Google Sign-In button
     useEffect(() => {
@@ -79,7 +79,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
             onError?.(err);
             setGoogleButtonState('failure')
         }
-    }, [clientId, onSuccess, onError]);
+    }, [clientId, onSuccess, onError, setGoogleButtonState]);
 
     return <div ref={buttonRef} />;
 };

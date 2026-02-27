@@ -1,31 +1,11 @@
-import { createContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useToast } from 'src/toast/use-toast';
 import { DEMO_TASKS } from './demo-tasks';
-
+import { DemoTaskContext } from './demo-task-context';
 const DEMO_STORAGE_KEY = 'demo_checklist_tasks';
 
-
-export interface TaskContextType {
-    items: ChecklistItem[];
-    isLoading: boolean;
-    error: string | null;
-    loadTasks: () => void;
-    addItem: (newItem: ChecklistItem) => Promise<void>;
-    updateItem: (item: ChecklistItem) => Promise<void>;
-    deleteItem: (id: string) => void;
-    toggleItem: (id: string, checked: boolean) => void;
-    prioritizeItem: (id: string) => void;
-    archiveItem: (id: string) => void;
-    sortItems: (activeId: string, overId: string) => void;
-    reset: () => void;
-    getSubtasks: (parentId: string) => ChecklistItem[];
-    hideForToday: (id: string) => void;
-    unhideForToday: (id: string) => void;
-}
-
-export const DemoTaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     const { showToast } = useToast();
@@ -87,8 +67,8 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
 
     const deleteItem = (id: string) => {
         setItems(prev => {
-            let deleted = prev.find(item => item.id === id);
-            let parentSubCount = prev.filter(i => i.parentUuid === deleted?.parentUuid).length;
+            const deleted = prev.find(item => item.id === id);
+            const parentSubCount = prev.filter(i => i.parentUuid === deleted?.parentUuid).length;
             return prev
                 .map(item => {
                     if (item.id === deleted?.parentUuid && parentSubCount === 1) return { ...item, hasSubChores: false };

@@ -1,8 +1,6 @@
-import { createContext, useState, useEffect, useRef, type ReactNode } from 'react';
-import type { ChecklistItem } from 'app/types';
+import type { ChecklistItem, ApiRecurrence } from 'app/types';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
-import type { TaskContextType } from 'app/types';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
@@ -23,9 +21,9 @@ import type {
     FrequencyType,
     EndingConditionType
 } from 'app/types';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { TaskContext } from './task-context';
 
-
-export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
@@ -33,33 +31,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(enabled);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
-
-    useEffect(() => {
-        setIsLoading(enabled);
-    }, [enabled]);
-
-    useEffect(() => {
-        if (!enabled) return;
-
-        let cancelled = false;
-
-        loadTasks(cancelled);
-        loadDateRef.current = new Date();
-        const handleVisibility = () => {
-            const staleAfter = 5 * 60 * 1000;
-            if (!loadDateRef.current || new Date().getTime() - loadDateRef.current.getTime() > staleAfter) {
-                loadTasks(cancelled);
-                loadDateRef.current = new Date();
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibility);
-
-        return () => {
-            cancelled = true;
-            document.removeEventListener('visibilitychange', handleVisibility)
-        };
-    }, [enabled])
 
     const reset = () => {
         setItems([]);
@@ -127,17 +98,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             });
 
         } catch (error) {
+            console.error('Failed to bulk update tasks:', error);
             throw error;
         }
     };
 
     const addItem = async (newItem: ChecklistItem) => {
-        function mapRecurrence(rec: any): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence {
+
+        function mapRecurrence(rec: ApiRecurrence): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence {
             switch (rec.type) {
                 case 'one-time':
                     return {
                         type: 'one-time',
                         dueAt: rec.dueAt ?? '',
+                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
                 case 'interval':
                     return {
@@ -211,8 +185,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         deleteTask(id).then(() => {
             setItems(prev => {
                 // update hasSubChores of parent has last subtask deleted
-                let deletedTask = prev.find(item => item.id === id);
-                let parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
+                const deletedTask = prev.find(item => item.id === id);
+                const parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
                 const updatedPrev = prev.map(item => {
                     if (item.id === deletedTask?.parentUuid && parentSubTaskCount === 1) {
                         return { ...item, hasSubChores: false };
@@ -402,6 +376,35 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+        useEffect(() => {
+        setIsLoading(enabled);
+    }, [enabled]);
+
+    useEffect(() => {
+        if (!enabled) return;
+
+        let cancelled = false;
+
+        loadTasks(cancelled);
+        const now = new Date();
+        loadDateRef.current = now;
+        const handleVisibility = () => {
+            const staleAfter = 5 * 60 * 1000;
+            if (!loadDateRef.current || new Date().getTime() - loadDateRef.current.getTime() > staleAfter) {
+                loadTasks(cancelled);
+                const updatedNow = new Date();
+                loadDateRef.current = updatedNow;
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibility);
+
+        return () => {
+            cancelled = true;
+            document.removeEventListener('visibilitychange', handleVisibility)
+        };
+    }, [enabled])
+
     return (
         <TaskContext.Provider value={{
             items,
@@ -420,10 +423,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             getSubtasks,
             hideForToday,
             unhideForToday,
-            loadDate: loadDateRef.current,
+            loadDate: loadDateRef,
         }}>
             {children}
         </TaskContext.Provider>
     );
 };
-

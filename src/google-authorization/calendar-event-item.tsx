@@ -4,7 +4,15 @@ import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { EyeClosed } from "lucide-react";
 
-const CalendarEventItem = ({ event }: { event: any }) => {
+interface CalendarEvent {
+    title: string;
+    start: string;
+    end: string;
+    allDay: boolean;
+    note?: string | null;
+}
+
+const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
     const [hidden, setHidden] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);

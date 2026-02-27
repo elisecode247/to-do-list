@@ -47,6 +47,9 @@ const LoggedIn: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
+    const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
+    const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
+
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
         (modeFilter === ALL_MODES ? 0 : 1) +
@@ -164,7 +167,7 @@ const LoggedIn: React.FC = () => {
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
                         <span>
-                            {loadDate ? ` Last updated: ${loadDate.toLocaleTimeString()}` : ''}
+                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleDateString()} ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }` : ''}
                         </span>
                     </p>
                 </div>

@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import { type Tab } from "src/app-toolbar/tabs/types";
 import { ALL_MODES } from "src/checklist/constants";
 
@@ -42,6 +43,7 @@ export interface Option {
 export type OneTimeRecurrence = {
     type: "one-time";
     dueAt: string;
+    startDate: string;
 }
 export type IntervalRecurrence = {
     type: "interval";
@@ -111,5 +113,10 @@ export interface TaskContextType {
     getSubtasks: (parentId: string) => ChecklistItem[];
     hideForToday: (id: string) => void;
     unhideForToday: (id: string) => void;
-    loadDate: Date | null;
+    loadDate: Ref<Date | null>;
 }
+
+export type ApiRecurrence =
+    | OneTimeRecurrence
+    | IntervalRecurrence
+    | CalendarRecurrence;

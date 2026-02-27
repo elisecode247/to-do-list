@@ -52,7 +52,11 @@ const ScheduledTaskItem = ({task, markCompleted, hideForToday, unhideForToday }:
                     <button
                         className="scheduled-task_hide-button"
                         onClick={() => {
-                            isHidden ? unhideForToday(task.id) : hideForToday(task.id);
+                            if (isHidden) {
+                                unhideForToday(task.id);
+                            } else {
+                                hideForToday(task.id);
+                            }
                         }}
                         aria-label={isHidden ? "Unhide task for today" : "Hide task for today"}
                         title={isHidden ? "Unhide task for today" : "Hide task for today"}

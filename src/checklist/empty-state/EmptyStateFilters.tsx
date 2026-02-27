@@ -45,7 +45,7 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
                         )}
                         {filterCategory !== ALL_CATEGORIES && (
                             <li className="filters-applied__item">
-                                Category: {!!filterCategory ? filterCategory : 'No category'}
+                                Category: {filterCategory ? filterCategory : 'No category'}
                             </li>)}
                         {hideCompleted && (
                             <li className="filters-applied__item">

@@ -155,6 +155,7 @@ const Checklist: FC<ChecklistProps> = ({
             await archiveItem(id);
             showToast('Task archived successfully', 'success');
         } catch (err) {
+            console.error('Failed to archive task:', err);
             showToast('Failed to archive task. Please try again.', 'error');
         }
     };
@@ -183,9 +184,12 @@ const Checklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
+        // TODO: TEST
         if (!completedDayRef.current && completedDay && activeTab === TABS.today) {
-            displaySparkles();
-            completedDayRef.current = !!completedDay;
+            setTimeout(() => {
+                displaySparkles()
+                completedDayRef.current = !!completedDay;
+            }, 0);
         }
     }, [completedDay, activeTab]);
 

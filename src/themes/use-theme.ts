@@ -17,7 +17,7 @@ export function useTheme(
         density: (localStorage.getItem('theme-density') as Density) || 'comfortable',
     });
 
-    const storedTheme = useMemo(getStoredTheme, []);
+    const storedTheme = useMemo(() => getStoredTheme(), []);
 
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride

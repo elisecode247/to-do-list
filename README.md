@@ -18,6 +18,7 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
+- bug: completed interval task showing up in upcoming tab
 - show only Google Calendar events in today and Upcoming tabs
 - feature: add undo to delete and uncheck
 - ux: improvements

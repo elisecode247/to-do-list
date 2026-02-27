@@ -84,7 +84,7 @@ function BulkEdit() {
     const updateLocal = (
         id: string,
         field: keyof ChecklistItem,
-        value: any
+        value: string | boolean
     ) => {
         setLocalItems(prev => {
             return prev.map(item => {

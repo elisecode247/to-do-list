@@ -13,9 +13,6 @@ const GoogleCalendarStatus = () => {
     const hasShownConnectionErrorRef = useRef(false);
     const didMountRef = useRef(false);
 
-    if (loading) return null;
-    if (!isAuthenticated) return null;
-
     function handleSuccess() {
         hasShownConnectionErrorRef.current = false;
         setIsError(false);
@@ -47,6 +44,9 @@ const GoogleCalendarStatus = () => {
             hasShownConnectionErrorRef.current = false;
         }
     }, [isError]);
+
+    if (loading) return null;
+    if (!isAuthenticated) return null;
 
     return (
         <div className="settings-dropdown">

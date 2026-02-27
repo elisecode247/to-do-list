@@ -112,7 +112,7 @@ export function useCalendarIntegration() {
             setEvents([]);
             setTasks([]);
         }
-    }, [isAuthenticated, connected]);
+    }, [isAuthenticated, connected, showToast]);
 
     const markScheduledTaskCompletion = useCallback(
         async (taskId: string, listId: string, isCompleted: boolean) => {
@@ -129,7 +129,7 @@ export function useCalendarIntegration() {
                 showToast("Failed to update task completion status", "error");
             }
         },
-        [isAuthenticated]
+        [isAuthenticated, showToast]
     );
     useEffect(() => {
         const initializeCalendar = async () => {
@@ -146,7 +146,7 @@ export function useCalendarIntegration() {
             }
         };
         initializeCalendar();
-    }, [isAuthenticated, fetchStatus, loadCalendarEvents, connected]);
+    }, [isAuthenticated, fetchStatus, loadCalendarEvents, connected, showToast]);
 
     return {
         connected,

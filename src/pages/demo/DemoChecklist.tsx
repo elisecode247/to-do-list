@@ -55,7 +55,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const sparkleTimeoutRef = useRef<number | null>(null);
     const isActiveList = activeTab === TABS.today;
     const { login, googleButtonState } = useAuthentication();
-    const [_location, setLocation] = useLocation();
+    const [, setLocation] = useLocation();
     const [showFilters, setShowFilters] = useState(false);
 
     const filteredTasks = useMemo(() => {

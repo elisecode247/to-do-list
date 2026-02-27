@@ -1,9 +1,7 @@
-import { createContext, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import Toast from 'src/toast/Toast';
-import type { ToastMessage, ToastContextType } from 'src/toast/types';
-
-
-export const ToastContext = createContext<ToastContextType | undefined>(undefined);
+import type { ToastMessage } from 'src/toast/types';
+import { ToastContext } from 'src/toast/toast-context';
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -32,4 +30,3 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         </ToastContext.Provider>
     );
 };
-

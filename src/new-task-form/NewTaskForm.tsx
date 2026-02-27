@@ -27,7 +27,7 @@ const NewTaskForm = () => {
     const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
         if (!text) return;
-        let note = noteRef.current?.getMarkdown();
+        const note = noteRef.current?.getMarkdown();
         let recurrence: IntervalRecurrence | null = null;
         if (mode === OCCASIONAL_MODE) {
             recurrence = {
@@ -65,6 +65,7 @@ const NewTaskForm = () => {
                 noteRef.current.setMarkdown('');
             }
         } catch (err) {
+            console.error('Error adding task:', err);
             showToast('Failed to add task. Please try again.', 'error');
         }
     };

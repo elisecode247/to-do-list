@@ -2,9 +2,6 @@ import { Router } from 'wouter';
 
 export const BASE_PATH = '/to-do-list';
 
-export const withBase = (path: string) =>
-    `${BASE_PATH}${path}`;
-
 export const ROUTES = {
     home: '/',
     demo: '/demo',
