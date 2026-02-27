@@ -97,7 +97,7 @@ export type FilterParams = {
 export interface TaskContextType {
     items: ChecklistItem[];
     isLoading: boolean;
-    error: string | null;
+    taskError: string | null;
     loadTasks: (cancelled?: boolean) => void;
     addItem: (newItem: ChecklistItem) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;

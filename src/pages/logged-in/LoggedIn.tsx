@@ -29,11 +29,12 @@ const LoggedIn: React.FC = () => {
     const { toasts, showToast, removeToast } = useToast();
     const {
         isLoading,
-        error,
+        taskError,
         loadTasks,
         updateItem,
         loadDate,
     } = useTask();
+
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [showFilters, setShowFilters] = useState(false);
@@ -201,9 +202,9 @@ const LoggedIn: React.FC = () => {
                         <div aria-busy="true" className="app_loading-spinner"></div>
                         <p>Loading your tasks...</p>
                     </div>
-                ) : error ? (
+                ) : taskError ? (
                     <ErrorState
-                        message={error}
+                        message={taskError}
                         onRetry={loadTasks}
                     />
                 ) : (

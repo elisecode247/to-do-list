@@ -15,7 +15,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
             {onRetry && (
                 <button
                     className="error-state__button"
-                    onClick={onRetry}
+                    onClick={() => onRetry()}
                 >
                     <RefreshCw size={16} />
                     Try Again

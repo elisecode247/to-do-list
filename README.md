@@ -42,5 +42,3 @@ Live: https://elisecode247.github.io/to-do-list/
     - Put text input on top of mobile panel new task
     - fix input cursor not moving in new task
     - move filter button to bottom right
-- bug
-    - fetch tasks on retry after no internet connection

@@ -31,7 +31,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(enabled);
-    const [error, setError] = useState<string | null>(null);
+    const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
 
     useEffect(() => {
@@ -63,12 +63,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const reset = () => {
         setItems([]);
-        setError(null);
+        setTaskError(null);
         setIsLoading(false);
     };
 
     function loadTasks(cancelled = false) {
-        if (!cancelled) setError(null);
+        if (!cancelled) setTaskError(null);
         setIsLoading(true);
         fetchTasks().then((data) => {
             if (cancelled) return;
@@ -79,16 +79,15 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 }
             })
             setItems(formattedItems);
+            setTaskError(null);
         }).catch(error => {
             if (!cancelled) {
                 console.error(error);
-                setError('Failed to load your tasks. Please check your connection and try again.');
+                setTaskError('Failed to load your tasks. Please check your connection and try again.');
                 setItems([]);
             }
         }).finally(() => {
-            if (!cancelled) {
-                setIsLoading(false);
-            }
+            setIsLoading(false);
         });
     }
 
@@ -407,7 +406,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         <TaskContext.Provider value={{
             items,
             isLoading,
-            error,
+            taskError,
             loadTasks,
             addItem,
             updateItem,
