@@ -57,7 +57,7 @@ const Checklist: FC<ChecklistProps> = ({
     const filteredTasks = useMemo(() => {
         return tasks.map(task => ({ ...task })).filter(task => {
             if (activeTab === TABS.hidden && task.isHidden) return true;
-            if (activeTab === TABS.scheduled && !task.isHidden) return true;
+            if (activeTab === TABS.upcoming && !task.isHidden) return true;
             if (activeTab === TABS.today && !task.isHidden) return true;
             return false;
 
@@ -69,7 +69,7 @@ const Checklist: FC<ChecklistProps> = ({
             .sort((a, b) => {
                 if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
                     return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
-                } else if (activeTab === TABS.scheduled) {
+                } else if (activeTab === TABS.upcoming) {
                     const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
                     const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
                     return aDue - bDue;

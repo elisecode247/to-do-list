@@ -61,7 +61,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const filteredTasks = useMemo(() => {
         return tasks.filter(task => {
             if (activeTab === TABS.hidden && task.isHidden) return true;
-            if (activeTab === TABS.scheduled && !task.isHidden) return true;
+            if (activeTab === TABS.upcoming && !task.isHidden) return true;
             if (activeTab === TABS.today && !task.isHidden) return true;
             return false;
 

@@ -43,6 +43,13 @@ Live: https://elisecode247.github.io/to-do-list/
         - exclude archived tasks
         - unit tests DONE
     - filter today and upcoming tabs using nextDue DONE
-        - unit tests
+        - unit tests DONE
+        - refresh tasks on edit task
 - ux improvement
     - keyboard tabbing
+    - Put text input on top of mobile panel new task
+    - fix input cursor not moving in new task
+    - move filter button to bottom right
+- bug
+    - subtasks that are hidden or completed, parent task should show empty state
+    - fetch tasks on retry after no internet connection

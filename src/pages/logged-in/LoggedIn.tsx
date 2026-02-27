@@ -235,7 +235,7 @@ const LoggedIn: React.FC = () => {
                         .filter(tab =>
                             tab === TABS.priority ||
                             tab === TABS.today ||
-                            tab === TABS.scheduled
+                            tab === TABS.upcoming
                         )
                         .map(tab => (
                             <button

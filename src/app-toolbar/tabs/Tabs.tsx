@@ -5,7 +5,7 @@ import { TABS } from "./types";
 const tabOptions = [
     { id: TABS.priority, label: "⭐ Priority", priority: true },
     { id: TABS.today, label: "Today", priority: true },
-    { id: TABS.scheduled, label: "Scheduled", priority: true },
+    { id: TABS.upcoming, label: "Upcoming", priority: true },
     { id: TABS.hidden, label: "Not Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },
 ];

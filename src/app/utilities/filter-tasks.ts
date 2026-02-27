@@ -30,9 +30,9 @@ function matchTab(task: ChecklistItem, activeTab: string): boolean {
         case TABS.today:
             return !task.isArchived && !task.isHidden && !isSubtask(task) && (!task.nextDue || new Date(task.nextDue) <= new Date());
 
-        case TABS.scheduled:
+        case TABS.upcoming:
             return (task.mode === 'scheduled' || (!!task.nextDue && new Date(task.nextDue) > new Date())) &&
-                !task.isHidden && !isSubtask(task);
+                !task.isHidden && !isSubtask(task) && !task.isArchived;
 
         case TABS.hidden:
             return task.isHidden;
@@ -41,7 +41,7 @@ function matchTab(task: ChecklistItem, activeTab: string): boolean {
             return task.isArchived && !task.isHidden;
 
         case TABS.priority:
-            return task.isPriority && !task.isHidden;
+            return task.isPriority && !task.isHidden && !task.isArchived;
 
         default:
             return true;

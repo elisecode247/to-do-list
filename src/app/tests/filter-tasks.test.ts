@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { filterTasks } from 'app/utilities/filter-tasks';
 import {
     TAB_TODAY,
-    TAB_SCHEDULED,
+    TAB_UPCOMING,
     TAB_HIDDEN,
     TAB_ARCHIVED,
     TAB_PRIORITY,
@@ -118,18 +118,127 @@ describe('filterTasks – tab filtering', () => {
         expect(result).toHaveLength(0);
     });
 
-    it('Scheduled tab only includes scheduled tasks', () => {
+    it('Today tab excludes tasks with future due dates', () => {
+        const futureTask = makeTask({
+            nextDue: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [futureTask],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toHaveLength(0);
+    });
+
+    it('Today tab includes tasks without due dates', () => {
+        const noDueDate = makeTask({ nextDue: null });
+
+        const result = filterTasks(
+            makeParams({
+                items: [noDueDate],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toHaveLength(1);
+    });
+
+    it('Today tab includes tasks with past due dates', () => {
+        const pastDue = makeTask({
+            nextDue: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [pastDue],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toHaveLength(1);
+    });
+
+    it('Upcoming tab includes upcoming scheduled tasks', () => {
         const scheduled = makeTask({ mode: 'scheduled' });
         const daily = makeTask({ mode: 'daily' });
 
         const result = filterTasks(
             makeParams({
                 items: [scheduled, daily],
-                activeTab: TAB_SCHEDULED,
+                activeTab: TAB_UPCOMING,
             })
         );
 
         expect(result).toEqual([scheduled]);
+    });
+
+    it('Upcoming tab includes upcoming tasks', () => {
+        const occasional = makeTask({
+            mode: 'occasional',
+            nextDue: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString()
+        });
+        const daily = makeTask({ mode: 'daily' });
+
+        const result = filterTasks(
+            makeParams({
+                items: [occasional, daily],
+                activeTab: TAB_UPCOMING,
+            })
+        );
+
+        expect(result).toEqual([occasional]);
+    });
+
+    it('Upcoming tab excludes non-upcoming tasks', () => {
+        const pastDue = makeTask({
+            mode: 'occasional',
+            nextDue: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString()
+        });
+        const daily = makeTask({ mode: 'daily' });
+
+        const result = filterTasks(
+            makeParams({
+                items: [pastDue, daily],
+                activeTab: TAB_UPCOMING,
+            })
+        );
+
+        expect(result).toHaveLength(0);
+    });
+
+    it('Upcoming tab excludes hidden tasks', () => {
+        const hidden = makeTask({
+            mode: 'scheduled',
+            isHidden: true,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [hidden],
+                activeTab: TAB_UPCOMING,
+            })
+        );
+
+        expect(result).toHaveLength(0);
+    });
+
+    it('Upcoming tab excludes archived tasks', () => {
+        const archived = makeTask({
+            mode: 'scheduled',
+            isArchived: true,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [archived],
+                activeTab: TAB_UPCOMING,
+            })
+        );
+
+        expect(result).toHaveLength(0);
     });
 
     it('Priority tab only includes priority tasks', () => {
@@ -144,6 +253,38 @@ describe('filterTasks – tab filtering', () => {
         );
 
         expect(result).toEqual([priority]);
+    });
+
+    it('Priority tab excludes hidden tasks', () => {
+        const priorityHidden = makeTask({
+            isPriority: true,
+            isHidden: true,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [priorityHidden],
+                activeTab: TAB_PRIORITY,
+            })
+        );
+
+        expect(result).toHaveLength(0);
+    });
+
+    it('Priority tab excludes archived tasks', () => {
+        const priorityArchived = makeTask({
+            isPriority: true,
+            isArchived: true,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [priorityArchived],
+                activeTab: TAB_PRIORITY,
+            })
+        );
+
+        expect(result).toHaveLength(0);
     });
 
     it('Archived tab only includes archived tasks', () => {
