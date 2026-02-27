@@ -52,7 +52,7 @@
     --color-mode-priority-text: light-dark(#003e60, #78c9ff);
     --color-mode-priority-border: light-dark(#003148, #8adeff);
 
-    body {
+    & body {
         background:
             linear-gradient(to bottom,
                 #001a24 0%,
@@ -66,14 +66,14 @@
     }
 
     /* Sunlight rays / light penetration for Ocean Theme */
-    body::after {
+    & body::after {
         content: '';
         position: fixed;
         inset: -20%;
         pointer-events: none;
         z-index: 1;
         background-size: 100% 100%;
-        animation: lightRays 12s ease-in-out infinite;
+        animation: lightRays 30s ease-in-out infinite;
         background-image:
             radial-gradient(circle 250px at 20% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 80%),
             radial-gradient(circle 300px at 75% 20%, rgba(51, 187, 204, 0.12) 0%, transparent 85%),
@@ -90,32 +90,7 @@
         opacity: 0.75;
     }
 
-    /* Sunlight rays animation */
-    @keyframes lightRays {
-
-        0%,
-        100% {
-            transform: rotate(0deg) translateX(0) translateY(0);
-            opacity: 1;
-        }
-
-        25% {
-            transform: rotate(2deg) translateX(-25px) translateY(10px);
-            opacity: 0.9;
-        }
-
-        50% {
-            transform: rotate(-2deg) translateX(25px) translateY(-10px);
-            opacity: 1;
-        }
-
-        75% {
-            transform: rotate(1deg) translateX(-15px) translateY(5px);
-            opacity: 0.95;
-        }
-    }
-
-    .app_h1 {
+    & .app_h1 {
         background: linear-gradient(135deg,
                 #ffffff 0%,
                 #f0f9ff 50%,
@@ -133,26 +108,51 @@
         animation: oceanGlow 5s ease-in-out infinite;
     }
 
-    @keyframes oceanGlow {
 
-        0%,
-        100% {
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15)) brightness(1);
-        }
-
-        50% {
-            filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.9)) brightness(1.1);
-        }
-    }
-
-
-    .app_subtitle {
+    & .app_subtitle {
         color: var(--color-text-light);
     }
 
-    .app_header_menu,
-    .app_header_menu-icon,
-    .app_header_menu-span {
+    & .app_header_menu,
+    & .app_header_menu-icon,
+    & .app_header_menu-span {
         color: var(--color-text-light);
+    }
+}
+
+/* Sunlight rays animation */
+@keyframes lightRays {
+
+    0%,
+    100% {
+        transform: rotate(0deg) translateX(0) translateY(0);
+        opacity: 1;
+    }
+
+    25% {
+        transform: rotate(2deg) translateX(-25px) translateY(10px);
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: rotate(-2deg) translateX(25px) translateY(-10px);
+        opacity: 1;
+    }
+
+    75% {
+        transform: rotate(1deg) translateX(-15px) translateY(5px);
+        opacity: 0.95;
+    }
+}
+
+@keyframes oceanGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15)) brightness(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.9)) brightness(1.1);
     }
 }
