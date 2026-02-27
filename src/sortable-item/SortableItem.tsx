@@ -477,6 +477,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {!hasSubChores && dropZoneOpen && (
                                 <SortableItemPlaceholder id={id as string} />
                             )}
+                            {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
+                                <div className="sortable-item_no-subtasks">
+                                    No subtasks to show. You have hidden or completed subtasks.<br/>
+                                    Adjust filters or go to "Not Today" tab to see all subtasks.
+                                </div>
+                            )}
                             {!collapsed && filteredTasks?.map((subtask) => (
                                 <SortableItem
                                     key={subtask.id}

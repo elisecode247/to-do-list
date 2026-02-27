@@ -43,5 +43,4 @@ Live: https://elisecode247.github.io/to-do-list/
     - fix input cursor not moving in new task
     - move filter button to bottom right
 - bug
-    - subtasks that are hidden or completed, parent task should show empty state
     - fetch tasks on retry after no internet connection

@@ -294,6 +294,17 @@
     color: var(--color-mode-priority-border);
 }
 
+/** Subtask Container and Note */
+.sortable-item_no-subtasks {
+    color: var(--color-text-primary);
+    margin: var(--spacing-md) 0;
+    text-align: center;
+    font-size: 14px;
+    padding: var(--spacing-sm);
+    background-color: var(--color-hover);
+    border-radius: var(--radius-sm);
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .sortable-item_container {
