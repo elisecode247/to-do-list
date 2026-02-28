@@ -78,7 +78,18 @@ const Checklist: FC<ChecklistProps> = ({
             });
     }, [items, modeFilter, activeTab, hideCompleted, filterCategory]);
 
-    const allItems = [...events, ...filteredTasks, ...filteredItems];
+    const now = new Date();
+    const filteredEvents = events.filter(event => {
+        const eventDate = new Date(event.start);
+        if (activeTab === TABS.today) {
+            return eventDate.toDateString() === now.toDateString();
+        } else if (activeTab === TABS.upcoming) {
+            return eventDate > now;
+        }
+        return false;
+    });
+
+    const allItems = [...filteredEvents, ...filteredTasks, ...filteredItems];
     const completedDay = items.filter(i => i.done).length &&
         filteredItems.length === 0 && activeTab === TABS.today;
 

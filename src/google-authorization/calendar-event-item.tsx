@@ -2,7 +2,6 @@ import "./calendar-event-item.css";
 import { isDateToday } from "src/utilities/is-date-today";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
-import { EyeClosed } from "lucide-react";
 
 interface CalendarEvent {
     title: string;
@@ -13,7 +12,6 @@ interface CalendarEvent {
 }
 
 const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
-    const [hidden, setHidden] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const isAllDayEvent = event.allDay;
@@ -24,7 +22,7 @@ const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
             minute: '2-digit'
         })}`;
     const sanitizedHTML = DOMPurify.sanitize(event.note || '');
-    if (hidden) return null;
+
     return (
         <div className="calendar-event-item">
             <div className="calendar-event-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -47,13 +45,6 @@ const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
                             {collapsed ? "➕" : "➖"}
                         </button>
                     )}
-                    <button
-                        className="calendar-event_hide-button"
-                        onClick={() => setHidden(true)}
-                        aria-label="Hide event"
-                    >
-                        <EyeClosed size={24} />
-                    </button>
                 </div>
             </div>
 
