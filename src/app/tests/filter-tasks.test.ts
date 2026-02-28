@@ -435,3 +435,49 @@ describe('filterTasks – common filters', () => {
         expect(result).toEqual([scheduled]);
     });
 });
+
+// --------------------
+// Timezone testing
+// --------------------
+describe('filterTasks - timezone handling', () => {
+    it('should handle tasks completed at UTC midnight correctly for non-UTC timezones', () => {
+        const utcMidnightYesterday = new Date();
+        utcMidnightYesterday.setUTCDate(utcMidnightYesterday.getUTCDate() - 1);
+        utcMidnightYesterday.setUTCHours(0, 0, 0, 0);
+
+        const task = makeTask({
+            done: true,
+            lastCompleted: utcMidnightYesterday.toISOString(), // Yesterday's UTC midnight
+            nextDue: getDateRelativeToToday(1),
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [task],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        // Should NOT be included in Today tab (it was completed yesterday, not today)
+        expect(result).toHaveLength(0);
+    });
+
+    it('should correctly identify tasks completed today in local timezone', () => {
+        // Task completed at local midnight today
+        const completedToday = makeTask({
+            done: true,
+            lastCompleted: getDateRelativeToToday(0), // Today at local midnight
+            nextDue: getDateRelativeToToday(1),
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [completedToday],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        // Should be included in Today tab
+        expect(result).toHaveLength(1);
+    });
+});

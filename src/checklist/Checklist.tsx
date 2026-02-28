@@ -184,7 +184,6 @@ const Checklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
-        // TODO: TEST
         if (!completedDayRef.current && completedDay && activeTab === TABS.today) {
             setTimeout(() => {
                 displaySparkles()

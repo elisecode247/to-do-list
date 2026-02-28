@@ -24,18 +24,23 @@ export function filterTasks({
 }
 
 
+/** Helper: Get today's date at midnight in local timezone for comparison */
+function getLocalTodayAtMidnight(): Date {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
+
 /** Helper: Tab filter logic */
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
-    const isCompletedToday = task.done && new Date(task.lastCompleted).toDateString() === new Date().toDateString();
-    console.log("%c Line:30 🥤 new Date().toDateString()", "color:#b03734", new Date().toDateString());
-    console.log("%c Line:30 🍓 new Date(task.lastCompleted).toDateString()", "color:#93c0a4", new Date(task.lastCompleted).toDateString());
+    const isCompletedToday = task.done && getLocalTodayAtMidnight().toDateString() === new Date(task.lastCompleted).toDateString();
     switch (activeTab) {
         case TABS.today:
             return !task.isArchived && !task.isHidden && !isSubtask(task) &&
-                (!task.nextDue || new Date(task.nextDue) <= new Date() || isCompletedToday);
+                (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday);
 
         case TABS.upcoming:
-            return (task.mode === 'scheduled' || (!!task.nextDue && new Date(task.nextDue) > new Date())) &&
+            return (task.mode === 'scheduled' || (!!task.nextDue && new Date(task.nextDue) > getLocalTodayAtMidnight())) &&
                 !task.isHidden && !isSubtask(task) && !task.isArchived;
 
         case TABS.hidden:
