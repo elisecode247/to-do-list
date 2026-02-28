@@ -74,7 +74,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const updatedTask = await updateTask(updatedItem);
             setItems(prev => {
             previousItem = prev.find(i => i.id === updatedItem.id);
-            return prev.map(i => i.id === updatedItem.id ? { ...updatedTask } : i);
+            return prev.map(i => i.id === updatedItem.id ? {
+                ...updatedTask,
+                done: isDateToday(updatedTask.lastCompleted)
+            } : i);
         });
         } catch (error) {
             // rollback only that item
