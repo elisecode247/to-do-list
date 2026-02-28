@@ -39,6 +39,7 @@ const NewTaskForm = () => {
         }
 
         const newItem: ChecklistItem = {
+            itemType: 'checklist-item',
             id: crypto.randomUUID(),
             text,
             done: false,

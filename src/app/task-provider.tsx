@@ -46,7 +46,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const formattedItems = data.map((item: ChecklistItem) => {
                 return {
                     ...item,
-                    done: isDateToday(item.lastCompleted)
+                    done: isDateToday(item.lastCompleted),
+                    itemType: 'checklist-item',
                 }
             })
             setItems(formattedItems);
@@ -76,7 +77,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             previousItem = prev.find(i => i.id === updatedItem.id);
             return prev.map(i => i.id === updatedItem.id ? {
                 ...updatedTask,
-                done: isDateToday(updatedTask.lastCompleted)
+                done: isDateToday(updatedTask.lastCompleted),
+                itemType: 'checklist-item',
             } : i);
         });
         } catch (error) {
@@ -143,6 +145,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         try {
             const data = await addTask(newItem);
             const formattedTask: ChecklistItem = {
+                itemType: 'checklist-item',
                 id: data.id,
                 isPriority: data.isPriority ?? false,
                 isHidden: data.isHidden ?? false,
@@ -222,6 +225,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                         ...i,
                         done: checked,
                         lastCompleted: checked ? new Date().toISOString() : '',
+                        itemType: 'checklist-item',
                     }
                     : i
             );

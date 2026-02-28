@@ -15,6 +15,7 @@ import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
+import type { GoogleEvent, GoogleTask } from 'src/google-authorization/types';
 
 interface ChecklistProps {
     activeTab: Tab;
@@ -87,9 +88,27 @@ const Checklist: FC<ChecklistProps> = ({
             return eventDate > now;
         }
         return false;
-    });
+    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
-    const allItems = [...filteredEvents, ...filteredTasks, ...filteredItems];
+    const getItemDate = (item: ChecklistItem | GoogleEvent | GoogleTask) => {
+        if ('start' in item) {
+            return new Date(item.start).getTime();
+        }
+        if ('due' in item) {
+            return item.due ? new Date(item.due).getTime() : Infinity;
+        }
+        return item.nextDue ? new Date(item.nextDue).getTime() : Infinity;
+    };
+
+    const allItems = [...filteredEvents, ...filteredTasks, ...filteredItems].sort((a, b) => {
+        if (activeTab === TABS.upcoming) {
+            const aDate = getItemDate(a as ChecklistItem | GoogleEvent | GoogleTask);
+            const bDate = getItemDate(b as ChecklistItem | GoogleEvent | GoogleTask);
+            return aDate - bDate;
+        }
+
+        return 1;
+    });
     const completedDay = items.filter(i => i.done).length &&
         filteredItems.length === 0 && activeTab === TABS.today;
 
@@ -218,49 +237,55 @@ const Checklist: FC<ChecklistProps> = ({
                                 type={completedDay ? 'completedDay' : 'noTasks'}
                             />
                         )}
-                        {events.map(event => (
-                            <CalendarEventItem
-                                key={event.id}
-                                event={event}
-                            />
-                        ))}
-                        {filteredTasks?.map(task => (
-                            <ScheduledTaskItem
-                                key={task.id}
-                                task={task}
-                                markCompleted={markScheduledTaskCompletion}
-                                hideForToday={hideForToday}
-                                unhideForToday={unhideForToday}
-                            />
-                        ))}
-                        {filteredItems.map(item => (
-                            <SortableItem
-                                activeTab={activeTab}
-                                hasSubChores={item.hasSubChores}
-                                isSubChore={!!item.parentUuid}
-                                isActive={isActiveList}
-                                isPriority={item.isPriority}
-                                checked={item.done}
-                                key={item.id}
-                                id={item.id}
-                                isHidden={item.isHidden}
-                                isHideCompleted={hideCompleted}
-                                text={item.text}
-                                note={item.note}
-                                mode={item.mode}
-                                category={item.category}
-                                lastCompleted={item.lastCompleted}
-                                deleteItem={deleteItem}
-                                prioritizeItem={prioritizeItem}
-                                toggleChecked={toggleChecked}
-                                handleEdit={handleEdit}
-                                handleHideItem={handleHide}
-                                subtasks={getSubtasks(item.id)}
-                                onMoveItem={handleMoveItem}
-                                onSuccess={displaySparkles}
-                                nextDue={item.nextDue}
-                            />
-                        ))}
+                        {(allItems as (ChecklistItem | GoogleEvent | GoogleTask)[]).map((item) => {
+                            if ((item as GoogleEvent).itemType === 'google-event') {
+                                const eventItem = item as GoogleEvent;
+                                return (<CalendarEventItem
+                                    key={eventItem.id}
+                                    event={eventItem}
+                                />);
+                            } else if (item.itemType === 'google-task') {
+                                const taskItem = item as GoogleTask;
+                                return (<ScheduledTaskItem
+                                    key={taskItem.id}
+                                    task={taskItem}
+                                    markCompleted={markScheduledTaskCompletion}
+                                    hideForToday={hideForToday}
+                                    unhideForToday={unhideForToday}
+                                />);
+                            } else if (item.itemType === 'checklist-item') {
+                                const checklistItem = item as ChecklistItem;
+                                return (
+                                    <SortableItem
+                                        activeTab={activeTab}
+                                        hasSubChores={checklistItem.hasSubChores}
+                                        isSubChore={!!checklistItem.parentUuid}
+                                        isActive={isActiveList}
+                                        isPriority={checklistItem.isPriority}
+                                        checked={checklistItem.done}
+                                        key={checklistItem.id}
+                                        id={checklistItem.id}
+                                        isHidden={checklistItem.isHidden}
+                                        isHideCompleted={hideCompleted}
+                                        text={checklistItem.text}
+                                        note={checklistItem.note}
+                                        mode={checklistItem.mode}
+                                        category={checklistItem.category}
+                                        lastCompleted={checklistItem.lastCompleted}
+                                        deleteItem={deleteItem}
+                                        prioritizeItem={prioritizeItem}
+                                        toggleChecked={toggleChecked}
+                                        handleEdit={handleEdit}
+                                        handleHideItem={handleHide}
+                                        subtasks={getSubtasks(checklistItem.id)}
+                                        onMoveItem={handleMoveItem}
+                                        onSuccess={displaySparkles}
+                                        nextDue={checklistItem.nextDue}
+                                    />
+                                );
+                            }
+                            return null;
+                        })}
                     </SortableContext>
 
                 </div>

@@ -2,6 +2,7 @@ import { type ChecklistItem } from "src/app/types";
 
 export const DEMO_TASKS: ChecklistItem[] = [
     {
+        itemType: 'checklist-item',
         id: "1",
         text: "Put your thoughts somewhere safe",
         done: false,
@@ -21,6 +22,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        itemType: 'checklist-item',
         id: "2",
         text: "Tap to check something off",
         done: false,
@@ -40,6 +42,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        itemType: 'checklist-item',
         id: "3",
         text: "Mark one thing as important",
         done: false,
@@ -59,6 +62,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        itemType: 'checklist-item',
         id: "4",
         text: "Break something into smaller steps",
         done: false,
@@ -78,6 +82,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        itemType: 'checklist-item',
         id: "5",
         text: "Drag tasks into the order that feels right",
         done: false,
@@ -97,6 +102,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        itemType: 'checklist-item',
         id: "6",
         text: "Hide this task for today",
         done: false,

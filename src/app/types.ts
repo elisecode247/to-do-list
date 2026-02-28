@@ -67,6 +67,7 @@ export type CalendarRecurrence = {
 }
 
 export interface ChecklistItem {
+    itemType: string;
     isHidden: boolean;
     id: string;
     text: string;

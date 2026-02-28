@@ -24,6 +24,7 @@ import { type Mode } from 'app/types';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { Filter } from 'lucide-react';
 import { ALL_MODES } from 'src/checklist/constants';
+import type { GoogleTask } from 'src/google-authorization/types';
 
 interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
@@ -267,7 +268,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                         {filteredTasks?.map(task => (
                             <ScheduledTaskItem
                                 key={task.id}
-                                task={task}
+                                task={task as GoogleTask}
                                 markCompleted={markScheduledTaskCompletion}
                                 hideForToday={hideForToday}
                                 unhideForToday={unhideForToday}

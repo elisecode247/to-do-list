@@ -7,9 +7,8 @@ import {
     writeCalendarCache,
     clearCalendarCache,
 } from "./google-calendar-cache";
-import { type Event } from "src/google-authorization/types";
+import { type Event, type GoogleEvent, type GoogleTask } from "src/google-authorization/types";
 import { useToast } from "src/toast/use-toast";
-import type { ChecklistItem } from "src/app/types";
 
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
@@ -17,7 +16,7 @@ export function useCalendarIntegration() {
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<Event[]>([]);
-    const [tasks, setTasks] = useState<ChecklistItem[]>([]);
+    const [tasks, setTasks] = useState<GoogleTask[]>([]);
     const [isError, setIsError] = useState(false);
     const hasShownEventsErrorRef = useRef(false);
 
@@ -99,9 +98,18 @@ export function useCalendarIntegration() {
                 { headers: await authHeaders() }
             );
             if (!res.ok) throw new Error("Failed to load calendar events");
+
             const jsonObject = await res.json();
-            setEvents(jsonObject.events);
-            setTasks(jsonObject.tasks);
+            const eventsData = jsonObject.events.map((event: GoogleEvent) => ({
+                ...event,
+                itemType: "google-event",
+            }));
+            const tasksData = jsonObject.tasks.map((task: GoogleTask) => ({
+                ...task,
+                itemType: "google-task",
+            }));
+            setEvents(eventsData);
+            setTasks(tasksData);
             hasShownEventsErrorRef.current = false;
         } catch (err) {
             console.error("Loading calendar events failed:", err);

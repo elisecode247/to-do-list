@@ -2,10 +2,10 @@ import "./scheduled-task-item.css";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { EyeClosed, Eye, BookPlus, BookMinus } from "lucide-react";
-import type { ChecklistItem } from "src/app/types";
+import type { GoogleTask } from "./types";
 
 type ScheduledTaskItemProps = {
-    task: ChecklistItem;
+    task: GoogleTask;
     markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
     hideForToday: (taskId: string) => void;
     unhideForToday: (taskId: string) => void;

@@ -134,6 +134,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
         // inherit parent task's category and mode, but not priority or hidden status
         const newChecklistItem: ChecklistItem = {
+            itemType: 'checklist-item',
             id: crypto.randomUUID(),
             text: inputText,
             done: false,
