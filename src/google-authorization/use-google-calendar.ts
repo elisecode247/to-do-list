@@ -7,57 +7,63 @@ import {
     writeCalendarCache,
     clearCalendarCache,
 } from "./google-calendar-cache";
-import { type Event, type GoogleEvent, type GoogleTask } from "src/google-authorization/types";
+import { type GoogleEvent, type GoogleTask } from "src/google-authorization/types";
 import { useToast } from "src/toast/use-toast";
+import { parseGoogleDate } from "./utilities/parse-google-date";
+
+function setDateEndOfDay(endOfDay: Date): Date {
+    endOfDay.setHours(23, 59, 59, 999);
+    return endOfDay;
+};
 
 export function useCalendarIntegration() {
     const { isAuthenticated } = useAuthentication();
     const { showToast } = useToast();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<GoogleEvent[]>([]);
     const [tasks, setTasks] = useState<GoogleTask[]>([]);
     const [isError, setIsError] = useState(false);
     const hasShownEventsErrorRef = useRef(false);
 
     const fetchStatus = useCallback(async (opts?: { force?: boolean }) => {
 
-            if (!isAuthenticated) {
-                setConnected(false);
-                setLoading(false);
-                return false;
+        if (!isAuthenticated) {
+            setConnected(false);
+            setLoading(false);
+            return false;
+        }
+
+        if (!opts?.force) {
+            const cached = readCalendarCache();
+            if (cached !== null) {
+                setConnected(cached);
+                return cached;
             }
+        }
 
-            if (!opts?.force) {
-                const cached = readCalendarCache();
-                if (cached !== null) {
-                    setConnected(cached);
-                    return cached;
-                }
-            }
+        setLoading(true);
 
-            setLoading(true);
+        try {
+            const res = await fetch(
+                `${API_AUTH_URL}/google/calendar/status`,
+                { headers: await authHeaders() }
+            );
 
-            try {
-                const res = await fetch(
-                    `${API_AUTH_URL}/google/calendar/status`,
-                    { headers: await authHeaders() }
-                );
-
-                const isConnected = res.ok && Boolean((await res.json())?.connected);
-                setConnected(isConnected);
-                writeCalendarCache(isConnected);
-                setIsError(false);
-                return isConnected;
-            } catch (err) {
-                console.error("Calendar status check failed:", err);
-                setConnected(false);
-                setIsError(true);
-                return false;
-            } finally {
-                setLoading(false);
-            }
-        },
+            const isConnected = res.ok && Boolean((await res.json())?.connected);
+            setConnected(isConnected);
+            writeCalendarCache(isConnected);
+            setIsError(false);
+            return isConnected;
+        } catch (err) {
+            console.error("Calendar status check failed:", err);
+            setConnected(false);
+            setIsError(true);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    },
         [isAuthenticated]
     );
 
@@ -100,10 +106,30 @@ export function useCalendarIntegration() {
             if (!res.ok) throw new Error("Failed to load calendar events");
 
             const jsonObject = await res.json();
+            const eventsIdSet = new Set<string>();
             const eventsData = jsonObject.events.map((event: GoogleEvent) => ({
                 ...event,
                 itemType: "google-event",
-            }));
+                startDate: parseGoogleDate(event.start),
+                // google end dates are exclusive for all-day events,
+                // Example start: 2026-05-01 (all-day event on May 1st), end: 2026-05-02, we want to show the end date as May 1st since that's the last day the event is active
+                // endDate for 2026-05-02 should be parsed as 2026-05-01T22:59:59.999-08:00
+                // For timed events, end date is inclusive so we can parse normally
+                endDate: event.allDay ?
+                    setDateEndOfDay(new Date(parseGoogleDate(event.end).getTime() - 1)) :
+                    parseGoogleDate(event.end),
+            })).filter((event: GoogleEvent) => {
+                if (!event.recurrenceId) {
+                    return true;
+                }
+                if (eventsIdSet.has(event.recurrenceId)) {
+                    return false;
+                } else {
+                    eventsIdSet.add(event.recurrenceId);
+                    return true;
+                }
+            });
+
             const tasksData = jsonObject.tasks.map((task: GoogleTask) => ({
                 ...task,
                 itemType: "google-task",

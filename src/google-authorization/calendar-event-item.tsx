@@ -9,6 +9,8 @@ export interface CalendarEvent {
     end: string;
     allDay: boolean;
     note?: string | null;
+    startDate: Date; // Parsed start date for easier handling
+    endDate: Date; // Parsed end date for easier handling
 }
 
 const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {

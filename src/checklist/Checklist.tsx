@@ -17,6 +17,18 @@ import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent, GoogleTask } from 'src/google-authorization/types';
 
+function isTodayOrBefore(date: Date) {
+  const today = new Date();
+  today.setHours(23, 59, 59, 999); // end of today
+  return date <= today;
+}
+
+function isTomorrowOrLater(date: Date) {
+  const today = new Date();
+  today.setHours(23, 59, 59, 999); // end of today
+  return date > today;
+}
+
 interface ChecklistProps {
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
@@ -79,20 +91,18 @@ const Checklist: FC<ChecklistProps> = ({
             });
     }, [items, modeFilter, activeTab, hideCompleted, filterCategory]);
 
-    const now = new Date();
     const filteredEvents = events.filter(event => {
-        const eventDate = new Date(event.start);
         if (activeTab === TABS.today) {
-            return eventDate.toDateString() === now.toDateString();
+            return isTodayOrBefore(event.startDate);
         } else if (activeTab === TABS.upcoming) {
-            return eventDate > now;
+            return isTomorrowOrLater(event.startDate);
         }
         return false;
-    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
     const getItemDate = (item: ChecklistItem | GoogleEvent | GoogleTask) => {
-        if ('start' in item) {
-            return new Date(item.start).getTime();
+        if ('startDate' in item) {
+            return new Date(item.startDate).getTime();
         }
         if ('due' in item) {
             return item.due ? new Date(item.due).getTime() : Infinity;

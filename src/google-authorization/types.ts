@@ -11,6 +11,10 @@ export type Event = {
 
 export type GoogleEvent = Event & {
     itemType: string;
+    startDate: Date;
+    endDate: Date;
+    description?: string;
+    recurrenceId?: string;
 }
 
 export type GoogleTask = {
