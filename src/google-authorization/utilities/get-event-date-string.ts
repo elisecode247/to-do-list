@@ -1,6 +1,6 @@
-import { type CalendarEvent } from "src/google-authorization/calendar-event-item";
 import { isDateToday } from "src/utilities/is-date-today";
 import { isDateTomorrow } from "src/utilities/is-date-tomorrow";
+import type { GoogleEvent } from "../types";
 
 /*
     Multi-day all day event (no times, just dates)
@@ -21,7 +21,7 @@ function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 
-export function getEventDateString(event: CalendarEvent): string {
+export function getEventDateString(event: GoogleEvent): string {
     const startDate = event.startDate;
     const endDate = event.endDate;
     const isStartToday = isDateToday(startDate);

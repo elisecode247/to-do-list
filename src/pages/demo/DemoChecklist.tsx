@@ -270,8 +270,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 key={task.id}
                                 task={task as GoogleTask}
                                 markCompleted={markScheduledTaskCompletion}
-                                hideForToday={hideForToday}
-                                unhideForToday={unhideForToday}
                             />
                         ))}
                         {filteredItems.map(item => (

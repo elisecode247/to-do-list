@@ -1,21 +1,18 @@
 import "./scheduled-task-item.css";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
-import { EyeClosed, Eye, BookPlus, BookMinus } from "lucide-react";
+import { BookPlus, BookMinus } from "lucide-react";
 import type { GoogleTask } from "./types";
 
 type ScheduledTaskItemProps = {
     task: GoogleTask;
     markCompleted: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
-    hideForToday: (taskId: string) => void;
-    unhideForToday: (taskId: string) => void;
 }
-const ScheduledTaskItem = ({task, markCompleted, hideForToday, unhideForToday }: ScheduledTaskItemProps) => {
+const ScheduledTaskItem = ({task, markCompleted }: ScheduledTaskItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const [checked, setChecked] = useState(task.done);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const sanitizedHTML = DOMPurify.sanitize(task.note || '');
-    const isHidden = task.isHidden;
     return (
         <div className="scheduled-task-item">
             <div className="scheduled-task_main-content">
@@ -49,20 +46,6 @@ const ScheduledTaskItem = ({task, markCompleted, hideForToday, unhideForToday }:
                         </button>
 
                     )}
-                    <button
-                        className="scheduled-task_hide-button"
-                        onClick={() => {
-                            if (isHidden) {
-                                unhideForToday(task.id);
-                            } else {
-                                hideForToday(task.id);
-                            }
-                        }}
-                        aria-label={isHidden ? "Unhide task for today" : "Hide task for today"}
-                        title={isHidden ? "Unhide task for today" : "Hide task for today"}
-                    >
-                        {isHidden ? <Eye size={24} /> : <EyeClosed size={24} style={{ opacity: 0.3 }} />}
-                    </button>
                 </div>
             </div>
             {/* Description */}

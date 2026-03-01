@@ -2,6 +2,7 @@ import "./calendar-event-item.css";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { getEventDateString } from "./utilities/get-event-date-string";
+import type { GoogleEvent } from "./types";
 
 export interface CalendarEvent {
     title: string;
@@ -11,14 +12,15 @@ export interface CalendarEvent {
     note?: string | null;
     startDate: Date; // Parsed start date for easier handling
     endDate: Date; // Parsed end date for easier handling
+    description: string;
 }
 
-const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
+const CalendarEventItem = ({ event }: { event: GoogleEvent }) => {
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const dateString = getEventDateString(event);
 
-    const sanitizedHTML = DOMPurify.sanitize(event.note || '');
+    const sanitizedHTML = DOMPurify.sanitize(event.description || '');
 
     return (
         <div className="calendar-event-item">
@@ -31,7 +33,7 @@ const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
                     </p>
                 </div>
                 <div className="calendar-event-controls">
-                    {!!event.note && (
+                    {!!event.description && (
                         <button
                             onClick={toggleCollapsed}
                             style={{
@@ -49,7 +51,7 @@ const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
             </div>
 
             {/* Description */}
-            {!event.note ? '' : !collapsed && (
+            {!event.description ? '' : !collapsed && (
                 <div
                     className="calendar-event-description"
                     dangerouslySetInnerHTML={{ __html: sanitizedHTML }}

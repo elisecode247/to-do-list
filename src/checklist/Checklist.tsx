@@ -260,8 +260,6 @@ const Checklist: FC<ChecklistProps> = ({
                                     key={taskItem.id}
                                     task={taskItem}
                                     markCompleted={markScheduledTaskCompletion}
-                                    hideForToday={hideForToday}
-                                    unhideForToday={unhideForToday}
                                 />);
                             } else if (item.itemType === 'checklist-item') {
                                 const checklistItem = item as ChecklistItem;

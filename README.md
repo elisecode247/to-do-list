@@ -18,8 +18,7 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- show only Google Calendar events in today and Upcoming tabs
-- feature: add undo to delete and uncheck
+- add a notes section at the top
 - ux: improvements
     - fix input cursor not moving in new task
     - put text input on top of mobile panel new task
@@ -28,11 +27,9 @@ Live: https://elisecode247.github.io/to-do-list/
     - lost internet connection
     - make localStorage persistent longer on mobile
 - feature: scheduled tasks
-- feature: suggestions feature (random dice?)
-- feature: include AI task breakdown and add to separate checklist
 - ux: improve ux for newly logged in user
-    - use templates
 - feature: allow user delete history
+- feature: add undo to delete and uncheck
 - feature: custom categories
 - security: access token in memory
 - security: refresh token in HttpOnly Secure SameSite cookie
