@@ -1,9 +1,9 @@
 import "./calendar-event-item.css";
-import { isDateToday } from "src/utilities/is-date-today";
 import DOMPurify from 'dompurify';
 import { useState } from "react";
+import { getEventDateString } from "./utilities/get-event-date-string";
 
-interface CalendarEvent {
+export interface CalendarEvent {
     title: string;
     start: string;
     end: string;
@@ -14,21 +14,19 @@ interface CalendarEvent {
 const CalendarEventItem = ({ event }: { event: CalendarEvent }) => {
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
-    const isAllDayEvent = event.allDay;
-    const dateString = isAllDayEvent
-        ? `All Day ${isDateToday(event.end) ? "" : "until " + new Date(event.end).toLocaleDateString()}`
-        : `${new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        })}`;
+    const dateString = getEventDateString(event);
+
     const sanitizedHTML = DOMPurify.sanitize(event.note || '');
 
     return (
         <div className="calendar-event-item">
             <div className="calendar-event-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
+                    <p className="calendar-event-subtitle">Google Calendar Event</p>
                     <h4>{event.title}</h4>
-                    <p className="calendar-event-time">{dateString}</p>
+                    <p className="sortable-item_next-due-text calendar-event-time">
+                        {dateString}
+                    </p>
                 </div>
                 <div className="calendar-event-controls">
                     {!!event.note && (

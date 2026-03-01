@@ -272,7 +272,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {lastCompletedDate}
                                     </span>
                                 )}
-                                {nextDue && (
+                                {activeTab === TABS.upcoming && nextDue && (
                                     <span className="sortable-item_next-due-text">
                                         {nextDueDate}
                                     </span>
