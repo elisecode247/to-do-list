@@ -117,7 +117,7 @@
     font-weight: 500;
     cursor: pointer;
     min-width: 100px;
-     border-radius: var(--radius-md);
+    border-radius: var(--radius-md);
 }
 
 .mobile-tab-button--active:hover,
@@ -144,6 +144,30 @@
     font-size: 12px;
     font-weight: 600;
     line-height: 1;
+}
+
+.app_note-editor {
+    font-size: 14px;
+    border: 1px solid var(--color-border);
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+}
+
+.note-saved-indicator {
+    margin: auto;
+    position: absolute;
+    width: fit-content;
+    bottom: 25%;
+    right: 32%;
+    transform: translate(100%, 100%);
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    opacity: 0.9;
+    z-index: 1001;
 }
 
 @media (min-width: 900px) {

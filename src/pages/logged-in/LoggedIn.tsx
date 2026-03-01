@@ -1,5 +1,5 @@
 
-import React, { useState, type SetStateAction } from 'react';
+import React, { useState, useRef, useEffect, type SetStateAction } from 'react';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
@@ -19,7 +19,11 @@ import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from '../use-is-desktop';
 import { ListFilter, Plus } from 'lucide-react';
-
+import NoteEditor from 'src/editor/NoteEditor';
+import { type MDXEditorMethods } from '@mdxeditor/editor';
+import { API_URL } from 'app/constants';
+import { authHeaders } from 'src/authentication/authentication-api';
+import { useDebounceValue } from 'usehooks-ts';
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const LoggedIn: React.FC = () => {
@@ -46,7 +50,10 @@ const LoggedIn: React.FC = () => {
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-
+    const [initialNotes, setInitialNotes] = useState('');
+    const [debouncedNotes, setDebouncedNotes] = useDebounceValue('', 1000);
+    const [showNoteSaved, setShowNoteSaved] = useState(false);
+    const noteRef = useRef<MDXEditorMethods>(null);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
 
@@ -124,6 +131,69 @@ const LoggedIn: React.FC = () => {
         setMenuOpen(false);
     }
 
+    useEffect(() => {
+        const fetchAppNotes = async () => {
+            try {
+                const response = await fetch(`${API_URL}/user-checklist`, {
+                    method: "GET",
+                    headers: await authHeaders()
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error(`Failed to fetch app notes: ${response.status} - ${text}`);
+                    return;
+                }
+
+                return await response.json();
+            } catch (err) {
+                console.error("Failed to load app notes:", err);
+            }
+        };
+
+        fetchAppNotes().then(data => {
+            if (data && data.notes) {
+                setInitialNotes(data.notes);
+            }
+        });
+
+    }, [])
+
+    useEffect(() => {
+        const saveAppNotes = async (notes: string) => {
+            try {
+                const response = await fetch(`${API_URL}/user-checklist`, {
+                    method: "PUT",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({ notes }),
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error(`Failed to save app notes: ${response.status} - ${text}`);
+                    showToast('Failed to save app notes.', 'error');
+                    setShowNoteSaved(false);
+                } else {
+                    setShowNoteSaved(true);
+                    console.info("App notes saved successfully");
+                    setTimeout(() => setShowNoteSaved(false), 2000);
+                }
+            } catch (err) {
+                console.error("Failed to save app notes:", err);
+                showToast('Failed to save app notes.', 'error');
+                setShowNoteSaved(false);
+            }
+        };
+
+        if (debouncedNotes) {
+            saveAppNotes(debouncedNotes);
+        }
+    }, [debouncedNotes, showToast]);
+
+    function handleNotesChange(markdown: string) {
+        setDebouncedNotes(markdown);
+    }
+
 
     return (<>
         {toasts.map(toast => (
@@ -167,7 +237,7 @@ const LoggedIn: React.FC = () => {
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
                         <span>
-                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleDateString()} ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }` : ''}
+                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleDateString()} ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
                         </span>
                     </p>
                 </div>
@@ -211,15 +281,27 @@ const LoggedIn: React.FC = () => {
                         onRetry={loadTasks}
                     />
                 ) : (
-                    <Checklist
-                        onEditItem={handleEditItem}
-                        sparkles={sparkles}
-                        activeTab={activeTab}
-                        modeFilter={modeFilter}
-                        hideCompleted={hideCompleted}
-                        filterCategory={filterCategory}
-                        clearFilters={clearFilters}
-                    />
+                    <>
+                        <div style={{ position: 'relative' }}>
+                            <NoteEditor
+                                className="app_note-editor"
+                                initialMarkdown={initialNotes || "Write notes here"}
+                                readOnly={false}
+                                ref={noteRef}
+                                onChange={handleNotesChange}
+                            />
+                            {showNoteSaved && <div className="note-saved-indicator">Notes saved</div>}
+                        </div>
+                        <Checklist
+                            onEditItem={handleEditItem}
+                            sparkles={sparkles}
+                            activeTab={activeTab}
+                            modeFilter={modeFilter}
+                            hideCompleted={hideCompleted}
+                            filterCategory={filterCategory}
+                            clearFilters={clearFilters}
+                        />
+                    </>
                 )}
             </main>
             <aside className="right_panel">

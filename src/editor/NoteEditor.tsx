@@ -13,8 +13,10 @@ interface NoteEditorProps {
     initialMarkdown: string;
     ref?: React.Ref<MDXEditorMethods>;
     readOnly: boolean;
+    className?: string;
+    onChange?: (markdown: string) => void;
 }
-const NoteEditor = ({ initialMarkdown, ref, readOnly = false }: NoteEditorProps) => {
+const NoteEditor = ({ initialMarkdown, ref, readOnly = false, className, onChange }: NoteEditorProps) => {
 
     return (
         <MDXEditor
@@ -23,6 +25,8 @@ const NoteEditor = ({ initialMarkdown, ref, readOnly = false }: NoteEditorProps)
             plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin()]}
             readOnly={readOnly}
             contentEditableClassName="note-editor-content"
+            className={className}
+            {...(onChange ? { onChange } : {})}
         />
     );
 };

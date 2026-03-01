@@ -1,10 +1,10 @@
-import { API_URL } from "app/constants";
+import { API_CHORES_URL } from "app/constants";
 import { type ChecklistItem } from "app/types";
 import { authHeaders } from "src/authentication/authentication-api";
 
 export async function fetchTasks(): Promise<ChecklistItem[]> {
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(API_CHORES_URL, {
             method: "GET",
             headers: await authHeaders(),
         });
@@ -22,7 +22,7 @@ export async function fetchTasks(): Promise<ChecklistItem[]> {
 
 export async function addTask(task: ChecklistItem): Promise<ChecklistItem> {
     try {
-        const response = await fetch(`${API_URL}/new`, {
+        const response = await fetch(`${API_CHORES_URL}/new`, {
             method: "POST",
             headers: await authHeaders(),
             body: JSON.stringify(task),
@@ -42,7 +42,7 @@ export async function addTask(task: ChecklistItem): Promise<ChecklistItem> {
 
 export async function bulkUpdateTasks(tasks: ChecklistItem[]): Promise<void> {
     try {
-        const response = await fetch(`${API_URL}/bulk-update`, {
+        const response = await fetch(`${API_CHORES_URL}/bulk-update`, {
             method: "PUT",
             headers: await authHeaders(),
             body: JSON.stringify({ tasks }),
@@ -60,7 +60,7 @@ export async function bulkUpdateTasks(tasks: ChecklistItem[]): Promise<void> {
 
 export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem> {
     try {
-        const response = await fetch(`${API_URL}/priority`, {
+        const response = await fetch(`${API_CHORES_URL}/priority`, {
             method: "PUT",
             headers: await authHeaders(),
             body: JSON.stringify({ id: task.id, priority: task.isPriority }),
@@ -80,7 +80,7 @@ export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem
 
 export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
     try {
-        const response = await fetch(`${API_URL}`, {
+        const response = await fetch(`${API_CHORES_URL}`, {
             method: "PUT",
             headers: await authHeaders(),
             body: JSON.stringify(task),
@@ -101,7 +101,7 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
 export async function updateTasksOrder(
     orders: { id: string; sortOrder?: number, tabSortOrder?: number }[]
 ): Promise<void> {
-    const response = await fetch(`${API_URL}/order`, {
+    const response = await fetch(`${API_CHORES_URL}/order`, {
         method: "PUT",
         headers: await authHeaders(),
         body: JSON.stringify({ orders }),
@@ -116,7 +116,7 @@ export async function updateTasksOrder(
 
 export async function deleteTask(id: string): Promise<void> {
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${API_CHORES_URL}/${id}`, {
             method: "DELETE",
             headers: await authHeaders(),
         });
@@ -135,7 +135,7 @@ export async function deleteTask(id: string): Promise<void> {
 
 export async function toggleHideToday(id: string, hide: boolean): Promise<void> {
     try {
-        const response = await fetch(`${API_URL}/hideToday`, {
+        const response = await fetch(`${API_CHORES_URL}/hideToday`, {
             method: "PUT",
             headers: await authHeaders(),
             body: JSON.stringify({ id, hide }),

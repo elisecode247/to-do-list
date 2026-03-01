@@ -18,7 +18,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- add a notes section at the top
 - ux: improvements
     - fix input cursor not moving in new task
     - put text input on top of mobile panel new task
