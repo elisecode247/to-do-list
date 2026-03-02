@@ -67,7 +67,7 @@ const App: FC = () => {
             ))}
             <div className="app_container">
                 <header className="app_header">
-                    <h1 className="app_h1">For My Today</h1>
+                    <h1 className="app_h1">Daily Reset</h1>
                     <p className="app_subtitle">
                         {dayOfWeekName}
                         {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}

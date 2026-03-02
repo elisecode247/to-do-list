@@ -231,7 +231,7 @@ const LoggedIn: React.FC = () => {
                     )}
                 </button>
                 <div className="app_header_title">
-                    <h1 className="app_h1">For My Today</h1>
+                    <h1 className="app_h1">Daily Reset</h1>
                     <p className="app_subtitle">
                         <span>
                             {dayOfWeekName}

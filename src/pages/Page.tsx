@@ -21,7 +21,7 @@ function Page({ title, children }: PageProps) {
     return (
         <div className="page_container">
             <header className="app_header">
-                <h1 className="app_h1">For My Today</h1>
+                <h1 className="app_h1">Daily Reset</h1>
                 <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)} />
                 {location !== ROUTES.home && (
                     <Link href={ROUTES.home} className="page-btn page-btn--primary page-btn--home">
