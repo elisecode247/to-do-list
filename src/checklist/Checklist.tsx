@@ -294,8 +294,9 @@ const Checklist: FC<ChecklistProps> = ({
                             }
                             return null;
                         })}
+                        {/* Placeholder div to ensure proper spacing at the end of the list */}
+                        <div style={{ height: '200px', flexShrink: 0 }} />
                     </SortableContext>
-
                 </div>
             </DndContext>
         </>

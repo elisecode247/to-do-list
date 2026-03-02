@@ -205,6 +205,13 @@
     flex-shrink: 0;
 }
 
+.sortable-item_menu-button:focus-visible,
+.sortable-item_menu-button:active,
+.sortable-item_menu-button--active {
+    border: 1px solid var(--color-primary);
+    color: var(--color-text-primary);
+}
+
 .sortable-item_button-text-span {
     margin-left: 4px;
 }

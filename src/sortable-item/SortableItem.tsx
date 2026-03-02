@@ -174,6 +174,22 @@ export const SortableItem: FC<SortableItemProps> = ({
         // Check if button is in the left half of viewport
         const isLeftSide = buttonRect.left < viewportWidth / 2;
         setAlignLeft(isLeftSide);
+
+        // Position dropdown above the button if it's on the bottom of the viewport
+        const dropdownHeight = 260; // to be above bottom app menu
+        const spaceBelow = window.innerHeight - buttonRect.bottom;
+        const dropdown = menuDropdownRef.current;
+
+        if (dropdown) {
+            if (spaceBelow < dropdownHeight) {
+                dropdown.style.bottom = '45px'; // button height
+                dropdown.style.top = 'auto';
+
+            } else {
+                dropdown.style.top = "100%";
+                dropdown.style.bottom = 'auto';
+            }
+        }
     };
 
     async function delayHide() {
@@ -332,7 +348,8 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                         <div className="sortable-item_menu-wrapper">
                             <button
-                                className="sortable-item_menu-button sortable-item_hide-button"
+                                className={`sortable-item_menu-button
+                                    ${isMenuOpen ? 'sortable-item_menu-button--active' : ''}`}
                                 aria-label="More task actions"
                                 type="button"
                                 ref={buttonRef}
