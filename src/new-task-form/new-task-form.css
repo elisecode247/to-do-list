@@ -84,7 +84,7 @@
 .new-task-form-input-row {
     display: flex;
     gap: var(--spacing-xs);
-    margin-top: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
     width: 100%;
 }
 

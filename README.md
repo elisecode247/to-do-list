@@ -20,8 +20,7 @@ Live: https://elisecode247.github.io/to-do-list/
 ### To do
 - ux: improvements
     - fix input cursor not moving in new task
-    - put text input on top of mobile panel new task
-    - keyboard tabbing
+    - keyboard tabbing for panels
     - move filter button to bottom right
     - lost internet connection
     - make localStorage persistent longer on mobile

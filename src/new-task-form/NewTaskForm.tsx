@@ -80,6 +80,31 @@ const NewTaskForm = () => {
             <div className="new-task-form-item-header">
                 <span className="new-task-form-title">New Task</span>
             </div>
+            <div className="new-task-form-input-row">
+                <input
+                    id="new-task-form-text-input"
+                    className="new-task-form-text-input"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={(e) => {
+                        e.stopPropagation();
+                        if (e.key === 'Enter') {
+                            handleAddItem();
+                        }
+                    }}
+                    placeholder="New item..."
+                />
+                <button
+                    disabled={isAddButtonDisabled}
+                    className={`new-task-form-add-button
+                            ${isAddButtonDisabled &&
+                        'new-task-form-add-button--disabled'}`
+                    }
+                    onClick={handleAddItem}
+                >
+                    Add
+                </button>
+            </div>
             <FrequencyButtonGroup
                 mode={mode}
                 onClick={(mode: Mode) => handleModeClick(mode)}
@@ -89,34 +114,34 @@ const NewTaskForm = () => {
                     {mode === OCCASIONAL_MODE && (
                         <>
                             <div className="form-group">
-                            <label
-                                className="new-task-form_recurrence-label"
-                                htmlFor="new-task-form_recurrence-count">
-                                Repeat Every
-                            </label>
-                            <input
-                                id="new-task-form_recurrence-count"
-                                className="new-task-form_recurrence-count"
-                                type="number"
-                                min={1}
-                                value={recurrenceCount}
-                                onChange={(e) => {
-                                    const count = parseInt(e.target.value);
-                                    if (isNaN(count) || count < 1) return;
-                                    setRecurrenceCount(count);
-                                }}
-                            />
-                            <select
-                                className="select-input"
-                                value={recurrenceFrequency}
-                                onChange={(e) => {
-                                    setRecurrenceFrequency(e.target.value as FrequencyType);
-                                }}
-                            >
-                                {IntervalOptions.map(option => (
-                                    <option key={option.key} value={option.key}>{option.title}(s)</option>
-                                ))}
-                            </select>
+                                <label
+                                    className="new-task-form_recurrence-label"
+                                    htmlFor="new-task-form_recurrence-count">
+                                    Repeat Every
+                                </label>
+                                <input
+                                    id="new-task-form_recurrence-count"
+                                    className="new-task-form_recurrence-count"
+                                    type="number"
+                                    min={1}
+                                    value={recurrenceCount}
+                                    onChange={(e) => {
+                                        const count = parseInt(e.target.value);
+                                        if (isNaN(count) || count < 1) return;
+                                        setRecurrenceCount(count);
+                                    }}
+                                />
+                                <select
+                                    className="select-input"
+                                    value={recurrenceFrequency}
+                                    onChange={(e) => {
+                                        setRecurrenceFrequency(e.target.value as FrequencyType);
+                                    }}
+                                >
+                                    {IntervalOptions.map(option => (
+                                        <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                    ))}
+                                </select>
                             </div>
                         </>
                     )}
@@ -145,31 +170,6 @@ const NewTaskForm = () => {
                 selectedCategory={newTaskCategory}
                 onChange={(category: string) => setNewTaskCategory(category)}
             />
-            <div className="new-task-form-input-row">
-                <input
-                    id="new-task-form-text-input"
-                    className="new-task-form-text-input"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                        e.stopPropagation();
-                        if (e.key === 'Enter') {
-                            handleAddItem();
-                        }
-                    }}
-                    placeholder="New item..."
-                />
-                <button
-                    disabled={isAddButtonDisabled}
-                    className={`new-task-form-add-button
-                            ${isAddButtonDisabled &&
-                        'new-task-form-add-button--disabled'}`
-                    }
-                    onClick={handleAddItem}
-                >
-                    Add
-                </button>
-            </div>
         </div >
     </>);
 }
