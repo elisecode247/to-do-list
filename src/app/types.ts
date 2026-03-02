@@ -40,11 +40,15 @@ export interface Option {
     title: string
 }
 
+export const ONE_TIME_RECURRENCE_TYPE = 'one-time';
+export const INTERVAL_RECURRENCE_TYPE = 'interval';
+export const CALENDAR_RECURRENCE_TYPE = 'calendar';
+
 export type OneTimeRecurrence = {
     type: "one-time";
-    dueAt: string;
     startDate: string;
 }
+
 export type IntervalRecurrence = {
     type: "interval";
     count: number;

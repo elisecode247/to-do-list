@@ -1,4 +1,4 @@
-import type { ChecklistItem } from 'app/types';
+import { CALENDAR_RECURRENCE_TYPE, INTERVAL_RECURRENCE_TYPE, ONE_TIME_RECURRENCE_TYPE, type ApiRecurrence, type ChecklistItem } from 'app/types';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from 'src/app/utilities/get-reorder-items';
@@ -7,6 +7,8 @@ import type {
     IntervalRecurrence,
     CalendarRecurrence,
     OneTimeRecurrence,
+    FrequencyType,
+    EndingConditionType,
 } from 'app/types';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { DemoTaskContext } from './demo-task-context';
@@ -180,7 +182,40 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const addItem = async (newItem: ChecklistItem) => {
+        function mapRecurrence(rec: ApiRecurrence | null): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null {
+            if (!rec) return null;
+            switch (rec.type) {
+                case ONE_TIME_RECURRENCE_TYPE:
+                    return {
+                        type: ONE_TIME_RECURRENCE_TYPE,
+                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
+                    };
+                case INTERVAL_RECURRENCE_TYPE:
+                    return {
+                        type: INTERVAL_RECURRENCE_TYPE,
+                        count: rec.count ?? 1,
+                        frequency: rec.frequency as FrequencyType,
+                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
+                    };
+                case CALENDAR_RECURRENCE_TYPE:
+                    return {
+                        type: CALENDAR_RECURRENCE_TYPE,
+                        startDate: new Date(rec.startDate),
+                        frequency: rec.frequency as FrequencyType,
+                        weekDaysRepetition: rec.weekDaysRepetition ?? [],
+                        endingCondition: rec.endingCondition as EndingConditionType,
+                        endingOccurrencesNumber: rec.endingOccurrencesNumber,
+                        endDate: rec.endDate ? new Date(rec.endDate) : undefined,
+                        isAllDay: rec.isAllDay ?? false,
+                        startTime: rec.startTime ? new Date(rec.startTime) : undefined,
+                        endTime: rec.endTime ? new Date(rec.endTime) : undefined,
+                    };
+                default:
+                    throw new Error('Unknown recurrence type');
+            }
+        }
         try {
+
             const formattedTask: ChecklistItem = {
                 itemType: 'checklist-item',
                 id: newItem.id || generateId(),
@@ -198,7 +233,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
                 isArchived: false,
                 parentUuid: newItem.parentUuid ?? null,
                 hasSubChores: newItem.hasSubChores ?? false,
-                recurrence: newItem.recurrence ?? null,
+                recurrence: mapRecurrence(newItem.recurrence),
                 nextDue: newItem.nextDue,
                 listId: newItem.listId,
             };

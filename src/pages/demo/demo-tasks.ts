@@ -156,7 +156,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
-        mode: "one-time",
+        mode: "occasional",
         isPriority: false,
         isArchived: false,
         parentUuid: null,

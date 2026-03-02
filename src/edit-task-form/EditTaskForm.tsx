@@ -1,14 +1,14 @@
 import 'src/edit-task-form/edit-task-form.css';
 import { useRef, type FC } from 'react';
-import type { ChecklistItem, IntervalRecurrence, Mode } from 'app/types';
-import { MODES, OCCASIONAL_MODE, CALENDAR_MODE } from 'checklist/constants';
+import type { CalendarRecurrence, ChecklistItem, IntervalRecurrence, Mode, OneTimeRecurrence } from 'app/types';
+import { MODES, OCCASIONAL_MODE, CALENDAR_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/constants';
 import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
-import { FrequencyType, IntervalOptions } from 'src/app/types';
+import { CALENDAR_RECURRENCE_TYPE, FrequencyType, INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE } from 'src/app/types';
 import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
 
 type EditTaskFormProps = {
@@ -26,6 +26,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     onSave,
     onClose,
 }) => {
+    const recurrenceStartDate = formData?.recurrence?.startDate
+        ? formatDate(new Date(formData.recurrence.startDate))
+        : formatDate(new Date());
     const noteRef = useRef<MDXEditorMethods>(null)
     const handleSave = async () => {
         const note = noteRef.current?.getMarkdown();
@@ -37,6 +40,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
                 startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date().toISOString(),
             } as IntervalRecurrence;
+        }
+        if (formData.mode === ONE_TIME_MODE) {
+            recurrence = {
+                type: ONE_TIME_RECURRENCE_TYPE,
+                startDate: formData.recurrence?.startDate ?? new Date().toISOString(),
+            } as OneTimeRecurrence;
         }
         onSave({
             ...formData,
@@ -58,6 +67,50 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             ...formData,
             isPriority: !formData.isPriority
         });
+    }
+
+    const handleRecurrenceStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.value) {
+            // Allow clearing the date
+            setEditingItem({
+                ...formData,
+                recurrence: null
+            });
+            return;
+        }
+
+        const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
+        let recurrence = formData.recurrence;
+        if (formData.mode === ONE_TIME_MODE) {
+            recurrence = {
+                type: ONE_TIME_RECURRENCE_TYPE,
+                startDate: isoDateString
+            }
+        } else if (formData.mode === DAILY_MODE) {
+            recurrence = {
+                type: INTERVAL_RECURRENCE_TYPE,
+                count: 1,
+                frequency: FrequencyType.Daily,
+                startDate: isoDateString,
+            }
+        } else if (formData.mode === OCCASIONAL_MODE) {
+            recurrence = {
+                type: INTERVAL_RECURRENCE_TYPE,
+                count: getRecurrenceCount(formData.recurrence, 1),
+                frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
+                startDate: isoDateString,
+            }
+        } else if (formData.mode === CALENDAR_MODE) {
+            recurrence = {
+                ...formData.recurrence,
+                type: CALENDAR_RECURRENCE_TYPE,
+                startDate: new Date(isoDateString),
+            } as CalendarRecurrence;
+        }
+        setEditingItem({
+            ...formData,
+            recurrence
+        })
     }
 
     return (
@@ -90,10 +143,17 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 <label>Last Completed</label>
                 <input
                     type="date"
-                    value={formatDate(new Date(formData.lastCompleted)) ?? ''}
+                    value={formData.lastCompleted ? formatDate(new Date(formData.lastCompleted)) : ''}
                     onClick={(e) => e.currentTarget.showPicker?.()}
-                    onFocus={(e) => e.currentTarget.showPicker?.()}
                     onChange={(e) => {
+                        if (!e.target.value) {
+                            // Allow clearing the date
+                            setEditingItem({
+                                ...formData,
+                                lastCompleted: '',
+                            });
+                            return;
+                        }
                         const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
                         setEditingItem({
                             ...formData,
@@ -161,7 +221,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                                 type: 'interval',
                                                 count,
                                                 frequency: (formData.recurrence as IntervalRecurrence)?.frequency ?? FrequencyType.Daily,
-                                                startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date(),
+                                                startDate: (formData.recurrence as IntervalRecurrence)?.startDate ?? new Date().toISOString(),
                                             },
                                         });
                                     }}
@@ -195,21 +255,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                         <input
                             className="edit-task-form_recurrence-start-date"
                             type="date"
-                            value={formData.recurrence?.type === 'interval' && formData.recurrence.startDate
-                                ? formatDate(new Date(formData.recurrence.startDate))
-                                : formatDate(new Date())}
-                            onFocus={(e) => e.currentTarget.showPicker?.()}
-                            onClick={(e) => e.currentTarget.showPicker?.()}
-                            onChange={(e) => {
-                                const isoDateString = new Date(localDateWithNowTime(e.target.value)).toISOString();
-                                setEditingItem({
-                                    ...formData,
-                                    recurrence: {
-                                        ...(formData.recurrence as IntervalRecurrence),
-                                        startDate: isoDateString ?? '',
-                                    } as IntervalRecurrence
-                                })
-                            }}
+                            value={recurrenceStartDate}
+                            onClick={(e) => e?.currentTarget.showPicker?.()}
+                            onChange={handleRecurrenceStartDateChange}
                         />
                     </div>
                 </div>

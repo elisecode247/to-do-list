@@ -1,4 +1,3 @@
-import type { ChecklistItem, ApiRecurrence } from 'app/types';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
@@ -14,12 +13,17 @@ import {
     toggleHideToday,
     bulkUpdateTasks
 } from 'app/api';
-import type {
-    IntervalRecurrence,
-    CalendarRecurrence,
-    OneTimeRecurrence,
+import {
+    type ChecklistItem,
+    type ApiRecurrence,
+    type IntervalRecurrence,
+    type CalendarRecurrence,
+    type OneTimeRecurrence,
     FrequencyType,
-    EndingConditionType
+    EndingConditionType,
+    INTERVAL_RECURRENCE_TYPE,
+    ONE_TIME_RECURRENCE_TYPE,
+    CALENDAR_RECURRENCE_TYPE
 } from 'app/types';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { TaskContext } from './task-context';
@@ -110,24 +114,24 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const addItem = async (newItem: ChecklistItem) => {
 
-        function mapRecurrence(rec: ApiRecurrence): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence {
+        function mapRecurrence(rec: ApiRecurrence | null): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null {
+            if (!rec) return null;
             switch (rec.type) {
-                case 'one-time':
+                case ONE_TIME_RECURRENCE_TYPE:
                     return {
-                        type: 'one-time',
-                        dueAt: rec.dueAt ?? '',
+                        type: ONE_TIME_RECURRENCE_TYPE,
                         startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
-                case 'interval':
+                case INTERVAL_RECURRENCE_TYPE:
                     return {
-                        type: 'interval',
+                        type: INTERVAL_RECURRENCE_TYPE,
                         count: rec.count ?? 1,
                         frequency: rec.frequency as FrequencyType,
                         startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
-                case 'calendar':
+                case CALENDAR_RECURRENCE_TYPE:
                     return {
-                        type: 'calendar',
+                        type: CALENDAR_RECURRENCE_TYPE,
                         startDate: new Date(rec.startDate),
                         frequency: rec.frequency as FrequencyType,
                         weekDaysRepetition: rec.weekDaysRepetition ?? [],
@@ -161,9 +165,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 isArchived: false,
                 parentUuid: data.parentUuid,
                 hasSubChores: data.hasSubChores,
-                recurrence: data.recurrence ?
-                    mapRecurrence(data.recurrence) :
-                    null,
+                recurrence: mapRecurrence(data.recurrence),
                 nextDue: data.nextDue,
                 listId: data.listId,
             };

@@ -3,11 +3,16 @@ import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
-import { IntervalOptions, type IntervalRecurrence, type Mode } from 'app/types';
+import { IntervalOptions, type IntervalRecurrence, type Mode, type OneTimeRecurrence } from 'app/types';
 import 'src/new-task-form/new-task-form.css';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
-import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE } from 'src/checklist/constants';
-import { type ChecklistItem, FrequencyType } from 'app/types';
+import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE, DAILY_MODE } from 'src/checklist/constants';
+import {
+    type ChecklistItem,
+    FrequencyType,
+    ONE_TIME_RECURRENCE_TYPE,
+    INTERVAL_RECURRENCE_TYPE,
+ } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 
@@ -28,8 +33,20 @@ const NewTaskForm = () => {
         const text = inputText.trim();
         if (!text) return;
         const note = noteRef.current?.getMarkdown();
-        let recurrence: IntervalRecurrence | null = null;
-        if (mode === OCCASIONAL_MODE) {
+        let recurrence: OneTimeRecurrence | IntervalRecurrence | null = null;
+        if (mode === ONE_TIME_MODE) {
+            recurrence = {
+                type: ONE_TIME_RECURRENCE_TYPE,
+                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
+            } as OneTimeRecurrence;
+        } else if (mode === DAILY_MODE) {
+            recurrence = {
+                type: INTERVAL_RECURRENCE_TYPE,
+                count: 1,
+                frequency: FrequencyType.Daily,
+                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
+            } as IntervalRecurrence;
+        } else if (mode === OCCASIONAL_MODE) {
             recurrence = {
                 type: 'interval',
                 count: recurrenceCount,
