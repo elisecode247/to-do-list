@@ -217,12 +217,13 @@ const LoggedIn: React.FC = () => {
             )}
             <header className="app_header">
                 <button
-                    className="filter-toggle-button"
+                    className={`filter-toggle-button
+                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleLeft}
                     aria-label="Toggle filters"
                 >
                     <ListFilter size={24} />
-                    Filters
+                    {isDesktop && <span>Filters</span>}
                     {activeFilterCount > 0 && (
                         <span className="applied-filter-count-badge">
                             {activeFilterCount}

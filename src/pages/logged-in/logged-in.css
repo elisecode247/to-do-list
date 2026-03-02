@@ -48,7 +48,11 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
     width: fit-content;
-    position: relative;
+    position: fixed;
+    bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
+    right: 25px;
+    z-index: 99999;
+    backdrop-filter: blur(10px);
 }
 
 .filter-toggle-button:hover {
@@ -179,6 +183,15 @@
             "header header header"
             "left   main   right";
         transition: grid-template-columns 0.15s ease;
+    }
+
+    .filter-toggle-button {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        z-index: auto;
     }
 
     .left_panel,
