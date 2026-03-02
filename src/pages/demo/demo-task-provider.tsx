@@ -90,15 +90,38 @@ const saveTasksToStorage = (tasks: ChecklistItem[]) => {
 
 export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>([]);
-    console.log("%c Line:72 🍫 items", "color:#3f7cff", items);
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
 
-    const reset = () => {
-        setItems([]);
+    const clear = () => {
         setTaskError(null);
-        setIsLoading(false);
+        setIsLoading(true);
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+            setItems([]);
+        } catch (error) {
+            console.error('Failed to clear demo tasks:', error);
+            setTaskError('Failed to clear demo tasks.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const reset = () => {
+        setTaskError(null);
+        setIsLoading(true);
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+            const seededTasks = loadTasksFromStorage();
+            setItems(seededTasks);
+        } catch (error) {
+            console.error('Failed to reset demo tasks:', error);
+            setTaskError('Failed to reset demo tasks.');
+            setItems([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     function loadTasks() {
@@ -106,7 +129,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(true);
         try {
             const tasks = loadTasksFromStorage();
-            console.log("%c Line:87 🥚 tasks", "color:#fca650", tasks);
             setItems(tasks);
             setTaskError(null);
         } catch (error) {
@@ -433,6 +455,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             prioritizeItem,
             archiveItem,
             sortItems,
+            clear,
             reset,
             getSubtasks,
             hideForToday,

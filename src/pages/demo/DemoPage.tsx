@@ -17,7 +17,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import 'src/pages/logged-in/logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { ListFilter, Plus } from 'lucide-react';
+import { Eraser, ListFilter, Plus, RefreshCcw } from 'lucide-react';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useDebounceValue } from 'usehooks-ts';
@@ -30,6 +30,8 @@ const DemoPage: React.FC = () => {
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
     const { toasts, showToast, removeToast } = useToast();
     const {
+        clear,
+        reset,
         isLoading,
         taskError,
         loadTasks,
@@ -204,6 +206,25 @@ const DemoPage: React.FC = () => {
                 >
                     <Plus size={24} strokeWidth={3} />
                 </button>
+                {/** Reset with Demo Starter Data */}
+                <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
+                <button
+                    className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
+                    onClick={reset}
+                    aria-label="Reset demo data"
+                >
+                    <RefreshCcw size={24} strokeWidth={3} />
+                    Refresh with Dummy Data
+                </button>
+                <button
+                    className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
+                    onClick={clear}
+                    aria-label="Clear all tasks"
+                >
+                    <Eraser size={24} strokeWidth={3} />
+                    Clear All Data
+                </button>
+                </div>
             </header>
             <aside className="left_panel">
                 <AppToolBar

@@ -60,7 +60,6 @@ const DemoChecklist: FC<ChecklistProps> = ({
         unhideForToday,
     } = useDemoTask();
     const { events, tasks, markCalendarTaskCompletion } = useCalendarIntegration();
-    console.log("%c Line:53 🍔 items", "color:#4fff4B", items);
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);

@@ -1,18 +1,22 @@
 import { type ChecklistItem } from "src/app/types";
 
+const now = new Date();
+const twoDaysFromNow = new Date(now);
+twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
+
 export const DEMO_TASKS: ChecklistItem[] = [
     {
         itemType: 'checklist-item',
         id: "1",
         text: "Put your thoughts somewhere safe",
         done: false,
-        lastCompleted: "",
+        lastCompleted: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days ago
         note: "",
         sortOrder: 0,
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
-        mode: "one-time",
+        mode: "daily",
         isPriority: false,
         isArchived: false,
         parentUuid: null,
@@ -32,7 +36,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
-        mode: "one-time",
+        mode: "occasional",
         isPriority: false,
         isArchived: false,
         parentUuid: null,
@@ -48,7 +52,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         done: false,
         lastCompleted: "",
         note: "Priority just means this matters a little more today.",
-        sortOrder: 3,
+        sortOrder: 2,
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
@@ -68,7 +72,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         done: false,
         lastCompleted: "",
         note: "You can add subtasks if a task feels too big.",
-        sortOrder: 4,
+        sortOrder: 3,
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
@@ -76,7 +80,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isPriority: false,
         isArchived: false,
         parentUuid: null,
-        hasSubChores: false,
+        hasSubChores: true,
         isHidden: false,
         recurrence: null,
         nextDue: null
@@ -88,7 +92,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         done: false,
         lastCompleted: "",
         note: "There is no perfect order. Just what helps now.",
-        sortOrder: 5,
+        sortOrder: 4,
         tabSortOrder: {},
         category: "",
         categoryUuid: null,
@@ -108,6 +112,46 @@ export const DEMO_TASKS: ChecklistItem[] = [
         done: false,
         lastCompleted: "",
         note: "Hiding doesn't delete it. It just gives today some breathing room. You can revisit it tomorrow.",
+        sortOrder: 5,
+        tabSortOrder: {},
+        category: "",
+        categoryUuid: null,
+        mode: "one-time",
+        isPriority: false,
+        isArchived: false,
+        parentUuid: null,
+        hasSubChores: false,
+        isHidden: true,
+        recurrence: null,
+        nextDue: null
+    },
+    {
+        itemType: 'checklist-item',
+        id: "7",
+        text: "Example subtask: choose one tiny next step",
+        done: false,
+        lastCompleted: "",
+        note: "Subtasks help reduce overwhelm.",
+        sortOrder: 0,
+        tabSortOrder: {},
+        category: "",
+        categoryUuid: null,
+        mode: "one-time",
+        isPriority: false,
+        isArchived: false,
+        parentUuid: "4",
+        hasSubChores: false,
+        isHidden: false,
+        recurrence: null,
+        nextDue: null
+    },
+    {
+        itemType: 'checklist-item',
+        id: "8",
+        text: "Example task with due date in two days",
+        done: false,
+        lastCompleted: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+        note: "This demonstrates seeded last-completed and due fields.",
         sortOrder: 6,
         tabSortOrder: {},
         category: "",
@@ -118,7 +162,12 @@ export const DEMO_TASKS: ChecklistItem[] = [
         parentUuid: null,
         hasSubChores: false,
         isHidden: false,
-        recurrence: null,
-        nextDue: null
+        recurrence: {
+            type: "interval",
+            count: 1,
+            frequency: "daily",
+            startDate: '2024-01-01T00:00:00.000Z'
+        },
+        nextDue: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() // + 2 days
     }
 ];
