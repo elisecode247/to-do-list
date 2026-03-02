@@ -1,237 +1,444 @@
-import { useState, useEffect, type ReactNode } from 'react';
 import type { ChecklistItem } from 'app/types';
-import { arrayMove } from '@dnd-kit/sortable';
-import { useToast } from 'src/toast/use-toast';
-import { DEMO_TASKS } from './demo-tasks';
+import { isDateToday } from 'src/utilities/is-date-today';
+import { type Tab } from 'src/app-toolbar/tabs/types';
+import { getReorderedItems } from 'src/app/utilities/get-reorder-items';
+import { ONE_TIME_MODE } from 'src/checklist/constants';
+import type {
+    IntervalRecurrence,
+    CalendarRecurrence,
+    OneTimeRecurrence,
+} from 'app/types';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { DemoTaskContext } from './demo-task-context';
-const DEMO_STORAGE_KEY = 'demo_checklist_tasks';
+import { DEMO_TASKS } from './demo-tasks';
 
+const STORAGE_KEY = 'demo-tasks';
+
+const generateId = () => {
+    return Math.random().toString(36).substring(2, 11);
+};
+
+interface StoredTask {
+    id: string;
+    text: string;
+    done?: boolean;
+    lastCompleted?: string;
+    note?: string;
+    sortOrder?: number;
+    tabSortOrder?: Record<string, number>;
+    category?: string;
+    categoryUuid?: string | null;
+    mode?: string;
+    isArchived?: boolean;
+    isPriority?: boolean;
+    isHidden?: boolean;
+    parentUuid?: string | null;
+    hasSubChores?: boolean;
+    recurrence?: IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null;
+    nextDue?: string;
+    listId?: string;
+}
+
+const loadTasksFromStorage = (): ChecklistItem[] => {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) {
+            const initialTasks = DEMO_TASKS.map((task) => ({
+                ...task,
+                itemType: 'checklist-item' as const,
+                lastCompleted: task.lastCompleted ?? '',
+                done: isDateToday(task.lastCompleted),
+            }));
+
+            const initialTasksForStorage = initialTasks.map((task) => {
+                const storageTask: Omit<ChecklistItem, 'itemType'> & { itemType?: ChecklistItem['itemType'] } = { ...task };
+                delete storageTask.itemType;
+                return storageTask;
+            });
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(initialTasksForStorage)
+            );
+
+            return initialTasks;
+        }
+
+        const tasks: StoredTask[] = JSON.parse(stored);
+        return tasks.map((task: StoredTask) => ({
+            ...task,
+            itemType: 'checklist-item' as const,
+            lastCompleted: task.lastCompleted ?? '',
+            done: isDateToday(task.lastCompleted),
+        } as ChecklistItem));
+    } catch (error) {
+        console.error('Failed to load tasks from localStorage:', error);
+        return [];
+    }
+};
+
+const saveTasksToStorage = (tasks: ChecklistItem[]) => {
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const toStore = tasks.map(({ itemType, ...rest }) => rest);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+    } catch (error) {
+        console.error('Failed to save tasks to localStorage:', error);
+        throw error;
+    }
+};
 
 export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
-    const { showToast } = useToast();
-    const [items, setItems] = useState<ChecklistItem[]>(() => {
-        const stored = localStorage.getItem(DEMO_STORAGE_KEY);
-        if (stored) return JSON.parse(stored);
-        return DEMO_TASKS;
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(items));
-    }, [items]);
+    const [items, setItems] = useState<ChecklistItem[]>([]);
+    console.log("%c Line:72 🍫 items", "color:#3f7cff", items);
+    const [isLoading, setIsLoading] = useState(true);
+    const [taskError, setTaskError] = useState<string | null>(null);
+    const loadDateRef = useRef(new Date());
 
     const reset = () => {
-        setError(null);
+        setItems([]);
+        setTaskError(null);
         setIsLoading(false);
-        localStorage.removeItem(DEMO_STORAGE_KEY);
-        setItems(DEMO_TASKS);
     };
 
-    const loadTasks = () => {
+    function loadTasks() {
+        setTaskError(null);
         setIsLoading(true);
         try {
-            const stored = localStorage.getItem(DEMO_STORAGE_KEY);
-            if (stored) setItems(JSON.parse(stored));
-            else setItems(DEMO_TASKS);
-            setError(null);
-        } catch (err) {
-            console.error(err);
-            setError('Failed to load tasks.');
+            const tasks = loadTasksFromStorage();
+            console.log("%c Line:87 🥚 tasks", "color:#fca650", tasks);
+            setItems(tasks);
+            setTaskError(null);
+        } catch (error) {
+            console.error(error);
+            setTaskError('Failed to load your tasks.');
+            setItems([]);
         } finally {
             setIsLoading(false);
         }
+    }
+
+    const updateItem = async (updatedItem: ChecklistItem) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            previousItem = prev.find(i => i.id === updatedItem.id);
+            return prev.map(i => i.id === updatedItem.id ? { ...updatedItem } : i);
+        });
+
+        try {
+            const updated = items.map(i =>
+                i.id === updatedItem.id ? { ...updatedItem } : i
+            );
+            saveTasksToStorage(updated);
+        } catch (error) {
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i => i.id === previousItem!.id ? previousItem! : i)
+                );
+            }
+            throw error;
+        }
     };
 
-    const updateItem = async (item: ChecklistItem) => {
-        setItems(prev =>
-            prev.map(i => (i.id === item.id ? item : i))
-        );
-        showToast('Task updated', 'success');
+    const bulkUpdate = async (updatedItems: ChecklistItem[]) => {
+        try {
+            setItems(prev => {
+                const updated = prev.map(item => {
+                    const updatedItem = updatedItems.find(i => i.id === item.id);
+                    return updatedItem ? { ...item, ...updatedItem } : item;
+                });
+                saveTasksToStorage(updated);
+                return updated;
+            });
+        } catch (error) {
+            console.error('Failed to bulk update tasks:', error);
+            throw error;
+        }
     };
 
     const addItem = async (newItem: ChecklistItem) => {
-        setItems(prev => {
-            let updatedPrev = [...prev];
-            // update parent hasSubChores if needed
-            if (newItem.parentUuid) {
-                updatedPrev = updatedPrev.map(item => {
-                    if (item.id === newItem.parentUuid) return { ...item, hasSubChores: true };
-                    return item;
-                });
-            }
-            return [newItem, ...updatedPrev];
-        });
-        showToast('Task added', 'success');
+        try {
+            const formattedTask: ChecklistItem = {
+                itemType: 'checklist-item',
+                id: newItem.id || generateId(),
+                isPriority: newItem.isPriority ?? false,
+                isHidden: newItem.isHidden ?? false,
+                done: false,
+                text: newItem.text,
+                lastCompleted: '',
+                note: newItem.note ?? '',
+                sortOrder: newItem.sortOrder ?? 0,
+                tabSortOrder: newItem.tabSortOrder ?? {},
+                category: newItem.category,
+                categoryUuid: newItem.categoryUuid ?? null,
+                mode: newItem.mode ?? ONE_TIME_MODE,
+                isArchived: false,
+                parentUuid: newItem.parentUuid ?? null,
+                hasSubChores: newItem.hasSubChores ?? false,
+                recurrence: newItem.recurrence ?? null,
+                nextDue: newItem.nextDue,
+                listId: newItem.listId,
+            };
+
+            setItems(prev => {
+                let updatedPrev = [formattedTask, ...prev];
+                if (formattedTask.parentUuid) {
+                    updatedPrev = prev.map(item => {
+                        if (item.id === formattedTask.parentUuid) {
+                            return { ...item, hasSubChores: true };
+                        }
+                        return item;
+                    });
+                    updatedPrev = [formattedTask, ...updatedPrev];
+                }
+                saveTasksToStorage(updatedPrev);
+                return updatedPrev;
+            });
+        } catch (err) {
+            console.error('Failed to add task:', err);
+            throw err;
+        }
     };
 
     const deleteItem = (id: string) => {
-        setItems(prev => {
-            const deleted = prev.find(item => item.id === id);
-            const parentSubCount = prev.filter(i => i.parentUuid === deleted?.parentUuid).length;
-            return prev
-                .map(item => {
-                    if (item.id === deleted?.parentUuid && parentSubCount === 1) return { ...item, hasSubChores: false };
+        try {
+            setItems(prev => {
+                const deletedTask = prev.find(item => item.id === id);
+                const parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
+                let updatedPrev = prev.map(item => {
+                    if (item.id === deletedTask?.parentUuid && parentSubTaskCount === 1) {
+                        return { ...item, hasSubChores: false };
+                    }
                     return item;
-                })
-                .filter(item => item.id !== id);
-        });
-        showToast('Task deleted', 'success');
+                });
+                updatedPrev = updatedPrev.filter(item => item.id !== id);
+                saveTasksToStorage(updatedPrev);
+                return updatedPrev;
+            });
+        } catch (err) {
+            console.error('Failed to delete task:', err);
+            throw err;
+        }
     };
 
-    const toggleItem = (id: string, checked: boolean) => {
-        setItems(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? { ...item, done: checked, lastCompleted: checked ? new Date().toISOString() : '' }
-                    : item
-            )
-        );
+    const toggleItem = async (id: string, checked: boolean) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) {
+                return prev;
+            }
+
+            previousItem = item;
+
+            return prev.map(i =>
+                i.id === id
+                    ? {
+                        ...i,
+                        done: checked,
+                        lastCompleted: checked ? new Date().toISOString() : '',
+                        itemType: 'checklist-item' as const,
+                    }
+                    : i
+            );
+        });
+
+        try {
+            const updated = items.map(i =>
+                i.id === id
+                    ? {
+                        ...i,
+                        done: checked,
+                        lastCompleted: checked ? new Date().toISOString() : '',
+                    }
+                    : i
+            );
+            saveTasksToStorage(updated);
+        } catch (err) {
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i =>
+                        i.id === id ? previousItem! : i
+                    )
+                );
+            }
+            throw err;
+        }
     };
 
     const prioritizeItem = (id: string) => {
-        setItems(prev =>
-            prev.map(item => {
+        setItems(prev => {
+            const updated = prev.map(item => {
                 if (item.id !== id) return item;
+
                 return {
                     ...item,
-                    isPriority: !item.isPriority,
+                    isPriority: !item.isPriority
                 };
-            })
-        );
-    };
-
-    const archiveItem = (id: string) => {
-        setItems(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, isArchived: !item.isArchived } : item
-            )
-        );
-    };
-
-    const getSubtasks = (parentId: string) => {
-        return items.filter(item => item.parentUuid === parentId);
-    };
-
-    const sortItems = (activeId: string, overId: string) => {
-        setItems(prevItems => {
-            const activeItem = prevItems.find(i => i.id === activeId);
-            if (!activeItem) return prevItems;
-
-            let isFirstSubTask = false;
-            let placeholderParentId: string | null = null;
-
-            // Detect placeholder dropzone
-            if (typeof overId === 'string' && overId.startsWith('placeholder-')) {
-                isFirstSubTask = true;
-                placeholderParentId = overId.replace('placeholder-', '');
-                overId = placeholderParentId as string;
-            }
-
-            const overItem = prevItems.find(i => i.id === overId);
-            if (!overItem) return prevItems;
-
-            const oldParent = activeItem.parentUuid ?? null;
-            const newParent: string | null = isFirstSubTask ? overItem.id : overItem.parentUuid ?? null;
-
-            const getSiblings = (parentUuid: string | null) =>
-                prevItems
-                    .filter(i => (i.parentUuid ?? null) === parentUuid)
-                    .sort((a, b) => a.sortOrder - b.sortOrder);
-
-            // SAME PARENT REORDER
-            if (oldParent === newParent && !isFirstSubTask) {
-                const siblings = getSiblings(oldParent);
-                const oldIndex = siblings.findIndex(i => i.id === activeId);
-                const newIndex = siblings.findIndex(i => i.id === overId);
-                if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return prevItems;
-
-                const reordered = arrayMove(siblings, oldIndex, newIndex).map((item, index) => ({
-                    ...item,
-                    sortOrder: index,
-                }));
-                const otherItems = prevItems.filter(i => (i.parentUuid ?? null) !== oldParent);
-                return [...otherItems, ...reordered];
-            }
-
-            // CROSS PARENT MOVE
-            const oldSiblings = getSiblings(oldParent).filter(i => i.id !== activeId);
-            const newSiblings = getSiblings(newParent);
-
-            // Determine insert index
-            let targetIndex = 0;
-            if (!isFirstSubTask) {
-                const insertIndex = newSiblings.findIndex(i => i.id === overId);
-                targetIndex = insertIndex === -1 ? newSiblings.length : insertIndex;
-            }
-
-            const movedItem = { ...activeItem, parentUuid: newParent };
-
-            const updatedNewSiblings = [
-                ...newSiblings.slice(0, targetIndex),
-                movedItem,
-                ...newSiblings.slice(targetIndex),
-            ].map((item, index) => ({ ...item, sortOrder: index }));
-
-            const updatedOldSiblings = oldSiblings.map((item, index) => ({ ...item, sortOrder: index }));
-
-            const untouched = prevItems.filter(i => {
-                const p = i.parentUuid ?? null;
-                return p !== oldParent && p !== newParent && i.id !== activeId;
             });
 
-            let updatedItems = [...untouched, ...updatedOldSiblings, ...updatedNewSiblings];
+            try {
+                saveTasksToStorage(updated);
+            } catch (err) {
+                console.error('Failed to prioritize task:', err);
+            }
 
-            // Update hasSubChores dynamically
-            const parentIds = [oldParent, newParent].filter(Boolean) as string[];
-            updatedItems = updatedItems.map(item => {
-                if (parentIds.includes(item.id)) {
-                    const childCount = updatedItems.filter(i => i.parentUuid === item.id).length;
-                    return { ...item, hasSubChores: childCount > 0 };
-                }
-                return item;
-            });
-
-            return updatedItems;
+            return updated;
         });
     };
 
-    const hideForToday = (id: string) => {
-        setItems(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, isHidden: true } : item
-            )
-        );
+    const archiveItem = (id: string) => {
+        try {
+            setItems(prev => {
+                const updated = prev.map(item =>
+                    item.id === id
+                        ? { ...item, isArchived: !item.isArchived }
+                        : item
+                );
+                saveTasksToStorage(updated);
+                return updated;
+            });
+        } catch (err) {
+            console.error('Failed to archive task:', err);
+        }
     };
 
-    const unhideForToday = (id: string) => {
-        setItems(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, isHidden: false } : item
-            )
-        );
+    const sortItems = (
+        filteredItems: ChecklistItem[],
+        activeTab: Tab,
+        activeId: string,
+        overId: string
+    ) => {
+        setItems(prev => {
+            const sortedSubset = getReorderedItems({
+                allItems: prev,
+                filteredItems,
+                activeTab,
+                activeId,
+                overId
+            });
+
+            const updatedMap = new Map(
+                sortedSubset.map((i: ChecklistItem) => [i.id, i])
+            );
+
+            const updated = prev.map((item: ChecklistItem) =>
+                updatedMap.get(item.id) ?? item
+            );
+
+            const changed = sortedSubset.filter((item: ChecklistItem) => {
+                const old = prev.find((p: ChecklistItem) => p.id === item.id);
+                return (
+                    old?.sortOrder !== item.sortOrder ||
+                    old?.parentUuid !== item.parentUuid ||
+                    old?.tabSortOrder !== item.tabSortOrder
+                );
+            });
+
+            if (changed.length > 0) {
+                try {
+                    saveTasksToStorage(updated);
+                } catch (err) {
+                    console.error('Failed to save task order:', err);
+                }
+            }
+
+            return updated;
+        });
     };
+
+    const getSubtasks = (parentId: string) => {
+        if (!parentId) return [];
+        return items.filter(item => item.parentUuid === parentId)
+            .sort((a, b) => a.sortOrder - b.sortOrder);
+    };
+
+    const hideForToday = async (id: string) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) return prev;
+
+            previousItem = item;
+
+            return prev.map(i =>
+                i.id === id ? { ...i, isHidden: true } : i
+            );
+        });
+
+        try {
+            const updated = items.map(i =>
+                i.id === id ? { ...i, isHidden: true } : i
+            );
+            saveTasksToStorage(updated);
+        } catch (err) {
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i =>
+                        i.id === id ? previousItem! : i
+                    )
+                );
+            }
+            throw err;
+        }
+    };
+
+    const unhideForToday = async (id: string) => {
+        try {
+            setItems(prev => {
+                const updated = prev.map(item => item.id === id ? { ...item, isHidden: false } : item);
+                saveTasksToStorage(updated);
+                return updated;
+            });
+        } catch (err) {
+            console.error('Failed to unhide task for today:', err);
+            throw err;
+        }
+    };
+
+    useEffect(() => {
+        loadTasks();
+        const now = new Date();
+        loadDateRef.current = now;
+        const handleVisibility = () => {
+            const staleAfter = 5 * 60 * 1000;
+            if (!loadDateRef.current || new Date().getTime() - loadDateRef.current.getTime() > staleAfter) {
+                loadTasks();
+                const updatedNow = new Date();
+                loadDateRef.current = updatedNow;
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibility);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibility)
+        };
+    }, [])
 
     return (
-        <DemoTaskContext.Provider
-            value={{
-                items,
-                isLoading,
-                error,
-                loadTasks,
-                addItem,
-                updateItem,
-                deleteItem,
-                toggleItem,
-                prioritizeItem,
-                archiveItem,
-                sortItems,
-                reset,
-                getSubtasks,
-                hideForToday,
-                unhideForToday,
-            }}
-        >
+        <DemoTaskContext.Provider value={{
+            items,
+            isLoading,
+            taskError,
+            loadTasks,
+            addItem,
+            updateItem,
+            bulkUpdate,
+            deleteItem,
+            toggleItem,
+            prioritizeItem,
+            archiveItem,
+            sortItems,
+            reset,
+            getSubtasks,
+            hideForToday,
+            unhideForToday,
+            loadDate: loadDateRef,
+        }}>
             {children}
         </DemoTaskContext.Provider>
     );

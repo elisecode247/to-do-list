@@ -1,31 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
-import type { ChecklistItem, Mode } from 'app/types';
-import { useTask } from 'src/pages/demo/use-demo-task';
+import { useDemoTask } from 'src/pages/demo/use-demo-task';
+import { useToast } from 'src/toast/use-toast';
+import { IntervalOptions, type IntervalRecurrence, type Mode } from 'app/types';
+import 'src/new-task-form/new-task-form.css';
+import type { MDXEditorMethods } from '@mdxeditor/editor';
+import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE } from 'src/checklist/constants';
+import { type ChecklistItem, FrequencyType } from 'app/types';
+import { formatDate } from 'src/app/utilities/format-date';
+import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 
-const DemoNewTaskForm = () => {
-    const { addItem } = useTask();
-    const [isAddSectionExpanded, setIsAddSectionExpanded] = useState<boolean>(false);
+const NewTaskForm = () => {
+    const { addItem } = useDemoTask();
+    const { showToast } = useToast();
     const [inputText, setInputText] = useState<string>("");
-    const [mode, setMode] = useState<Mode>("one-time");
+    const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
+    const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
+    const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
+    const [recurrenceStartDate, setRecurrenceStartDate] = useState<string>(formatDate(new Date()));
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
+    const panelRef = useRef<HTMLDivElement | null>(null);
+    const noteRef = useRef<MDXEditorMethods | null>(null);
 
-    useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isAddSectionExpanded) {
-                setIsAddSectionExpanded(false);
-            }
-        };
-
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [isAddSectionExpanded]);
-
-    const handleAddItem = (): void => {
+    const handleAddItem = async (): Promise<void> => {
         const text = inputText.trim();
         if (!text) return;
+        const note = noteRef.current?.getMarkdown();
+        let recurrence: IntervalRecurrence | null = null;
+        if (mode === OCCASIONAL_MODE) {
+            recurrence = {
+                type: 'interval',
+                count: recurrenceCount,
+                frequency: recurrenceFrequency,
+                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
+            };
+        }
 
         const newItem: ChecklistItem = {
             itemType: 'checklist-item',
@@ -33,7 +44,7 @@ const DemoNewTaskForm = () => {
             text,
             done: false,
             lastCompleted: '',
-            note: '',
+            note: note ?? '',
             sortOrder: 0,
             tabSortOrder: {},
             category: newTaskCategory,
@@ -44,80 +55,122 @@ const DemoNewTaskForm = () => {
             isHidden: false,
             hasSubChores: false,
             parentUuid: null,
-            recurrence: null,
-            nextDue: null
+            recurrence,
+            nextDue: null,
         };
-        addItem(newItem);
-        setInputText('');
+        try {
+            await addItem(newItem);
+            showToast('Task added ✨', 'success');
+            setInputText('');
+            if (noteRef.current) {
+                noteRef.current.setMarkdown('');
+            }
+        } catch (err) {
+            console.error('Error adding task:', err);
+            showToast('Failed to add task. Please try again.', 'error');
+        }
     };
 
-    const handleModeClick = (mode: Mode): void => {
-        setMode(mode);
+    const handleModeClick = (val: Mode): void => {
+        setMode(val);
     }
 
-    return (
-        <div className={`new-task-form-item-container ${isAddSectionExpanded ? 'expanded' : 'collapsed'}`}>
-            {!isAddSectionExpanded && (
-                <button
-                    className="new-task-form-toggle-button"
-                    onClick={() => setIsAddSectionExpanded(true)}
-                    aria-label="Add new item"
-                >
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    Add New Item
-                </button>
-            )}
-            {isAddSectionExpanded && (<>
-                <div className="new-task-form-item-header">
-                    <span className="new-task-form-title">New Task</span>
-                    <button
-                        className="new-task-form-close-button"
-                        onClick={() => setIsAddSectionExpanded(false)}
-                        aria-label="Close"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                    </button>
-                </div>
-                <FrequencyButtonGroup
-                    mode={mode}
-                    onClick={(mode: Mode) => handleModeClick(mode)}
-                />
-                <CategorySelect
-                    id="new-task-form-category-select"
-                    selectedCategory={newTaskCategory}
-                    onChange={(category: string) => setNewTaskCategory(category)}
-                />
-                <div className="new-task-form-input-row">
-                    <input
-                        id="new-task-form-text-input"
-                        className="new-task-form-text-input"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={(e) => {
-                            e.stopPropagation();
-                            if (e.key === 'Enter') {
-                                handleAddItem();
-                            }
-                        }}
-                        placeholder="New item..."
-                    />
-                    <button
-                        disabled={isAddButtonDisabled}
-                        className={`new-task-form-add-button
-                            ${isAddButtonDisabled &&
-                            'new-task-form-add-button--disabled'}`
+    return (<>
+        <div ref={panelRef} className="new-task-form-item-container">
+            <div className="new-task-form-item-header">
+                <span className="new-task-form-title">New Task</span>
+            </div>
+            <div className="new-task-form-input-row">
+                <input
+                    id="new-task-form-text-input"
+                    className="new-task-form-text-input"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={(e) => {
+                        e.stopPropagation();
+                        if (e.key === 'Enter') {
+                            handleAddItem();
                         }
-                        onClick={handleAddItem}
-                    >
-                        Add
-                    </button>
+                    }}
+                    placeholder="New item..."
+                />
+                <button
+                    disabled={isAddButtonDisabled}
+                    className={`new-task-form-add-button
+                            ${isAddButtonDisabled &&
+                        'new-task-form-add-button--disabled'}`
+                    }
+                    onClick={handleAddItem}
+                >
+                    Add
+                </button>
+            </div>
+            <FrequencyButtonGroup
+                mode={mode}
+                onClick={(mode: Mode) => handleModeClick(mode)}
+            />
+            {mode !== CALENDAR_MODE && (
+                <div className="item-recurrence-container item-recurrence-container--new-task">
+                    {mode === OCCASIONAL_MODE && (
+                        <>
+                            <div className="form-group">
+                                <label
+                                    className="new-task-form_recurrence-label"
+                                    htmlFor="new-task-form_recurrence-count">
+                                    Repeat Every
+                                </label>
+                                <input
+                                    id="new-task-form_recurrence-count"
+                                    className="new-task-form_recurrence-count"
+                                    type="number"
+                                    min={1}
+                                    value={recurrenceCount}
+                                    onChange={(e) => {
+                                        const count = parseInt(e.target.value);
+                                        if (isNaN(count) || count < 1) return;
+                                        setRecurrenceCount(count);
+                                    }}
+                                />
+                                <select
+                                    className="select-input"
+                                    value={recurrenceFrequency}
+                                    onChange={(e) => {
+                                        setRecurrenceFrequency(e.target.value as FrequencyType);
+                                    }}
+                                >
+                                    {IntervalOptions.map(option => (
+                                        <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </>
+                    )}
+                    <div className="form-group">
+                        <label
+                            className="new-task-form_recurrence-label"
+                            htmlFor="new-task-form_recurrence-start-date">
+                            Starting
+                        </label>
+                        <input
+                            id="new-task-form_recurrence-start-date"
+                            className="new-task-form_recurrence-start-date"
+                            type="date"
+                            value={recurrenceStartDate}
+                            onFocus={(e) => e.currentTarget.showPicker?.()}
+                            onClick={(e) => e.currentTarget.showPicker?.()}
+                            onChange={(e) => {
+                                setRecurrenceStartDate(e.target.value);
+                            }}
+                        />
+                    </div>
                 </div>
-            </>)}
-        </div>
-    )
+            )}
+            <CategorySelect
+                id={'new-task-form'}
+                selectedCategory={newTaskCategory}
+                onChange={(category: string) => setNewTaskCategory(category)}
+            />
+        </div >
+    </>);
 }
-export default DemoNewTaskForm;
+export default NewTaskForm;

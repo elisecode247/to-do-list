@@ -4,18 +4,18 @@ import { DemoContext } from "./DemoContext";
 
 export const DemoProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>(() => {
-        const saved = localStorage.getItem("demoChecklist");
+        const saved = localStorage.getItem("demo-tasks");
         return saved ? JSON.parse(saved) : [];
     });
 
     // Save demo to localStorage whenever items change
     useEffect(() => {
-        localStorage.setItem("demoChecklist", JSON.stringify(items));
+        localStorage.setItem("demo-tasks", JSON.stringify(items));
     }, [items]);
 
     const resetDemo = () => {
         setItems([]);
-        localStorage.removeItem("demoChecklist");
+        localStorage.removeItem("demo-tasks");
     };
 
     return (<DemoContext.Provider value={{ items, setItems, resetDemo }}>

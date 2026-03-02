@@ -11,7 +11,7 @@ import { useCalendarIntegration } from 'src/google-authorization/use-google-cale
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import CalendarTaskItem from 'src/google-authorization/calendar-task-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
-import EmptyStateFilters from './empty-state/EmptyStateFilters';
+import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';

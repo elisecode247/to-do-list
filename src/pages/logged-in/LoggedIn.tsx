@@ -17,7 +17,7 @@ import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
-import useIsDesktop from '../use-is-desktop';
+import useIsDesktop from 'src/pages/use-is-desktop';
 import { ListFilter, Plus } from 'lucide-react';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
