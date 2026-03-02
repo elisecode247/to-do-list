@@ -1,7 +1,7 @@
 import 'src/edit-task-form/edit-task-form.css';
 import { useRef, type FC } from 'react';
 import type { ChecklistItem, IntervalRecurrence, Mode } from 'app/types';
-import { MODES, OCCASIONAL_MODE, SCHEDULED_MODE } from 'checklist/constants';
+import { MODES, OCCASIONAL_MODE, CALENDAR_MODE } from 'checklist/constants';
 import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -133,7 +133,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     ))}
                 </div>
             </div>
-            {formData.mode !== SCHEDULED_MODE && (
+            {formData.mode !== CALENDAR_MODE && (
                 <div className="item-recurrence-container">
                     {formData.mode === OCCASIONAL_MODE && (
                         <>
@@ -228,7 +228,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                 ? 'edit-task-form_mode-button--priority-active'
                                 : ''}
                             `}
-                        title="Can be combined with any schedule"
+                        title="prioritize this task"
                     >
                         ⭐ Priority
                     </button>

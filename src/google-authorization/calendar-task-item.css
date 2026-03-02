@@ -1,6 +1,6 @@
 /* Item Container */
 @layer base {
-    .scheduled-task-item {
+    .calendar-task-item {
         display: flex;
         align-items: center;
         gap: var(--spacing-xs);
@@ -14,13 +14,13 @@
         border-left: 4px solid var(--color-priority);
     }
 
-    .scheduled-task-item:hover {
+    .calendar-task-item:hover {
         border-color: var(--color-border);
         box-shadow: var(--shadow-sm);
     }
 }
 
-.scheduled-task_main-content {
+.calendar-task_main-content {
     display: flex;
     align-items: center;
     width: 100%;
@@ -28,7 +28,7 @@
     flex-wrap: wrap;
 }
 
-.scheduled-task_checkbox {
+.calendar-task_checkbox {
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -36,13 +36,13 @@
     flex-shrink: 0;
 }
 
-.scheduled-task-header {
+.calendar-task-header {
     flex: 1;
     min-width: 0;
     flex-basis: 100%;
 }
 
-.scheduled-task-controls {
+.calendar-task-controls {
     width: 100%;
     display: flex;
     gap: var(--spacing-xs);
@@ -52,37 +52,37 @@
     flex: 0;
 }
 
-.scheduled-task-description {
+.calendar-task-description {
     padding: 1rem;
     width: 100%;
     flex-basis: 100%;
 }
 
 /* Fix bullet indentation */
-.scheduled-task-description ul,
-.scheduled-task-description ol {
+.calendar-task-description ul,
+.calendar-task-description ol {
     padding-left: 1.5rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     list-style-position: inside;
 }
 
-.scheduled-task-description b,
-.scheduled-task-description strong {
+.calendar-task-description b,
+.calendar-task-description strong {
     font-weight: bold;
 }
 
-.scheduled-task-description i,
-.scheduled-task-description em {
+.calendar-task-description i,
+.calendar-task-description em {
     font-style: italic;
 }
 
-.scheduled-task-description a {
+.calendar-task-description a {
     color: blue;
     text-decoration: underline;
 }
 
-.scheduled-task-item .scheduled-task-link {
+.calendar-task-item .calendar-task-link {
     margin-top: 8px;
     display: inline-block;
     color: #1a73e8;
@@ -91,18 +91,18 @@
 
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
-    .scheduled-task-item {
+    .calendar-task-item {
         padding: var(--spacing-md);
         gap: var(--spacing-sm);
     }
 
-    .scheduled-task-item_main-content {
+    .calendar-task-item_main-content {
         flex-wrap: nowrap;
         padding: var(--spacing-md);
         gap: var(--spacing-sm);
     }
 
-    .scheduled-task-header {
+    .calendar-task-header {
         flex-basis: auto;
     }
 

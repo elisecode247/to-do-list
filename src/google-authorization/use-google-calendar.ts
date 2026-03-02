@@ -148,7 +148,7 @@ export function useCalendarIntegration() {
         }
     }, [isAuthenticated, connected, showToast]);
 
-    const markScheduledTaskCompletion = useCallback(
+    const markCalendarTaskCompletion = useCallback(
         async (taskId: string, listId: string, isCompleted: boolean) => {
             if (!isAuthenticated) return;
 
@@ -159,7 +159,7 @@ export function useCalendarIntegration() {
                     body: JSON.stringify({ completed: isCompleted })
                 });
             } catch (err) {
-                console.error("Marking scheduled task as completed failed:", err);
+                console.error("Marking calendar task as completed failed:", err);
                 showToast("Failed to update task completion status", "error");
             }
         },
@@ -188,7 +188,7 @@ export function useCalendarIntegration() {
         refreshStatus: () => fetchStatus({ force: true }),
         disconnectCalendar,
         loadCalendarEvents,
-        markScheduledTaskCompletion,
+        markCalendarTaskCompletion,
         events,
         tasks,
         isError,

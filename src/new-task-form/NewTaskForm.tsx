@@ -6,7 +6,7 @@ import { useToast } from 'src/toast/use-toast';
 import { IntervalOptions, type IntervalRecurrence, type Mode } from 'app/types';
 import './new-task-form.css';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
-import { OCCASIONAL_MODE, ONE_TIME_MODE, SCHEDULED_MODE } from 'src/checklist/constants';
+import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE } from 'src/checklist/constants';
 import { type ChecklistItem, FrequencyType } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -109,7 +109,7 @@ const NewTaskForm = () => {
                 mode={mode}
                 onClick={(mode: Mode) => handleModeClick(mode)}
             />
-            {mode !== SCHEDULED_MODE && (
+            {mode !== CALENDAR_MODE && (
                 <div className="item-recurrence-container item-recurrence-container--new-task">
                     {mode === OCCASIONAL_MODE && (
                         <>

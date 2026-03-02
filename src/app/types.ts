@@ -2,7 +2,7 @@ import type { Ref } from "react";
 import { type Tab } from "src/app-toolbar/tabs/types";
 import { ALL_MODES } from "src/checklist/constants";
 
-export type Mode = 'one-time' | 'daily' | 'occasional' | 'scheduled';
+export type Mode = 'one-time' | 'daily' | 'occasional' | 'calendar';
 
 export const EndingConditionType = {
     None: 'none',

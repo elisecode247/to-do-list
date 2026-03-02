@@ -12,7 +12,7 @@ import { useTask } from 'src/pages/demo/use-demo-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
-import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
+import CalendarTaskItem from 'src/google-authorization/calendar-task-item';
 import { default as Tabs } from 'src/app-toolbar/tabs/Tabs';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
@@ -47,7 +47,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         hideForToday,
         unhideForToday,
     } = useTask();
-    const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
+    const { events, tasks, markCalendarTaskCompletion } = useCalendarIntegration();
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
@@ -266,10 +266,10 @@ const DemoChecklist: FC<ChecklistProps> = ({
                             />
                         ))}
                         {filteredTasks?.map(task => (
-                            <ScheduledTaskItem
+                            <CalendarTaskItem
                                 key={task.id}
                                 task={task as GoogleTask}
-                                markCompleted={markScheduledTaskCompletion}
+                                markCompleted={markCalendarTaskCompletion}
                             />
                         ))}
                         {filteredItems.map(item => (

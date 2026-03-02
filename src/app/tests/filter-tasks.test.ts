@@ -8,7 +8,7 @@ import {
     TAB_PRIORITY,
 } from 'src/app-toolbar/tabs/types';
 import type { ChecklistItem, FilterParams } from 'app/types';
-import { ALL_MODES, ONE_TIME_MODE, SCHEDULED_MODE } from 'src/checklist/constants';
+import { ALL_MODES, ONE_TIME_MODE, CALENDAR_MODE } from 'src/checklist/constants';
 
 // --------------------
 // Mock category helper
@@ -198,18 +198,18 @@ describe('filterTasks – tab filtering', () => {
         expect(result).toHaveLength(1);
     });
 
-    it('Upcoming tab includes upcoming scheduled tasks', () => {
-        const scheduled = makeTask({ mode: 'scheduled' });
+    it('Upcoming tab includes upcoming calendar tasks', () => {
+        const calendar = makeTask({ mode: 'calendar' });
         const daily = makeTask({ mode: 'daily' });
 
         const result = filterTasks(
             makeParams({
-                items: [scheduled, daily],
+                items: [calendar, daily],
                 activeTab: TAB_UPCOMING,
             })
         );
 
-        expect(result).toEqual([scheduled]);
+        expect(result).toEqual([calendar]);
     });
 
     it('Upcoming tab includes upcoming tasks', () => {
@@ -265,7 +265,7 @@ describe('filterTasks – tab filtering', () => {
 
     it('Upcoming tab excludes hidden tasks', () => {
         const hidden = makeTask({
-            mode: 'scheduled',
+            mode: 'calendar',
             isHidden: true,
         });
 
@@ -281,7 +281,7 @@ describe('filterTasks – tab filtering', () => {
 
     it('Upcoming tab excludes archived tasks', () => {
         const archived = makeTask({
-            mode: 'scheduled',
+            mode: 'calendar',
             isArchived: true,
         });
 
@@ -424,16 +424,16 @@ describe('filterTasks – common filters', () => {
 
     it('filters by active mode filters (OR logic)', () => {
         const daily = makeTask({ mode: 'daily' });
-        const scheduled = makeTask({ mode: 'scheduled' });
+        const calendar = makeTask({ mode: 'calendar' });
 
         const result = filterTasks(
             makeParams({
-                items: [daily, scheduled],
-                modeFilter: SCHEDULED_MODE,
+                items: [daily, calendar],
+                modeFilter: CALENDAR_MODE,
             })
         );
 
-        expect(result).toEqual([scheduled]);
+        expect(result).toEqual([calendar]);
     });
 });
 

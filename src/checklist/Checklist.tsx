@@ -9,7 +9,7 @@ import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
-import ScheduledTaskItem from 'src/google-authorization/scheduled-task-item';
+import CalendarTaskItem from 'src/google-authorization/calendar-task-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from './empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
@@ -59,7 +59,7 @@ const Checklist: FC<ChecklistProps> = ({
         hideForToday,
         unhideForToday,
     } = useTask();
-    const { events, tasks, markScheduledTaskCompletion } = useCalendarIntegration();
+    const { events, tasks, markCalendarTaskCompletion } = useCalendarIntegration();
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
@@ -256,10 +256,10 @@ const Checklist: FC<ChecklistProps> = ({
                                 />);
                             } else if (item.itemType === 'google-task') {
                                 const taskItem = item as GoogleTask;
-                                return (<ScheduledTaskItem
+                                return (<CalendarTaskItem
                                     key={taskItem.id}
                                     task={taskItem}
-                                    markCompleted={markScheduledTaskCompletion}
+                                    markCompleted={markCalendarTaskCompletion}
                                 />);
                             } else if (item.itemType === 'checklist-item') {
                                 const checklistItem = item as ChecklistItem;

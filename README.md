@@ -22,7 +22,7 @@ Live: https://elisecode247.github.io/to-do-list/
     - keyboard tabbing for panels
     - lost internet connection
     - make localStorage persistent longer on mobile
-- feature: scheduled tasks
+- feature: calendar tasks
 - ux: improve ux for newly logged in user
 - feature: allow user delete history
 - feature: add undo to delete and uncheck

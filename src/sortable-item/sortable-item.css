@@ -217,7 +217,7 @@
 }
 
 /* Action Buttons Base */
-.scheduled-task_hide-button,
+.calendar-task_hide-button,
 .calendar-event_hide-button,
 .sortable-item_archive-button,
 .sortable-item_restore-button,
@@ -258,13 +258,13 @@
 }
 
 /* Hide Button */
-.scheduled-task_hide-button,
+.calendar-task_hide-button,
 .calendar-event_hide-button,
 .sortable-item_hide-button {
     color: var(--color-text-secondary);
 }
 
-.scheduled-task_hide-button,
+.calendar-task_hide-button,
 .calendar-event_hide-button,
 .sortable-item_hide-button:hover {
     background-color: rgba(59, 130, 246, 0.1);
@@ -353,7 +353,7 @@
         margin-left: var(--spacing-md);
     }
 
-    .scheduled-task_hide-button,
+    .calendar-task_hide-button,
     .calendar-event_hide-button,
     .sortable-item_archive-button,
     .sortable-item_restore-button,
@@ -366,8 +366,8 @@
 }
 
 /* Focus styles for accessibility */
-.scheduled-task_checkbox:focus-visible,
-.scheduled-task_hide-button:focus-visible,
+.calendar-task_checkbox:focus-visible,
+.calendar-task_hide-button:focus-visible,
 .calendar-event_hide-button:focus-visible,
 .sortable-item_drag-handle:focus-visible,
 .sortable-item_checkbox:focus-visible,
