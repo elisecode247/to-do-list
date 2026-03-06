@@ -5,6 +5,10 @@ import DemoButton from 'src/pages/demo/DemoButton';
 import { useTheme } from "src/themes/use-theme";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from "src/themes/constants";
 
+// preload pages
+import('src/pages/demo/DemoPage');
+import('src/pages/not-found/NotFound');
+
 export default function LoggedOut({
     onSuccessfulLogin
 }: {

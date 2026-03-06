@@ -24,6 +24,11 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { API_URL } from 'app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
 import { useDebounceValue } from 'usehooks-ts';
+// preload pages
+import('src/pages/user-settings/UserSettings');
+import('src/pages/bulk-edit/BulkEdit');
+import('src/pages/not-found/NotFound');
+
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const LoggedIn: React.FC = () => {

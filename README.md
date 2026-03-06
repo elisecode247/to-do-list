@@ -26,6 +26,7 @@ Live: https://elisecode247.github.io/to-do-list/
     - fix font color on google calendar events
     - show days countdown for google calendar events
     - remove subsequent fetch calls to google-client-id when menu open
+- bug: app notes does not load on route change
 - feature: calendar tasks
 - ux: improve ux for newly logged in user
 - feature: allow user delete history

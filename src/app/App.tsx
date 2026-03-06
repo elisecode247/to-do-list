@@ -1,16 +1,29 @@
-import { type FC } from 'react';
+import { lazy, Suspense, type FC } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
-import DemoPage from 'src/pages/demo/DemoPage';
-import NotFound from 'src/pages/not-found/NotFound';
+import SkeletonAppPage from 'src/themes/AppSkeleton';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
-import UserSettings from 'src/pages/user-settings/UserSettings';
-import BulkEdit from 'src/pages/bulk-edit/BulkEdit';
 import 'app/app.css';
+
+const DemoPageLazy = lazy(async () => {
+    return { default: (await import('src/pages/demo/DemoPage')).default };
+});
+
+const UserSettingsLazy = lazy(async () => {
+    return { default: (await import('src/pages/user-settings/UserSettings')).default };
+});
+
+const BulkEditLazy = lazy(async () => {
+    return { default: (await import('src/pages/bulk-edit/BulkEdit')).default };
+});
+
+const NotFoundLazy = lazy(async () => {
+    return { default: (await import('src/pages/not-found/NotFound')).default };
+});
 
 const App: FC = () => {
     const { isAuthenticated, login } = useAuthentication();
@@ -32,11 +45,19 @@ const App: FC = () => {
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
                 ) : <LoggedIn />}
             </Route>
-            <Route path={ROUTES.demo} component={DemoPage} />
-            <Route path={ROUTES.userSettings} component={UserSettings} />
-            <Route path={ROUTES.bulkEdit} component={BulkEdit} />
+            <Route path={ROUTES.demo}>
+                <Suspense fallback={<SkeletonAppPage />}>
+                    <DemoPageLazy />
+                </Suspense>
+            </Route>
+            <Route path={ROUTES.userSettings}>
+                <UserSettingsLazy />
+            </Route>
+            <Route path={ROUTES.bulkEdit}>
+                <BulkEditLazy />
+            </Route>
             <Route>
-                <NotFound />
+                <NotFoundLazy />
             </Route>
         </Switch>
     );
