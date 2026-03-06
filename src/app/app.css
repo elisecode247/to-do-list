@@ -3,7 +3,7 @@
 @import '../themes/nature.css';
 @import '../themes/ocean.css';
 @import '../themes/density.css';
-@import 'src/themes/skeleton.css';
+@import '../themes/skeleton.css';
 
 /* App Container */
 .app_container {
