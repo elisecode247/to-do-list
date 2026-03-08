@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect, type SetStateAction } from 'react';
+import React, { useState, useEffect, type SetStateAction } from 'react';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
@@ -19,19 +19,29 @@ import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
 import { ListFilter, Plus } from 'lucide-react';
-import NoteEditor from 'src/editor/NoteEditor';
-import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { API_URL } from 'app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
-import { useDebounceValue } from 'usehooks-ts';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
 import('src/pages/not-found/NotFound');
 
+const placeholderNotes = `# Welcome to Daily Reset!
+
+This is your personal space to jot down any notes, reminders, or thoughts related to your daily tasks. Whether it's a motivational quote, a reminder for an important event, or just some general notes to yourself, you can keep it all here.
+
+Feel free to use Markdown formatting to organize your notes and make them more visually appealing. Your notes will be saved automatically, so you can focus on what matters most - completing your daily tasks!
+
+Happy planning!`;
+
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const LoggedIn: React.FC = () => {
+interface LoggedInProps {
+    cachedNotes: string | null;
+    setCachedNotes: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
     useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
@@ -55,10 +65,7 @@ const LoggedIn: React.FC = () => {
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [initialNotes, setInitialNotes] = useState('');
-    const [debouncedNotes, setDebouncedNotes] = useDebounceValue('', 1000);
-    const [showNoteSaved, setShowNoteSaved] = useState(false);
-    const noteRef = useRef<MDXEditorMethods>(null);
+    const [initialNotes, setInitialNotes] = useState(cachedNotes ?? placeholderNotes);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
 
@@ -136,7 +143,17 @@ const LoggedIn: React.FC = () => {
         setMenuOpen(false);
     }
 
+    const handleNotesChange = (notes: string) => {
+        setInitialNotes(notes);
+        setCachedNotes(notes);
+    };
+
     useEffect(() => {
+        if (cachedNotes !== null) {
+            setInitialNotes(cachedNotes);
+            return;
+        }
+
         const fetchAppNotes = async () => {
             try {
                 const response = await fetch(`${API_URL}/user-checklist`, {
@@ -157,48 +174,13 @@ const LoggedIn: React.FC = () => {
         };
 
         fetchAppNotes().then(data => {
-            if (data && data.notes) {
+            if (data && typeof data.notes === 'string') {
                 setInitialNotes(data.notes);
+                setCachedNotes(data.notes);
             }
         });
 
-    }, [])
-
-    useEffect(() => {
-        const saveAppNotes = async (notes: string) => {
-            try {
-                const response = await fetch(`${API_URL}/user-checklist`, {
-                    method: "PUT",
-                    headers: await authHeaders(),
-                    body: JSON.stringify({ notes }),
-                });
-
-                if (!response.ok) {
-                    const text = await response.text();
-                    console.error(`Failed to save app notes: ${response.status} - ${text}`);
-                    showToast('Failed to save app notes.', 'error');
-                    setShowNoteSaved(false);
-                } else {
-                    setShowNoteSaved(true);
-                    console.info("App notes saved successfully");
-                    setTimeout(() => setShowNoteSaved(false), 2000);
-                }
-            } catch (err) {
-                console.error("Failed to save app notes:", err);
-                showToast('Failed to save app notes.', 'error');
-                setShowNoteSaved(false);
-            }
-        };
-
-        if (debouncedNotes) {
-            saveAppNotes(debouncedNotes);
-        }
-    }, [debouncedNotes, showToast]);
-
-    function handleNotesChange(markdown: string) {
-        setDebouncedNotes(markdown);
-    }
-
+    }, [cachedNotes, setCachedNotes])
 
     return (<>
         {toasts.map(toast => (
@@ -287,27 +269,17 @@ const LoggedIn: React.FC = () => {
                         onRetry={loadTasks}
                     />
                 ) : (
-                    <>
-                        <div style={{ position: 'relative' }}>
-                            <NoteEditor
-                                className="app_note-editor"
-                                initialMarkdown={initialNotes || "Write notes here"}
-                                readOnly={false}
-                                ref={noteRef}
-                                onChange={handleNotesChange}
-                            />
-                            {showNoteSaved && <div className="note-saved-indicator">Notes saved</div>}
-                        </div>
-                        <Checklist
-                            onEditItem={handleEditItem}
-                            sparkles={sparkles}
-                            activeTab={activeTab}
-                            modeFilter={modeFilter}
-                            hideCompleted={hideCompleted}
-                            filterCategory={filterCategory}
-                            clearFilters={clearFilters}
-                        />
-                    </>
+                    <Checklist
+                        onEditItem={handleEditItem}
+                        sparkles={sparkles}
+                        activeTab={activeTab}
+                        modeFilter={modeFilter}
+                        hideCompleted={hideCompleted}
+                        filterCategory={filterCategory}
+                        clearFilters={clearFilters}
+                        initialNotes={initialNotes}
+                        onNotesChange={handleNotesChange}
+                    />
                 )}
             </main>
             <aside className="right_panel">

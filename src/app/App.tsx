@@ -1,4 +1,4 @@
-import { lazy, Suspense, type FC } from 'react';
+import { lazy, Suspense, useState, type FC } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
@@ -27,6 +27,7 @@ const NotFoundLazy = lazy(async () => {
 
 const App: FC = () => {
     const { isAuthenticated, login } = useAuthentication();
+    const [cachedNotes, setCachedNotes] = useState<string | null>(null);
 
     const handleLoginSuccess = async (token: string) => {
         try {
@@ -43,7 +44,12 @@ const App: FC = () => {
             <Route path={ROUTES.home}>
                 {!isAuthenticated ? (
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
-                ) : <LoggedIn />}
+                ) : (
+                    <LoggedIn
+                        cachedNotes={cachedNotes}
+                        setCachedNotes={setCachedNotes}
+                    />
+                )}
             </Route>
             <Route path={ROUTES.demo}>
                 <Suspense fallback={<SkeletonAppPage />}>

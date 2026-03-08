@@ -16,17 +16,22 @@ import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent, GoogleTask } from 'src/google-authorization/types';
+import NoteEditor from 'src/editor/NoteEditor';
+import { type MDXEditorMethods } from '@mdxeditor/editor';
+import { useDebounceValue } from 'usehooks-ts';
+import { API_URL } from 'src/app/constants';
+import { authHeaders } from 'src/authentication/authentication-api';
 
 function isTodayOrBefore(date: Date) {
-  const today = new Date();
-  today.setHours(23, 59, 59, 999); // end of today
-  return date <= today;
+    const today = new Date();
+    today.setHours(23, 59, 59, 999); // end of today
+    return date <= today;
 }
 
 function isTomorrowOrLater(date: Date) {
-  const today = new Date();
-  today.setHours(23, 59, 59, 999); // end of today
-  return date > today;
+    const today = new Date();
+    today.setHours(23, 59, 59, 999); // end of today
+    return date > today;
 }
 
 interface ChecklistProps {
@@ -37,6 +42,8 @@ interface ChecklistProps {
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
+    initialNotes: string;
+    onNotesChange?: (notes: string) => void;
 }
 
 const Checklist: FC<ChecklistProps> = ({
@@ -46,7 +53,9 @@ const Checklist: FC<ChecklistProps> = ({
     filterCategory,
     clearFilters,
     onEditItem,
-    sparkles
+    sparkles,
+    initialNotes,
+    onNotesChange,
 }) => {
     const {
         items,
@@ -66,6 +75,45 @@ const Checklist: FC<ChecklistProps> = ({
     const isActiveList = activeTab === TABS.today;
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
+    const [showNoteSaved, setShowNoteSaved] = useState(false);
+    const noteRef = useRef<MDXEditorMethods>(null);
+    const [debouncedNotes, setDebouncedNotes] = useDebounceValue('', 1000);
+
+    useEffect(() => {
+        const saveAppNotes = async (notes: string) => {
+            try {
+                const response = await fetch(`${API_URL}/user-checklist`, {
+                    method: "PUT",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({ notes }),
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error(`Failed to save app notes: ${response.status} - ${text}`);
+                    showToast('Failed to save app notes.', 'error');
+                    setShowNoteSaved(false);
+                } else {
+                    setShowNoteSaved(true);
+                    console.info("App notes saved successfully");
+                    setTimeout(() => setShowNoteSaved(false), 2000);
+                }
+            } catch (err) {
+                console.error("Failed to save app notes:", err);
+                showToast('Failed to save app notes.', 'error');
+                setShowNoteSaved(false);
+            }
+        };
+
+        if (debouncedNotes) {
+            saveAppNotes(debouncedNotes);
+        }
+    }, [debouncedNotes, showToast]);
+
+    function handleNotesChange(markdown: string) {
+        setDebouncedNotes(markdown);
+        onNotesChange?.(markdown);
+    }
 
     const filteredTasks = useMemo(() => {
         return tasks.map(task => ({ ...task })).filter(task => {
@@ -238,6 +286,16 @@ const Checklist: FC<ChecklistProps> = ({
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
                 <div className="checklist_list-container">
                     <SortableContext items={allItems.map(i => i.id)}>
+                        <div className="sortable-item-container" style={{ position: 'relative' }}>
+                            <NoteEditor
+                                className="app_note-editor"
+                                initialMarkdown={initialNotes || "Write notes here"}
+                                readOnly={false}
+                                ref={noteRef}
+                                onChange={handleNotesChange}
+                            />
+                            {showNoteSaved && <div className="note-saved-indicator">Notes saved</div>}
+                        </div>
                         {!allItems.length && (
                             <EmptyStateFilters
                                 modeFilter={modeFilter}

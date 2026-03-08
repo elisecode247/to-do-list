@@ -42,19 +42,15 @@ export default defineConfig({
                     if (id.includes('node_modules/react')) {
                         return 'react-vendor';
                     }
-                    
                     // MDX Editor (huge, lazy-loaded)
                     if (id.includes('@mdxeditor/editor') || id.includes('lexical')) {
                         return 'editor-vendor';
                     }
-
-                    
-                    // UI utilities (dnd-kit, wouter, usehooks)
+                    // UI utilities
                     if (id.includes('@dnd-kit') || id.includes('wouter') || id.includes('usehooks-ts')) {
                         return 'ui-vendor';
                     }
-                    
-                    // Everything else
+                    // rest of node_modules
                     if (id.includes('node_modules')) {
                         return 'vendor';
                     }
