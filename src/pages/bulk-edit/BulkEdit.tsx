@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect } from "react";
 import type { ChecklistItem } from "app/types";
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import Page from "src/pages/Page";
@@ -22,7 +22,7 @@ function BulkEdit() {
     const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
-    const filteredTasks = useMemo(() => {
+    const filterTasks = () => {
         // Build parent → children map
         const parentMap = new Map<string, ChecklistItem[]>();
         localItems.forEach(item => {
@@ -60,11 +60,12 @@ function BulkEdit() {
             return true;
         });
 
-    }, [localItems, showSubtasksFor]);
+    };
 
+    const filteredTasks = filterTasks();
 
     // Sync if tasks reload
-    useMemo(() => {
+    useEffect(() => {
         setLocalItems(items);
     }, [items]);
 

@@ -1,5 +1,11 @@
-import { useLayoutEffect, useEffect, useState, useCallback, useMemo } from 'react';
+import { useLayoutEffect, useEffect, useState, useEffectEvent } from 'react';
 import type { ThemeMode, ThemeStyle, Density, ThemeState } from './types';
+
+const getStoredTheme = (): ThemeState => ({
+    mode: (localStorage.getItem('theme-mode') as ThemeMode) || 'system',
+    style: (localStorage.getItem('theme-style') as ThemeStyle) || 'calm',
+    density: (localStorage.getItem('theme-density') as Density) || 'comfortable',
+});
 
 export function useTheme(
     overrideMode?: ThemeMode,
@@ -11,21 +17,13 @@ export function useTheme(
         overrideStyle !== undefined &&
         overrideDensity !== undefined;
 
-    const getStoredTheme = (): ThemeState => ({
-        mode: (localStorage.getItem('theme-mode') as ThemeMode) || 'system',
-        style: (localStorage.getItem('theme-style') as ThemeStyle) || 'calm',
-        density: (localStorage.getItem('theme-density') as Density) || 'comfortable',
-    });
-
-    const storedTheme = useMemo(() => getStoredTheme(), []);
-
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride
             ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity! }
-            : storedTheme
+            : getStoredTheme()
     );
 
-    const applyTheme = useCallback(({ mode, style, density }: ThemeState) => {
+    const applyTheme = useEffectEvent(({ mode, style, density }: ThemeState) => {
         const root = document.documentElement;
 
         // Mode
@@ -47,7 +45,7 @@ export function useTheme(
 
         // Density
         root.setAttribute('data-density', density);
-    }, []);
+    });
 
     // Apply theme whenever stored theme or override changes
     useLayoutEffect(() => {
@@ -56,7 +54,7 @@ export function useTheme(
             : theme;
 
         applyTheme(nextTheme);
-    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity, applyTheme]);
+    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity]);
 
 
     useEffect(() => {
@@ -93,13 +91,13 @@ export function useTheme(
             mediaQuery.removeEventListener('change', handleSystemChange);
             window.removeEventListener('storage', handleStorage);
         };
-    }, [theme, hasOverride, applyTheme]);
+    }, [theme, hasOverride]);
 
 
-    const updateTheme = useCallback((updates: Partial<ThemeState>) => {
+    const updateTheme = (updates: Partial<ThemeState>) => {
         if (hasOverride) return;
         setTheme(prev => ({ ...prev, ...updates }));
-    }, [hasOverride]);
+    };
 
     return { ...theme, updateTheme };
 }
