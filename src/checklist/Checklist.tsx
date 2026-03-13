@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
+import { useState, useRef, useEffect, type FC, type ReactElement } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -115,29 +115,24 @@ const Checklist: FC<ChecklistProps> = ({
         onNotesChange?.(markdown);
     }
 
-    const filteredTasks = useMemo(() => {
-        return tasks.map(task => ({ ...task })).filter(task => {
-            if (activeTab === TABS.hidden && task.isHidden) return true;
-            if (activeTab === TABS.upcoming && !task.isHidden) return true;
-            if (activeTab === TABS.today && !task.isHidden) return true;
-            return false;
+    const filteredTasks = tasks.map(task => ({ ...task })).filter(task => {
+        if (activeTab === TABS.hidden && task.isHidden) return true;
+        if (activeTab === TABS.upcoming && !task.isHidden) return true;
+        if (activeTab === TABS.today && !task.isHidden) return true;
+        return false;
+    });
 
+    const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
+        .sort((a, b) => {
+            if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
+                return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
+            } else if (activeTab === TABS.upcoming) {
+                const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
+                const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
+                return aDue - bDue;
+            }
+            return a.sortOrder - b.sortOrder;
         });
-    }, [tasks, activeTab]);
-
-    const filteredItems = useMemo(() => {
-        return filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
-            .sort((a, b) => {
-                if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
-                    return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
-                } else if (activeTab === TABS.upcoming) {
-                    const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
-                    const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
-                    return aDue - bDue;
-                }
-                return a.sortOrder - b.sortOrder;
-            });
-    }, [items, modeFilter, activeTab, hideCompleted, filterCategory]);
 
     const filteredEvents = events.filter(event => {
         if (activeTab === TABS.today) {
@@ -182,12 +177,12 @@ const Checklist: FC<ChecklistProps> = ({
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
     }
-    const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         sortItems(filteredItems, activeTab, active.id as string, over.id as string);
-    }, [activeTab, filteredItems, sortItems]);
+    };
 
     const toggleChecked = async (id: string, checked: boolean) => {
         const selectedItem = items.find(item => item.id === id);
