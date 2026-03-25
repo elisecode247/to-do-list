@@ -47,6 +47,10 @@
     opacity: 1;
     z-index: 7;
 }
+.tab.tab-inactive {
+    opacity: 0.6;
+    color: var(--color-text-secondary);
+}
 
 /* Focus ring for keyboard users */
 .tab:focus-visible {

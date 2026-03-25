@@ -18,6 +18,7 @@
         position: relative;
         transition: box-shadow 0.3s ease;
         gap: var(--spacing-xs);
+        margin: 1px;
     }
 
     .sortable-item_container:hover {
