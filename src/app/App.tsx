@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, type FC } from 'react';
+import { lazy, Suspense, useCallback, useState, type FC, type SetStateAction } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
@@ -25,9 +25,29 @@ const NotFoundLazy = lazy(async () => {
     return { default: (await import('src/pages/not-found/NotFound')).default };
 });
 
+const NOTES_CACHE_KEY = 'daily-reset:cached-notes';
+
 const App: FC = () => {
     const { isAuthenticated, login } = useAuthentication();
-    const [cachedNotes, setCachedNotes] = useState<string | null>(null);
+    const [cachedNotes, setCachedNotesState] = useState<string | null>(() => {
+        return localStorage.getItem(NOTES_CACHE_KEY);
+    });
+
+    const setCachedNotes = useCallback((value: SetStateAction<string | null>) => {
+        setCachedNotesState(prev => {
+            const next = typeof value === 'function'
+                ? (value as (prevState: string | null) => string | null)(prev)
+                : value;
+
+            if (next === null) {
+                localStorage.removeItem(NOTES_CACHE_KEY);
+            } else {
+                localStorage.setItem(NOTES_CACHE_KEY, next);
+            }
+
+            return next;
+        });
+    }, []);
 
     const handleLoginSuccess = async (token: string) => {
         try {
