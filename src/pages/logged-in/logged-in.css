@@ -248,7 +248,7 @@
 
     /* If left panel is closed */
     .app_container:not(.left-open) {
-        grid-template-columns: 0 minmax(0, 1fr) 0;
+        grid-template-columns: 0 minmax(0, 1fr) 420px;
     }
 
     /* If right panel is closed */
