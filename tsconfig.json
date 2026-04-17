@@ -6,12 +6,11 @@
     ],
     "exclude": ["node_modules"],
     "compilerOptions": {
-        "baseUrl": ".",
         "paths": {
             "src/*": ["./src/*"],
             "app/*": ["./src/app/*"],
             "checklist/*": ["./src/checklist/*"],
-            "item-modal/*": ["src/edit-task-form/*"],
+            "item-modal/*": ["./src/edit-task-form/*"],
             "sortable-item/*": ["./src/sortable-item/*"],
             "utilities/*": ["./src/utilities/*"],
             "category-select/*": ["./src/category-select/*"]
