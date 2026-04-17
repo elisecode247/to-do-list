@@ -27,6 +27,7 @@
 .left_panel,
 .right_panel {
     z-index: 500;
+    overflow-y: auto;
 }
 
 .app_h2 {

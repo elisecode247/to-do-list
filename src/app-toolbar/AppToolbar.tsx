@@ -1,8 +1,7 @@
 import React from 'react';
 import Tabs from 'src/app-toolbar/tabs/Tabs';
-import CategorySelect from 'category-select/CategorySelect';
 import { ALL_MODES, MODES } from 'src/checklist/constants';
-import { getModeColor } from 'src/checklist/utilities/get-mode-color';
+import { ALL_CATEGORIES, categories } from 'src/category-select/category-constants';
 import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
@@ -29,64 +28,126 @@ const AppToolbar = ({
     filterCategory,
     setFilterCategory
 }: AppToolbarProps) => {
+    const activeFilterCount =
+        (hideCompleted ? 1 : 0) +
+        (modeFilter === ALL_MODES ? 0 : 1) +
+        (filterCategory === ALL_CATEGORIES ? 0 : 1);
+
+    const categoryOptions = [
+        { value: ALL_CATEGORIES, label: 'All' },
+        ...Object.entries(categories)
+            .filter(([value]) => value !== '')
+            .map(([value, label]) => ({ value, label }))
+    ];
+
+    const getCategoryDotClass = (value: string) => {
+        switch (value) {
+            case ALL_CATEGORIES:
+                return 'drawer-dot--all';
+            case 'work':
+                return 'drawer-dot--work';
+            case 'housework':
+                return 'drawer-dot--housework';
+            case 'self-care':
+                return 'drawer-dot--self-care';
+            case 'people':
+                return 'drawer-dot--people';
+            case 'pets':
+                return 'drawer-dot--pets';
+            default:
+                return 'drawer-dot--leisure';
+        }
+    };
 
     return (
         <div className="checklist_filter-container">
-            <Tabs
-                value={activeTab}
-                onChange={handleTabChange}
-            />
-            <div className="mode-filter-button-group">
-                <button
-                    onClick={() => {
-                        setModeFilter(ALL_MODES);
-                    }}
-                    className={`filter-button ${modeFilter === ALL_MODES
-                        ? 'filter-button-all-active'
-                        : 'filter-button-all'
-                        }`}
-                >
-                    All
-                </button>
-                {MODES.map((mode: Mode): React.ReactNode => {
-                    const isActive = modeFilter === mode;
-                    return (
-                        <button
-                            key={mode}
-                            onClick={() => {
-                                setModeFilter(mode);
-                            }}
-                            className={`
-                                        filter-button
-                                        ${isActive ? getModeColor(mode) + 'filter-button-active' : ''}
-                                    `}
-                        >
-                            {mode}
-                        </button>
-                    )
-                })}
+            <div className="drawer-header">
+                <span className="drawer-title">Filters</span>
+                {activeFilterCount > 0 && (
+                    <span className="drawer-badge">{activeFilterCount}</span>
+                )}
             </div>
-            <div className="checklist_hide-completed-checkbox-container">
-                <input
-                    className="checklist_hide-completed-checkbox-input"
-                    type="checkbox"
-                    id="hideCompleted"
-                    checked={hideCompleted}
-                    onChange={(e) => setHideCompleted(e.target.checked)}
+
+            <div className="drawer-section">
+                <div className="drawer-section-label">View</div>
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
                 />
-                <label
-                    htmlFor="hideCompleted"
-                    className="checklist_hide-completed-checkbox-label"
-                >
-                    Hide Completed
-                </label>
             </div>
-            <CategorySelect
-                id="checklist-filter-category-select"
-                isFilter={true}
-                selectedCategory={filterCategory}
-                onChange={(value: string) => setFilterCategory(value)}
-            />
+
+            <div className="drawer-divider" />
+
+            <div className="drawer-section">
+                <div className="drawer-section-label">Mode</div>
+                <div className="mode-filter-button-group">
+                    <button
+                        onClick={() => {
+                            setModeFilter(ALL_MODES);
+                        }}
+                        className={`filter-button ${modeFilter === ALL_MODES
+                            ? 'filter-button-all-active'
+                            : 'filter-button-all'
+                            }`}
+                    >
+                        All
+                    </button>
+                    {MODES.map((mode: Mode): React.ReactNode => {
+                        const isActive = modeFilter === mode;
+                        return (
+                            <button
+                                key={mode}
+                                onClick={() => {
+                                    setModeFilter(mode);
+                                }}
+                                className={`filter-button ${isActive ? 'filter-button-active' : ''}`}
+                            >
+                                {mode}
+                            </button>
+                        )
+                    })}
+                </div>
+            </div>
+
+            <div className="drawer-divider" />
+
+            <div className="drawer-section">
+                <div className="drawer-section-label">Category</div>
+                <div className="drawer-category-pills">
+                    {categoryOptions.map(({ value, label }) => {
+                        const isActive = filterCategory === value;
+                        return (
+                            <button
+                                key={value}
+                                type="button"
+                                className={`drawer-category-pill ${isActive ? 'active' : ''}`}
+                                onClick={() => setFilterCategory(value)}
+                            >
+                                <span className={`drawer-dot ${getCategoryDotClass(value)}`} />
+                                {label}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            <div className="drawer-divider" />
+
+            <div className="drawer-section drawer-section--compact">
+                <div className="drawer-toggle-row">
+                    <span className="drawer-toggle-label">Hide Completed</span>
+                    <button
+                        type="button"
+                        role="switch"
+                        aria-checked={hideCompleted}
+                        aria-label="Hide completed"
+                        className={`drawer-toggle ${hideCompleted ? '' : 'off'}`}
+                        onClick={() => setHideCompleted(!hideCompleted)}
+                    >
+                        <span className="drawer-toggle-thumb" />
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

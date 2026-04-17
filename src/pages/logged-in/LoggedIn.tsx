@@ -69,11 +69,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
 
-    const activeFilterCount =
-        (hideCompleted ? 1 : 0) +
-        (modeFilter === ALL_MODES ? 0 : 1) +
-        (filterCategory === ALL_CATEGORIES ? 0 : 1);
-
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
         setIsSaving(true);
@@ -211,11 +206,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                 >
                     <ListFilter size={24} />
                     {isDesktop && <span>Filters</span>}
-                    {activeFilterCount > 0 && (
-                        <span className="applied-filter-count-badge">
-                            {activeFilterCount}
-                        </span>
-                    )}
                 </button>
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset</h1>
