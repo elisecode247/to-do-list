@@ -9,16 +9,16 @@ import type { ChecklistItem, Mode } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import {
+    Ban,
+    CalendarPlus2,
     GripVertical,
     Trash,
     Edit,
     Archive,
     ListPlus,
-    EyeClosed,
-    Eye,
     PlusCircle,
-    UnfoldVertical,
-    FoldVertical,
+    Expand,
+    Minimize2,
     MoreHorizontal,
     BookPlus,
     BookMinus,
@@ -298,30 +298,29 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </div>
                     <div className="sortable-item_button-group-container">
                         <button
-                            className="sortable-item_priority-button"
+                            className="sortable-item_main-button sortable-item_priority-button"
                             onClick={() => prioritizeItem(id)}
                             aria-label="Prioritize task"
                             title="Prioritize task"
                             type="button"
                         >
                             {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
-                            <span className="sortable-item_button-text-span">Priority</span>
                         </button>
 
                         {hasSubChores && (
                             <button
-                                className="sortable-item_hide-button"
+                                className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={toggleCollapsed}
                                 aria-label={collapsed ? "Expand task" : "Collapse task"}
                             >
-                                {collapsed ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                {collapsed ? <Expand size={24} /> : <Minimize2 size={24} />}
                                 <span className="sortable-item_button-text-span">Subtasks</span>
                             </button>
                         )}
 
                         {!!note?.length && (
                             <button
-                                className="sortable-item_hide-button"
+                                className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={toggleNotes}
                                 aria-label="Show notes"
                                 title={showNotes ? "Hide notes" : "Show notes"}
@@ -333,22 +332,22 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                         {activeTab === TABS.archived ? null : (
                             <button
-                                className="sortable-item_hide-button"
+                                className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={delayHide}
                                 aria-label="Hide task"
                                 title={isHidden ? "Unhide task for today" : "Hide task for today"}
                                 type="button"
                             >
-                                {isHidden ? <Eye size={24} /> : <EyeClosed size={24} />}
+                                {isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
                                 <span className="sortable-item_button-text-span">
-                                    {isHidden ? "Move to Today" : "Not Today"}
+                                    {isHidden ? "Do Today" : "Skip"}
                                 </span>
                             </button>
                         )}
 
                         <div className="sortable-item_menu-wrapper">
                             <button
-                                className={`sortable-item_menu-button
+                                className={`sortable-item_main-button sortable-item_menu-button
                                     ${isMenuOpen ? 'sortable-item_menu-button--active' : ''}`}
                                 aria-label="More task actions"
                                 type="button"
@@ -356,7 +355,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 onClick={toggleMenuOpen}
                             >
                                 <MoreHorizontal size={24} />
-                                <span className="sortable-item_button-text-span">Actions</span>
                             </button>
 
                             <div
@@ -386,7 +384,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         onClick={() => setDropZoneOpen(!dropZoneOpen)}
                                         aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
                                     >
-                                        {dropZoneOpen ? <UnfoldVertical size={24} /> : <FoldVertical size={24} />}
+                                        {dropZoneOpen ? <Minimize2 size={24} /> : <Expand size={24} />}
                                         <span className="sortable-item_button-text-span">
                                             {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
                                         </span>

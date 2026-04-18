@@ -464,3 +464,16 @@
     top: 0;
     right: 0;
 }
+
+/** Main button override for priority */
+.sortable-item_main-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
