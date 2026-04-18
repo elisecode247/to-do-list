@@ -46,7 +46,7 @@ export default function LoggedOut({
                     >
                         Enter your space
                     </motion.p>
-                    <div className="google-shell">
+                    <div className="google-shell" style={{ colorScheme: 'light' }}>
                         <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                     </div>
                     <DemoButton />

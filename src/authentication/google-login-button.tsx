@@ -81,7 +81,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         }
     }, [clientId, onSuccess, onError, setGoogleButtonState]);
 
-    return <div ref={buttonRef} />;
+    return <div ref={buttonRef} style={{ colorScheme: 'light' }} />;
 };
 
 export default GoogleLoginButton;
