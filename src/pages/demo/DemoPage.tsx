@@ -16,6 +16,7 @@ import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import 'src/pages/logged-in/logged-in.css';
+import 'src/pages/demo/demo.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
 import { Eraser, ListFilter, Plus, RefreshCcw } from 'lucide-react';
 import NoteEditor from 'src/editor/NoteEditor';

@@ -25,7 +25,7 @@ export default function LoggedOut({
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{ duration: 4, ease: "easeOut" }}
                 >
-                    free your mind
+                    Daily Reset
                 </motion.h1>
 
                 <motion.p
@@ -34,7 +34,7 @@ export default function LoggedOut({
                     animate={{ opacity: 0.85 }}
                     transition={{ delay: 2.5, duration: 4 }}
                 >
-                    Holding space for your thoughts so your mind can float freely
+                    A place for everything you need to remember and focus on today
                 </motion.p>
 
                 <div className="login-orbit">
