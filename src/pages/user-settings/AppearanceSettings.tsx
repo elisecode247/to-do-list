@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTheme } from 'src/themes/use-theme';
 import type { ThemeMode, ThemeStyle, Density } from 'src/themes/types';
+import { readPersistentSetting } from 'src/utilities/persistent-storage';
 
 function getStored<T extends string>(key: string, fallback: T): T {
     if (typeof window === 'undefined') return fallback;
-    return (localStorage.getItem(key) as T) ?? fallback;
+    return (readPersistentSetting(key) as T) ?? fallback;
 }
 
 function AppearanceSettings() {
@@ -36,12 +37,6 @@ function AppearanceSettings() {
         setDensity(newDensity);
         updateTheme({ density: newDensity });
     }
-
-    useEffect(() => {
-        localStorage.setItem('theme-mode', mode);
-        localStorage.setItem('theme-style', style);
-        localStorage.setItem('theme-density', density);
-    }, [mode, style, density]);
 
     return (
         <section className="settings-section">

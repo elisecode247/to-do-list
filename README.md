@@ -21,7 +21,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - ux: improvements
     - keyboard tabbing for panels
     - lost internet connection
-    - make localStorage persistent longer on mobile
     - add close buttons on panels in desktop view
     - fix font color on google calendar events
     - show days countdown for google calendar events

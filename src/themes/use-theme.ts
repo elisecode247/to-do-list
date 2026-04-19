@@ -1,10 +1,15 @@
 import { useLayoutEffect, useEffect, useState, useEffectEvent } from 'react';
 import type { ThemeMode, ThemeStyle, Density, ThemeState } from './types';
+import {
+    readPersistentSetting,
+    requestPersistentStorage,
+    writePersistentSetting,
+} from 'src/utilities/persistent-storage';
 
 const getStoredTheme = (): ThemeState => ({
-    mode: (localStorage.getItem('theme-mode') as ThemeMode) || 'system',
-    style: (localStorage.getItem('theme-style') as ThemeStyle) || 'calm',
-    density: (localStorage.getItem('theme-density') as Density) || 'comfortable',
+    mode: (readPersistentSetting('theme-mode') as ThemeMode) || 'system',
+    style: (readPersistentSetting('theme-style') as ThemeStyle) || 'calm',
+    density: (readPersistentSetting('theme-density') as Density) || 'comfortable',
 });
 
 export function useTheme(
@@ -58,12 +63,16 @@ export function useTheme(
 
 
     useEffect(() => {
+        requestPersistentStorage();
+    }, []);
+
+    useEffect(() => {
         if (hasOverride) return;
 
         // Persist
-        localStorage.setItem('theme-mode', theme.mode);
-        localStorage.setItem('theme-style', theme.style);
-        localStorage.setItem('theme-density', theme.density);
+        writePersistentSetting('theme-mode', theme.mode);
+        writePersistentSetting('theme-style', theme.style);
+        writePersistentSetting('theme-density', theme.density);
 
         // System mode listener
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
