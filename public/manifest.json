@@ -7,7 +7,7 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/to-do-list/checklist.png",
+      "src": "checklist.png",
       "sizes": "180x180",
       "type": "image/png"
     }
