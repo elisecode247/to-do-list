@@ -1,10 +1,9 @@
-import { lazy, Suspense, useCallback, useState, type FC, type SetStateAction } from 'react';
+import { lazy, useCallback, useState, type FC, type SetStateAction } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
-import SkeletonAppPage from 'src/themes/AppSkeleton';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
@@ -72,9 +71,8 @@ const App: FC = () => {
                 )}
             </Route>
             <Route path={ROUTES.demo}>
-                <Suspense fallback={<SkeletonAppPage />}>
-                    <DemoPageLazy />
-                </Suspense>
+                {/** Demo page is faster without Suspense */}
+                <DemoPageLazy />
             </Route>
             <Route path={ROUTES.userSettings}>
                 <UserSettingsLazy />
