@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { BookPlus, BookMinus } from "lucide-react";
 import type { GoogleTask } from "./types";
+import { getDaysFromNow } from "src/utilities/days-ago";
 
 type CalendarTaskItemProps = {
     task: GoogleTask;
@@ -13,6 +14,9 @@ const CalendarTaskItem = ({task, markCompleted }: CalendarTaskItemProps) => {
     const [checked, setChecked] = useState(task.done);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const sanitizedHTML = DOMPurify.sanitize(task.note || '');
+    const dateString = task.due ? new Date(task.due).toLocaleString() : "No due date";
+    const countDownString = task.due ? getDaysFromNow(new Date(task.due)) : "";
+
     return (
         <div className="calendar-task-item">
             <div className="calendar-task_main-content">
@@ -32,6 +36,9 @@ const CalendarTaskItem = ({task, markCompleted }: CalendarTaskItemProps) => {
                 <div className="calendar-task-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div>
                         <h4>Calendar Task: {task.text}</h4>
+                        <p className="sortable-item_next-due-text calendar-event-time">
+                        {countDownString} - {dateString}
+                    </p>
                     </div>
                 </div>
                 <div className="calendar-task-controls">

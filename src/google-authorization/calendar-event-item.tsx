@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
+import { getDaysFromNow } from 'src/utilities/days-ago';
 
 export interface CalendarEvent {
     title: string;
@@ -19,6 +20,7 @@ const CalendarEventItem = ({ event }: { event: GoogleEvent }) => {
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const dateString = getEventDateString(event);
+    const countDownString = getDaysFromNow(event.startDate);
 
     const sanitizedHTML = DOMPurify.sanitize(event.description || '');
 
@@ -29,7 +31,7 @@ const CalendarEventItem = ({ event }: { event: GoogleEvent }) => {
                     <p className="calendar-event-subtitle">Google Calendar Event</p>
                     <h4>{event.title}</h4>
                     <p className="sortable-item_next-due-text calendar-event-time">
-                        {dateString}
+                        {countDownString} - {dateString}
                     </p>
                 </div>
                 <div className="calendar-event-controls">

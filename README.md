@@ -18,9 +18,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- ux: improvements
-    - fix font color on google calendar events
-    - show days countdown for google calendar events
 - feature: calendar tasks
 - ux: improve ux for newly logged in user
 - feature: allow user delete history
