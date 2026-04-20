@@ -9,6 +9,7 @@ import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { CALENDAR_RECURRENCE_TYPE, FrequencyType, INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE } from 'src/app/types';
 import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
+import CloseButton from 'components/close-button/CloseButton';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -121,14 +122,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         <div className="edit-item-container edit-task-drawer">
             <div className="edit-task-drawer_header">
                 <h2 className="edit-task-drawer_title">Edit task</h2>
-                <button
-                    type="button"
-                    className="edit-task-drawer_close"
-                    aria-label="Close edit task form"
+                <CloseButton
                     onClick={onClose}
-                >
-                    ✕
-                </button>
+                    label="Close edit task form"
+                />
             </div>
 
             <div className="edit-task-drawer_body">

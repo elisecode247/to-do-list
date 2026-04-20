@@ -28,7 +28,8 @@ export default defineConfig({
             "item-modal": "/src/item-modal",
             "item-modal/*": "./src/item-modal/*",
             "sortable-item/*": "/src/sortable-item/*",
-            "utilities/*": "/src/utilities/*"
+            "utilities/*": "/src/utilities/*",
+            "components/*": "/src/components/*",
         },
     },
     build: {

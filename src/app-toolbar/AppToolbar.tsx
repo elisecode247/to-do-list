@@ -5,10 +5,9 @@ import { ALL_CATEGORIES, categories } from 'src/category-select/category-constan
 import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
+import CloseButton from 'components/close-button/CloseButton';
 
 interface AppToolbarProps {
-    showFilters: boolean;
-    setShowFilters: (show: boolean) => void;
     activeTab: Tab;
     handleTabChange: (tab: Tab) => void;
     modeFilter: Mode | typeof ALL_MODES;
@@ -17,6 +16,8 @@ interface AppToolbarProps {
     setHideCompleted: (hide: boolean) => void;
     filterCategory: string;
     setFilterCategory: (category: string) => void;
+    setLeftOpen: (open: boolean) => void;
+    isDesktop?: boolean;
 }
 const AppToolbar = ({
     activeTab,
@@ -26,7 +27,9 @@ const AppToolbar = ({
     hideCompleted,
     setHideCompleted,
     filterCategory,
-    setFilterCategory
+    setFilterCategory,
+    setLeftOpen,
+    isDesktop = false,
 }: AppToolbarProps) => {
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
@@ -62,9 +65,17 @@ const AppToolbar = ({
     return (
         <div className="checklist_filter-container">
             <div className="drawer-header">
-                <span className="drawer-title">Filters</span>
-                {activeFilterCount > 0 && (
-                    <span className="drawer-badge">{activeFilterCount}</span>
+                <div>
+                    <span className="drawer-title">Filters</span>
+                    {activeFilterCount > 0 && (
+                        <span className="drawer-badge">{activeFilterCount}</span>
+                    )}
+                </div>
+                {isDesktop && (
+                    <CloseButton
+                        onClick={() => setLeftOpen(false)}
+                        label="Close filters panel"
+                    />
                 )}
             </div>
 

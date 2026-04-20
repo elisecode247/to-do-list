@@ -19,9 +19,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 ### To do
 - ux: improvements
-    - keyboard tabbing for panels
-    - lost internet connection
-    - add close buttons on panels in desktop view
     - fix font color on google calendar events
     - show days countdown for google calendar events
 - feature: calendar tasks

@@ -1,0 +1,12 @@
+.drawer-close-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-left: 12px;
+    cursor: pointer;
+}
+
+.drawer-close-icon {
+    color: var(--color-mode-priority-text);
+    cursor: pointer;
+}

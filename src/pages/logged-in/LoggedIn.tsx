@@ -56,7 +56,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
 
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
-    const [showFilters, setShowFilters] = useState(false);
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
@@ -235,8 +234,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
             </header>
             <aside className="left_panel">
                 <AppToolBar
-                    showFilters={showFilters}
-                    setShowFilters={setShowFilters}
                     activeTab={activeTab}
                     handleTabChange={handleTabChange}
                     modeFilter={modeFilter}
@@ -245,6 +242,8 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                     setHideCompleted={setHideCompleted}
                     filterCategory={filterCategory}
                     setFilterCategory={setFilterCategory}
+                    setLeftOpen={setLeftOpen}
+                    isDesktop={isDesktop}
                 />
             </aside>
             <main className="main_content">
@@ -281,7 +280,7 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                         onSave={handleSave}
                         onClose={handleCloseEditModal}
                     />
-                ) : <NewTaskForm />}
+                ) : <NewTaskForm isDesktop={isDesktop} setRightOpen={setRightOpen} />}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (
                 <nav className="mobile-tab-bar">

@@ -13,7 +13,8 @@
             "item-modal/*": ["./src/edit-task-form/*"],
             "sortable-item/*": ["./src/sortable-item/*"],
             "utilities/*": ["./src/utilities/*"],
-            "category-select/*": ["./src/category-select/*"]
+            "category-select/*": ["./src/category-select/*"],
+            "components/*": ["./src/components/*"]
         }
     },
 }

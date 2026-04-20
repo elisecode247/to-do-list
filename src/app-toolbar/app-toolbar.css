@@ -32,6 +32,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 22px;
+    min-height: 24px;
 }
 
 .drawer-title {
@@ -49,6 +50,7 @@
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 20px;
+    margin-left: 8px;
 }
 
 .drawer-section {

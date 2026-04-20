@@ -10,8 +10,9 @@ import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE, DAILY_MODE } from 'src/c
 import { type ChecklistItem, FrequencyType } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
+import CloseButton from 'components/close-button/CloseButton';
 
-const NewTaskForm = () => {
+const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRightOpen: (open: boolean) => void }) => {
     const { addItem } = useTask();
     const { showToast } = useToast();
     const [inputText, setInputText] = useState<string>("");
@@ -91,6 +92,12 @@ const NewTaskForm = () => {
         <div ref={panelRef} className="new-task-form-item-container">
             <div className="new-task-form-item-header">
                 <span className="new-task-form-title">New Task</span>
+                {isDesktop && (
+                    <CloseButton
+                        onClick={() => setRightOpen(false)}
+                        label="Close new task form"
+                    />
+                )}
             </div>
             <div className="new-task-form-input-row">
                 <input
