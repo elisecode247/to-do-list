@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { MenuSquare } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import GoogleLogoutButton from 'src/authentication/google-logout-button';
 import GoogleCalendarStatus from 'src/google-authorization/google-calendar-status';
 import { useAuthentication } from "src/authentication/use-authentication";
@@ -8,16 +8,20 @@ import { Link, useLocation } from "wouter";
 import { ROUTES } from "src/router";
 import { createPortal } from 'react-dom';
 import { useOnClickOutside } from "usehooks-ts";
+import IconButton from 'src/components/icon-button/IconButton';
+
 interface AccountMenuProps {
     isMenuOpen: boolean;
     onMenuToggleOpen: () => void;
     onMenuClose: () => void;
+    isDesktop?: boolean;
 }
 
 function AccountMenu({
     isMenuOpen,
     onMenuToggleOpen,
     onMenuClose,
+    isDesktop
 }: AccountMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,14 +46,14 @@ function AccountMenu({
 
     return (
         <div className="account-menu-container" ref={menuRef}>
-            <button
-                aria-label="Account menu"
-                onClick={onMenuToggleOpen}
+            <IconButton
                 className="app_header_menu"
-            >
-                <MenuSquare className="app_header_menu-icon" size={24} />
-                <span className="app_header_menu-span">Menu</span>
-            </button>
+                onClick={onMenuToggleOpen}
+                label="Menu"
+                ariaLabel="Account menu"
+                icon={<Menu className="app_header_menu-icon" size={24} />}
+                showLabel={isDesktop}
+            />
 
             {isMenuOpen && isAuthenticated ? createPortal(
                 <div ref={dropdownRef} className="app_header_settings">

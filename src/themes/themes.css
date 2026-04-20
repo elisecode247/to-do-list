@@ -89,16 +89,11 @@ body::after {
 .app_h1 {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 1px;
-    text-transform: uppercase;
 }
 
 .app_subtitle {
-    color: var(--color-text-dark-light);
-}
-
-.app_header_menu, .app_header_menu-icon, .app_header_menu-span {
     color: var(--color-text-dark-light);
 }
 

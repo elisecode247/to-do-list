@@ -36,26 +36,9 @@
 }
 
 .app_header_menu {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    cursor: pointer;
-}
-
-.app_header_menu-span {
-    order: 1;
-}
-
-.app_header_menu-icon {
-    cursor: pointer;
-    right: 0;
-    top: 0;
-    width: 28px;
-    height: 28px;
-    order: 1;
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
 }
 
 .account-menu-container {

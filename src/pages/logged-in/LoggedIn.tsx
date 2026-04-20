@@ -21,6 +21,7 @@ import useIsDesktop from 'src/pages/use-is-desktop';
 import { ListFilter, Plus } from 'lucide-react';
 import { API_URL } from 'app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
+import IconButton from 'src/components/icon-button/IconButton';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -197,15 +198,15 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                 />
             )}
             <header className="app_header">
-                <button
+                <IconButton
                     className={`filter-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleLeft}
-                    aria-label="Toggle filters"
-                >
-                    <ListFilter size={24} />
-                    {isDesktop && <span>Filters</span>}
-                </button>
+                    label="Filters"
+                    icon={<ListFilter size={24} />}
+                    showLabel={isDesktop}
+                    isPriority={false}
+                />
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset</h1>
                     <p className="app_subtitle">
@@ -214,19 +215,20 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
                         <span>
-                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleDateString()} ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
                         </span>
                     </p>
                 </div>
-                <button
+                <IconButton
                     className={`new-task-form-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleAddForm}
-                    aria-label="Add new task"
-                >
-                    <Plus size={24} strokeWidth={3} />
-                </button>
+                    label="Add new task"
+                    icon={<Plus size={24} strokeWidth={3} />}
+                    isPriority={true}
+                />
                 <AccountMenu
+                    isDesktop={isDesktop}
                     isMenuOpen={menuOpen}
                     onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
                     onMenuClose={handleCloseAccountMenu}

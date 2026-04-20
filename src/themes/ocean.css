@@ -113,11 +113,6 @@
         color: var(--color-text-light);
     }
 
-    & .app_header_menu,
-    & .app_header_menu-icon,
-    & .app_header_menu-span {
-        color: var(--color-text-light);
-    }
 }
 
 /* Sunlight rays animation */

@@ -23,6 +23,7 @@ import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useDebounceValue } from 'usehooks-ts';
 import { useDemoNotes } from './use-demo-notes';
+import IconButton from 'src/components/icon-button/IconButton';
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const DemoPage: React.FC = () => {
@@ -172,20 +173,21 @@ const DemoPage: React.FC = () => {
                 />
             )}
             <header className="app_header">
-                <button
+                <IconButton
                     className={`filter-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleLeft}
-                    aria-label="Toggle filters"
+                    label="Filters"
+                    ariaLabel="Toggle filters"
+                    icon={<ListFilter size={24} />}
+                    showLabel={isDesktop}
                 >
-                    <ListFilter size={24} />
-                    {isDesktop && <span>Filters</span>}
                     {activeFilterCount > 0 && (
                         <span className="applied-filter-count-badge">
                             {activeFilterCount}
                         </span>
                     )}
-                </button>
+                </IconButton>
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset</h1>
                     <p className="app_subtitle">
@@ -198,32 +200,31 @@ const DemoPage: React.FC = () => {
                         </span>
                     </p>
                 </div>
-                <button
+                <IconButton
                     className={`new-task-form-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={toggleAddForm}
-                    aria-label="Add new task"
-                >
-                    <Plus size={24} strokeWidth={3} />
-                </button>
+                    label="Add new task"
+                    icon={<Plus size={24} strokeWidth={3} />}
+                />
                 {/** Reset with Demo Starter Data */}
                 <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
-                <button
+                <IconButton
                     className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={reset}
-                    aria-label="Reset demo data"
-                >
-                    <RefreshCcw size={24} strokeWidth={3} />
-                    Refresh with Dummy Data
-                </button>
-                <button
+                    label="Refresh with Dummy Data"
+                    ariaLabel="Reset demo data"
+                    icon={<RefreshCcw size={24} strokeWidth={3} />}
+                    showLabel={true}
+                />
+                <IconButton
                     className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={clear}
-                    aria-label="Clear all tasks"
-                >
-                    <Eraser size={24} strokeWidth={3} />
-                    Clear All Data
-                </button>
+                    label="Clear All Data"
+                    ariaLabel="Clear all tasks"
+                    icon={<Eraser size={24} strokeWidth={3} />}
+                    showLabel={true}
+                />
                 </div>
             </header>
             <aside className="left_panel">

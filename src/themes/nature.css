@@ -134,10 +134,6 @@
     }
 
     .app_h1 {
-        background: linear-gradient(135deg,
-                #fef3c7 0%,
-                #fde68a 50%,
-                #fcd34d 100%);
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
         animation: sunlightGlow 12s ease-in-out infinite;
     }
@@ -158,9 +154,4 @@
         color: var(--color-text-light);
     }
 
-    .app_header_menu,
-    .app_header_menu-icon,
-    .app_header_menu-span {
-        color: var(--color-text-light);
-    }
 }

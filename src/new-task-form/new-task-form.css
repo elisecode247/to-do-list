@@ -24,8 +24,6 @@
     background: var(--color-primary);
     opacity: 0.9;
     color: var(--color-text-light);
-    font-size: 15px;
-    font-weight: 700;
     border: none;
     border-radius: var(--radius-full);
     box-sizing: border-box;
