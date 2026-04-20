@@ -7,7 +7,6 @@ import { SortableItem } from 'sortable-item/SortableItem';
 import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
-import { useCalendarIntegration } from 'src/google-authorization/use-google-calendar';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import CalendarTaskItem from 'src/google-authorization/calendar-task-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
@@ -21,6 +20,7 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useDebounceValue } from 'usehooks-ts';
 import { API_URL } from 'src/app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
+import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 
 function isTodayOrBefore(date: Date) {
     const today = new Date();
@@ -68,7 +68,7 @@ const Checklist: FC<ChecklistProps> = ({
         hideForToday,
         unhideForToday,
     } = useTask();
-    const { events, tasks, markCalendarTaskCompletion } = useCalendarIntegration();
+    const { events, tasks, markCalendarTaskCompletion } = useGoogleCalendar();
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);

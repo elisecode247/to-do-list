@@ -30,8 +30,8 @@ const combineComponents = (components: ProviderComponent[]): ProviderComponent =
 const providers = [
     AppRouter,
     AuthenticationProvider,
-    GoogleCalendarProvider,
     ToastProvider,
+    GoogleCalendarProvider,
     DemoProvider,
     DemoTaskProvider,
     TaskProvider,

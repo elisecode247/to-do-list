@@ -1,6 +1,6 @@
 import "src/google-authorization/google-calendar-status.css";
 import { useAuthentication } from "src/authentication/use-authentication";
-import { useCalendarIntegration } from "./use-google-calendar";
+import { useGoogleCalendar } from "src/google-authorization/use-google-calendar";
 import GoogleCalendarConnectButton from "src/google-authorization/google-calendar-button";
 import { CalendarSync, CheckCircle2 } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -8,7 +8,7 @@ import { useToast } from "src/toast/use-toast";
 
 const GoogleCalendarStatus = () => {
     const { isAuthenticated } = useAuthentication();
-    const { loading, connected, refreshStatus, disconnectCalendar, isError, setIsError } = useCalendarIntegration();
+    const { loading, connected, refreshStatus, disconnectCalendar, isError, setIsError } = useGoogleCalendar();
     const { showToast } = useToast();
     const hasShownConnectionErrorRef = useRef(false);
     const didMountRef = useRef(false);
