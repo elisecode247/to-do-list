@@ -11,6 +11,7 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { CALENDAR_RECURRENCE_TYPE, FrequencyType, INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE } from 'src/app/types';
 import { getRecurrenceCount } from 'src/app/utilities/get-recurrence-count';
 import CloseButton from 'components/close-button/CloseButton';
+import RecurrenceForm from 'src/recurrence-form/RecurrenceForm';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -242,6 +243,21 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             />
                         </div>
                     </>
+                )}
+
+                {formData.mode === CALENDAR_MODE && (
+                    <RecurrenceForm
+                        value={formData.recurrence?.type === CALENDAR_RECURRENCE_TYPE
+                            ? formData.recurrence as CalendarRecurrence
+                            : null}
+                        startDate={new Date()}
+                        onChange={(recurrence) => {
+                            setEditingItem({
+                                ...formData,
+                                recurrence,
+                            });
+                        }}
+                    />
                 )}
 
                 <div className="task-form-field">

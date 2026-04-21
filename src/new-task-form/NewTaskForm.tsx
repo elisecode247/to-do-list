@@ -3,7 +3,7 @@ import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
-import { INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE, type IntervalRecurrence, type Mode, type OneTimeRecurrence } from 'app/types';
+import { INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE, type CalendarRecurrence, type IntervalRecurrence, type Mode, type OneTimeRecurrence } from 'app/types';
 import './new-task-form.css';
 import 'src/task-form/task-form-shared.css';
 import type { MDXEditorMethods } from '@mdxeditor/editor';
@@ -12,6 +12,7 @@ import { type ChecklistItem, FrequencyType } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CloseButton from 'components/close-button/CloseButton';
+import RecurrenceForm from 'src/recurrence-form/RecurrenceForm';
 
 const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRightOpen: (open: boolean) => void }) => {
     const { addItem } = useTask();
@@ -21,6 +22,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
     const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
     const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
     const [recurrenceStartDate, setRecurrenceStartDate] = useState<string>(formatDate(new Date()));
+    const [calendarRecurrence, setCalendarRecurrence] = useState<CalendarRecurrence | null>(null);
     const [newTaskCategory, setNewTaskCategory] = useState<string>('');
     const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
@@ -30,7 +32,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
         const text = inputText.trim();
         if (!text) return;
         const note = noteRef.current?.getMarkdown();
-        let recurrence: OneTimeRecurrence | IntervalRecurrence | null = null;
+        let recurrence: OneTimeRecurrence | IntervalRecurrence | CalendarRecurrence | null = null;
         if (mode === ONE_TIME_MODE) {
             recurrence = {
                 type: ONE_TIME_RECURRENCE_TYPE,
@@ -50,6 +52,8 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                 frequency: recurrenceFrequency,
                 startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
             };
+        } else if (mode === CALENDAR_MODE) {
+            recurrence = calendarRecurrence;
         }
 
         const newItem: ChecklistItem = {
@@ -196,6 +200,13 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                             />
                         </div>
                     </>
+                )}
+                {mode === CALENDAR_MODE && (
+                    <RecurrenceForm
+                        value={calendarRecurrence}
+                        startDate={new Date(localDateWithNowTime(recurrenceStartDate))}
+                        onChange={setCalendarRecurrence}
+                    />
                 )}
             </div>
 

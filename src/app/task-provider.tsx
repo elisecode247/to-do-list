@@ -148,6 +148,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
         try {
             const data = await addTask(newItem);
+            if ('error' in data) {
+                throw new Error(data.error);
+            }
             const formattedTask: ChecklistItem = {
                 itemType: 'checklist-item',
                 id: data.id,

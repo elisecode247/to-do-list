@@ -2,6 +2,12 @@ import { API_CHORES_URL } from "app/constants";
 import { type ChecklistItem } from "app/types";
 import { authHeaders } from "src/authentication/authentication-api";
 
+export type ApiErrorResponse = {
+    error: string;
+};
+
+export type AddTaskResponse = ChecklistItem | ApiErrorResponse;
+
 export async function fetchTasks(): Promise<ChecklistItem[]> {
     try {
         const response = await fetch(API_CHORES_URL, {
@@ -20,7 +26,7 @@ export async function fetchTasks(): Promise<ChecklistItem[]> {
     }
 }
 
-export async function addTask(task: ChecklistItem): Promise<ChecklistItem> {
+export async function addTask(task: ChecklistItem): Promise<AddTaskResponse> {
     try {
         const response = await fetch(`${API_CHORES_URL}/new`, {
             method: "POST",

@@ -1,0 +1,78 @@
+.recurrence-form {
+  display: grid;
+  gap: 16px;
+}
+
+.recurrence-form__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recurrence-form__label {
+  color: var(--text-secondary, #5f6368);
+  font-size: 0.9rem;
+  min-width: 80px;
+}
+
+.recurrence-form__number {
+  width: 88px;
+}
+
+.recurrence-form__weekday-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recurrence-form__weekday {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #dadce0);
+  background: var(--surface-elevated, #fff);
+  color: var(--text-primary, #202124);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recurrence-form__weekday[aria-pressed="true"] {
+  border-color: var(--primary, #1967d2);
+  background: color-mix(in srgb, var(--primary, #1967d2) 15%, #fff);
+}
+
+.recurrence-form__end-group {
+  display: grid;
+  gap: 10px;
+}
+
+.recurrence-form__end-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recurrence-form__end-option-input {
+  width: auto;
+}
+
+.recurrence-form__end-input {
+  width: 160px;
+}
+
+.recurrence-form__monthly-select {
+  min-width: 280px;
+}
+
+.recurrence-form__switch-row {
+  padding-top: 2px;
+}
+
+.recurrence-form__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary, #202124);
+}
