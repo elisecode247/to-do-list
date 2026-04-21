@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
-	CALENDAR_RECURRENCE_TYPE,
 	EndingConditionType,
 	FrequencyType,
 	type CalendarRecurrence,
@@ -10,8 +9,8 @@ import './recurrence-form.css';
 
 type RecurrenceFormProps = {
 	value?: CalendarRecurrence | null;
-	startDate?: Date;
-	onChange?: (value: CalendarRecurrence) => void;
+	startDate?: Date | string;
+	onChange?: (propName: string, value: unknown) => void;
 	disabled?: boolean;
 };
 
@@ -40,7 +39,7 @@ const FREQUENCY_OPTIONS = [
 	{ key: FrequencyType.Annually, title: 'year' },
 ];
 
-function formatDateForInput(date: Date | undefined): string {
+function formatDateForInput(date: string | Date | undefined): string {
 	if (!date) return '';
     if (typeof date === 'string') {
         const parsedDate = new Date(date);
@@ -108,7 +107,7 @@ const RecurrenceForm = ({
 	const [isRepeating, setIsRepeating] = useState<boolean>(value?.frequency !== FrequencyType.None);
 	const [every, setEvery] = useState<number>(value?.numberOfRepetitions ?? 1);
 	const [frequency, setFrequency] = useState<CalendarRecurrence['frequency']>(value?.frequency ?? FrequencyType.Weekly);
-	const [weekDaysRepetition, setWeekDaysRepetition] = useState<number[]>(getInitialWeekdays(value, initialStartDate));
+	const [weekDaysRepetition, setWeekDaysRepetition] = useState<number[]>(getInitialWeekdays(value, new Date(initialStartDate)));
 	const [monthlyPattern, setMonthlyPattern] = useState<MonthlyPattern>(getInitialMonthlyPattern(value));
 	const [endingCondition, setEndingCondition] = useState<CalendarRecurrence['endingCondition']>(
 		value?.endingCondition ?? EndingConditionType.None
@@ -117,55 +116,10 @@ const RecurrenceForm = ({
 	const [endingOccurrencesNumber, setEndingOccurrencesNumber] = useState<number>(value?.endingOccurrencesNumber ?? 10);
 
 	const recurrenceStartDate = useMemo(() => {
-		if (!startDateValue) return initialStartDate;
+		if (!startDateValue) return new Date(initialStartDate);
 		return new Date(localDateWithNowTime(startDateValue));
 	}, [initialStartDate, startDateValue]);
-
-	useEffect(() => {
-		const monthlyWeekday = recurrenceStartDate.getDay();
-		const weeklyDays = normalizeWeekdays(weekDaysRepetition);
-		const monthlyDays = monthlyPattern === 'weekday-of-month' ? [monthlyWeekday] : [];
-		const effectiveFrequency = isRepeating ? frequency : FrequencyType.None;
-
-		const recurrence: CalendarRecurrence = {
-			type: CALENDAR_RECURRENCE_TYPE,
-			startDate: recurrenceStartDate,
-			frequency: effectiveFrequency,
-			numberOfRepetitions: isRepeating ? every : undefined,
-			weekDaysRepetition:
-				effectiveFrequency === FrequencyType.Weekly
-					? weeklyDays
-					: effectiveFrequency === FrequencyType.Monthly
-						? monthlyDays
-						: [],
-			endingCondition: isRepeating ? endingCondition : EndingConditionType.None,
-			endingOccurrencesNumber:
-				isRepeating && endingCondition === EndingConditionType.OccurrencesNumber ? endingOccurrencesNumber : undefined,
-			endDate:
-				isRepeating && endingCondition === EndingConditionType.EndDate && endDate
-					? new Date(localDateWithNowTime(endDate))
-					: undefined,
-			isAllDay: value?.isAllDay ?? true,
-			startTime: value?.startTime,
-			endTime: value?.endTime,
-		};
-		onChange?.(recurrence);
-	}, [
-		endDate,
-		endingCondition,
-		endingOccurrencesNumber,
-		every,
-		frequency,
-		isRepeating,
-		monthlyPattern,
-		onChange,
-		recurrenceStartDate,
-		startDateValue,
-		value?.endTime,
-		value?.isAllDay,
-		value?.startTime,
-		weekDaysRepetition,
-	]);
+	
 
 	const toggleWeekDay = (dayIndex: number) => {
 		setWeekDaysRepetition((prev) => {
@@ -190,7 +144,10 @@ const RecurrenceForm = ({
 					value={startDateValue}
 					disabled={disabled}
 					onClick={(event) => event.currentTarget.showPicker?.()}
-					onChange={(event) => setStartDateValue(event.target.value)}
+					onChange={(event) => {
+                        setStartDateValue(event.target.value);
+                        onChange?.('startDate', new Date(localDateWithNowTime(event.target.value)).toISOString());
+                    }}
 				/>
 			</div>
 
@@ -202,7 +159,9 @@ const RecurrenceForm = ({
 						role="switch"
 						checked={isRepeating}
 						disabled={disabled}
-						onChange={(event) => setIsRepeating(event.target.checked)}
+						onChange={(event) => {
+                            setIsRepeating(event.target.checked)
+                        }}
 					/>
 					<span>Repeat</span>
 				</label>
@@ -222,13 +181,18 @@ const RecurrenceForm = ({
 								const value = Number.parseInt(event.target.value, 10);
 								if (Number.isNaN(value) || value < 1) return;
 								setEvery(value);
+                                onChange?.('numberOfRepetitions', value);
 							}}
 						/>
 						<select
 							className="task-form-input task-form-select"
 							value={frequency}
 							disabled={disabled}
-							onChange={(event) => setFrequency(event.target.value as CalendarRecurrence['frequency'])}
+							onChange={(event) => {
+                                const value = event.target.value as CalendarRecurrence['frequency'];
+                                setFrequency(value);
+                                onChange?.('frequency', value);
+                            }}
 						>
 							{FREQUENCY_OPTIONS.map((option) => (
 								<option key={option.key} value={option.key}>
@@ -269,7 +233,11 @@ const RecurrenceForm = ({
 						className="task-form-input task-form-select recurrence-form__monthly-select"
 						value={monthlyPattern}
 						disabled={disabled}
-						onChange={(event) => setMonthlyPattern(event.target.value as MonthlyPattern)}
+						onChange={(event) => {
+                            const value = event.target.value as MonthlyPattern;
+                            setMonthlyPattern(value);
+                            onChange?.('monthlyPattern', value);
+                        }}
 					>
 						<option value="day-of-month">
 							Monthly on day {recurrenceStartDate.getDate()}
@@ -292,7 +260,10 @@ const RecurrenceForm = ({
 							value={EndingConditionType.None}
 							checked={endingCondition === EndingConditionType.None}
 							disabled={disabled}
-							onChange={() => setEndingCondition(EndingConditionType.None)}
+							onChange={() => {
+                                setEndingCondition(EndingConditionType.None);
+                                onChange?.('endingCondition', EndingConditionType.None);
+                            }}
 						/>
 						<span>Never</span>
 					</label>
@@ -305,7 +276,10 @@ const RecurrenceForm = ({
 							value={EndingConditionType.EndDate}
 							checked={endingCondition === EndingConditionType.EndDate}
 							disabled={disabled}
-							onChange={() => setEndingCondition(EndingConditionType.EndDate)}
+							onChange={() => {
+                                setEndingCondition(EndingConditionType.EndDate);
+                                onChange?.('endingCondition', EndingConditionType.EndDate);
+                            }}
 						/>
 						<span>On</span>
 						<input
@@ -314,7 +288,10 @@ const RecurrenceForm = ({
 							value={endDate}
 							disabled={disabled || endingCondition !== EndingConditionType.EndDate}
 							onClick={(event) => event.currentTarget.showPicker?.()}
-							onChange={(event) => setEndDate(event.target.value)}
+							onChange={(event) => {
+                                setEndDate(event.target.value);
+                                onChange?.('endDate', event.target.value);
+                            }}
 						/>
 					</label>
 
@@ -326,7 +303,10 @@ const RecurrenceForm = ({
 							value={EndingConditionType.OccurrencesNumber}
 							checked={endingCondition === EndingConditionType.OccurrencesNumber}
 							disabled={disabled}
-							onChange={() => setEndingCondition(EndingConditionType.OccurrencesNumber)}
+							onChange={() => {
+                                setEndingCondition(EndingConditionType.OccurrencesNumber);
+                                onChange?.('endingCondition', EndingConditionType.OccurrencesNumber);
+                            }}
 						/>
 						After
 						<input
@@ -339,6 +319,7 @@ const RecurrenceForm = ({
 								const value = Number.parseInt(event.target.value, 10);
 								if (Number.isNaN(value) || value < 1) return;
 								setEndingOccurrencesNumber(value);
+                                onChange?.('endingOccurrencesNumber', value);
 							}}
 						/>
 						occurrences

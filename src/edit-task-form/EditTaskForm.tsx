@@ -250,11 +250,16 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                         value={formData.recurrence?.type === CALENDAR_RECURRENCE_TYPE
                             ? formData.recurrence as CalendarRecurrence
                             : null}
-                        startDate={new Date()}
-                        onChange={(recurrence) => {
+                        startDate={formData.recurrence?.startDate}
+                        onChange={(propName, value) => {
+                            const updatedRecurrence = {
+                                ...formData.recurrence,
+                                type: CALENDAR_RECURRENCE_TYPE,
+                                [propName]: value
+                            } as CalendarRecurrence;
                             setEditingItem({
-                                ...formData,
-                                recurrence,
+                                    ...formData,
+                                    recurrence: updatedRecurrence
                             });
                         }}
                     />

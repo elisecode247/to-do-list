@@ -205,7 +205,12 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                     <RecurrenceForm
                         value={calendarRecurrence}
                         startDate={new Date(localDateWithNowTime(recurrenceStartDate))}
-                        onChange={setCalendarRecurrence}
+                        onChange={(propName, value) => {
+                            setCalendarRecurrence(prev => {
+                                const updatedRecurrence = { ...prev, [propName]: value } as CalendarRecurrence;
+                                return updatedRecurrence;
+                            });
+                        }}
                     />
                 )}
             </div>
