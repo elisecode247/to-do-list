@@ -1,4 +1,5 @@
 import 'src/edit-task-form/edit-task-form.css';
+import 'src/task-form/task-form-shared.css';
 import { useRef, type FC } from 'react';
 import type { CalendarRecurrence, ChecklistItem, IntervalRecurrence, Mode, OneTimeRecurrence } from 'app/types';
 import { MODES, OCCASIONAL_MODE, CALENDAR_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/constants';
@@ -119,20 +120,20 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     }
 
     return (
-        <div className="edit-item-container edit-task-drawer">
-            <div className="edit-task-drawer_header">
-                <h2 className="edit-task-drawer_title">Edit task</h2>
+        <div className="task-form-drawer edit-item-container">
+            <div className="task-form-drawer__header">
+                <h2 className="task-form-drawer__title">Edit task</h2>
                 <CloseButton
                     onClick={onClose}
                     label="Close edit task form"
                 />
             </div>
 
-            <div className="edit-task-drawer_body">
-                <div className="edit-task-field">
-                    <label className="edit-task-field_label">Task name</label>
+            <div className="task-form-drawer__body">
+                <div className="task-form-field">
+                    <label className="task-form-field__label">Task name</label>
                     <input
-                        className="edit-task-input"
+                        className="task-form-input"
                         type="text"
                         value={formData.text}
                         onChange={(e) =>
@@ -142,9 +143,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     />
                 </div>
 
-                <div className="edit-task-field">
-                    <label className="edit-task-field_label">Category</label>
-                    <div className="edit-task-category-wrap">
+                <div className="task-form-field">
+                    <label className="task-form-field__label">Category</label>
+                    <div className="task-form-category-wrap">
                         <CategorySelect
                             id={formData.id}
                             isFilter={false}
@@ -156,8 +157,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     </div>
                 </div>
 
-                <div className="edit-task-field">
-                    <div className="edit-task-section-divider">Schedule</div>
+                <div className="task-form-field">
+                    <div className="task-form-section-divider">Schedule</div>
                     <div className="edit-task-chip-row">
                         {MODES.map(mode => (
                             <button
@@ -175,17 +176,17 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 {formData.mode !== CALENDAR_MODE && (
                     <>
                         {formData.mode === OCCASIONAL_MODE && (
-                            <div className="edit-task-field">
+                            <div className="task-form-field">
                                 <label
                                     htmlFor={`edit-task-form_recurrence-count-${formData.id}`}
-                                    className="edit-task-field_label"
+                                    className="task-form-field__label"
                                 >
                                     Repeat every
                                 </label>
-                                <div className="edit-task-inline-row">
+                                <div className="task-form-inline-row">
                                     <input
                                         id={`edit-task-form_recurrence-count-${formData.id}`}
-                                        className="edit-task-input edit-task-form_recurrence-count"
+                                        className="task-form-input task-form-recurrence-count"
                                         type="number"
                                         min={1}
                                         max={1000}
@@ -207,7 +208,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                     />
 
                                     <select
-                                        className="edit-task-input edit-task-select edit-task-form_recurrence-frequency"
+                                        className="task-form-input task-form-select task-form-recurrence-frequency"
                                         value={(formData?.recurrence?.type === 'interval' ? formData.recurrence.frequency : FrequencyType.Daily)}
                                         onChange={(e) => {
                                             const frequency = e.target.value as IntervalRecurrence['frequency'];
@@ -228,12 +229,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             </div>
                         )}
 
-                        <div className="edit-task-field">
-                            <label className="edit-task-field_label">
+                        <div className="task-form-field">
+                            <label className="task-form-field__label">
                                 Starting
                             </label>
                             <input
-                                className="edit-task-input edit-task-form_recurrence-start-date"
+                                className="task-form-input task-form-recurrence-start-date"
                                 type="date"
                                 value={recurrenceStartDate}
                                 onClick={(e) => e?.currentTarget.showPicker?.()}
@@ -243,10 +244,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     </>
                 )}
 
-                <div className="edit-task-field">
-                    <label className="edit-task-field_label">Last completed</label>
+                <div className="task-form-field">
+                    <label className="task-form-field__label">Last completed</label>
                     <input
-                        className="edit-task-input"
+                        className="task-form-input"
                         type="date"
                         value={formData.lastCompleted ? formatDate(new Date(formData.lastCompleted)) : ''}
                         onClick={(e) => e.currentTarget.showPicker?.()}
@@ -267,8 +268,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     />
                 </div>
 
-                <div className="edit-task-field">
-                    <div className="edit-task-section-divider">Options</div>
+                <div className="task-form-field">
+                    <div className="task-form-section-divider">Options</div>
                     <button
                         type="button"
                         onClick={() => togglePriority()}
@@ -280,8 +281,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     </button>
                 </div>
 
-                <div className="edit-task-field">
-                    <label className="edit-task-field_label">Notes</label>
+                <div className="task-form-field">
+                    <label className="task-form-field__label">Notes</label>
                     <div className="edit-task-notes-wrap">
                         <NoteEditor
                             ref={noteRef}
@@ -292,9 +293,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 </div>
             </div>
 
-            <div className="edit-task-drawer_footer">
+            <div className="task-form-drawer__footer">
                 <button
-                    className="edit-task-form_action-button edit-task-form_action-button--cancel"
+                    className="task-form-action-button task-form-action-button--cancel"
                     onClick={onClose}
                     type="button"
                     aria-label="Close form"
@@ -303,7 +304,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 </button>
                 <button
                     disabled={isSaving}
-                    className="edit-task-form_action-button edit-task-form_action-button--save"
+                    className="task-form-action-button task-form-action-button--save"
                     onClick={handleSave}
                     type="button"
                     aria-label="Save changes"
