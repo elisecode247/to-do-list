@@ -16,6 +16,7 @@
     --color-text-primary: light-dark(#1f1147, #f5f3ff);
     --color-text-dark: light-dark(#260139, #f5f3ff);
     --color-text-secondary: light-dark(#4b3b82, #c4b5fd);
+    --color-text-secondary-light: #c4b5fd; /* same in both */
     --color-text-light: light-dark(#e7e1fd, #f5f3ff);
     --color-text-dark-light: light-dark(#28054b, rgba(192, 132, 252, 0.9));
 
@@ -243,14 +244,9 @@
 :root[data-theme-style="space"] {
 
     .app_h1 {
-        background: linear-gradient(135deg,
-                #a78bfa 0%,
-                #ec4899 50%,
-                #8b5cf6 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: glow 15s ease-in-out infinite;
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
     }
 
     .app_subtitle {

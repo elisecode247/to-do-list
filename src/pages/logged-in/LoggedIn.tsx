@@ -214,7 +214,7 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                             {dayOfWeekName}
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
-                        <span>
+                        <span className="app_subtitle_last-updated">
                             {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
                         </span>
                     </p>

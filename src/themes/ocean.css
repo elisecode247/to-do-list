@@ -29,6 +29,7 @@
     /* Text */
     --color-text-primary: light-dark(#1e3a8a, #e0f2fe);
     --color-text-secondary: light-dark(#1e40af, #bae6fd);
+    --color-text-secondary-light: #bae6fd; /* same in both */
 
     /* Surfaces */
     --color-background: light-dark(#33ddee, #022c3a);
@@ -91,21 +92,8 @@
     }
 
     & .app_h1 {
-        background: linear-gradient(135deg,
-                #ffffff 0%,
-                #f0f9ff 50%,
-                #e0f2fe 100%);
-
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.1),
-            0 0 20px rgba(255, 255, 255, 0.5);
-
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
-
-        animation: oceanGlow 5s ease-in-out infinite;
+        font-weight: 600;
+        color: var(--color-primary);
     }
 
 

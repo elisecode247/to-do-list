@@ -15,6 +15,7 @@
     --color-text-secondary: light-dark(#4b5563, #d1d5db); /* medium / soft gray */
     --color-text-light: light-dark(#f9fafb, #ffffff);
     --color-text-dark-light: light-dark(#111827, #e5e7eb);
+    --color-text-secondary-light: #d1d5db; /* same in both */
 
     /* Surfaces */
     --color-background: light-dark(#f0f4f8, #111827); /* soft white / very dark gray */
@@ -95,6 +96,10 @@ body::after {
 
 .app_subtitle {
     color: var(--color-text-dark-light);
+}
+
+.app_subtitle_last-updated {
+    opacity: 0.5;
 }
 
 /** Form Styles */

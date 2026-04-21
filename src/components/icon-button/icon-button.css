@@ -24,8 +24,8 @@
 :root[data-theme-style="nature"],
 :root[data-theme-style="ocean"] {
     .icon-button {
-        color: var(--color-text-light);
-        border: 1px solid var(--color-text-light);
+        color: var(--color-text-secondary-light);
+        border: 1px solid var(--color-text-secondary-light);
     }
 }
 
@@ -36,6 +36,12 @@
 .icon-button--priority {
     background: var(--color-primary);
     color: var(--color-text-light);
+}
+
+:root[data-theme-style="ocean"] {
+    .icon-button--priority {
+        color: var(--color-text-dark);
+    }
 }
 
 @media (min-width: 900px) {

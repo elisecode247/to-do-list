@@ -14,6 +14,8 @@
     /* Text */
     --color-text-primary: light-dark(#1f2937, #e5e7eb);
     --color-text-secondary: light-dark(#4b5563, #9ca3af);
+    --color-text-secondary-light: #9ca3af; /* same in both */
+
 
     /* Surfaces */
     --color-background: light-dark(#f0fdf4, #020617);
