@@ -198,29 +198,38 @@ const RecurrenceForm = () => {
             <div className="recurrence-form__row">
                 <span className="recurrence-form__label">Ends</span>
                 <div role="radiogroup" aria-label="Recurrence ending" className="recurrence-form__end-group">
+                    {watchIsRepeating && (
+                        <label className="recurrence-form__end-option">
+                            <input
+                                {...register('endingCondition')}
+                                className="recurrence-form__end-option-input"
+                                type="radio"
+                                name="endingCondition"
+                                value={EndingConditionType.None}
+                            />
+                            <span>Never</span>
+                        </label>
+                    )}
                     <label className="recurrence-form__end-option">
-                        <input
-                            {...register('endingCondition')}
-                            className="recurrence-form__end-option-input"
-                            type="radio"
-                            name="endingCondition"
-                            value={EndingConditionType.None}
-                        />
-                        <span>Never</span>
-                    </label>
-
-                    <label className="recurrence-form__end-option">
-                        <input
-                            {...register('endingCondition')}
-                            className="recurrence-form__end-option-input"
-                            type="radio"
-                            name="endingCondition"
-                            value={EndingConditionType.EndDate}
-                        />
-                        <span>On</span>
+                        {watchIsRepeating && (
+                            <>
+                                <input
+                                    {...register('endingCondition')}
+                                    className="recurrence-form__end-option-input"
+                                    type="radio"
+                                    name="endingCondition"
+                                    value={EndingConditionType.EndDate}
+                                />
+                                <span>On</span>
+                            </>
+                        )}
                         <input
                             {...register('endDate', {
                                 validate: (value) => {
+                                    if (!watchIsRepeating && !value) {
+                                        return Boolean(value)
+                                    }
+
                                     if (watchEndingCondition !== EndingConditionType.EndDate) {
                                         return true;
                                     }
@@ -241,36 +250,37 @@ const RecurrenceForm = () => {
                             onClick={(event) => event.currentTarget.showPicker?.()}
                         />
                     </label>
-
-                    <label className="recurrence-form__end-option">
-                        <input
-                            {...register('endingCondition')}
-                            className="recurrence-form__end-option-input"
-                            type="radio"
-                            value={EndingConditionType.OccurrencesNumber}
-                        />
-                        After
-                        <input
-                            {...register('endingOccurrencesNumber', {
-                                validate: (value) => {
-                                    if (watchEndingCondition !== EndingConditionType.OccurrencesNumber) {
+                    {watchIsRepeating && (
+                        <label className="recurrence-form__end-option">
+                            <input
+                                {...register('endingCondition')}
+                                className="recurrence-form__end-option-input"
+                                type="radio"
+                                value={EndingConditionType.OccurrencesNumber}
+                            />
+                            After
+                            <input
+                                {...register('endingOccurrencesNumber', {
+                                    validate: (value) => {
+                                        if (watchEndingCondition !== EndingConditionType.OccurrencesNumber) {
+                                            return true;
+                                        }
+                                        if (!value || isNaN(value)) {
+                                            return 'Please enter a valid number of occurrences';
+                                        }
+                                        if (value <= 0) {
+                                            return 'Number of occurrences must be at least 1';
+                                        }
                                         return true;
-                                    }
-                                    if (!value || isNaN(value)) {
-                                        return 'Please enter a valid number of occurrences';
-                                    }
-                                    if (value <= 0) {
-                                        return 'Number of occurrences must be at least 1';
-                                    }
-                                    return true;
-                                },
-                            })}
-                            min={1}
-                            type="number"
-                            className="task-form-input recurrence-form__end-input"
-                        />
-                        occurrences
-                    </label>
+                                    },
+                                })}
+                                min={1}
+                                type="number"
+                                className="task-form-input recurrence-form__end-input"
+                            />
+                            occurrences
+                        </label>
+                    )}
                 </div>
             </div>
         </div>
