@@ -56,7 +56,6 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     onClose,
 }) => {
     const [mode, setMode] = useState<Mode>(formData.mode);
-    console.log("%c Line:101 🍫 formData", "color:#42b983", formData);
     const [isPriority, setIsPriority] = useState(formData.isPriority);
     const noteRef = useRef<MDXEditorMethods>(null);
     const recurrence = formData.recurrence;

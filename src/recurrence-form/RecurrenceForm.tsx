@@ -229,7 +229,6 @@ const RecurrenceForm = () => {
                                         return 'Please enter a valid end date';
                                     }
                                     if (end <= start) {
-                                        console.log("%c Line:231 🍑 (end <= start)", "color:#f5ce50", (end <= start));
                                         return 'End date must be after start date';
                                     }
                                     return Boolean(value) || 'End date is required';
