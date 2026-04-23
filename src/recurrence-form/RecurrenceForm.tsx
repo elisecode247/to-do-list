@@ -71,6 +71,7 @@ const RecurrenceForm = () => {
     const startDate = getValues('startDate') as string;
     const isRepeating = getValues('isRepeating') as boolean;
     const endingCondition = getValues('endingCondition') as EndingConditionType;
+    const watchFrequency = useWatch({ control, name: 'frequency', defaultValue: frequency });
     const weekDaysRepetition = getValues('weekDaysRepetition') as Array<number> || [];
     const watchIsRepeating = useWatch({
         control,
@@ -131,7 +132,7 @@ const RecurrenceForm = () => {
                         </select>
                     </div>
 
-                    {frequency === FrequencyType.Weekly && (
+                    {watchFrequency === FrequencyType.Weekly && (
                         <div className="recurrence-form__row">
                             <span className="recurrence-form__label">Repeat on</span>
                             <div className="recurrence-form__weekday-row">
@@ -167,7 +168,7 @@ const RecurrenceForm = () => {
                         </div>
                     )}
 
-                    {frequency === FrequencyType.Monthly && (
+                    {watchFrequency === FrequencyType.Monthly && (
                         <div className="recurrence-form__row">
                             <span className="recurrence-form__label">Repeat on</span>
                             <select
