@@ -19,7 +19,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 ### To do
 - feature: calendar tasks
-- bug: update edit form when clicking another task's edit button
 - ux: improve ux for newly logged in user
 - feature: allow user delete history
 - feature: add undo to delete and uncheck

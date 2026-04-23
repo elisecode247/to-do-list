@@ -276,6 +276,7 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
             <aside className="right_panel">
                 {rightOpen && editingItem ? (
                     <EditTaskForm
+                        key={editingItem.id} // force remount when editing a different item
                         isSaving={isSaving}
                         formData={editingItem}
                         onSave={handleSave}
