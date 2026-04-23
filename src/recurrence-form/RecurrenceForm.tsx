@@ -1,333 +1,280 @@
-import { useMemo, useState } from 'react';
 import {
-	EndingConditionType,
-	FrequencyType,
-	type CalendarRecurrence,
+    EndingConditionType,
+    FrequencyType
 } from 'src/app/types';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import './recurrence-form.css';
-
-type RecurrenceFormProps = {
-	value?: CalendarRecurrence | null;
-	startDate?: Date | string;
-	onChange?: (propName: string, value: unknown) => void;
-	disabled?: boolean;
-};
+import { useFormContext, useWatch } from 'react-hook-form';
 
 type WeekDay = {
-	index: number;
-	label: string;
-	name: string;
+    index: number;
+    label: string;
+    name: string;
 };
 
-type MonthlyPattern = 'day-of-month' | 'weekday-of-month';
-
 const WEEK_DAYS: WeekDay[] = [
-	{ index: 0, label: 'S', name: 'Sunday' },
-	{ index: 1, label: 'M', name: 'Monday' },
-	{ index: 2, label: 'T', name: 'Tuesday' },
-	{ index: 3, label: 'W', name: 'Wednesday' },
-	{ index: 4, label: 'T', name: 'Thursday' },
-	{ index: 5, label: 'F', name: 'Friday' },
-	{ index: 6, label: 'S', name: 'Saturday' },
+    { index: 0, label: 'S', name: 'Sunday' },
+    { index: 1, label: 'M', name: 'Monday' },
+    { index: 2, label: 'T', name: 'Tuesday' },
+    { index: 3, label: 'W', name: 'Wednesday' },
+    { index: 4, label: 'T', name: 'Thursday' },
+    { index: 5, label: 'F', name: 'Friday' },
+    { index: 6, label: 'S', name: 'Saturday' },
 ];
 
 const FREQUENCY_OPTIONS = [
-	{ key: FrequencyType.Daily, title: 'day' },
-	{ key: FrequencyType.Weekly, title: 'week' },
-	{ key: FrequencyType.Monthly, title: 'month' },
-	{ key: FrequencyType.Annually, title: 'year' },
+    { key: FrequencyType.Daily, title: 'day' },
+    { key: FrequencyType.Weekly, title: 'week' },
+    { key: FrequencyType.Monthly, title: 'month' },
+    { key: FrequencyType.Annually, title: 'year' },
 ];
 
-function formatDateForInput(date: string | Date | undefined): string {
-	if (!date) return '';
-    if (typeof date === 'string') {
-        const parsedDate = new Date(date);
-        if (!isNaN(parsedDate.getTime())) {
-            date = parsedDate;
-        } else {
-            console.warn('Invalid date string provided to formatDateForInput:', date);
-            return '';
-        }
+function getDayOfMonth(date: string): number {
+    const parsedDate = localDateWithNowTime(date);
+    if (isNaN(parsedDate.getTime())) {
+        console.warn('Invalid date string provided to getDayOfMonth:', date);
+        return 1;
     }
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-	return `${year}-${month}-${day}`;
+    return parsedDate.getDate();
+};
+
+function getWeekDayOfDate(date: string): number {
+    const parsedDate = localDateWithNowTime(date);
+    if (isNaN(parsedDate.getTime())) {
+        console.warn('Invalid date string provided to getWeekDayOfDate:', date);
+        return 0;
+    }
+    return parsedDate.getDay();
 }
 
-function normalizeWeekdays(days: number[]): number[] {
-	return [...new Set(days)].sort((a, b) => a - b);
-}
-
-function getMonthlyWeekOfMonth(date: Date): number {
-	return Math.ceil(date.getDate() / 7);
+function getMonthlyWeekOfMonth(date: string): number {
+    return Math.ceil(localDateWithNowTime(date).getDate() / 7);
 }
 
 function getOrdinal(value: number): string {
-	if (value % 100 >= 11 && value % 100 <= 13) return `${value}th`;
-	switch (value % 10) {
-		case 1:
-			return `${value}st`;
-		case 2:
-			return `${value}nd`;
-		case 3:
-			return `${value}rd`;
-		default:
-			return `${value}th`;
-	}
+    if (value % 100 >= 11 && value % 100 <= 13) return `${value}th`;
+    switch (value % 10) {
+        case 1:
+            return `${value}st`;
+        case 2:
+            return `${value}nd`;
+        case 3:
+            return `${value}rd`;
+        default:
+            return `${value}th`;
+    }
 }
 
-function getInitialMonthlyPattern(value: CalendarRecurrence | null | undefined): MonthlyPattern {
-	if (value?.frequency === FrequencyType.Monthly && value.weekDaysRepetition?.length) {
-		return 'weekday-of-month';
-	}
-	return 'day-of-month';
-}
+const RecurrenceForm = () => {
+    const { register, watch, getValues, control } = useFormContext();
+    const frequency = getValues('frequency') as FrequencyType;
+    const startDate = getValues('startDate') as string;
+    const isRepeating = getValues('isRepeating') as boolean;
+    const endingCondition = getValues('endingCondition') as EndingConditionType;
+    const weekDaysRepetition = getValues('weekDaysRepetition') as Array<number> || [];
+    const watchIsRepeating = useWatch({
+        control,
+        name: "isRepeating",
+        defaultValue: isRepeating,
+    })
+    const watchEndingCondition = useWatch({
+        control,
+        name: "endingCondition",
+        defaultValue: endingCondition,
+    });
 
-function getInitialWeekdays(value: CalendarRecurrence | null | undefined, startDate: Date): number[] {
-	if (value?.weekDaysRepetition?.length) {
-		return normalizeWeekdays(value.weekDaysRepetition);
-	}
-	return [startDate.getDay()];
-}
+    return (
+        <div className="recurrence-form" aria-label="Custom recurrence form">
+            <div className="recurrence-form__row">
+                <label className="recurrence-form__label" htmlFor="recurrence-start-date">Starts on</label>
+                <input
+                    {...register('startDate', { required: true })}
+                    id="recurrence-start-date"
+                    type="date"
+                    className="task-form-input recurrence-form__end-input"
+                    onClick={(event) => event.currentTarget.showPicker?.()}
+                />
+            </div>
 
-const RecurrenceForm = ({
-	value,
-	startDate,
-	onChange,
-	disabled = false,
-}: RecurrenceFormProps) => {
-	const initialStartDate = useMemo(
-		() => value?.startDate ?? startDate ?? new Date(),
-		[value?.startDate, startDate]
-	);
+            <div className="recurrence-form__row recurrence-form__switch-row">
+                <label className="recurrence-form__switch" htmlFor="recurrence-repeat-enabled">
+                    <input
+                        {...register('isRepeating')}
+                        id="recurrence-repeat-enabled"
+                        type="checkbox"
+                        role="switch"
+                    />
+                    <span>Repeat</span>
+                </label>
+            </div>
 
-	const [startDateValue, setStartDateValue] = useState<string>(formatDateForInput(initialStartDate));
-	const [isRepeating, setIsRepeating] = useState<boolean>(value?.frequency !== FrequencyType.None);
-	const [every, setEvery] = useState<number>(value?.numberOfRepetitions ?? 1);
-	const [frequency, setFrequency] = useState<CalendarRecurrence['frequency']>(value?.frequency ?? FrequencyType.Weekly);
-	const [weekDaysRepetition, setWeekDaysRepetition] = useState<number[]>(getInitialWeekdays(value, new Date(initialStartDate)));
-	const [monthlyPattern, setMonthlyPattern] = useState<MonthlyPattern>(getInitialMonthlyPattern(value));
-	const [endingCondition, setEndingCondition] = useState<CalendarRecurrence['endingCondition']>(
-		value?.endingCondition ?? EndingConditionType.None
-	);
-	const [endDate, setEndDate] = useState<string>(formatDateForInput(value?.endDate));
-	const [endingOccurrencesNumber, setEndingOccurrencesNumber] = useState<number>(value?.endingOccurrencesNumber ?? 10);
+            {watchIsRepeating && (
+                <>
+                    <div className="recurrence-form__row">
+                        <span className="recurrence-form__label">Repeat every</span>
+                        <input
+                            {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
+                            className="task-form-input recurrence-form__number"
+                            type="number"
+                            min={1}
+                        />
+                        <select
+                            {...register('frequency')}
+                            name="frequency"
+                            className="task-form-input task-form-select"
+                        >
+                            {FREQUENCY_OPTIONS.map((option) => (
+                                <option key={option.key} value={option.key}>
+                                    {option.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-	const recurrenceStartDate = useMemo(() => {
-		if (!startDateValue) return new Date(initialStartDate);
-		return new Date(localDateWithNowTime(startDateValue));
-	}, [initialStartDate, startDateValue]);
-	
+                    {frequency === FrequencyType.Weekly && (
+                        <div className="recurrence-form__row">
+                            <span className="recurrence-form__label">Repeat on</span>
+                            <div className="recurrence-form__weekday-row">
+                                {WEEK_DAYS.map((day) => {
+                                    const isSelected = weekDaysRepetition.includes(day.index);
+                                    return (
+                                        <label
+                                            key={`weekday-${day.index}`}
+                                            className="recurrence-form__weekday"
+                                            aria-pressed={isSelected}
+                                        >
+                                            <input
+                                                {...register('weekDaysRepetition', {
+                                                    validate: (value) => {
+                                                        if (!value) return 'Please select at least one day';
+                                                        return (value.length === 0) ? false : true;
+                                                    }
+                                                })}
+                                                name="weekDaysRepetition"
+                                                type="checkbox"
+                                                className="recurrence-form__weekday-input"
+                                                aria-label={day.name}
+                                                value={day.index}
+                                            />
+                                            <span className="recurrence-form__weekday-label" aria-hidden="true">
+                                                {day.label}
+                                            </span>
+                                        </label>
+                                    );
+                                })
+                                }
+                            </div>
+                        </div>
+                    )}
 
-	const toggleWeekDay = (dayIndex: number) => {
-		setWeekDaysRepetition((prev) => {
-			const exists = prev.includes(dayIndex);
-			if (exists && prev.length === 1) {
-				return prev;
-			}
-			return exists
-				? prev.filter((day) => day !== dayIndex)
-				: normalizeWeekdays([...prev, dayIndex]);
-		});
-	};
-
-	return (
-		<div className="recurrence-form" aria-label="Custom recurrence form">
-			<div className="recurrence-form__row">
-				<label className="recurrence-form__label" htmlFor="recurrence-start-date">Starts on</label>
-				<input
-					id="recurrence-start-date"
-					type="date"
-					className="task-form-input recurrence-form__end-input"
-					value={startDateValue}
-					disabled={disabled}
-					onClick={(event) => event.currentTarget.showPicker?.()}
-					onChange={(event) => {
-                        setStartDateValue(event.target.value);
-                        onChange?.('startDate', new Date(localDateWithNowTime(event.target.value)).toISOString());
-                    }}
-				/>
-			</div>
-
-			<div className="recurrence-form__row recurrence-form__switch-row">
-				<label className="recurrence-form__switch" htmlFor="recurrence-repeat-enabled">
-					<input
-						id="recurrence-repeat-enabled"
-						type="checkbox"
-						role="switch"
-						checked={isRepeating}
-						disabled={disabled}
-						onChange={(event) => {
-                            setIsRepeating(event.target.checked)
-                        }}
-					/>
-					<span>Repeat</span>
-				</label>
-			</div>
-
-			{isRepeating && (
-				<>
-					<div className="recurrence-form__row">
-						<span className="recurrence-form__label">Repeat every</span>
-						<input
-							className="task-form-input recurrence-form__number"
-							type="number"
-							min={1}
-							value={every}
-							disabled={disabled}
-							onChange={(event) => {
-								const value = Number.parseInt(event.target.value, 10);
-								if (Number.isNaN(value) || value < 1) return;
-								setEvery(value);
-                                onChange?.('numberOfRepetitions', value);
-							}}
-						/>
-						<select
-							className="task-form-input task-form-select"
-							value={frequency}
-							disabled={disabled}
-							onChange={(event) => {
-                                const value = event.target.value as CalendarRecurrence['frequency'];
-                                setFrequency(value);
-                                onChange?.('frequency', value);
-                            }}
-						>
-							{FREQUENCY_OPTIONS.map((option) => (
-								<option key={option.key} value={option.key}>
-									{option.title}
-								</option>
-							))}
-						</select>
-					</div>
-
-					{frequency === FrequencyType.Weekly && (
-				<div className="recurrence-form__row">
-					<span className="recurrence-form__label">Repeat on</span>
-					<div className="recurrence-form__weekday-row">
-						{WEEK_DAYS.map((day) => {
-							const isSelected = weekDaysRepetition.includes(day.index);
-							return (
-								<button
-									key={day.index}
-									type="button"
-									className="recurrence-form__weekday"
-									aria-label={day.name}
-									aria-pressed={isSelected}
-									disabled={disabled}
-									onClick={() => toggleWeekDay(day.index)}
-								>
-									{day.label}
-								</button>
-							);
-						})}
-					</div>
-				</div>
-					)}
-
-					{frequency === FrequencyType.Monthly && (
-				<div className="recurrence-form__row">
-					<span className="recurrence-form__label">Repeat on</span>
-					<select
-						className="task-form-input task-form-select recurrence-form__monthly-select"
-						value={monthlyPattern}
-						disabled={disabled}
-						onChange={(event) => {
-                            const value = event.target.value as MonthlyPattern;
-                            setMonthlyPattern(value);
-                            onChange?.('monthlyPattern', value);
-                        }}
-					>
-						<option value="day-of-month">
-							Monthly on day {recurrenceStartDate.getDate()}
-						</option>
-						<option value="weekday-of-month">
-							Monthly on the {getOrdinal(getMonthlyWeekOfMonth(recurrenceStartDate))} {WEEK_DAYS[recurrenceStartDate.getDay()]?.name}
-						</option>
-					</select>
-				</div>
-					)}
-            </>)}
-					<div className="recurrence-form__row">
-				<span className="recurrence-form__label">Ends</span>
-				<div role="radiogroup" aria-label="Recurrence ending" className="recurrence-form__end-group">
-					<label className="recurrence-form__end-option">
-						<input
+                    {frequency === FrequencyType.Monthly && (
+                        <div className="recurrence-form__row">
+                            <span className="recurrence-form__label">Repeat on</span>
+                            <select
+                                {...register('monthlyPattern', {
+                                    validate: (value) => {
+                                        if (watch('frequency') !== FrequencyType.Monthly) {
+                                            return true;
+                                        }
+                                        return ['day-of-month', 'weekday-of-month'].includes(value) ||
+                                            'Invalid monthly pattern';
+                                    },
+                                })}
+                                name="monthlyPattern"
+                                className="task-form-input task-form-select recurrence-form__monthly-select"
+                            >
+                                <option value="day-of-month">
+                                    Monthly on day {getDayOfMonth(startDate)}
+                                </option>
+                                <option value="weekday-of-month">
+                                    Monthly on the {getOrdinal(getMonthlyWeekOfMonth(startDate))} {WEEK_DAYS[getWeekDayOfDate(startDate)]?.name}
+                                </option>
+                            </select>
+                        </div>
+                    )}
+                </>
+            )}
+            <div className="recurrence-form__row">
+                <span className="recurrence-form__label">Ends</span>
+                <div role="radiogroup" aria-label="Recurrence ending" className="recurrence-form__end-group">
+                    <label className="recurrence-form__end-option">
+                        <input
+                            {...register('endingCondition')}
                             className="recurrence-form__end-option-input"
-							type="radio"
-							name="recurrence-ending"
-							value={EndingConditionType.None}
-							checked={endingCondition === EndingConditionType.None}
-							disabled={disabled}
-							onChange={() => {
-                                setEndingCondition(EndingConditionType.None);
-                                onChange?.('endingCondition', EndingConditionType.None);
-                            }}
-						/>
-						<span>Never</span>
-					</label>
+                            type="radio"
+                            name="endingCondition"
+                            value={EndingConditionType.None}
+                        />
+                        <span>Never</span>
+                    </label>
 
-					<label className="recurrence-form__end-option">
-						<input
+                    <label className="recurrence-form__end-option">
+                        <input
+                            {...register('endingCondition')}
                             className="recurrence-form__end-option-input"
-							type="radio"
-							name="recurrence-ending"
-							value={EndingConditionType.EndDate}
-							checked={endingCondition === EndingConditionType.EndDate}
-							disabled={disabled}
-							onChange={() => {
-                                setEndingCondition(EndingConditionType.EndDate);
-                                onChange?.('endingCondition', EndingConditionType.EndDate);
-                            }}
-						/>
-						<span>On</span>
-						<input
-							type="date"
-							className="task-form-input recurrence-form__end-input"
-							value={endDate}
-							disabled={disabled || endingCondition !== EndingConditionType.EndDate}
-							onClick={(event) => event.currentTarget.showPicker?.()}
-							onChange={(event) => {
-                                setEndDate(event.target.value);
-                                onChange?.('endDate', event.target.value);
-                            }}
-						/>
-					</label>
+                            type="radio"
+                            name="endingCondition"
+                            value={EndingConditionType.EndDate}
+                        />
+                        <span>On</span>
+                        <input
+                            {...register('endDate', {
+                                validate: (value) => {
+                                    if (watchEndingCondition !== EndingConditionType.EndDate) {
+                                        return true;
+                                    }
+                                    const start = localDateWithNowTime(getValues('startDate') as string);
+                                    const end = localDateWithNowTime(value);
+                                    if (isNaN(end.getTime())) {
+                                        return 'Please enter a valid end date';
+                                    }
+                                    if (end <= start) {
+                                        console.log("%c Line:231 🍑 (end <= start)", "color:#f5ce50", (end <= start));
+                                        return 'End date must be after start date';
+                                    }
+                                    return Boolean(value) || 'End date is required';
+                                },
+                            })}
+                            name="endDate"
+                            type="date"
+                            className="task-form-input recurrence-form__end-input"
+                            onClick={(event) => event.currentTarget.showPicker?.()}
+                        />
+                    </label>
 
-					<label className="recurrence-form__end-option">
-						<input
+                    <label className="recurrence-form__end-option">
+                        <input
+                            {...register('endingCondition')}
                             className="recurrence-form__end-option-input"
-							type="radio"
-							name="recurrence-ending"
-							value={EndingConditionType.OccurrencesNumber}
-							checked={endingCondition === EndingConditionType.OccurrencesNumber}
-							disabled={disabled}
-							onChange={() => {
-                                setEndingCondition(EndingConditionType.OccurrencesNumber);
-                                onChange?.('endingCondition', EndingConditionType.OccurrencesNumber);
-                            }}
-						/>
-						After
-						<input
-							type="number"
-							min={1}
-							className="task-form-input recurrence-form__end-input"
-							value={endingOccurrencesNumber}
-							disabled={disabled || endingCondition !== EndingConditionType.OccurrencesNumber}
-							onChange={(event) => {
-								const value = Number.parseInt(event.target.value, 10);
-								if (Number.isNaN(value) || value < 1) return;
-								setEndingOccurrencesNumber(value);
-                                onChange?.('endingOccurrencesNumber', value);
-							}}
-						/>
-						occurrences
-					</label>
-				</div>
-			</div>
-		</div>
-	);
+                            type="radio"
+                            value={EndingConditionType.OccurrencesNumber}
+                        />
+                        After
+                        <input
+                            {...register('endingOccurrencesNumber', {
+                                validate: (value) => {
+                                    if (watchEndingCondition !== EndingConditionType.OccurrencesNumber) {
+                                        return true;
+                                    }
+                                    if (!value || isNaN(value)) {
+                                        return 'Please enter a valid number of occurrences';
+                                    }
+                                    if (value <= 0) {
+                                        return 'Number of occurrences must be at least 1';
+                                    }
+                                    return true;
+                                },
+                            })}
+                            min={1}
+                            type="number"
+                            className="task-form-input recurrence-form__end-input"
+                        />
+                        occurrences
+                    </label>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default RecurrenceForm;

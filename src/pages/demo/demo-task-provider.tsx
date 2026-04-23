@@ -1,4 +1,4 @@
-import { CALENDAR_RECURRENCE_TYPE, INTERVAL_RECURRENCE_TYPE, ONE_TIME_RECURRENCE_TYPE, type ApiRecurrence, type ChecklistItem } from 'app/types';
+import { CALENDAR_RECURRENCE, INTERVAL_RECURRENCE, ONE_TIME_RECURRENCE, type ApiRecurrence, type ChecklistItem } from 'app/types';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from 'src/app/utilities/get-reorder-items';
@@ -185,30 +185,30 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         function mapRecurrence(rec: ApiRecurrence | null): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null {
             if (!rec) return null;
             switch (rec.type) {
-                case ONE_TIME_RECURRENCE_TYPE:
+                case ONE_TIME_RECURRENCE:
                     return {
-                        type: ONE_TIME_RECURRENCE_TYPE,
+                        type: ONE_TIME_RECURRENCE,
                         startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
-                case INTERVAL_RECURRENCE_TYPE:
+                case INTERVAL_RECURRENCE:
                     return {
-                        type: INTERVAL_RECURRENCE_TYPE,
-                        count: rec.count ?? 1,
+                        type: INTERVAL_RECURRENCE,
+                        numberOfRepetitions: rec.numberOfRepetitions ?? 1,
                         frequency: rec.frequency as FrequencyType,
                         startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                     };
-                case CALENDAR_RECURRENCE_TYPE:
+                case CALENDAR_RECURRENCE:
                     return {
-                        type: CALENDAR_RECURRENCE_TYPE,
-                        startDate: new Date(rec.startDate),
+                        type: CALENDAR_RECURRENCE,
+                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
                         frequency: rec.frequency as FrequencyType,
                         weekDaysRepetition: rec.weekDaysRepetition ?? [],
                         endingCondition: rec.endingCondition as EndingConditionType,
                         endingOccurrencesNumber: rec.endingOccurrencesNumber,
-                        endDate: rec.endDate ? new Date(rec.endDate) : undefined,
+                        endDate: rec.endDate ? new Date(rec.endDate).toISOString() : undefined,
                         isAllDay: rec.isAllDay ?? false,
-                        startTime: rec.startTime ? new Date(rec.startTime) : undefined,
-                        endTime: rec.endTime ? new Date(rec.endTime) : undefined,
+                        startTime: rec.startTime ? new Date(rec.startTime).toISOString() : undefined,
+                        endTime: rec.endTime ? new Date(rec.endTime).toISOString() : undefined,
                     };
                 default:
                     throw new Error('Unknown recurrence type');

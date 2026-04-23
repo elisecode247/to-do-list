@@ -12,7 +12,8 @@ interface FrequencyButtonGroupProps {
 function FrequencyButtonGroup({ mode, onClick }: FrequencyButtonGroupProps) {
     const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
-    const handleSelect = (modeOption: Mode, index: number) => {
+    const handleSelect = (modeOption: Mode, index: number, event?: React.MouseEvent) => {
+        event?.preventDefault();
         onClick(modeOption);
         buttonsRef.current[index]?.focus();
     };
@@ -54,7 +55,7 @@ function FrequencyButtonGroup({ mode, onClick }: FrequencyButtonGroupProps) {
                             role="radio"
                             aria-checked={isSelected}
                             tabIndex={isSelected ? 0 : -1}
-                            onClick={() => handleSelect(modeOption, index)}
+                            onClick={(e) => handleSelect(modeOption, index, e)}
                             onKeyDown={(e) => handleKeyDown(e, index)}
                             className={`frequency-selector__button
                                 ${isSelected

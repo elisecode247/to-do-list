@@ -280,7 +280,6 @@ const DemoPage: React.FC = () => {
                     <EditTaskForm
                         isSaving={isSaving}
                         formData={editingItem}
-                        setEditingItem={setEditingItem}
                         onSave={handleSave}
                         onClose={handleCloseEditModal}
                     />

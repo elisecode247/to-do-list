@@ -239,7 +239,6 @@ function BulkEdit() {
             {selectedItem && (
                 <EditTaskForm
                     formData={selectedItem}
-                    setEditingItem={(item) => setSelectedItem(item)}
                     onSave={(item) => {
                         updateItem(item);
                         setSelectedItem(null);

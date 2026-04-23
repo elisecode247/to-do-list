@@ -164,7 +164,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
         isHidden: false,
         recurrence: {
             type: "interval",
-            count: 1,
+            numberOfRepetitions: 1,
             frequency: "daily",
             startDate: '2024-01-01T00:00:00.000Z'
         },

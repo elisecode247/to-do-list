@@ -1,70 +1,123 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
-import { IntervalOptions, type IntervalRecurrence, type Mode, type OneTimeRecurrence } from 'app/types';
+import { IntervalOptions, type Mode, type OneTimeRecurrence } from 'app/types';
 import 'src/new-task-form/new-task-form.css';
-import type { MDXEditorMethods } from '@mdxeditor/editor';
 import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE, DAILY_MODE } from 'src/checklist/constants';
 import {
     type ChecklistItem,
     FrequencyType,
-    ONE_TIME_RECURRENCE_TYPE,
-    INTERVAL_RECURRENCE_TYPE,
- } from 'app/types';
+    type MonthlyPattern,
+    ONE_TIME_RECURRENCE,
+    INTERVAL_RECURRENCE,
+    CALENDAR_RECURRENCE,
+    EndingConditionType,
+    type CalendarRecurrence,
+    type IntervalRecurrence,
+} from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
+import RecurrenceForm from 'src/recurrence-form/RecurrenceForm';
+import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
 
-const NewTaskForm = () => {
+type RecurrenceFormValues = {
+    startDate: string;
+    numberOfRepetitions: number;
+    isRepeating: boolean;
+    frequency: FrequencyType;
+    weekDaysRepetition: string[];
+    monthlyPattern: MonthlyPattern;
+    endingCondition: EndingConditionType;
+    endingOccurrencesNumber: number;
+    endDate: string;
+};
+
+type DemoAddFormValues = {
+    taskName: string;
+    category: string;
+} & RecurrenceFormValues;
+
+const DemoAddForm = () => {
     const { addItem } = useDemoTask();
     const { showToast } = useToast();
-    const [inputText, setInputText] = useState<string>("");
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
-    const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
-    const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
-    const [recurrenceStartDate, setRecurrenceStartDate] = useState<string>(formatDate(new Date()));
-    const [newTaskCategory, setNewTaskCategory] = useState<string>('');
-    const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
-    const noteRef = useRef<MDXEditorMethods | null>(null);
 
-    const handleAddItem = async (): Promise<void> => {
-        const text = inputText.trim();
-        if (!text) return;
-        const note = noteRef.current?.getMarkdown();
-        let recurrence: OneTimeRecurrence | IntervalRecurrence | null = null;
+    const defaultValues: DemoAddFormValues = {
+        taskName: '',
+        category: '',
+        startDate: formatDate(new Date()),
+        isRepeating: false,
+        numberOfRepetitions: 1,
+        frequency: FrequencyType.Weekly,
+        weekDaysRepetition: [],
+        monthlyPattern: 'day-of-month' as MonthlyPattern,
+        endingCondition: EndingConditionType.None,
+        endDate: '',
+        endingOccurrencesNumber: 10,
+    };
+
+    const methods = useForm<DemoAddFormValues>({ defaultValues });
+    const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitSuccessful } } = methods;
+
+    const taskName = watch('taskName');
+    const isAddButtonDisabled = !taskName?.trim().length;
+
+    const handleAddItem: SubmitHandler<DemoAddFormValues> = async (data): Promise<void> => {
+        let recurrence: OneTimeRecurrence | IntervalRecurrence | CalendarRecurrence;
         if (mode === ONE_TIME_MODE) {
             recurrence = {
-                type: ONE_TIME_RECURRENCE_TYPE,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
-            } as OneTimeRecurrence;
+                type: ONE_TIME_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+            };
         } else if (mode === DAILY_MODE) {
             recurrence = {
-                type: INTERVAL_RECURRENCE_TYPE,
-                count: 1,
+                type: INTERVAL_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
                 frequency: FrequencyType.Daily,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
-            } as IntervalRecurrence;
+                numberOfRepetitions: 1,
+            };
         } else if (mode === OCCASIONAL_MODE) {
             recurrence = {
-                type: 'interval',
-                count: recurrenceCount,
-                frequency: recurrenceFrequency,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
+                type: INTERVAL_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                frequency: data.frequency,
+                numberOfRepetitions: data.numberOfRepetitions,
             };
+        } else if (mode === CALENDAR_MODE) {
+            recurrence = {
+                type: CALENDAR_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                ...(data.isRepeating ? { numberOfRepetitions: data.numberOfRepetitions } : undefined),
+                ...(data.isRepeating ? { frequency: data.frequency } : undefined),
+                ...(data.isRepeating && data.frequency === FrequencyType.Weekly ?
+                    { weekDaysRepetition: data.weekDaysRepetition } : undefined),
+                ...(data.isRepeating && data.frequency === FrequencyType.Monthly ?
+                    { monthlyPattern: data.monthlyPattern } : undefined),
+                endingCondition: data.endingCondition,
+                ...(data.endingCondition === EndingConditionType.OccurrencesNumber ?
+                    { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
+                ...(data.endingCondition === EndingConditionType.EndDate ?
+                    { endDate: data.endDate ? new Date(localDateWithNowTime(data.endDate)).toISOString() : undefined } : undefined),
+                isAllDay: true,
+            };
+        } else {
+            showToast('Invalid recurrence mode selected.', 'error');
+            return;
         }
 
         const newItem: ChecklistItem = {
             itemType: 'checklist-item',
             id: crypto.randomUUID(),
-            text,
+            text: data.taskName,
             done: false,
             lastCompleted: '',
-            note: note ?? '',
+            note: '',
             sortOrder: 0,
             tabSortOrder: {},
-            category: newTaskCategory,
+            category: data.category,
             categoryUuid: null,
             mode,
             isPriority: false,
@@ -78,116 +131,115 @@ const NewTaskForm = () => {
         try {
             await addItem(newItem);
             showToast('Task added ✨', 'success');
-            setInputText('');
-            if (noteRef.current) {
-                noteRef.current.setMarkdown('');
-            }
         } catch (err) {
             console.error('Error adding task:', err);
             showToast('Failed to add task. Please try again.', 'error');
         }
     };
 
-    const handleModeClick = (val: Mode): void => {
-        setMode(val);
-    }
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset({
+                ...defaultValues,
+                startDate: formatDate(new Date()),
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSubmitSuccessful, reset]);
 
-    return (<>
-        <div ref={panelRef} className="new-task-form-item-container">
-            <div className="new-task-form-item-header">
-                <span className="new-task-form-title">New Task</span>
-            </div>
-            <div className="new-task-form-input-row">
-                <input
-                    id="new-task-form-text-input"
-                    className="new-task-form-text-input"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                        e.stopPropagation();
-                        if (e.key === 'Enter') {
-                            handleAddItem();
-                        }
-                    }}
-                    placeholder="New item..."
-                />
-                <button
-                    disabled={isAddButtonDisabled}
-                    className={`new-task-form-add-button
-                            ${isAddButtonDisabled &&
-                        'new-task-form-add-button--disabled'}`
-                    }
-                    onClick={handleAddItem}
-                >
-                    Add
-                </button>
-            </div>
-            <FrequencyButtonGroup
-                mode={mode}
-                onClick={(mode: Mode) => handleModeClick(mode)}
-            />
-            {mode !== CALENDAR_MODE && (
-                <div className="item-recurrence-container item-recurrence-container--new-task">
-                    {mode === OCCASIONAL_MODE && (
-                        <>
+    return (
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(handleAddItem)}>
+                <div ref={panelRef} className="new-task-form-item-container">
+                    <div className="new-task-form-item-header">
+                        <span className="new-task-form-title">New Task</span>
+                    </div>
+                    <div className="new-task-form-input-row">
+                        <input
+                            {...register('taskName', { required: true })}
+                            id="new-task-form-text-input"
+                            className="new-task-form-text-input"
+                            onKeyDown={(e) => {
+                                e.stopPropagation();
+                                if (e.key === 'Enter') {
+                                    handleSubmit(handleAddItem)();
+                                }
+                            }}
+                            placeholder="New item..."
+                        />
+                        <button
+                            type="submit"
+                            disabled={isAddButtonDisabled}
+                            className={`new-task-form-add-button${isAddButtonDisabled ? ' new-task-form-add-button--disabled' : ''}`}
+                        >
+                            Add
+                        </button>
+                    </div>
+                    <FrequencyButtonGroup
+                        mode={mode}
+                        onClick={(val: Mode) => setMode(val)}
+                    />
+                    {mode !== CALENDAR_MODE && (
+                        <div className="item-recurrence-container item-recurrence-container--new-task">
+                            {mode === OCCASIONAL_MODE && (
+                                <div className="form-group">
+                                    <label
+                                        className="new-task-form_recurrence-label"
+                                        htmlFor="new-task-form_recurrence-count"
+                                    >
+                                        Repeat Every
+                                    </label>
+                                    <input
+                                        {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
+                                        id="new-task-form_recurrence-count"
+                                        className="new-task-form_recurrence-count"
+                                        type="number"
+                                        min={1}
+                                    />
+                                    <select
+                                        {...register('frequency')}
+                                        className="select-input"
+                                    >
+                                        {IntervalOptions.map(option => (
+                                            <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                             <div className="form-group">
                                 <label
                                     className="new-task-form_recurrence-label"
-                                    htmlFor="new-task-form_recurrence-count">
-                                    Repeat Every
+                                    htmlFor="new-task-form_recurrence-start-date"
+                                >
+                                    Starting
                                 </label>
                                 <input
-                                    id="new-task-form_recurrence-count"
-                                    className="new-task-form_recurrence-count"
-                                    type="number"
-                                    min={1}
-                                    value={recurrenceCount}
-                                    onChange={(e) => {
-                                        const count = parseInt(e.target.value);
-                                        if (isNaN(count) || count < 1) return;
-                                        setRecurrenceCount(count);
-                                    }}
+                                    {...register('startDate')}
+                                    id="new-task-form_recurrence-start-date"
+                                    className="new-task-form_recurrence-start-date"
+                                    type="date"
+                                    onFocus={(e) => e.currentTarget.showPicker?.()}
+                                    onClick={(e) => e.currentTarget.showPicker?.()}
                                 />
-                                <select
-                                    className="select-input"
-                                    value={recurrenceFrequency}
-                                    onChange={(e) => {
-                                        setRecurrenceFrequency(e.target.value as FrequencyType);
-                                    }}
-                                >
-                                    {IntervalOptions.map(option => (
-                                        <option key={option.key} value={option.key}>{option.title}(s)</option>
-                                    ))}
-                                </select>
                             </div>
-                        </>
+                        </div>
                     )}
-                    <div className="form-group">
-                        <label
-                            className="new-task-form_recurrence-label"
-                            htmlFor="new-task-form_recurrence-start-date">
-                            Starting
-                        </label>
-                        <input
-                            id="new-task-form_recurrence-start-date"
-                            className="new-task-form_recurrence-start-date"
-                            type="date"
-                            value={recurrenceStartDate}
-                            onFocus={(e) => e.currentTarget.showPicker?.()}
-                            onClick={(e) => e.currentTarget.showPicker?.()}
-                            onChange={(e) => {
-                                setRecurrenceStartDate(e.target.value);
-                            }}
-                        />
-                    </div>
+                    {mode === CALENDAR_MODE && (
+                        <RecurrenceForm />
+                    )}
+                    <CategorySelect
+                        id="new-task-form"
+                        selectedCategory={watch('category')}
+                        onChange={(category: string) => setValue('category', category)}
+                    />
+                    {errors.taskName && (
+                        <div className="task-form-drawer__error">
+                            {errors.taskName.message || 'Task name is required'}
+                        </div>
+                    )}
                 </div>
-            )}
-            <CategorySelect
-                id={'new-task-form'}
-                selectedCategory={newTaskCategory}
-                onChange={(category: string) => setNewTaskCategory(category)}
-            />
-        </div >
-    </>);
-}
-export default NewTaskForm;
+            </form>
+        </FormProvider>
+    );
+};
+export default DemoAddForm;

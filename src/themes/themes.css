@@ -69,6 +69,9 @@
     /** floating action button */
     --mobile-tab-bar-height: 60px;
     --fab-spacing: 45px;
+
+    /** form specific */
+    --form-error-color: light-dark(#ef4444, #f87171);
 }
 
 body::before {

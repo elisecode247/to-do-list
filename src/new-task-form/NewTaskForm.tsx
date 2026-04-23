@@ -1,71 +1,123 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
-import { INTERVAL_RECURRENCE_TYPE, IntervalOptions, ONE_TIME_RECURRENCE_TYPE, type CalendarRecurrence, type IntervalRecurrence, type Mode, type OneTimeRecurrence } from 'app/types';
 import './new-task-form.css';
 import 'src/task-form/task-form-shared.css';
-import type { MDXEditorMethods } from '@mdxeditor/editor';
 import { OCCASIONAL_MODE, ONE_TIME_MODE, CALENDAR_MODE, DAILY_MODE } from 'src/checklist/constants';
-import { type ChecklistItem, FrequencyType } from 'app/types';
+import { type ChecklistItem, FrequencyType, type MonthlyPattern, type OneTimeRecurrence } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CloseButton from 'components/close-button/CloseButton';
 import RecurrenceForm from 'src/recurrence-form/RecurrenceForm';
+import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
+import {
+    EndingConditionType,
+    IntervalOptions,
+    INTERVAL_RECURRENCE,
+    ONE_TIME_RECURRENCE,
+    CALENDAR_RECURRENCE,
+    type Mode,
+    type CalendarRecurrence,
+    type IntervalRecurrence
+} from 'app/types';
+
+type Inputs = {
+    taskName: string;
+    category: string;
+    numberOfRepetitions: number;
+    frequency: FrequencyType;
+
+}
+
+type RecurrenceFormValues = {
+    startDate: string;
+    numberOfRepetitions: number;
+    isRepeating: boolean;
+    frequency: FrequencyType;
+    weekDaysRepetition: string[];
+    monthlyPattern: MonthlyPattern;
+    endingCondition: EndingConditionType;
+    endingOccurrencesNumber: number;
+    endDate: string;
+};
+
+type NewTaskFormValues = Inputs & RecurrenceFormValues;
 
 const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRightOpen: (open: boolean) => void }) => {
     const { addItem } = useTask();
     const { showToast } = useToast();
-    const [inputText, setInputText] = useState<string>("");
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
-    const [recurrenceCount, setRecurrenceCount] = useState<number>(1);
-    const [recurrenceFrequency, setRecurrenceFrequency] = useState<FrequencyType>(FrequencyType.Daily);
-    const [recurrenceStartDate, setRecurrenceStartDate] = useState<string>(formatDate(new Date()));
-    const [calendarRecurrence, setCalendarRecurrence] = useState<CalendarRecurrence | null>(null);
-    const [newTaskCategory, setNewTaskCategory] = useState<string>('');
-    const isAddButtonDisabled = !inputText.length;
     const panelRef = useRef<HTMLDivElement | null>(null);
-    const noteRef = useRef<MDXEditorMethods | null>(null);
-
-    const handleAddItem = async (): Promise<void> => {
-        const text = inputText.trim();
-        if (!text) return;
-        const note = noteRef.current?.getMarkdown();
-        let recurrence: OneTimeRecurrence | IntervalRecurrence | CalendarRecurrence | null = null;
+    const defaultValues = {
+        taskName: '',
+        category: '',
+        startDate: formatDate(new Date()),
+        isRepeating: false,
+        numberOfRepetitions: 1,
+        frequency: FrequencyType.Weekly,
+        weekDaysRepetition: [],
+        monthlyPattern: 'day-of-month' as MonthlyPattern,
+        endingCondition: EndingConditionType.None,
+        endDate: '',
+        endingOccurrencesNumber: 10,
+    }
+    const methods = useForm<NewTaskFormValues>({ defaultValues });
+    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = methods;
+    const handleAddItem: SubmitHandler<NewTaskFormValues> = async (data): Promise<void> => {
+        let recurrence: OneTimeRecurrence | IntervalRecurrence | CalendarRecurrence;
         if (mode === ONE_TIME_MODE) {
             recurrence = {
-                type: ONE_TIME_RECURRENCE_TYPE,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
-            } as OneTimeRecurrence;
+                type: ONE_TIME_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+            }
         } else if (mode === DAILY_MODE) {
             recurrence = {
-                type: INTERVAL_RECURRENCE_TYPE,
-                count: 1,
+                type: INTERVAL_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
                 frequency: FrequencyType.Daily,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
-            } as IntervalRecurrence;
+                numberOfRepetitions: 1,
+            }
         } else if (mode === OCCASIONAL_MODE) {
             recurrence = {
-                type: 'interval',
-                count: recurrenceCount,
-                frequency: recurrenceFrequency,
-                startDate: new Date(localDateWithNowTime(recurrenceStartDate)).toISOString(),
-            };
+                type: INTERVAL_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                frequency: data.frequency,
+                numberOfRepetitions: data.numberOfRepetitions,
+            }
         } else if (mode === CALENDAR_MODE) {
-            recurrence = calendarRecurrence;
+            recurrence = {
+                type: CALENDAR_RECURRENCE,
+                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                ...(data.isRepeating ? { numberOfRepetitions: data.numberOfRepetitions } : undefined),
+                ...(data.isRepeating ? { frequency: data.frequency } : undefined),
+                ...(data.isRepeating && data.frequency === FrequencyType.Weekly ?
+                    { weekDaysRepetition: data.weekDaysRepetition } : undefined),
+                ...(data.isRepeating && data.frequency === FrequencyType.Monthly ?
+                    { monthlyPattern: data.monthlyPattern } : undefined),
+                endingCondition: data.endingCondition,
+                ...(data.endingCondition === EndingConditionType.OccurrencesNumber ?
+                    { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
+                ...(data.endingCondition === EndingConditionType.EndDate ?
+                    { endDate: data.endDate ? new Date(localDateWithNowTime(data.endDate)).toISOString() : undefined } : undefined),
+                isAllDay: true, // For now we can set this to true by default, and add the option to change it in the form later
+            }
+        } else {
+            showToast('Invalid recurrence mode selected.', 'error');
+            return;
         }
 
         const newItem: ChecklistItem = {
             itemType: 'checklist-item',
             id: crypto.randomUUID(),
-            text,
+            text: '',
             done: false,
             lastCompleted: '',
-            note: note ?? '',
+            note: '',
             sortOrder: 0,
             tabSortOrder: {},
-            category: newTaskCategory,
+            category: '',
             categoryUuid: null,
             mode,
             isPriority: false,
@@ -77,12 +129,9 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
             nextDue: null,
         };
         try {
-            await addItem(newItem);
+            await addItem({ ...newItem, ...data, text: data.taskName });
             showToast('Task added ✨', 'success');
-            setInputText('');
-            if (noteRef.current) {
-                noteRef.current.setMarkdown('');
-            }
+            setRightOpen(false);
         } catch (err) {
             console.error('Error adding task:', err);
             showToast('Failed to add task. Please try again.', 'error');
@@ -93,148 +142,168 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
         setMode(val);
     }
 
-    return (<>
-        <div ref={panelRef} className="task-form-drawer">
-            <div className="task-form-drawer__header">
-                <h2 className="task-form-drawer__title">New task</h2>
-                {isDesktop && (
-                    <CloseButton
-                        onClick={() => setRightOpen(false)}
-                        label="Close new task form"
-                    />
-                )}
-            </div>
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset({
+                taskName: '',
+                category: '',
+                startDate: formatDate(new Date()),
+                isRepeating: false,
+                numberOfRepetitions: 1,
+                frequency: FrequencyType.Weekly,
+                weekDaysRepetition: [],
+                monthlyPattern: 'day-of-month',
+                endingCondition: EndingConditionType.None,
+                endingOccurrencesNumber: 10,
+                endDate: ''
+            });
+        }
+    }, [isSubmitSuccessful, reset]);
 
-            <div className="task-form-drawer__body">
-                <div className="task-form-field">
-                    <label className="task-form-field__label" htmlFor="new-task-form-text-input">Task name</label>
-                    <input
-                        id="new-task-form-text-input"
-                        className="task-form-input"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={(e) => {
-                            e.stopPropagation();
-                            if (e.key === 'Enter') {
-                                handleAddItem();
-                            }
-                        }}
-                        placeholder="New item..."
-                    />
+    return (<div ref={panelRef} className="task-form-drawer">
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(handleAddItem)}>
+                <div className="task-form-drawer__header">
+                    <h2 className="task-form-drawer__title">New task</h2>
+                    {isDesktop && (
+                        <CloseButton
+                            onClick={() => setRightOpen(false)}
+                            label="Close new task form"
+                        />
+                    )}
                 </div>
 
-                <div className="task-form-field">
-                    <label className="task-form-field__label">Category</label>
-                    <div className="task-form-category-wrap">
-                        <CategorySelect
-                            id={'new-task-form'}
-                            selectedCategory={newTaskCategory}
-                            onChange={(category: string) => setNewTaskCategory(category)}
+                <div className="task-form-drawer__body">
+                    <div className="task-form-field">
+                        <label className="task-form-field__label" htmlFor="new-task-form-text-input">Task name</label>
+                        <input
+                            {...register("taskName", { required: true })}
+                            name="taskName"
+                            id="new-task-form-text-input"
+                            className="task-form-input"
+                            placeholder="New item..."
                         />
                     </div>
-                </div>
 
-                <div className="task-form-field">
-                    <div className="task-form-section-divider">Schedule</div>
-                    <FrequencyButtonGroup
-                        mode={mode}
-                        onClick={(mode: Mode) => handleModeClick(mode)}
-                    />
-                </div>
+                    <div className="task-form-field">
+                        <label className="task-form-field__label">Category</label>
+                        <div className="task-form-category-wrap">
+                            <CategorySelect id="new-task-form" />
+                        </div>
+                    </div>
 
-                {mode !== CALENDAR_MODE && (
-                    <>
-                        {mode === OCCASIONAL_MODE && (
+                    <div className="task-form-field">
+                        <div className="task-form-section-divider">Schedule</div>
+                        <FrequencyButtonGroup
+                            mode={mode}
+                            onClick={(mode: Mode) => handleModeClick(mode)}
+                        />
+                    </div>
+
+                    {mode !== CALENDAR_MODE && (
+                        <>
+                            {mode === OCCASIONAL_MODE && (
+                                <div className="task-form-field">
+                                    <label
+                                        className="task-form-field__label"
+                                        htmlFor="new-task-form_recurrence-count"
+                                    >
+                                        Repeat every
+                                    </label>
+                                    <div className="task-form-inline-row">
+                                        <input
+                                            min={1}
+                                            {...register("numberOfRepetitions", { valueAsNumber: true, min: 1 })}
+                                            id="new-task-form_recurrence-count"
+                                            className="task-form-input task-form-recurrence-count"
+                                            type="number"
+                                        />
+                                        <select
+                                            {...register("frequency")}
+                                            name="frequency"
+                                            className="task-form-input task-form-select task-form-recurrence-frequency"
+                                        >
+                                            {IntervalOptions.map(option => (
+                                                <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="task-form-field">
                                 <label
                                     className="task-form-field__label"
-                                    htmlFor="new-task-form_recurrence-count"
+                                    htmlFor="new-task-form_recurrence-start-date"
                                 >
-                                    Repeat every
+                                    Starting
                                 </label>
-                                <div className="task-form-inline-row">
-                                    <input
-                                        id="new-task-form_recurrence-count"
-                                        className="task-form-input task-form-recurrence-count"
-                                        type="number"
-                                        min={1}
-                                        value={recurrenceCount}
-                                        onChange={(e) => {
-                                            const count = parseInt(e.target.value);
-                                            if (isNaN(count) || count < 1) return;
-                                            setRecurrenceCount(count);
-                                        }}
-                                    />
-                                    <select
-                                        className="task-form-input task-form-select task-form-recurrence-frequency"
-                                        value={recurrenceFrequency}
-                                        onChange={(e) => {
-                                            setRecurrenceFrequency(e.target.value as FrequencyType);
-                                        }}
-                                    >
-                                        {IntervalOptions.map(option => (
-                                            <option key={option.key} value={option.key}>{option.title}(s)</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <input
+                                    {...register("startDate")}
+                                    name="startDate"
+                                    id="new-task-form_recurrence-start-date"
+                                    className="task-form-input task-form-recurrence-start-date"
+                                    type="date"
+                                    onFocus={(e) => e.currentTarget.showPicker?.()}
+                                    onClick={(e) => e.currentTarget.showPicker?.()}
+                                />
                             </div>
-                        )}
+                        </>
+                    )}
+                    {mode === CALENDAR_MODE && (
+                        <RecurrenceForm />
+                    )}
+                </div>
 
-                        <div className="task-form-field">
-                            <label
-                                className="task-form-field__label"
-                                htmlFor="new-task-form_recurrence-start-date"
-                            >
-                                Starting
-                            </label>
-                            <input
-                                id="new-task-form_recurrence-start-date"
-                                className="task-form-input task-form-recurrence-start-date"
-                                type="date"
-                                value={recurrenceStartDate}
-                                onFocus={(e) => e.currentTarget.showPicker?.()}
-                                onClick={(e) => e.currentTarget.showPicker?.()}
-                                onChange={(e) => {
-                                    setRecurrenceStartDate(e.target.value);
-                                }}
-                            />
+                <div className="task-form-drawer__footer">
+                    {errors.taskName && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.taskName.message || 'task name is required'}
                         </div>
-                    </>
-                )}
-                {mode === CALENDAR_MODE && (
-                    <RecurrenceForm
-                        value={calendarRecurrence}
-                        startDate={new Date(localDateWithNowTime(recurrenceStartDate))}
-                        onChange={(propName, value) => {
-                            setCalendarRecurrence(prev => {
-                                const updatedRecurrence = { ...prev, [propName]: value } as CalendarRecurrence;
-                                return updatedRecurrence;
-                            });
-                        }}
-                    />
-                )}
-            </div>
-
-            <div className="task-form-drawer__footer">
-                <button
-                    className="task-form-action-button task-form-action-button--cancel"
-                    onClick={() => setRightOpen(false)}
-                    type="button"
-                    aria-label="Close form"
-                >
-                    Cancel
-                </button>
-                <button
-                    disabled={isAddButtonDisabled}
-                    className="task-form-action-button task-form-action-button--save"
-                    onClick={handleAddItem}
-                    type="button"
-                    aria-label="Add task"
-                >
-                    Add
-                </button>
-            </div>
-        </div >
-    </>);
+                    )}
+                    {errors.category && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.category.message || 'category is required'}
+                        </div>
+                    )}
+                    {errors.weekDaysRepetition && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.weekDaysRepetition.message || 'please select at least one day for weekly repetition'}
+                        </div>
+                    )}
+                    {errors.startDate && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.startDate.message || 'start date is required'}
+                        </div>
+                    )}
+                    {errors.endDate && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.endDate.message || 'end date is invalid'}
+                        </div>
+                    )}
+                    {errors.endingOccurrencesNumber && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.endingOccurrencesNumber.message || 'number of occurrences is invalid'}
+                        </div>
+                    )}
+                    <button
+                        className="task-form-action-button task-form-action-button--cancel"
+                        onClick={() => setRightOpen(false)}
+                        type="button"
+                        aria-label="Close form"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="task-form-action-button task-form-action-button--save"
+                        type="submit"
+                        aria-label="Add task"
+                    >
+                        Add
+                    </button>
+                </div>
+            </form>
+        </FormProvider>
+    </div>);
 }
 export default NewTaskForm;

@@ -33,6 +33,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    background-color: var(--color-surface);
 }
 
 .task-form-field {
@@ -157,4 +158,16 @@
 .task-form-action-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+.task-form-drawer__error {
+    color: var(--form-error-color);
+    font-size: 12px;
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: var(--spacing-xs) var(--spacing-xs);
+    background: color-mix(in srgb, var(--form-error-color) 10%, #fef2f2 90%);
+    border: 1px solid var(--form-error-color);
+    border-radius: 8px;
 }

@@ -40,34 +40,39 @@ export interface Option {
     title: string
 }
 
-export const ONE_TIME_RECURRENCE_TYPE = 'one-time';
-export const INTERVAL_RECURRENCE_TYPE = 'interval';
-export const CALENDAR_RECURRENCE_TYPE = 'calendar';
+export type MonthlyPattern = 'day-of-month' | 'weekday-of-month';
+
+export const ONE_TIME_RECURRENCE = 'one-time';
+export const INTERVAL_RECURRENCE = 'interval';
+export const CALENDAR_RECURRENCE = 'calendar';
+
+export type RecurrenceType = typeof ONE_TIME_RECURRENCE | typeof INTERVAL_RECURRENCE | typeof CALENDAR_RECURRENCE;
 
 export type OneTimeRecurrence = {
-    type: "one-time";
+    type: typeof ONE_TIME_RECURRENCE;
     startDate: string;
 }
 
 export type IntervalRecurrence = {
-    type: "interval";
-    count: number;
+    type: typeof INTERVAL_RECURRENCE;
+    numberOfRepetitions: number;
     frequency: FrequencyType;
     startDate: string;
 }
 
 export type CalendarRecurrence = {
-    type: "calendar";
-    startDate: Date
-    frequency: FrequencyType
-    numberOfRepetitions?: number
-    weekDaysRepetition: Array<number>
-    endingCondition: EndingConditionType
-    endingOccurrencesNumber?: number
-    endDate?: Date
-    isAllDay: boolean
-    startTime?: Date
-    endTime?: Date
+    type: typeof CALENDAR_RECURRENCE;
+    numberOfRepetitions?: number;
+    frequency?: FrequencyType;
+    startDate: string;
+    startTime?: string; // not implemented yet, but reserved for future use
+    weekDaysRepetition?: Array<string>; // checkbox values are saved as strings, but they represent numbers
+    monthlyPattern?: MonthlyPattern;
+    endingCondition: EndingConditionType;
+    endingOccurrencesNumber?: number;
+    endDate?: string;
+    endTime?: string; // not implemented yet, but reserved for future use
+    isAllDay?: boolean; // not implemented yet, but reserved for future use
 }
 
 export interface ChecklistItem {

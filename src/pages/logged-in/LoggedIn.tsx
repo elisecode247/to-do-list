@@ -274,15 +274,16 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                 )}
             </main>
             <aside className="right_panel">
-                {editingItem ? (
+                {rightOpen && editingItem ? (
                     <EditTaskForm
                         isSaving={isSaving}
                         formData={editingItem}
-                        setEditingItem={setEditingItem}
                         onSave={handleSave}
                         onClose={handleCloseEditModal}
                     />
-                ) : <NewTaskForm isDesktop={isDesktop} setRightOpen={setRightOpen} />}
+                ) : rightOpen ? (
+                    <NewTaskForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
+                ) : null}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (
                 <nav className="mobile-tab-bar">
