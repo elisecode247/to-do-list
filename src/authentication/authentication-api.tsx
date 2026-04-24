@@ -29,10 +29,16 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 }
 
 export async function logout(): Promise<void> {
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(TOKEN_EXPIRES_KEY);
     localStorage.removeItem("email");
+    await fetch(`${API_AUTH_URL}/logout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+    });
 }
 
 export function getAuthToken(): string | null {
