@@ -40,6 +40,7 @@ type RecurrenceFormValues = {
     endingCondition: EndingConditionType;
     endingOccurrencesNumber: number;
     endDate: string;
+    repeatEndDate: string;
 };
 
 type EditTaskFormValues = {
@@ -69,11 +70,15 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         lastCompleted: formData.lastCompleted ? formatDate(new Date(formData.lastCompleted)) : '',
         note: formData.note ?? '',
         startDate: recurrence?.startDate ? formatDate(new Date(recurrence.startDate)) : formatDate(new Date()),
+        endDate: isCalendarRecurrence
+            ? ((recurrence as CalendarRecurrence).endDate ?
+                formatDate(new Date((recurrence as CalendarRecurrence).endDate as string)) : '')
+            : '',
         numberOfRepetitions: isIntervalRecurrence
             ? (recurrence as IntervalRecurrence).numberOfRepetitions ?? 1
             : isCalendarRecurrence
                 ? (recurrence as CalendarRecurrence).numberOfRepetitions ?? 1
-            : 1,
+                : 1,
         isRepeating: isOneTimeRecurrence
             ? false
             : isIntervalRecurrence || (isCalendarRecurrence && (recurrence as CalendarRecurrence).frequency !== FrequencyType.None),
@@ -94,8 +99,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         endingOccurrencesNumber: isCalendarRecurrence
             ? (recurrence as CalendarRecurrence).endingOccurrencesNumber ?? 10
             : 10,
-        endDate: isCalendarRecurrence
-            ? ((recurrence as CalendarRecurrence).endDate ? formatDate(new Date((recurrence as CalendarRecurrence).endDate as string)) : '')
+        repeatEndDate: isCalendarRecurrence
+            ? ((recurrence as CalendarRecurrence).repeatEndDate ?
+                formatDate(new Date((recurrence as CalendarRecurrence).repeatEndDate as string)) : '')
             : '',
     };
 
@@ -127,6 +133,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             recurrence = {
                 type: CALENDAR_RECURRENCE,
                 startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                endDate: new Date(localDateWithNowTime(data.endDate)).toISOString(),
                 ...(data.isRepeating ? { numberOfRepetitions: data.numberOfRepetitions } : undefined),
                 ...(data.isRepeating ? { frequency: data.frequency } : undefined),
                 ...(data.isRepeating && data.frequency === FrequencyType.Weekly ?
@@ -136,8 +143,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 endingCondition: data.endingCondition,
                 ...(data.endingCondition === EndingConditionType.OccurrencesNumber ?
                     { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
-                ...(data.endingCondition === EndingConditionType.EndDate && data.endDate ?
-                    { endDate: new Date(localDateWithNowTime(data.endDate)).toISOString() } : undefined),
+                ...(data.endingCondition === EndingConditionType.EndDate && data.repeatEndDate ?
+                    { repeatEndDate: new Date(localDateWithNowTime(data.repeatEndDate)).toISOString() } : undefined),
                 isAllDay: (formData.recurrence as CalendarRecurrence)?.isAllDay ?? true,
             };
         }
@@ -311,6 +318,42 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             {errors.endDate.message || 'End date is invalid'}
                         </div>
                     )}
+                    {errors.numberOfRepetitions && (
+                        <div className="task-form-drawer__error">
+                            {errors.numberOfRepetitions.message || 'Number of repetitions is invalid'}
+                        </div>
+                    )}
+                    {errors.repeatEndDate && (
+                        <div className="task-form-drawer__error">
+                            {errors.repeatEndDate.message || 'Recurrence end date is invalid'}
+                        </div>
+                    )}
+                    {errors.endingOccurrencesNumber && (
+                        <div className="task-form-drawer__error">
+                            {errors.endingOccurrencesNumber.message || 'Number of occurrences is invalid'}
+                        </div>
+                    )}
+                    {errors.frequency && (
+                        <div className="task-form-drawer__error">
+                            {errors.frequency.message || 'Frequency is required'}
+                        </div>
+                    )}
+                    {errors.weekDaysRepetition && (
+                        <div className="task-form-drawer__error">
+                            {errors.weekDaysRepetition.message || 'Week days repetition is required'}
+                        </div>
+                    )}
+                    {errors.monthlyPattern && (
+                        <div className="task-form-drawer__error">
+                            {errors.monthlyPattern.message || 'Monthly pattern is required'}
+                        </div>
+                    )}
+                    {errors.endingCondition && (
+                        <div className="task-form-drawer__error">
+                            {errors.endingCondition.message || 'Ending condition is required'}
+                        </div>
+                    )}
+
                     <button
                         className="task-form-action-button task-form-action-button--cancel"
                         onClick={onClose}

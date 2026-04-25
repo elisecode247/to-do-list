@@ -28,7 +28,6 @@ type Inputs = {
     category: string;
     numberOfRepetitions: number;
     frequency: FrequencyType;
-
 }
 
 type RecurrenceFormValues = {
@@ -41,6 +40,7 @@ type RecurrenceFormValues = {
     endingCondition: EndingConditionType;
     endingOccurrencesNumber: number;
     endDate: string;
+    repeatEndDate: string;
 };
 
 type NewTaskFormValues = Inputs & RecurrenceFormValues;
@@ -90,6 +90,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
             recurrence = {
                 type: CALENDAR_RECURRENCE,
                 startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
+                endDate: new Date(localDateWithNowTime(data.endDate)).toISOString(),
                 ...(data.isRepeating ? { numberOfRepetitions: data.numberOfRepetitions } : undefined),
                 ...(data.isRepeating ? { frequency: data.frequency } : undefined),
                 ...(data.isRepeating && data.frequency === FrequencyType.Weekly ?
@@ -100,7 +101,11 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                 ...(data.endingCondition === EndingConditionType.OccurrencesNumber ?
                     { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
                 ...(data.endingCondition === EndingConditionType.EndDate ?
-                    { endDate: data.endDate ? new Date(localDateWithNowTime(data.endDate)).toISOString() : undefined } : undefined),
+                    {
+                        repeatEndDate: data.repeatEndDate ?
+                            new Date(localDateWithNowTime(data.repeatEndDate)).toISOString() :
+                            undefined
+                    } : undefined),
                 isAllDay: true, // For now we can set this to true by default, and add the option to change it in the form later
             }
         } else {
@@ -148,6 +153,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                 taskName: '',
                 category: '',
                 startDate: formatDate(new Date()),
+                endDate: formatDate(new Date()),
                 isRepeating: false,
                 numberOfRepetitions: 1,
                 frequency: FrequencyType.Weekly,
@@ -155,7 +161,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                 monthlyPattern: 'day-of-month',
                 endingCondition: EndingConditionType.None,
                 endingOccurrencesNumber: 10,
-                endDate: ''
+                repeatEndDate: formatDate(new Date())
             });
         }
     }, [isSubmitSuccessful, reset]);
@@ -284,6 +290,11 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                     {errors.endingOccurrencesNumber && (
                         <div className="task-form-drawer__error">
                             Error: {errors.endingOccurrencesNumber.message || 'number of occurrences is invalid'}
+                        </div>
+                    )}
+                    {errors.repeatEndDate && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.repeatEndDate.message || 'end date is invalid'}
                         </div>
                     )}
                     <button

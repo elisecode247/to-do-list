@@ -96,6 +96,16 @@ const RecurrenceForm = () => {
                     onClick={(event) => event.currentTarget.showPicker?.()}
                 />
             </div>
+            <div className="recurrence-form__row">
+                <label className="recurrence-form__label" htmlFor="calendar-end-date">Ends on</label>
+                <input
+                    {...register('endDate', { required: true })}
+                    id="calendar-end-date"
+                    type="date"
+                    className="task-form-input recurrence-form__end-input"
+                    onClick={(event) => event.currentTarget.showPicker?.()}
+                />
+            </div>
 
             <div className="recurrence-form__row recurrence-form__switch-row">
                 <label className="recurrence-form__switch" htmlFor="recurrence-repeat-enabled">
@@ -193,26 +203,21 @@ const RecurrenceForm = () => {
                             </select>
                         </div>
                     )}
-                </>
-            )}
-            <div className="recurrence-form__row">
-                <span className="recurrence-form__label">Ends</span>
-                <div role="radiogroup" aria-label="Recurrence ending" className="recurrence-form__end-group">
-                    {watchIsRepeating && (
-                        <label className="recurrence-form__end-option">
-                            <input
-                                {...register('endingCondition')}
-                                className="recurrence-form__end-option-input"
-                                type="radio"
-                                name="endingCondition"
-                                value={EndingConditionType.None}
-                            />
-                            <span>Never</span>
-                        </label>
-                    )}
-                    <label className="recurrence-form__end-option">
-                        {watchIsRepeating && (
-                            <>
+                    <div className="recurrence-form__row">
+                        <span className="recurrence-form__label">Repeat Ends</span>
+                        <div role="radiogroup" aria-label="Recurrence ending" className="recurrence-form__end-group">
+                            <label className="recurrence-form__end-option">
+                                <input
+                                    {...register('endingCondition')}
+                                    className="recurrence-form__end-option-input"
+                                    type="radio"
+                                    name="endingCondition"
+                                    value={EndingConditionType.None}
+                                />
+                                <span>Never</span>
+                            </label>
+                            <label className="recurrence-form__end-option">
+
                                 <input
                                     {...register('endingCondition')}
                                     className="recurrence-form__end-option-input"
@@ -221,68 +226,64 @@ const RecurrenceForm = () => {
                                     value={EndingConditionType.EndDate}
                                 />
                                 <span>On</span>
-                            </>
-                        )}
-                        <input
-                            {...register('endDate', {
-                                validate: (value) => {
-                                    if (!watchIsRepeating && !value) {
-                                        return Boolean(value)
-                                    }
+                                <input
+                                    {...register('repeatEndDate', {
+                                        validate: (value) => {
 
-                                    if (watchEndingCondition !== EndingConditionType.EndDate) {
-                                        return true;
-                                    }
-                                    const start = localDateWithNowTime(getValues('startDate') as string);
-                                    const end = localDateWithNowTime(value);
-                                    if (isNaN(end.getTime())) {
-                                        return 'Please enter a valid end date';
-                                    }
-                                    if (end <= start) {
-                                        return 'End date must be after start date';
-                                    }
-                                    return Boolean(value) || 'End date is required';
-                                },
-                            })}
-                            name="endDate"
-                            type="date"
-                            className="task-form-input recurrence-form__end-input"
-                            onClick={(event) => event.currentTarget.showPicker?.()}
-                        />
-                    </label>
-                    {watchIsRepeating && (
-                        <label className="recurrence-form__end-option">
-                            <input
-                                {...register('endingCondition')}
-                                className="recurrence-form__end-option-input"
-                                type="radio"
-                                value={EndingConditionType.OccurrencesNumber}
-                            />
-                            After
-                            <input
-                                {...register('endingOccurrencesNumber', {
-                                    validate: (value) => {
-                                        if (watchEndingCondition !== EndingConditionType.OccurrencesNumber) {
+                                            if (watchEndingCondition !== EndingConditionType.EndDate) {
+                                                return true;
+                                            }
+                                            const start = localDateWithNowTime(getValues('startDate') as string);
+                                            const end = localDateWithNowTime(value);
+                                            if (isNaN(end.getTime())) {
+                                                return 'Please enter a valid end date';
+                                            }
+                                            if (end <= start) {
+                                                return 'End date must be after start date';
+                                            }
+                                            return Boolean(value) || 'End date is required';
+                                        },
+                                    })}
+                                    name="repeatEndDate"
+                                    type="date"
+                                    className="task-form-input recurrence-form__end-input"
+                                    onClick={(event) => event.currentTarget.showPicker?.()}
+                                />
+                            </label>
+
+                            <label className="recurrence-form__end-option">
+                                <input
+                                    {...register('endingCondition')}
+                                    className="recurrence-form__end-option-input"
+                                    type="radio"
+                                    value={EndingConditionType.OccurrencesNumber}
+                                />
+                                After
+                                <input
+                                    {...register('endingOccurrencesNumber', {
+                                        validate: (value) => {
+                                            if (watchEndingCondition !== EndingConditionType.OccurrencesNumber) {
+                                                return true;
+                                            }
+                                            if (!value || isNaN(value)) {
+                                                return 'Please enter a valid number of occurrences';
+                                            }
+                                            if (value <= 0) {
+                                                return 'Number of occurrences must be at least 1';
+                                            }
                                             return true;
-                                        }
-                                        if (!value || isNaN(value)) {
-                                            return 'Please enter a valid number of occurrences';
-                                        }
-                                        if (value <= 0) {
-                                            return 'Number of occurrences must be at least 1';
-                                        }
-                                        return true;
-                                    },
-                                })}
-                                min={1}
-                                type="number"
-                                className="task-form-input recurrence-form__end-input"
-                            />
-                            occurrences
-                        </label>
-                    )}
-                </div>
-            </div>
+                                        },
+                                    })}
+                                    min={1}
+                                    type="number"
+                                    className="task-form-input recurrence-form__end-input"
+                                />
+                                occurrences
+                            </label>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
