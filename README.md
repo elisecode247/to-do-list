@@ -1,6 +1,6 @@
 # To Do List
 
-An app so simple to use you will actually use it. Whether you have daily routines, one-time errands, or occasional tasks, this app will defog your mind.
+An app so simple to use you will actually use it. This app will give you structure, flexibility, and instant feedback.
 
 Goal is not task management but *gentle remembering without emotional penalty.*
 
@@ -19,6 +19,8 @@ Live: https://elisecode247.github.io/to-do-list/
 
 ### To do
 - feature: calendar tasks
+- feature: Interstitial journal
+- bug: when toggling done, return new nextDue
 - ux: improve ux for newly logged in user
 - feature: allow user delete history
 - feature: add undo to delete and uncheck

@@ -141,9 +141,9 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 ...(data.isRepeating && data.frequency === FrequencyType.Monthly ?
                     { monthlyPattern: data.monthlyPattern } : undefined),
                 endingCondition: data.endingCondition,
-                ...(data.endingCondition === EndingConditionType.OccurrencesNumber ?
+                ...(data.isRepeating && data.endingCondition === EndingConditionType.OccurrencesNumber ?
                     { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
-                ...(data.endingCondition === EndingConditionType.EndDate && data.repeatEndDate ?
+                ...(data.isRepeating && data.endingCondition === EndingConditionType.EndDate && data.repeatEndDate ?
                     { repeatEndDate: new Date(localDateWithNowTime(data.repeatEndDate)).toISOString() } : undefined),
                 isAllDay: (formData.recurrence as CalendarRecurrence)?.isAllDay ?? true,
             };
