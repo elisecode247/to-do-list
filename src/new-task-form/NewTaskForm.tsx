@@ -40,7 +40,7 @@ type RecurrenceFormValues = {
     endingCondition: EndingConditionType;
     endingOccurrencesNumber: number;
     endDate: string;
-    repeatEndDate: string;
+    recurrenceEndDate: string;
 };
 
 type NewTaskFormValues = Inputs & RecurrenceFormValues;
@@ -60,7 +60,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
         weekDaysRepetition: [],
         monthlyPattern: 'day-of-month' as MonthlyPattern,
         endingCondition: EndingConditionType.None,
-        endDate: '',
+        endDate: formatDate(new Date()),
         endingOccurrencesNumber: 10,
     }
     const methods = useForm<NewTaskFormValues>({ defaultValues });
@@ -102,8 +102,8 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                     { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
                 ...(data.endingCondition === EndingConditionType.EndDate ?
                     {
-                        repeatEndDate: data.repeatEndDate ?
-                            new Date(localDateWithNowTime(data.repeatEndDate)).toISOString() :
+                        recurrenceEndDate: data.recurrenceEndDate ?
+                            new Date(localDateWithNowTime(data.recurrenceEndDate)).toISOString() :
                             undefined
                     } : undefined),
                 isAllDay: true, // For now we can set this to true by default, and add the option to change it in the form later
@@ -161,7 +161,7 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                 monthlyPattern: 'day-of-month',
                 endingCondition: EndingConditionType.None,
                 endingOccurrencesNumber: 10,
-                repeatEndDate: formatDate(new Date())
+                recurrenceEndDate: formatDate(new Date())
             });
         }
     }, [isSubmitSuccessful, reset]);
@@ -292,9 +292,9 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
                             Error: {errors.endingOccurrencesNumber.message || 'number of occurrences is invalid'}
                         </div>
                     )}
-                    {errors.repeatEndDate && (
+                    {errors.recurrenceEndDate && (
                         <div className="task-form-drawer__error">
-                            Error: {errors.repeatEndDate.message || 'end date is invalid'}
+                            Error: {errors.recurrenceEndDate.message || 'end date is invalid'}
                         </div>
                     )}
                     <button

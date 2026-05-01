@@ -227,7 +227,7 @@ const RecurrenceForm = () => {
                                 />
                                 <span>On</span>
                                 <input
-                                    {...register('repeatEndDate', {
+                                    {...register('recurrenceEndDate', {
                                         validate: (value) => {
 
                                             if (watchEndingCondition !== EndingConditionType.EndDate) {
@@ -244,7 +244,7 @@ const RecurrenceForm = () => {
                                             return Boolean(value) || 'End date is required';
                                         },
                                     })}
-                                    name="repeatEndDate"
+                                    name="recurrenceEndDate"
                                     type="date"
                                     className="task-form-input recurrence-form__end-input"
                                     onClick={(event) => event.currentTarget.showPicker?.()}

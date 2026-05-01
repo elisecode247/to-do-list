@@ -70,7 +70,7 @@ export type CalendarRecurrence = {
     monthlyPattern?: MonthlyPattern;
     endingCondition: EndingConditionType;
     endingOccurrencesNumber?: number;
-    repeatEndDate?: string;
+    recurrenceEndDate?: string;
     endDate?: string; // event end date, not the same as recurrence end date
     endTime?: string; // not implemented yet, but reserved for future use
     isAllDay?: boolean; // not implemented yet, but reserved for future use
