@@ -3,6 +3,7 @@ import "./Journal.css";
 import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
+import { useDebounceCallback } from 'usehooks-ts';
 
 const GUIDE_ITEMS = [
     { icon: "✓", label: "What I just finished" },
@@ -28,6 +29,33 @@ function offsetBadge(offset: number) {
     return null;
 }
 
+function toTimeInputValue(entryTime: string): string {
+    const parsed = new Date(entryTime);
+    if (Number.isNaN(parsed.getTime())) return "";
+    const hours = String(parsed.getHours()).padStart(2, "0");
+    const minutes = String(parsed.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+}
+
+function toEntryTimeIso(timeValue: string, day: string, fallbackIso: string): string {
+    const [hoursRaw, minutesRaw] = timeValue.split(":");
+    const hours = Number(hoursRaw);
+    const minutes = Number(minutesRaw);
+    if (!Number.isInteger(hours) || !Number.isInteger(minutes)) {
+        return fallbackIso;
+    }
+
+    const normalizedDay = day.includes("T") ? day.slice(0, 10) : day;
+    const base = new Date(`${normalizedDay}T00:00:00`);
+
+    if (Number.isNaN(base.getTime())) {
+        return fallbackIso;
+    }
+
+    base.setHours(hours, minutes, 0, 0);
+    return base.toISOString();
+}
+
 function AutoTextarea({ value, onChange, placeholder }: { value: string; onChange: (val: string) => void; placeholder?: string; autoFocus?: boolean }) {
     const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -51,14 +79,24 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
 }
 
 function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: JournalEntry; onChange: (id: string, field: keyof JournalEntry, value: string) => void; onToggleDistraction: (id: string) => void; onDelete: (id: string) => void }) {
+    const [text, setText] = useState(entry.text);
+    const [time, setTime] = useState(toTimeInputValue(entry.entryTime));
+    const handleTextChange = (value: string) => {
+        setText(value);
+        onChange(entry.id, 'text', value);
+    }
+    const handleTimeChange = (value: string) => {
+        setTime(value);
+        onChange(entry.id, 'entryTime', toEntryTimeIso(value, entry.day, entry.entryTime));
+    }
     return (
         <div className={`entry-row${entry.distraction ? " entry-row--distraction" : ""}`}>
             <div className="time-cell">
                 <button className="delete-btn" onClick={() => onDelete(entry.id)}>×</button>
                 <input
                     className="time-input"
-                    value={entry.entryTime}
-                    onChange={(e) => onChange(entry.id, "entryTime", e.target.value)}
+                    value={time}
+                    onChange={(e) => handleTimeChange(e.target.value)}
                     placeholder="0:00 AM"
                     aria-label="JournalEntry time"
                     type="time"
@@ -66,8 +104,8 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
             </div>
             <div className="note-cell">
                 <AutoTextarea
-                    value={entry.text}
-                    onChange={(val) => onChange(entry.id, "text", val)}
+                    value={text}
+                    onChange={handleTextChange}
                     placeholder="What just happened? How do you feel? What's next?"
                 />
                 <button
@@ -81,36 +119,19 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
         </div>
     );
 }
-/**
- * journal_entries table
- *
- * Example row:
- *
- * {
- *   id: "550e8400-e29b-41d4-a716-446655440000",
- *   user_id: "8d91c8b4-6e9e-4d2d-9e4d-9e7b9c2f4d12",
- *
- *   day: "2026-05-07",
- *   entry_time: "2026-05-07T14:32:18.000Z",
- *
- *   text: "Felt distracted during work after lunch.",
- *   distraction: true,
- *
- *   created_at: "2026-05-07T14:33:01.000Z",
- *   updated_at: "2026-05-07T14:33:01.000Z"
- * }
- */
+
 export default function Journal() {
     const { entries, updateJournalEntry, deleteJournalEntry, addJournalEntry } = useJournal();
     const [offset, setOffset] = useState(0);
     const [guideOpen, setGuideOpen] = useState(true);
+    const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
 
     const handleChange = useCallback((id: string, field: keyof JournalEntry, value: string) => {
         const entry = entries.find((e) => e.id === id);
         if (entry) {
-            updateJournalEntry({ ...entry, [field]: value });
+            debouncedUpdate({ ...entry, [field]: value });
         }
-    }, [entries, updateJournalEntry]);
+    }, [entries, debouncedUpdate]);
 
     const handleDelete = useCallback((id: string) => {
         deleteJournalEntry(id);
@@ -119,9 +140,9 @@ export default function Journal() {
     const handleToggleDistraction = useCallback((id: string) => {
         const entry = entries.find((e) => e.id === id);
         if (entry) {
-            updateJournalEntry({ ...entry, distraction: !entry.distraction });
+            debouncedUpdate({ ...entry, distraction: !entry.distraction });
         }
-    }, [entries, updateJournalEntry]);
+    }, [entries, debouncedUpdate]);
 
     const addEntry = () => {
 
