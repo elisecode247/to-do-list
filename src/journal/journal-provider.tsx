@@ -1,15 +1,19 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
 import { JournalContext } from './journal-context';
 import type { JournalEntry } from './types';
 import { addEntry, fetchJournalEntries, updateEntry, deleteEntry } from './api';
 
 export const JournalProvider = ({ children }: { children: ReactNode }) => {
     const [entries, setEntries] = useState<JournalEntry[]>([]);
-    useEffect(() => {
-        fetchJournalEntries()
-            .then(setEntries)
-            .catch(err => console.error("Failed to load journal entries:", err));
-    }, [setEntries]);
+
+    const loadJournalEntries = useCallback(async (day: string) => {
+        try {
+            const data = await fetchJournalEntries(day);
+            setEntries(data);
+        } catch (err) {
+            console.error("Failed to load journal entries:", err);
+        }
+    }, []);
 
     const addJournalEntry = async (entry: JournalEntry) => {
         try {
@@ -40,6 +44,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
     return (
         <JournalContext.Provider value={{
             entries,
+            loadJournalEntries,
             addJournalEntry,
             updateJournalEntry,
             deleteJournalEntry

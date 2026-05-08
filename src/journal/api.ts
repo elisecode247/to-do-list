@@ -2,9 +2,18 @@ import { authHeaders } from "src/authentication/authentication-api";
 import type { JournalEntry } from "./types";
 import { API_JOURNAL_URL } from "src/app/constants";
 
-export async function fetchJournalEntries(): Promise<JournalEntry[]> {
+function formatTodayForApi(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+export async function fetchJournalEntries(day: string = formatTodayForApi()): Promise<JournalEntry[]> {
     try {
-        const response = await fetch(API_JOURNAL_URL, {
+        const params = new URLSearchParams({ day });
+        const response = await fetch(`${API_JOURNAL_URL}?${params.toString()}`, {
             method: "GET",
             headers: await authHeaders(),
         });

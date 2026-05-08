@@ -16,6 +16,7 @@ export interface JournalEntry {
 
 export interface JournalContextType {
     entries: JournalEntry[];
+    loadJournalEntries: (day: string) => Promise<void>;
     addJournalEntry: (entry: JournalEntry) => Promise<void>;
     updateJournalEntry: (entry: JournalEntry) => Promise<void>;
     deleteJournalEntry: (id: string) => Promise<void>;

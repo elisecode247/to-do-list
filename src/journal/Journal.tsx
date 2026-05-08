@@ -121,10 +121,15 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
 }
 
 export default function Journal() {
-    const { entries, updateJournalEntry, deleteJournalEntry, addJournalEntry } = useJournal();
+    const { entries, loadJournalEntries, updateJournalEntry, deleteJournalEntry, addJournalEntry } = useJournal();
     const [offset, setOffset] = useState(0);
     const [guideOpen, setGuideOpen] = useState(true);
     const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
+    const selectedDay = formatDate(offset);
+
+    useEffect(() => {
+        void loadJournalEntries(selectedDay);
+    }, [loadJournalEntries, selectedDay]);
 
     const handleChange = useCallback((id: string, field: keyof JournalEntry, value: string) => {
         const entry = entries.find((e) => e.id === id);
@@ -152,7 +157,7 @@ export default function Journal() {
             entryTime: new Date().toISOString(),
             text: "",
             distraction: false,
-            day: formatDate(offset)
+            day: selectedDay
         });
     };
 
@@ -167,7 +172,7 @@ export default function Journal() {
                         <button className="journal-nav-btn" onClick={() => setOffset((o) => o - 1)} aria-label="Previous day">
                             ‹
                         </button>
-                        <span className="date-label">{formatDate(offset)}</span>
+                        <span className="date-label">{selectedDay}</span>
                         <button className="journal-nav-btn" onClick={() => setOffset((o) => o + 1)} aria-label="Next day">
                             ›
                         </button>
