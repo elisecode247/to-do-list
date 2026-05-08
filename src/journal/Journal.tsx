@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import "./Journal.css";
+import "./journal.css";
 import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
