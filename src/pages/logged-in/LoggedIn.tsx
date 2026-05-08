@@ -22,6 +22,8 @@ import { ListFilter, Plus } from 'lucide-react';
 import { API_URL } from 'app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
 import IconButton from 'src/components/icon-button/IconButton';
+import { JournalProvider } from 'src/journal/journal-provider';
+import Journal from 'src/journal/Journal';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -54,7 +56,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
         updateItem,
         loadDate,
     } = useTask();
-
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
@@ -259,6 +260,10 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                         message={taskError}
                         onRetry={loadTasks}
                     />
+                ) : activeTab === TABS.journal ? (
+                    <JournalProvider>
+                        <Journal />
+                    </JournalProvider>
                 ) : (
                     <Checklist
                         onEditItem={handleEditItem}

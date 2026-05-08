@@ -72,6 +72,16 @@
 
     /** form specific */
     --form-error-color: light-dark(#ef4444, #f87171);
+
+    /* Journal */
+    --color-badge-bg: light-dark(#eeedfe, #3c3489);
+    --color-badge-text: light-dark(#534ab7, #cecbf6);
+    --color-distract-row-bg: light-dark(#fffbf0, rgba(250, 199, 117, 0.05));
+    --color-distract-row-bg-hover: light-dark(#fff8e6, rgba(250, 199, 117, 0.08));
+    --color-distract-pill-bg: #faeeda;
+    --color-distract-pill-text: #854f0b;
+    --color-distract-pill-border: #ef9f27;
+    --color-distract-pill-bg-hover: #f5c475;
 }
 
 body::before {

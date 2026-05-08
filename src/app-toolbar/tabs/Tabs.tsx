@@ -8,6 +8,7 @@ const tabOptions = [
     { id: TABS.upcoming, label: "Upcoming", priority: true },
     { id: TABS.hidden, label: "Not Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },
+    { id: TABS.journal, label: "Journal", priority: false },
 ];
 
 type TabsProps<T extends string> = {
