@@ -15,6 +15,7 @@ export type GoogleEvent = Event & {
     endDate: Date;
     description?: string;
     recurrenceId?: string;
+    isHidden: boolean;
 }
 
 export type GoogleTask = {

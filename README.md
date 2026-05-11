@@ -18,7 +18,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- bug: exclude google events on day completion
 - feature: Interstitial journal
 - bug: when toggling done, return new nextDue
 - ux: improve ux for newly logged in user

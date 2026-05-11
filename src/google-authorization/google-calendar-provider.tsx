@@ -195,6 +195,60 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         },
         [isAuthenticated, showToast]
     );
+
+    const hideEventForToday = useCallback(
+        async (eventId: string) => {
+            if (!isAuthenticated) return;
+
+            try {
+                const response = await fetch(`${API_AUTH_URL}/google/calendar/hide-event-today/${eventId}`, {
+                    method: "POST",
+                    headers: await authHeaders(),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to hide event: ${response.status}`);
+                }
+
+                setEvents(prev =>
+                    prev.map(event =>
+                        event.id === eventId ? { ...event, isHidden: true } : event
+                    )
+                );
+            } catch (err) {
+                console.error("Hiding calendar event failed:", err);
+                showToast("Failed to hide event for today", "error");
+            }
+        },
+        [isAuthenticated, showToast]
+    );
+
+    const unhideEventForToday = useCallback(
+        async (eventId: string) => {
+            if (!isAuthenticated) return;
+
+            try {
+                const response = await fetch(`${API_AUTH_URL}/google/calendar/unhide-event-today/${eventId}`, {
+                    method: "POST",
+                    headers: await authHeaders(),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to unhide event: ${response.status}`);
+                }
+
+                setEvents(prev =>
+                    prev.map(event =>
+                        event.id === eventId ? { ...event, isHidden: false } : event
+                    )
+                );
+            } catch (err) {
+                console.error("Unhiding calendar event failed:", err);
+                showToast("Failed to unhide event for today", "error");
+            }
+        },
+        [isAuthenticated, showToast]
+    );
     useEffect(() => {
         void initializeCalendar();
     }, [initializeCalendar]);
@@ -215,6 +269,8 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         initializeCalendar,
         loadCalendarEvents,
         markCalendarTaskCompletion,
+        hideEventForToday,
+        unhideEventForToday,
         events,
         tasks,
         isError,
@@ -228,6 +284,8 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         initializeCalendar,
         loadCalendarEvents,
         markCalendarTaskCompletion,
+        hideEventForToday,
+        unhideEventForToday,
         events,
         tasks,
         isError,

@@ -190,6 +190,19 @@ const DemoChecklist: FC<ChecklistProps> = ({
         }
     };
 
+    const handleEventHide = async (id: string, isHidden: boolean) => {
+        try {
+            if (isHidden) {
+                await unhideForToday(id as string);
+            } else {
+                await hideForToday(id as string);
+            }
+        } catch (err) {
+            console.error('Failed to update event visibility:', err);
+            showToast('Failed to update event visibility. Please try again.', 'error');
+        }
+    };
+
     const handleMoveItem = async (id: string) => {
         try {
             await archiveItem(id);
@@ -253,6 +266,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                 return (<CalendarEventItem
                                     key={eventItem.id}
                                     event={eventItem}
+                                    onHideItem={handleEventHide}
                                 />);
                             } else if (item.itemType === 'google-task') {
                                 const taskItem = item as GoogleTask;

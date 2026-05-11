@@ -4,26 +4,23 @@ import { useState } from "react";
 import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
 import { getDaysFromNow } from 'src/utilities/days-ago';
+import { Ban, CalendarPlus2 } from "lucide-react";
 
-export interface CalendarEvent {
-    title: string;
-    start: string;
-    end: string;
-    allDay: boolean;
-    note?: string | null;
-    startDate: Date; // Parsed start date for easier handling
-    endDate: Date; // Parsed end date for easier handling
-    description: string;
+interface CalendarEventItemProps {
+    event: GoogleEvent;
+    onHideItem: (id: string, isHidden: boolean) => void;
 }
 
-const CalendarEventItem = ({ event }: { event: GoogleEvent }) => {
+const CalendarEventItem = ({ event, onHideItem }: CalendarEventItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const dateString = getEventDateString(event);
     const countDownString = getDaysFromNow(event.startDate);
 
     const sanitizedHTML = DOMPurify.sanitize(event.description || '');
-
+    async function delayHide() {
+        onHideItem(event.id, event.isHidden);
+    }
     return (
         <div className="calendar-event-item">
             <div className="calendar-event-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -49,6 +46,18 @@ const CalendarEventItem = ({ event }: { event: GoogleEvent }) => {
                             {collapsed ? "➕" : "➖"}
                         </button>
                     )}
+                    <button
+                        className="sortable-item_main-button sortable-item_hide-button"
+                        onClick={delayHide}
+                        aria-label="Skip task"
+                        title={event.isHidden ? "Do task for today" : "Skip task for today"}
+                        type="button"
+                    >
+                        {event.isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
+                        <span className="sortable-item_button-text-span">
+                            {event.isHidden ? "Do Today" : "Skip"}
+                        </span>
+                    </button>
                 </div>
             </div>
 

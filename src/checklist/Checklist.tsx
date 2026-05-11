@@ -68,7 +68,13 @@ const Checklist: FC<ChecklistProps> = ({
         hideForToday,
         unhideForToday,
     } = useTask();
-    const { events, tasks, markCalendarTaskCompletion } = useGoogleCalendar();
+    const {
+        events,
+        tasks,
+        markCalendarTaskCompletion,
+        hideEventForToday,
+        unhideEventForToday,
+    } = useGoogleCalendar();
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
@@ -135,7 +141,9 @@ const Checklist: FC<ChecklistProps> = ({
         });
 
     const filteredEvents = events.filter(event => {
-        if (activeTab === TABS.today) {
+        if (activeTab === TABS.hidden && event.isHidden) return true;
+        if (activeTab === TABS.upcoming && !event.isHidden) return true;
+        if (activeTab === TABS.today && !event.isHidden) {
             return isTodayOrBefore(event.startDate);
         } else if (activeTab === TABS.upcoming) {
             return isTomorrowOrLater(event.startDate);
@@ -162,7 +170,7 @@ const Checklist: FC<ChecklistProps> = ({
 
         return 1;
     });
-    const completedDay = items.filter(i => i.done).length &&
+    const completedDay = items.some(item => item.done) &&
         filteredItems.length === 0 && activeTab === TABS.today;
 
     const sensors = useSensors(
@@ -230,6 +238,19 @@ const Checklist: FC<ChecklistProps> = ({
         } catch (err) {
             console.error('Failed to update task visibility:', err);
             showToast('Failed to update task visibility. Please try again.', 'error');
+        }
+    };
+
+    const handleEventHide = async (id: string, isHiddenItem: boolean) => {
+        try {
+            if (isHiddenItem) {
+                await unhideEventForToday(id as string);
+            } else {
+                await hideEventForToday(id as string);
+            }
+        } catch (err) {
+            console.error('Failed to update event visibility:', err);
+            showToast('Failed to update event visibility. Please try again.', 'error');
         }
     };
 
@@ -306,6 +327,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 return (<CalendarEventItem
                                     key={eventItem.id}
                                     event={eventItem}
+                                    onHideItem={handleEventHide}
                                 />);
                             } else if (item.itemType === 'google-task') {
                                 const taskItem = item as GoogleTask;

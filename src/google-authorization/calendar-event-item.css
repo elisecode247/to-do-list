@@ -73,10 +73,6 @@
         color: var(--color-text-primary);
     }
 
-    .calendar-event-item:hover {
-        background-color: var(--color-surface-hover);
-    }
-
     .calendar-event-item .calendar-event-link {
         color: #8ab4f8;
     }

@@ -9,6 +9,8 @@ export type GoogleCalendarContextValue = {
     initializeCalendar: () => Promise<void>;
     loadCalendarEvents: (opts?: { skipConnectionCheck?: boolean }) => Promise<GoogleEvent[] | []>;
     markCalendarTaskCompletion: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
+    hideEventForToday: (eventId: string) => Promise<void>;
+    unhideEventForToday: (eventId: string) => Promise<void>;
     events: GoogleEvent[];
     tasks: GoogleTask[];
     isError: boolean;
