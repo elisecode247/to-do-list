@@ -22,8 +22,6 @@ Live: https://elisecode247.github.io/to-do-list/
 - feature: allow user delete history
 - feature: add undo to delete and uncheck
 - feature: custom categories
-- security: access token in memory
-- security: refresh token in HttpOnly Secure SameSite cookie
 - chore: reset all env variables
 - infra: move frontend code to Railway (WPF Chp 3)
     - set up cdn on Railway https://docs.railway.com/guides/add-a-cdn-using-cloudfront

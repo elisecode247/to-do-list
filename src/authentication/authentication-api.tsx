@@ -1,5 +1,4 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
-import { REFRESH_TOKEN_KEY } from "src/authentication/constants";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
 let accessToken: string | null = null;
@@ -10,6 +9,7 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
         const response = await fetch(API_AUTH_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ token, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
         });
 
@@ -18,11 +18,11 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
         }
 
         const data = await response.json();
-        if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn || !data?.email) {
+        if (!data?.accessToken || !data?.expiresIn || !data?.email) {
             throw new Error("Invalid auth response from server");
         }
 
-        persistTokens(data.accessToken, data.refreshToken, data.expiresIn, data.email);
+        persistTokens(data.accessToken, data.expiresIn, data.email);
         return { email: data.email };
     } catch (err) {
         console.error("Failed to authenticate:", err);
@@ -31,15 +31,13 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 }
 
 export async function logout(): Promise<void> {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     accessToken = null;
     expiresAtMs = null;
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem("email");
     await fetch(`${API_AUTH_URL}/logout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
     });
 }
 
@@ -61,22 +59,16 @@ export async function getValidAuthToken(): Promise<string | null> {
     const token = accessToken;
 
     if (!expiresAtMs || Number.isNaN(expiresAtMs)) {
-        // On page reload: expiry is null in memory, but refresh token may exist
-        // Attempt refresh to get new access token + expiry
-        const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-        if (refreshToken) {
-            if (!refreshPromise) {
-                refreshPromise = refreshAuthToken().finally(() => {
-                    refreshPromise = null;
-                });
-            }
-            return refreshPromise.then(token => {
-                if (!token) logout();
-                return token;
+        // On page reload, expiry is null in memory. Try refresh via cookie.
+        if (!refreshPromise) {
+            refreshPromise = refreshAuthToken().finally(() => {
+                refreshPromise = null;
             });
         }
-        accessToken = null;
-        return null;
+        return refreshPromise.then(token => {
+            if (!token) logout();
+            return token;
+        });
     }
 
     // Return token if still valid
@@ -95,34 +87,34 @@ export async function getValidAuthToken(): Promise<string | null> {
     });
 }
 
-function persistTokens(access: string, refresh: string, expiresIn: number, email: string): void {
+function persistTokens(access: string, expiresIn: number, email: string): void {
     accessToken = access;
     expiresAtMs = Date.now() + expiresIn * 1000;
-    localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
     localStorage.setItem("email", email);
 }
 
 export async function refreshAuthToken(): Promise<string | null> {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-    if (!refreshToken) return null;
-
     const response = await fetch(API_REFRESH_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
     });
 
     if (!response.ok) {
+        // 401 is expected when user is logged out (no refresh token cookie)
+        if (response.status !== 401) {
+            console.error(`Refresh token request failed: ${response.status} ${response.statusText}`);
+        }
         logout();
         return null;
     }
 
     try {
         const data = await response.json();
-        if (!data?.accessToken || !data?.refreshToken || !data?.expiresIn) {
+        if (!data?.accessToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
-        persistTokens(data.accessToken, data.refreshToken, data.expiresIn, data.email);
+        persistTokens(data.accessToken, data.expiresIn, data.email ?? localStorage.getItem("email") ?? "");
         return data.accessToken;
     } catch {
         logout();
