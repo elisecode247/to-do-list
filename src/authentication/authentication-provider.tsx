@@ -1,13 +1,10 @@
-import { useState, useCallback, type ReactNode } from 'react';
-import { loginWithGoogle, logout as logoutAPI } from 'src/authentication/authentication-api';
-import { AUTH_TOKEN_KEY } from 'src/authentication/constants';
+import { useState, useCallback, useEffect, type ReactNode } from 'react';
+import { getValidAuthToken, loginWithGoogle, logout as logoutAPI } from 'src/authentication/authentication-api';
 import { AuthenticationContext } from './authentication-context';
 
 
 export const AuthenticationProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(() =>
-        Boolean(localStorage.getItem(AUTH_TOKEN_KEY))
-    );
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [googleButtonState, setGoogleButtonState] = useState<'pending' | 'success' | 'failure'>('pending');
     const [email, setEmail] = useState<string | undefined>(
         localStorage.getItem("email") || ''
@@ -18,6 +15,26 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
             setEmail(userData.email);
         }
         setIsAuthenticated(true);
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        getValidAuthToken()
+            .then((token) => {
+                if (isMounted) {
+                    setIsAuthenticated(Boolean(token));
+                }
+            })
+            .catch(() => {
+                if (isMounted) {
+                    setIsAuthenticated(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const logout = useCallback(() => {

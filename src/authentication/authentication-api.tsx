@@ -1,7 +1,8 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
-import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY, TOKEN_EXPIRES_KEY } from "src/authentication/constants";
+import { REFRESH_TOKEN_KEY, TOKEN_EXPIRES_KEY } from "src/authentication/constants";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
+let accessToken: string | null = null;
 
 export async function loginWithGoogle(token: string): Promise<{email?: string}> {
     try {
@@ -30,7 +31,7 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 
 export async function logout(): Promise<void> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
+    accessToken = null;
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(TOKEN_EXPIRES_KEY);
     localStorage.removeItem("email");
@@ -42,7 +43,7 @@ export async function logout(): Promise<void> {
 }
 
 export function getAuthToken(): string | null {
-    return localStorage.getItem(AUTH_TOKEN_KEY);
+    return accessToken;
 }
 
 export function isAuthenticated(): boolean {
@@ -57,11 +58,11 @@ export function isAuthenticated(): boolean {
 let refreshPromise: Promise<string | null> | null = null;
 
 export async function getValidAuthToken(): Promise<string | null> {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    const token = accessToken;
     const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
 
     if (!expiresAt || Number.isNaN(expiresAt)) {
-        logout();
+        accessToken = null;
         return null;
     }
 
@@ -82,7 +83,7 @@ export async function getValidAuthToken(): Promise<string | null> {
 }
 
 function persistTokens(access: string, refresh: string, expiresIn: number, email: string): void {
-    localStorage.setItem(AUTH_TOKEN_KEY, access);
+    accessToken = access;
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
     localStorage.setItem(TOKEN_EXPIRES_KEY, String(Date.now() + expiresIn * 1000));
     localStorage.setItem("email", email);
