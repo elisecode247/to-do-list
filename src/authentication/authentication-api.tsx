@@ -1,8 +1,9 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
-import { REFRESH_TOKEN_KEY, TOKEN_EXPIRES_KEY } from "src/authentication/constants";
+import { REFRESH_TOKEN_KEY } from "src/authentication/constants";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
 let accessToken: string | null = null;
+let expiresAtMs: number | null = null;
 
 export async function loginWithGoogle(token: string): Promise<{email?: string}> {
     try {
@@ -32,8 +33,8 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 export async function logout(): Promise<void> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     accessToken = null;
+    expiresAtMs = null;
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem(TOKEN_EXPIRES_KEY);
     localStorage.removeItem("email");
     await fetch(`${API_AUTH_URL}/logout`, {
         method: "POST",
@@ -47,27 +48,39 @@ export function getAuthToken(): string | null {
 }
 
 export function isAuthenticated(): boolean {
-    const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
-    if (!expiresAt || Number.isNaN(expiresAt)) {
+    if (!expiresAtMs || Number.isNaN(expiresAtMs)) {
         logout();
         return false;
     }
-    return Boolean(getAuthToken() && Date.now() < expiresAt - SKEW_MS);
+    return Boolean(getAuthToken() && Date.now() < expiresAtMs - SKEW_MS);
 }
 
 let refreshPromise: Promise<string | null> | null = null;
 
 export async function getValidAuthToken(): Promise<string | null> {
     const token = accessToken;
-    const expiresAt = Number(localStorage.getItem(TOKEN_EXPIRES_KEY) || 0);
 
-    if (!expiresAt || Number.isNaN(expiresAt)) {
+    if (!expiresAtMs || Number.isNaN(expiresAtMs)) {
+        // On page reload: expiry is null in memory, but refresh token may exist
+        // Attempt refresh to get new access token + expiry
+        const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+        if (refreshToken) {
+            if (!refreshPromise) {
+                refreshPromise = refreshAuthToken().finally(() => {
+                    refreshPromise = null;
+                });
+            }
+            return refreshPromise.then(token => {
+                if (!token) logout();
+                return token;
+            });
+        }
         accessToken = null;
         return null;
     }
 
     // Return token if still valid
-    if (token && Date.now() < expiresAt - SKEW_MS) return token;
+    if (token && Date.now() < expiresAtMs - SKEW_MS) return token;
 
     // Only one refresh in progress at a time
     if (!refreshPromise) {
@@ -84,8 +97,8 @@ export async function getValidAuthToken(): Promise<string | null> {
 
 function persistTokens(access: string, refresh: string, expiresIn: number, email: string): void {
     accessToken = access;
+    expiresAtMs = Date.now() + expiresIn * 1000;
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
-    localStorage.setItem(TOKEN_EXPIRES_KEY, String(Date.now() + expiresIn * 1000));
     localStorage.setItem("email", email);
 }
 

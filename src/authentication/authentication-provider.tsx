@@ -4,6 +4,7 @@ import { AuthenticationContext } from './authentication-context';
 
 
 export const AuthenticationProvider = ({ children }: { children: ReactNode }) => {
+    const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [googleButtonState, setGoogleButtonState] = useState<'pending' | 'success' | 'failure'>('pending');
     const [email, setEmail] = useState<string | undefined>(
@@ -24,11 +25,13 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
             .then((token) => {
                 if (isMounted) {
                     setIsAuthenticated(Boolean(token));
+                    setIsLoading(false);
                 }
             })
             .catch(() => {
                 if (isMounted) {
                     setIsAuthenticated(false);
+                    setIsLoading(false);
                 }
             });
 
@@ -46,6 +49,7 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
     return (
         <AuthenticationContext.Provider value={{
             email,
+            isLoading,
             isAuthenticated,
             login,
             logout,

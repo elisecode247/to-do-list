@@ -27,7 +27,7 @@ const NotFoundLazy = lazy(async () => {
 const NOTES_CACHE_KEY = 'daily-reset:cached-notes';
 
 const App: FC = () => {
-    const { isAuthenticated, login } = useAuthentication();
+    const { isAuthenticated, isLoading, login } = useAuthentication();
     const [cachedNotes, setCachedNotesState] = useState<string | null>(() => {
         return localStorage.getItem(NOTES_CACHE_KEY);
     });
@@ -61,7 +61,8 @@ const App: FC = () => {
 
         <Switch>
             <Route path={ROUTES.home}>
-                {!isAuthenticated ? (
+                {isLoading ? null :
+                !isAuthenticated ? (
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
                 ) : (
                     <LoggedIn
