@@ -4,7 +4,7 @@ An app so simple to use you will actually use it. This app will give you structu
 
 Goal is not task management but *gentle remembering without emotional penalty.*
 
-Live: https://elisecode247.github.io/to-do-list/
+Live: https://www.dailyresetlist.com
 
 ## Features
 
