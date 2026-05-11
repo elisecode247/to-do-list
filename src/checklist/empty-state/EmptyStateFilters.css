@@ -24,7 +24,7 @@
 .empty-state-title {
     font-size: 18px;
     font-weight: 500;
-    color: var(--color-text-primary);
+    color: var(--color-text-light);
     margin: 0 0 var(--spacing-xs) 0;
     text-align: center;
     white-space: pre-line;
@@ -100,7 +100,7 @@
     .empty-state-title {
         font-size: 18px;
         font-weight: 500;
-        color: var(--color-text-primary);
+        color: var(--color-text-light);
     }
 
     .empty-state-description {
