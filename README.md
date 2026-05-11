@@ -18,8 +18,6 @@ Live: https://elisecode247.github.io/to-do-list/
 
 
 ### To do
-- feature: Interstitial journal
-- bug: when toggling done, return new nextDue
 - ux: improve ux for newly logged in user
 - feature: allow user delete history
 - feature: add undo to delete and uncheck
