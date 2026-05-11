@@ -22,8 +22,3 @@ Live: https://www.dailyresetlist.com
 - feature: allow user delete history
 - feature: add undo to delete and uncheck
 - feature: custom categories
-- chore: reset all env variables
-- infra: move frontend code to Railway (WPF Chp 3)
-    - set up cdn on Railway https://docs.railway.com/guides/add-a-cdn-using-cloudfront
-    - set max-age to a year for cache-control header (check cdn as well)
-
