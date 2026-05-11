@@ -99,7 +99,23 @@ const RecurrenceForm = () => {
             <div className="recurrence-form__row">
                 <label className="recurrence-form__label" htmlFor="calendar-end-date">Ends on</label>
                 <input
-                    {...register('endDate', { required: true })}
+                    {...register('endDate', {
+                        required: true,
+                        validate: (value) => {
+                            if (!value) {
+                                return true;
+                            }
+                            const start = localDateWithNowTime(getValues('startDate') as string);
+                            const end = localDateWithNowTime(value);
+                            if (isNaN(end.getTime())) {
+                                return 'Please enter a valid end date';
+                            }
+                            if (end < start) {
+                                return 'End date must be on or after start date';
+                            }
+                            return true;
+                        },
+                    })}
                     id="calendar-end-date"
                     type="date"
                     className="task-form-input recurrence-form__end-input"

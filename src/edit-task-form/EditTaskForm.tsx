@@ -71,8 +71,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         note: formData.note ?? '',
         startDate: recurrence?.startDate ? formatDate(new Date(recurrence.startDate)) : formatDate(new Date()),
         endDate: isCalendarRecurrence
+        //  default to startDate if endDate is not set for calendar recurrence, as it is required in the form but not in the data model
             ? ((recurrence as CalendarRecurrence).endDate ?
-                formatDate(new Date((recurrence as CalendarRecurrence).endDate as string)) : '')
+                formatDate(new Date((recurrence as CalendarRecurrence).endDate as string)) :
+                formatDate(new Date((recurrence as CalendarRecurrence).startDate as string)))
             : '',
         numberOfRepetitions: isIntervalRecurrence
             ? (recurrence as IntervalRecurrence).numberOfRepetitions ?? 1
