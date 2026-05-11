@@ -33,7 +33,6 @@ import { TaskContext } from './task-context';
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
     const [items, setItems] = useState<ChecklistItem[]>([]);
-    console.log("%c Line:36 🥒 items", "color:#93c0a4", items);
     const [isLoading, setIsLoading] = useState(enabled);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
@@ -79,7 +78,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         try {
             const updatedTask = await updateTask(updatedItem);
-            console.log("%c Line:81 🍋 updatedTask", "color:#ed9ec7", updatedTask);
             setItems(prev => {
             previousItem = prev.find(i => i.id === updatedItem.id);
             return prev.map(i => i.id === updatedItem.id ? {
