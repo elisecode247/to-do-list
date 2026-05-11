@@ -34,7 +34,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
     const [tasks, setTasks] = useState<GoogleTask[]>([]);
     const [isError, setIsError] = useState(false);
     const hasShownEventsErrorRef = useRef(false);
-    const [clientId, setClientId] = useState<string | null>(null);
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || null;
 
     const fetchStatus = useCallback(async (opts?: { force?: boolean }) => {
 
@@ -252,12 +252,6 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         void initializeCalendar();
     }, [initializeCalendar]);
-
-    useEffect(() => {
-        fetch(`${API_AUTH_URL}/google-client-id`)
-            .then(res => res.json())
-            .then(data => setClientId(data.clientId));
-    }, []);
 
     const refreshStatus = useCallback(() => fetchStatus({ force: true }), [fetchStatus]);
 
