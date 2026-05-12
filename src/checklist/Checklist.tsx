@@ -312,7 +312,7 @@ const Checklist: FC<ChecklistProps> = ({
                             />
                             {showNoteSaved && <div className="note-saved-indicator">Notes saved</div>}
                         </div>
-                        {!allItems.length && (
+                        {activeTab === TABS.today && !allItems.length && (
                             <EmptyStateFilters
                                 modeFilter={modeFilter}
                                 onClearFilters={clearFilters}

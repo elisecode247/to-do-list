@@ -146,12 +146,12 @@ const AppToolbar = ({
 
             <div className="drawer-section drawer-section--compact">
                 <div className="drawer-toggle-row">
-                    <span className="drawer-toggle-label">Hide Completed</span>
+                    <span className="drawer-toggle-label">Hide Completed Tasks</span>
                     <button
                         type="button"
                         role="switch"
                         aria-checked={hideCompleted}
-                        aria-label="Hide completed"
+                        aria-label="Hide completed tasks"
                         className={`drawer-toggle ${hideCompleted ? '' : 'off'}`}
                         onClick={() => setHideCompleted(!hideCompleted)}
                     >
