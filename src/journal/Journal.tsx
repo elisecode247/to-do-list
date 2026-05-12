@@ -4,14 +4,8 @@ import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
 import { useDebounceCallback } from 'usehooks-ts';
-
-const GUIDE_ITEMS = [
-    { icon: "✓", label: "What I just finished" },
-    { icon: "~", label: "Thoughts & feelings" },
-    { icon: "→", label: "My next action" },
-    { icon: "◎", label: "What I expect (optional)" },
-    { icon: "≡", label: "Anything else worth noting" },
-];
+import { ArrowBigLeft, ArrowBigRight, HelpCircle } from "lucide-react";
+import Guide from "./Guide";
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -123,7 +117,7 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
 export default function Journal() {
     const { entries, loadJournalEntries, updateJournalEntry, deleteJournalEntry, addJournalEntry } = useJournal();
     const [offset, setOffset] = useState(0);
-    const [guideOpen, setGuideOpen] = useState(true);
+    const [guideOpen, setGuideOpen] = useState(false);
     const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
     const selectedDay = formatDate(offset);
 
@@ -161,6 +155,13 @@ export default function Journal() {
         });
     };
 
+    const handleCalendarJump = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newDate = e.target.value;
+        const today = formatDate(0);
+        const newOffset = Math.round((new Date(newDate).getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24));
+        setOffset(newOffset);
+    };
+
     const badge = offsetBadge(offset);
 
     return (
@@ -170,48 +171,54 @@ export default function Journal() {
                 <div className="journal-header">
                     <div className="date-nav">
                         <button className="journal-nav-btn" onClick={() => setOffset((o) => o - 1)} aria-label="Previous day">
-                            ‹
+                            <ArrowBigLeft size={20} />
                         </button>
-                        <span className="date-label">{selectedDay}</span>
+                        <input
+                            name="calendar-jump"
+                            id="calendar-jump"
+                            className="date-label calendar-jump-input"
+                            type="date"
+                            onFocus={(e) => e.currentTarget.showPicker?.()}
+                            onClick={(e) => e.currentTarget.showPicker?.()}
+                            onChange={handleCalendarJump}
+                            value={selectedDay}
+                        />
                         <button className="journal-nav-btn" onClick={() => setOffset((o) => o + 1)} aria-label="Next day">
-                            ›
+                            <ArrowBigRight size={20} />
                         </button>
+                        {badge && <span className="today-badge">{badge}</span>}
                     </div>
                     <div className="header-right">
-                        {badge && <span className="today-badge">{badge}</span>}
-                        <button className="cal-btn">
-                            <span className="cal-icon">⊞</span>
-                            Jump to date
-                        </button>
+                            <button
+                                className="guide-toggle"
+                                onClick={() => setGuideOpen((o) => !o)}
+                                aria-label="Show guide"
+                                title="How to write an entry"
+                            >
+                                <HelpCircle size={24} />
+                            </button>
+                        </div>
+                </div>
+
+                <div className="journal-reminder" aria-label="Journal writing reminder">
+                    <span className="journal-reminder-step">
+                        <span className="journal-reminder-num">1)</span> what you finished
+                    </span>
+                    <span className="journal-reminder-step">
+                        <span className="journal-reminder-num">2)</span> how you feel
+                    </span>
+                    <span className="journal-reminder-step">
+                        <span className="journal-reminder-num">3)</span> what's next
+                    </span>
+                    <div className="guide-popup-hint">
+                        <span className="guide-popup-hint-icon">!</span>
+                        If distracted — log it, then return
                     </div>
                 </div>
 
-                <div className="guide-bar">
-                    <button
-                        className="guide-toggle"
-                        onClick={() => setGuideOpen((o) => !o)}
-                        aria-label="Toggle guide"
-                    >
-                        {guideOpen ? "▾" : "▸"}
-                    </button>
-                    <div className="guide-content">
-                        <div className="guide-title">What to write in each entry</div>
-                        {guideOpen && (
-                            <div className="guide-pills">
-                                {GUIDE_ITEMS.map((item) => (
-                                    <span key={item.label} className="guide-pill">
-                                        <span className="guide-pill-icon">{item.icon}</span>
-                                        {item.label}
-                                    </span>
-                                ))}
-                                <span className="guide-pill guide-pill--distract">
-                                    <span className="guide-pill-icon">!</span>
-                                    If distracted — log it, then return
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                {guideOpen && (
+                    <Guide onGuideOpen={setGuideOpen} />
+                )}
 
                 <div className="col-headers">
                     <div className="col-hdr">Time</div>
