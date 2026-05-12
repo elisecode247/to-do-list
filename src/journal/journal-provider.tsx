@@ -18,7 +18,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
     const addJournalEntry = async (entry: JournalEntry) => {
         try {
             const newEntry = await addEntry(entry);
-            setEntries(prev => [...prev, newEntry]);
+            setEntries(prev => [newEntry, ...prev]);
         } catch (err) {
             console.error("Failed to add journal entry:", err);
         }
