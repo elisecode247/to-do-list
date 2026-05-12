@@ -27,6 +27,12 @@
         transform var(--transition-fast),
 }
 
+.tab-label-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
 /* HOVER (still inactive) */
 .tab:hover {
     color: var(--color-text-primary);

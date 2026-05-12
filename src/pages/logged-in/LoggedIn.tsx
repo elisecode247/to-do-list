@@ -18,7 +18,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { ListFilter, Plus } from 'lucide-react';
+import { ListFilter, PencilIcon, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -243,6 +243,7 @@ const LoggedIn: React.FC<LoggedInProps> = () => {
                 <nav className="mobile-tab-bar">
                     {Object.values(TABS)
                         .filter(tab =>
+                            tab === TABS.journal ||
                             tab === TABS.priority ||
                             tab === TABS.today ||
                             tab === TABS.upcoming
@@ -253,7 +254,7 @@ const LoggedIn: React.FC<LoggedInProps> = () => {
                                 className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
                                 onClick={() => handleTabChange(tab)}
                             >
-                                {TAB_LABELS[tab]}
+                                {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
                             </button>
                         ))}
                 </nav>

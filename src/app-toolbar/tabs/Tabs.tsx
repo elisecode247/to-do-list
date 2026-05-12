@@ -1,14 +1,30 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, type ReactNode } from "react";
 import './tabs.css';
+import { PencilIcon } from "lucide-react";
 import { TABS } from "./types";
 
-const tabOptions = [
+type TabOption = {
+    id: string;
+    label: ReactNode;
+    priority: boolean;
+};
+
+const tabOptions: TabOption[] = [
+    {
+        id: TABS.journal,
+        label: (
+            <span className="tab-label-with-icon">
+                <PencilIcon size={14} aria-hidden="true" />
+                <span>Journal</span>
+            </span>
+        ),
+        priority: false,
+    },
     { id: TABS.priority, label: "⭐ Priority", priority: true },
     { id: TABS.today, label: "Today", priority: true },
     { id: TABS.upcoming, label: "Upcoming", priority: true },
     { id: TABS.hidden, label: "Not Today", priority: false },
     { id: TABS.archived, label: "Archived", priority: false },
-    { id: TABS.journal, label: "Journal", priority: false },
 ];
 
 type TabsProps<T extends string> = {

@@ -120,7 +120,6 @@
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    min-width: 100px;
     border-radius: var(--radius-md);
 }
 
