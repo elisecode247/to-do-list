@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, type SetStateAction } from 'react';
+import React, { useState, type SetStateAction } from 'react';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
@@ -19,8 +19,6 @@ import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
 import { ListFilter, Plus } from 'lucide-react';
-import { API_URL } from 'app/constants';
-import { authHeaders } from 'src/authentication/authentication-api';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -29,14 +27,6 @@ import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
 import('src/pages/not-found/NotFound');
 
-const placeholderNotes = `# Welcome to Daily Reset!
-
-This is your personal space to jot down any notes, reminders, or thoughts related to your daily tasks. Whether it's a motivational quote, a reminder for an important event, or just some general notes to yourself, you can keep it all here.
-
-Feel free to use Markdown formatting to organize your notes and make them more visually appealing. Your notes will be saved automatically, so you can focus on what matters most - completing your daily tasks!
-
-Happy planning!`;
-
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 interface LoggedInProps {
@@ -44,7 +34,7 @@ interface LoggedInProps {
     setCachedNotes: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
+const LoggedIn: React.FC<LoggedInProps> = () => {
     useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
@@ -66,7 +56,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [initialNotes, setInitialNotes] = useState(cachedNotes ?? placeholderNotes);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
 
@@ -138,45 +127,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
     const handleCloseAccountMenu = () => {
         setMenuOpen(false);
     }
-
-    const handleNotesChange = (notes: string) => {
-        setInitialNotes(notes);
-        setCachedNotes(notes);
-    };
-
-    useEffect(() => {
-        if (cachedNotes !== null) {
-            setInitialNotes(cachedNotes);
-            return;
-        }
-
-        const fetchAppNotes = async () => {
-            try {
-                const response = await fetch(`${API_URL}/user-checklist`, {
-                    method: "GET",
-                    headers: await authHeaders()
-                });
-
-                if (!response.ok) {
-                    const text = await response.text();
-                    console.error(`Failed to fetch app notes: ${response.status} - ${text}`);
-                    return;
-                }
-
-                return await response.json();
-            } catch (err) {
-                console.error("Failed to load app notes:", err);
-            }
-        };
-
-        fetchAppNotes().then(data => {
-            if (data && typeof data.notes === 'string') {
-                setInitialNotes(data.notes);
-                setCachedNotes(data.notes);
-            }
-        });
-
-    }, [cachedNotes, setCachedNotes])
 
     return (<>
         {toasts.map(toast => (
@@ -273,8 +223,6 @@ const LoggedIn: React.FC<LoggedInProps> = ({ cachedNotes, setCachedNotes }) => {
                         hideCompleted={hideCompleted}
                         filterCategory={filterCategory}
                         clearFilters={clearFilters}
-                        initialNotes={initialNotes}
-                        onNotesChange={handleNotesChange}
                     />
                 )}
             </main>
