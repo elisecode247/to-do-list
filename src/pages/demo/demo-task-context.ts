@@ -3,6 +3,7 @@ import type { TaskContextType } from 'app/types';
 
 export interface DemoTaskContextType extends TaskContextType {
     clear: () => void;
+    itemLength: number;
 }
 
 export const DemoTaskContext = createContext<DemoTaskContextType | undefined>(undefined);

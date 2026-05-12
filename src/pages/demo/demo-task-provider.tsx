@@ -95,7 +95,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
-
+    const itemLength = items.length;
     const clear = () => {
         setTaskError(null);
         setIsLoading(true);
@@ -478,6 +478,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <DemoTaskContext.Provider value={{
+            itemLength,
             items,
             isLoading,
             taskError,

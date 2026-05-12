@@ -19,6 +19,10 @@ Live: https://www.dailyresetlist.com
 
 ### To do
 - ux: improve ux for newly logged in user
-- feature: allow user delete history
+- security: security improvements to server
+- admin: add privacy policy to homepage and footer
+- feature: make google calendar integration optional
+- feature: add templates for new users
+- feature: allow user delete account
 - feature: add undo to delete and uncheck
 - feature: custom categories
