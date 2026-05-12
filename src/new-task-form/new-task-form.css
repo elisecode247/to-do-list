@@ -2,7 +2,6 @@
     grid-area: create;
     height: 44px;
     width: 44px;
-    aspect-ratio: 1 / 1;
     background: var(--color-primary);
     opacity: 0.9;
     color: var(--color-text-light);
