@@ -45,6 +45,7 @@ const LoggedIn: React.FC<LoggedInProps> = () => {
         loadTasks,
         updateItem,
         loadDate,
+        itemLength,
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
@@ -214,6 +215,16 @@ const LoggedIn: React.FC<LoggedInProps> = () => {
                     <JournalProvider>
                         <Journal />
                     </JournalProvider>
+                ) : itemLength === 0 ?(
+                    <div className="empty-state">
+                        <h2>Welcome to Daily Reset!</h2>
+                        <div>
+                        <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
+                        <button className="empty-state-create-button" onClick={toggleAddForm}>
+                            Get Started with your first task
+                        </button>
+                        </div>
+                    </div>
                 ) : (
                     <Checklist
                         onEditItem={handleEditItem}

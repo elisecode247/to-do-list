@@ -36,6 +36,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(enabled);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
+    const itemLength = items.length;
 
     const reset = () => {
         setItems([]);
@@ -421,6 +422,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <TaskContext.Provider value={{
+            itemLength,
             items,
             isLoading,
             taskError,

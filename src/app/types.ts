@@ -108,6 +108,7 @@ export type FilterParams = {
     filterCategory: string;
 };
 export interface TaskContextType {
+    itemLength: number;
     items: ChecklistItem[];
     isLoading: boolean;
     taskError: string | null;
