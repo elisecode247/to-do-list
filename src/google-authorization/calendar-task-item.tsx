@@ -1,9 +1,9 @@
 import "./calendar-task-item.css";
-import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { BookPlus, BookMinus } from "lucide-react";
 import type { GoogleTask } from "./types";
 import { getDaysFromNow } from "src/utilities/days-ago";
+import { sanitizeUserHtml } from "src/utilities/sanitize-html";
 
 type CalendarTaskItemProps = {
     task: GoogleTask;
@@ -13,7 +13,7 @@ const CalendarTaskItem = ({task, markCompleted }: CalendarTaskItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const [checked, setChecked] = useState(task.done);
     const toggleCollapsed = () => setCollapsed(!collapsed);
-    const sanitizedHTML = DOMPurify.sanitize(task.note || '');
+    const sanitizedHTML = sanitizeUserHtml(task.note || '');
     const dateString = task.due ? new Date(task.due).toLocaleString() : "No due date";
     const countDownString = task.due ? getDaysFromNow(new Date(task.due)) : "";
 

@@ -1,9 +1,9 @@
 import "./calendar-event-item.css";
-import DOMPurify from 'dompurify';
 import { useState } from "react";
 import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
 import { getDaysFromNow } from 'src/utilities/days-ago';
+import { sanitizeUserHtml } from "src/utilities/sanitize-html";
 import { Ban, CalendarPlus2 } from "lucide-react";
 
 interface CalendarEventItemProps {
@@ -17,7 +17,7 @@ const CalendarEventItem = ({ event, onHideItem }: CalendarEventItemProps) => {
     const dateString = getEventDateString(event);
     const countDownString = getDaysFromNow(event.startDate);
 
-    const sanitizedHTML = DOMPurify.sanitize(event.description || '');
+    const sanitizedHTML = sanitizeUserHtml(event.description || '');
     async function delayHide() {
         onHideItem(event.id, event.isHidden);
     }
