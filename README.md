@@ -18,6 +18,7 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
+- bug: when calendar event created, needs nextDue calculated
 - ux: improve ux for newly logged in user
 - security: security improvements to server
 - admin: add privacy policy to homepage and footer
@@ -26,3 +27,5 @@ Live: https://www.dailyresetlist.com
 - feature: allow user delete account
 - feature: add undo to delete and uncheck
 - feature: custom categories
+- security: Remove inline styles to tighten CSP
+- security: remove email in localStorage

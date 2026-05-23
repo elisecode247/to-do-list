@@ -1,4 +1,4 @@
-import { lazy, useCallback, useState, type FC, type SetStateAction } from 'react';
+import { lazy, type FC } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
@@ -24,29 +24,8 @@ const NotFoundLazy = lazy(async () => {
     return { default: (await import('src/pages/not-found/NotFound')).default };
 });
 
-const NOTES_CACHE_KEY = 'daily-reset:cached-notes';
-
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
-    const [cachedNotes, setCachedNotesState] = useState<string | null>(() => {
-        return localStorage.getItem(NOTES_CACHE_KEY);
-    });
-
-    const setCachedNotes = useCallback((value: SetStateAction<string | null>) => {
-        setCachedNotesState(prev => {
-            const next = typeof value === 'function'
-                ? (value as (prevState: string | null) => string | null)(prev)
-                : value;
-
-            if (next === null) {
-                localStorage.removeItem(NOTES_CACHE_KEY);
-            } else {
-                localStorage.setItem(NOTES_CACHE_KEY, next);
-            }
-
-            return next;
-        });
-    }, []);
 
     const handleLoginSuccess = async (token: string) => {
         try {
@@ -65,10 +44,7 @@ const App: FC = () => {
                 !isAuthenticated ? (
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
                 ) : (
-                    <LoggedIn
-                        cachedNotes={cachedNotes}
-                        setCachedNotes={setCachedNotes}
-                    />
+                    <LoggedIn />
                 )}
             </Route>
             <Route path={ROUTES.demo}>

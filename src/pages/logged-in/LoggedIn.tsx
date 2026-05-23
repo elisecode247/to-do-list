@@ -29,12 +29,7 @@ import('src/pages/not-found/NotFound');
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-interface LoggedInProps {
-    cachedNotes: string | null;
-    setCachedNotes: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-const LoggedIn: React.FC<LoggedInProps> = () => {
+const LoggedIn: React.FC = () => {
     useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
