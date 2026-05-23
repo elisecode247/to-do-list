@@ -2,6 +2,7 @@ import {
     EndingConditionType,
     FrequencyType
 } from 'src/app/types';
+import { useEffect, useRef } from 'react';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import './recurrence-form.css';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -66,12 +67,14 @@ function getOrdinal(value: number): string {
 }
 
 const RecurrenceForm = () => {
-    const { register, watch, getValues, control } = useFormContext();
+    const { register, watch, getValues, control, setValue } = useFormContext();
     const frequency = getValues('frequency') as FrequencyType;
     const startDate = getValues('startDate') as string;
     const isRepeating = getValues('isRepeating') as boolean;
     const endingCondition = getValues('endingCondition') as EndingConditionType;
+    const previousStartDateRef = useRef(startDate);
     const watchFrequency = useWatch({ control, name: 'frequency', defaultValue: frequency });
+    const watchStartDate = useWatch({ control, name: 'startDate', defaultValue: startDate });
     const weekDaysRepetition = getValues('weekDaysRepetition') as Array<number> || [];
     const watchIsRepeating = useWatch({
         control,
@@ -83,6 +86,23 @@ const RecurrenceForm = () => {
         name: "endingCondition",
         defaultValue: endingCondition,
     });
+
+    useEffect(() => {
+        if (!watchStartDate) {
+            previousStartDateRef.current = watchStartDate;
+            return;
+        }
+
+        if (watchStartDate === previousStartDateRef.current) {
+            return;
+        }
+
+        previousStartDateRef.current = watchStartDate;
+        setValue('endDate', watchStartDate, {
+            shouldDirty: true,
+            shouldValidate: true,
+        });
+    }, [setValue, watchStartDate]);
 
     return (
         <div className="recurrence-form" aria-label="Custom recurrence form">
