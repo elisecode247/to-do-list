@@ -18,11 +18,6 @@ export function NotFound() {
                     You drifted a little off course
                 </h2>
 
-                <p className="not-found__description">
-                    This page doesn't exist — but you're not lost.
-                    Let's gently bring you back.
-                </p>
-
                 {isAuthenticated ? (
                     <Link href={ROUTES.home}>
                         <button className="btn btn--primary">
