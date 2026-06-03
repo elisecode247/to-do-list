@@ -18,6 +18,12 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
+- feature: add google calendar event
+- feature: edit google calendar event
+- feature: remove app calendar-type tasks
+- bug: Sparkles only when filters are off
+- bug: Update next due for create and edit tasks
+- bug: Fix font so it does zoom on phone
 - bug: when calendar event created, needs nextDue calculated
 - ux: improve ux for newly logged in user
 - security: security improvements to server
