@@ -12,7 +12,14 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
     const { clientId } = useGoogleCalendar();
 
     const connectCalendar = () => {
-        if (!clientId || !window.google) return;
+        if (!clientId) {
+                onError?.(new Error("Google API client ID is missing"));
+            return;
+        }
+        if (!window.google) {
+            onError?.(new Error("Google API client not loaded"));
+            return;
+        }
 
         window.google.accounts.oauth2
             .initCodeClient({
