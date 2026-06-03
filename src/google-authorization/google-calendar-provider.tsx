@@ -7,7 +7,7 @@ import {
     useMemo,
     type ReactNode,
 } from "react";
-import { API_AUTH_URL } from "src/app/constants";
+import { API_AUTH_URL, CLIENT_ID } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
 import { useAuthentication } from "src/authentication/use-authentication";
 import {
@@ -34,7 +34,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
     const [tasks, setTasks] = useState<GoogleTask[]>([]);
     const [isError, setIsError] = useState(false);
     const hasShownEventsErrorRef = useRef(false);
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || null;
+    const clientId = CLIENT_ID;
 
     const fetchStatus = useCallback(async (opts?: { force?: boolean }) => {
 

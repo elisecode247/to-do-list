@@ -5,3 +5,4 @@ export const API_AUTH_URL = !isLocal ? "https://api.dailyresetlist.com/auth" : i
 export const API_CHORES_URL = !isLocal ? "https://api.dailyresetlist.com/chores" : import.meta.env.VITE_API_CHORES_URL;
 export const API_JOURNAL_URL = !isLocal ? "https://api.dailyresetlist.com/journal" : import.meta.env.VITE_API_JOURNAL_URL;
 export const API_REFRESH_URL = !isLocal ? "https://api.dailyresetlist.com/auth/refresh" : import.meta.env.VITE_API_REFRESH_URL;
+export const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
