@@ -1,26 +1,22 @@
 import 'src/edit-task-form/edit-task-form.css';
 import 'src/task-form/task-form-shared.css';
 import { useState, useRef, type FC } from 'react';
-import type { ChecklistItem, Mode, MonthlyPattern } from 'app/types';
-import { MODES, OCCASIONAL_MODE, CALENDAR_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/constants';
+import type { ChecklistItem, Mode } from 'app/types';
+import { MODES, OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/constants';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import {
-    CALENDAR_RECURRENCE,
-    EndingConditionType,
     FrequencyType,
     INTERVAL_RECURRENCE,
     IntervalOptions,
     ONE_TIME_RECURRENCE,
-    type CalendarRecurrence,
     type IntervalRecurrence,
     type OneTimeRecurrence,
 } from 'src/app/types';
 import CloseButton from 'components/close-button/CloseButton';
-import RecurrenceForm from 'src/recurrence-form/RecurrenceForm';
 import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 'react-hook-form';
 
 type EditTaskFormProps = {
@@ -32,15 +28,10 @@ type EditTaskFormProps = {
 
 type RecurrenceFormValues = {
     startDate: string;
+    endDate: string;
     numberOfRepetitions: number;
     isRepeating: boolean;
     frequency: FrequencyType;
-    weekDaysRepetition: string[];
-    monthlyPattern: MonthlyPattern;
-    endingCondition: EndingConditionType;
-    endingOccurrencesNumber: number;
-    endDate: string;
-    recurrenceEndDate: string;
 };
 
 type EditTaskFormValues = {
@@ -60,7 +51,6 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const [isPriority, setIsPriority] = useState(formData.isPriority);
     const noteRef = useRef<MDXEditorMethods>(null);
     const recurrence = formData.recurrence;
-    const isCalendarRecurrence = recurrence?.type === CALENDAR_RECURRENCE;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
     const isOneTimeRecurrence = recurrence?.type === ONE_TIME_RECURRENCE;
 
@@ -70,48 +60,21 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         lastCompleted: formData.lastCompleted ? formatDate(new Date(formData.lastCompleted)) : '',
         note: formData.note ?? '',
         startDate: recurrence?.startDate ? formatDate(new Date(recurrence.startDate)) : formatDate(new Date()),
-        endDate: isCalendarRecurrence
-        //  default to startDate if endDate is not set for calendar recurrence, as it is required in the form but not in the data model
-            ? ((recurrence as CalendarRecurrence).endDate ?
-                formatDate(new Date((recurrence as CalendarRecurrence).endDate as string)) :
-                formatDate(new Date((recurrence as CalendarRecurrence).startDate as string)))
-            : '',
+        endDate: '',
         numberOfRepetitions: isIntervalRecurrence
             ? (recurrence as IntervalRecurrence).numberOfRepetitions ?? 1
-            : isCalendarRecurrence
-                ? (recurrence as CalendarRecurrence).numberOfRepetitions ?? 1
-                : 1,
-        isRepeating: isOneTimeRecurrence
-            ? false
-            : isIntervalRecurrence || (isCalendarRecurrence && (recurrence as CalendarRecurrence).frequency !== FrequencyType.None),
+            : 1,
+        isRepeating: isOneTimeRecurrence ? false : isIntervalRecurrence,
         frequency: isIntervalRecurrence
             ? (recurrence as IntervalRecurrence).frequency
-            : isCalendarRecurrence
-                ? (recurrence as CalendarRecurrence).frequency ?? FrequencyType.Weekly
-                : FrequencyType.Weekly,
-        weekDaysRepetition: isCalendarRecurrence
-            ? ((recurrence as CalendarRecurrence).weekDaysRepetition ?? []).map(String)
-            : [],
-        monthlyPattern: isCalendarRecurrence
-            ? (recurrence as CalendarRecurrence).monthlyPattern ?? 'day-of-month'
-            : 'day-of-month',
-        endingCondition: isCalendarRecurrence
-            ? (recurrence as CalendarRecurrence).endingCondition ?? EndingConditionType.None
-            : EndingConditionType.None,
-        endingOccurrencesNumber: isCalendarRecurrence
-            ? (recurrence as CalendarRecurrence).endingOccurrencesNumber ?? 10
-            : 10,
-        recurrenceEndDate: isCalendarRecurrence
-            ? ((recurrence as CalendarRecurrence).recurrenceEndDate ?
-                formatDate(new Date((recurrence as CalendarRecurrence).recurrenceEndDate as string)) : '')
-            : '',
+            : FrequencyType.Weekly
     };
 
     const methods = useForm<EditTaskFormValues>({ defaultValues });
     const { register, handleSubmit, control, formState: { errors } } = methods;
     const watchNote = useWatch({ control, name: 'note' });
     const handleSaveItem: SubmitHandler<EditTaskFormValues> = async (data) => {
-        let recurrence: OneTimeRecurrence | IntervalRecurrence | CalendarRecurrence | null = null;
+        let recurrence: OneTimeRecurrence | IntervalRecurrence | null = null;
         if (mode === ONE_TIME_MODE) {
             recurrence = {
                 type: ONE_TIME_RECURRENCE,
@@ -130,24 +93,6 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
                 frequency: data.frequency,
                 numberOfRepetitions: data.numberOfRepetitions,
-            };
-        } else if (mode === CALENDAR_MODE) {
-            recurrence = {
-                type: CALENDAR_RECURRENCE,
-                startDate: new Date(localDateWithNowTime(data.startDate)).toISOString(),
-                endDate: new Date(localDateWithNowTime(data.endDate)).toISOString(),
-                ...(data.isRepeating ? { numberOfRepetitions: data.numberOfRepetitions } : undefined),
-                ...(data.isRepeating ? { frequency: data.frequency } : undefined),
-                ...(data.isRepeating && data.frequency === FrequencyType.Weekly ?
-                    { weekDaysRepetition: data.weekDaysRepetition } : undefined),
-                ...(data.isRepeating && data.frequency === FrequencyType.Monthly ?
-                    { monthlyPattern: data.monthlyPattern } : undefined),
-                endingCondition: data.endingCondition,
-                ...(data.isRepeating && data.endingCondition === EndingConditionType.OccurrencesNumber ?
-                    { endingOccurrencesNumber: data.endingOccurrencesNumber } : undefined),
-                ...(data.isRepeating && data.endingCondition === EndingConditionType.EndDate && data.recurrenceEndDate ?
-                    { recurrenceEndDate: new Date(localDateWithNowTime(data.recurrenceEndDate)).toISOString() } : undefined),
-                isAllDay: (formData.recurrence as CalendarRecurrence)?.isAllDay ?? true,
             };
         }
 
@@ -214,54 +159,44 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             ))}
                         </div>
                     </div>
-
-                    {mode !== CALENDAR_MODE && (
-                        <>
-                            {mode === OCCASIONAL_MODE && (
-                                <div className="task-form-field">
-                                    <label
-                                        htmlFor={`edit-task-form_recurrence-count-${formData.id}`}
-                                        className="task-form-field__label"
-                                    >
-                                        Repeat every
-                                    </label>
-                                    <div className="task-form-inline-row">
-                                        <input
-                                            {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
-                                            id={`edit-task-form_recurrence-count-${formData.id}`}
-                                            className="task-form-input task-form-recurrence-count"
-                                            type="number"
-                                            min={1}
-                                            max={1000}
-                                        />
-                                        <select
-                                            {...register('frequency')}
-                                            className="task-form-input task-form-select task-form-recurrence-frequency"
-                                        >
-                                            {IntervalOptions.map(option => (
-                                                <option key={option.key} value={option.key}>{option.title}(s)</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="task-form-field">
-                                <label className="task-form-field__label">Starting</label>
+                    {mode === OCCASIONAL_MODE && (
+                        <div className="task-form-field">
+                            <label
+                                htmlFor={`edit-task-form_recurrence-count-${formData.id}`}
+                                className="task-form-field__label"
+                            >
+                                Repeat every
+                            </label>
+                            <div className="task-form-inline-row">
                                 <input
-                                    {...register('startDate')}
-                                    className="task-form-input task-form-recurrence-start-date"
-                                    type="date"
-                                    onClick={(e) => e.currentTarget.showPicker?.()}
+                                    {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
+                                    id={`edit-task-form_recurrence-count-${formData.id}`}
+                                    className="task-form-input task-form-recurrence-count"
+                                    type="number"
+                                    min={1}
+                                    max={1000}
                                 />
+                                <select
+                                    {...register('frequency')}
+                                    className="task-form-input task-form-select task-form-recurrence-frequency"
+                                >
+                                    {IntervalOptions.map(option => (
+                                        <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                    ))}
+                                </select>
                             </div>
-                        </>
+                        </div>
                     )}
 
-                    {mode === CALENDAR_MODE && (
-                        <RecurrenceForm />
-                    )}
-
+                    <div className="task-form-field">
+                        <label className="task-form-field__label">Starting</label>
+                        <input
+                            {...register('startDate')}
+                            className="task-form-input task-form-recurrence-start-date"
+                            type="date"
+                            onClick={(e) => e.currentTarget.showPicker?.()}
+                        />
+                    </div>
                     <div className="task-form-field">
                         <label className="task-form-field__label">Last completed</label>
                         <input
@@ -325,37 +260,11 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             {errors.numberOfRepetitions.message || 'Number of repetitions is invalid'}
                         </div>
                     )}
-                    {errors.recurrenceEndDate && (
-                        <div className="task-form-drawer__error">
-                            {errors.recurrenceEndDate.message || 'Recurrence end date is invalid'}
-                        </div>
-                    )}
-                    {errors.endingOccurrencesNumber && (
-                        <div className="task-form-drawer__error">
-                            {errors.endingOccurrencesNumber.message || 'Number of occurrences is invalid'}
-                        </div>
-                    )}
                     {errors.frequency && (
                         <div className="task-form-drawer__error">
                             {errors.frequency.message || 'Frequency is required'}
                         </div>
                     )}
-                    {errors.weekDaysRepetition && (
-                        <div className="task-form-drawer__error">
-                            {errors.weekDaysRepetition.message || 'Week days repetition is required'}
-                        </div>
-                    )}
-                    {errors.monthlyPattern && (
-                        <div className="task-form-drawer__error">
-                            {errors.monthlyPattern.message || 'Monthly pattern is required'}
-                        </div>
-                    )}
-                    {errors.endingCondition && (
-                        <div className="task-form-drawer__error">
-                            {errors.endingCondition.message || 'Ending condition is required'}
-                        </div>
-                    )}
-
                     <button
                         className="task-form-action-button task-form-action-button--cancel"
                         onClick={onClose}

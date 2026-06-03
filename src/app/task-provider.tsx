@@ -17,14 +17,10 @@ import {
     type ChecklistItem,
     type ApiRecurrence,
     type IntervalRecurrence,
-    type CalendarRecurrence,
     type OneTimeRecurrence,
     FrequencyType,
-    EndingConditionType,
     INTERVAL_RECURRENCE,
     ONE_TIME_RECURRENCE,
-    CALENDAR_RECURRENCE,
-    type MonthlyPattern,
 } from 'app/types';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { TaskContext } from './task-context';
@@ -116,7 +112,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const addItem = async (newItem: ChecklistItem) => {
 
-        function mapRecurrence(rec: ApiRecurrence | null): IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null {
+        function mapRecurrence(rec: ApiRecurrence | null): IntervalRecurrence | OneTimeRecurrence | null {
             if (!rec) return null;
             switch (rec.type) {
                 case ONE_TIME_RECURRENCE:
@@ -130,20 +126,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                         numberOfRepetitions: rec.numberOfRepetitions ?? 1,
                         frequency: rec.frequency as FrequencyType,
                         startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
-                    };
-                case CALENDAR_RECURRENCE:
-                    return {
-                        type: CALENDAR_RECURRENCE,
-                        startDate: rec.startDate ? new Date(rec.startDate).toISOString() : new Date().toISOString(),
-                        frequency: rec.frequency as FrequencyType,
-                        weekDaysRepetition: rec.weekDaysRepetition ?? [],
-                        monthlyPattern: rec.monthlyPattern as MonthlyPattern,
-                        endingCondition: rec.endingCondition as EndingConditionType,
-                        endingOccurrencesNumber: rec.endingOccurrencesNumber,
-                        endDate: rec.endDate ? new Date(rec.endDate).toISOString() : new Date().toISOString(),
-                        isAllDay: rec.isAllDay ?? false,
-                        startTime: rec.startTime ? new Date(rec.startTime).toISOString() : undefined,
-                        endTime: rec.endTime ? new Date(rec.endTime).toISOString() : undefined,
                     };
                 default:
                     throw new Error('Unknown recurrence type');

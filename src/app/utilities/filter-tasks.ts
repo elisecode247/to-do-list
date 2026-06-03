@@ -40,7 +40,7 @@ function matchTab(task: ChecklistItem, activeTab: string): boolean {
                 (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday);
 
         case TABS.upcoming:
-            return (task.mode === 'calendar' || (!!task.nextDue && new Date(task.nextDue) > getLocalTodayAtMidnight())) &&
+            return (!!task.nextDue && new Date(task.nextDue) > getLocalTodayAtMidnight()) &&
                 !task.isHidden && !isSubtask(task) && !task.isArchived;
 
         case TABS.hidden:

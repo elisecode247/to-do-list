@@ -4,14 +4,6 @@ import { ALL_MODES } from "src/checklist/constants";
 
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'calendar';
 
-export const EndingConditionType = {
-    None: 'none',
-    EndDate: 'end_date',
-    OccurrencesNumber: 'occurrences_number'
-} as const;
-
-export type EndingConditionType = typeof EndingConditionType[keyof typeof EndingConditionType];
-
 export const FrequencyType = {
     None: 'none',
     Daily: 'daily',
@@ -40,13 +32,10 @@ export interface Option {
     title: string
 }
 
-export type MonthlyPattern = 'day-of-month' | 'weekday-of-month';
-
 export const ONE_TIME_RECURRENCE = 'one-time';
 export const INTERVAL_RECURRENCE = 'interval';
-export const CALENDAR_RECURRENCE = 'calendar';
 
-export type RecurrenceType = typeof ONE_TIME_RECURRENCE | typeof INTERVAL_RECURRENCE | typeof CALENDAR_RECURRENCE;
+export type RecurrenceType = typeof ONE_TIME_RECURRENCE | typeof INTERVAL_RECURRENCE;
 
 export type OneTimeRecurrence = {
     type: typeof ONE_TIME_RECURRENCE;
@@ -58,22 +47,6 @@ export type IntervalRecurrence = {
     numberOfRepetitions: number;
     frequency: FrequencyType;
     startDate: string;
-}
-
-export type CalendarRecurrence = {
-    type: typeof CALENDAR_RECURRENCE;
-    numberOfRepetitions?: number;
-    frequency?: FrequencyType;
-    startDate: string;
-    startTime?: string; // not implemented yet, but reserved for future use
-    weekDaysRepetition?: Array<string>; // checkbox values are saved as strings, but they represent numbers
-    monthlyPattern?: MonthlyPattern;
-    endingCondition: EndingConditionType;
-    endingOccurrencesNumber?: number;
-    recurrenceEndDate?: string;
-    endDate?: string; // event end date, not the same as recurrence end date
-    endTime?: string; // not implemented yet, but reserved for future use
-    isAllDay?: boolean; // not implemented yet, but reserved for future use
 }
 
 export interface ChecklistItem {
@@ -93,7 +66,7 @@ export interface ChecklistItem {
     isArchived: boolean;
     hasSubChores: boolean;
     parentUuid: string | null;
-    recurrence: IntervalRecurrence | CalendarRecurrence | OneTimeRecurrence | null;
+    recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     nextDue: string | null;
     /** google properties */
     due?: string;
@@ -130,5 +103,4 @@ export interface TaskContextType {
 
 export type ApiRecurrence =
     | OneTimeRecurrence
-    | IntervalRecurrence
-    | CalendarRecurrence;
+    | IntervalRecurrence;

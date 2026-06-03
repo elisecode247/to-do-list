@@ -8,7 +8,7 @@ import {
     TAB_PRIORITY,
 } from 'src/app-toolbar/tabs/types';
 import type { ChecklistItem, FilterParams } from 'app/types';
-import { ALL_MODES, ONE_TIME_MODE, CALENDAR_MODE } from 'src/checklist/constants';
+import { ALL_MODES, ONE_TIME_MODE } from 'src/checklist/constants';
 
 // --------------------
 // Mock category helper
@@ -198,20 +198,6 @@ describe('filterTasks – tab filtering', () => {
         expect(result).toHaveLength(1);
     });
 
-    it('Upcoming tab includes upcoming calendar tasks', () => {
-        const calendar = makeTask({ mode: 'calendar' });
-        const daily = makeTask({ mode: 'daily' });
-
-        const result = filterTasks(
-            makeParams({
-                items: [calendar, daily],
-                activeTab: TAB_UPCOMING,
-            })
-        );
-
-        expect(result).toEqual([calendar]);
-    });
-
     it('Upcoming tab includes upcoming tasks', () => {
         const occasional = makeTask({
             mode: 'occasional',
@@ -265,7 +251,7 @@ describe('filterTasks – tab filtering', () => {
 
     it('Upcoming tab excludes hidden tasks', () => {
         const hidden = makeTask({
-            mode: 'calendar',
+            nextDue: getDateRelativeToToday(1),
             isHidden: true,
         });
 
@@ -281,7 +267,7 @@ describe('filterTasks – tab filtering', () => {
 
     it('Upcoming tab excludes archived tasks', () => {
         const archived = makeTask({
-            mode: 'calendar',
+            nextDue: getDateRelativeToToday(1),
             isArchived: true,
         });
 
@@ -424,16 +410,16 @@ describe('filterTasks – common filters', () => {
 
     it('filters by active mode filters (OR logic)', () => {
         const daily = makeTask({ mode: 'daily' });
-        const calendar = makeTask({ mode: 'calendar' });
+        const occasional = makeTask({ mode: 'occasional' });
 
         const result = filterTasks(
             makeParams({
-                items: [daily, calendar],
-                modeFilter: CALENDAR_MODE,
+                items: [daily, occasional],
+                modeFilter: 'occasional',
             })
         );
 
-        expect(result).toEqual([calendar]);
+        expect(result).toEqual([occasional]);
     });
 });
 
