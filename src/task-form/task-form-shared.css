@@ -54,7 +54,7 @@
     border-radius: 8px;
     border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
     background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
-    font-size: 13px;
+    font-size: 16px;
     color: var(--color-text-primary);
     font-family: inherit;
     box-sizing: border-box;
@@ -82,7 +82,7 @@
     min-height: 36px;
     border-radius: 8px;
     padding: 8px 10px;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 400;
     background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
 }
