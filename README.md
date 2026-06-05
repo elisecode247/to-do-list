@@ -20,7 +20,6 @@ Live: https://www.dailyresetlist.com
 ### To do
 - feature: add google calendar event
 - feature: edit google calendar event
-- bug: Sparkles only when filters are off
 - ux: improve ux for newly logged in user
 - security: security improvements to server
 - admin: add privacy policy to homepage and footer

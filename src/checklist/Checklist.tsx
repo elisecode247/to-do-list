@@ -241,7 +241,8 @@ const Checklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
-        if (!completedDayRef.current && completedDay && activeTab === TABS.today) {
+        const noOtherFilters = modeFilter === ALL_MODES && !filterCategory;
+        if (!completedDayRef.current && completedDay && noOtherFilters && activeTab === TABS.today) {
             setTimeout(() => {
                 displaySparkles()
                 completedDayRef.current = !!completedDay;
