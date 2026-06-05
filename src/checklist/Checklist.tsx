@@ -248,7 +248,7 @@ const Checklist: FC<ChecklistProps> = ({
                 completedDayRef.current = !!completedDay;
             }, 0);
         }
-    }, [completedDay, activeTab]);
+    }, [completedDay, activeTab, modeFilter, filterCategory]);
 
     return (
         <>
