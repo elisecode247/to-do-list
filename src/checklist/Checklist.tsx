@@ -17,16 +17,25 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent, GoogleTask } from 'src/google-authorization/types';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 
-function isTodayOrBefore(date: Date) {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999); // end of today
-    return date <= today;
+function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    return start <= endOfToday && end >= startOfToday;
 }
 
-function isTomorrowOrLater(date: Date) {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999); // end of today
-    return date > today;
+function eventIncludesAfterToday(startDate: Date | string, endDate: Date | string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+    return start > endOfToday || end > endOfToday;
 }
 
 interface ChecklistProps {
@@ -96,12 +105,13 @@ const Checklist: FC<ChecklistProps> = ({
         });
 
     const filteredEvents = events.filter(event => {
-        if (activeTab === TABS.hidden && event.isHidden) return true;
-        if (activeTab === TABS.upcoming && !event.isHidden) return true;
-        if (activeTab === TABS.today && !event.isHidden) {
-            return isTodayOrBefore(event.startDate);
-        } else if (activeTab === TABS.upcoming) {
-            return isTomorrowOrLater(event.startDate);
+        if (activeTab === TABS.hidden) return event.isHidden;
+        if (event.isHidden) return false;
+        if (activeTab === TABS.today) {
+            return eventIncludesToday(event.startDate, event.endDate);
+        }
+        if (activeTab === TABS.upcoming) {
+            return eventIncludesAfterToday(event.startDate, event.endDate);
         }
         return false;
     }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());

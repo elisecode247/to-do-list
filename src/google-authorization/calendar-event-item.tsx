@@ -2,7 +2,6 @@ import "./calendar-event-item.css";
 import { useState } from "react";
 import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
-import { getDaysFromNow } from 'src/utilities/days-ago';
 import { sanitizeUserHtml } from "src/utilities/sanitize-html";
 import { Ban, CalendarPlus2, BookMinus, BookPlus, Edit } from "lucide-react";
 
@@ -16,7 +15,6 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const dateString = getEventDateString(event);
-    const countDownString = getDaysFromNow(event.startDate);
 
     const sanitizedHTML = sanitizeUserHtml(event.description || '');
     async function delayHide() {
@@ -29,7 +27,7 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
                     <p className="calendar-event-subtitle">Google Calendar Event</p>
                     <h4>{event.title}</h4>
                     <p className="sortable-item_next-due-text calendar-event-time">
-                        {countDownString} - {dateString}
+                        {dateString}
                     </p>
                 </div>
                 <div className="calendar-event-controls">

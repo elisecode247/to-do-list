@@ -18,7 +18,6 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- bug: events today also shows up in upcoming tab
 - feature: improve ux for newly logged in user
 - feature: add templates for new users
 - feature: allow user delete account
