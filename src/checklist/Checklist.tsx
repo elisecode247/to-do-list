@@ -251,7 +251,7 @@ const Checklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
-        const noOtherFilters = modeFilter === ALL_MODES && !filterCategory;
+        const noOtherFilters = modeFilter === ALL_MODES && filterCategory === 'all';
         if (!completedDayRef.current && completedDay && noOtherFilters && activeTab === TABS.today) {
             setTimeout(() => {
                 displaySparkles()
