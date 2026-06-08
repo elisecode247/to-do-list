@@ -169,8 +169,6 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const handleEventEdit = (id: string) => {
-        // Placeholder for event edit functionality
-        console.log('Edit event with id:', id);
         const selectedEvent = events.find(event => event.id === id);
         if (!selectedEvent) return;
         onEditEvent({

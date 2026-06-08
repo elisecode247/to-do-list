@@ -11,7 +11,7 @@ import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
 import { useTheme } from 'src/themes/use-theme';
 import AccountMenu from 'app/AccountMenu';
-import NewTaskForm from 'src/new-task-form/NewTaskForm';
+import NewForm from 'src/task-form/NewForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
 import { TABS, TAB_LABELS, type Tab } from 'src/app-toolbar/tabs/types';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
@@ -24,7 +24,7 @@ import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
 import type { GoogleEvent } from 'src/google-authorization/types';
-import EditEventForm from 'src/google-authorization/edit-event-form';
+import EditEventForm from 'src/google-authorization/EditEventForm';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -46,7 +46,6 @@ const LoggedIn: React.FC = () => {
         itemLength,
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
-    console.log("%c Line:48 🌽 editingItem", "color:#fca650", editingItem);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
@@ -60,7 +59,6 @@ const LoggedIn: React.FC = () => {
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const { updateEvent } = useGoogleCalendar();
     async function handleEventSave(saveItem: GoogleEvent) {
-        console.log("%c Line:62 🥒 saveItem", "color:#b03734", saveItem);
         setIsSaving(true);
         try {
             await updateEvent(saveItem);
@@ -279,7 +277,7 @@ const LoggedIn: React.FC = () => {
                         onClose={handleCloseEditModal}
                     />
                 ) : rightOpen ? (
-                    <NewTaskForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
+                    <NewForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
                 ) : null}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (

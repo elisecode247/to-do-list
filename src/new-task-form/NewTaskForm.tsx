@@ -9,7 +9,6 @@ import { OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'src/checklist/consta
 import { type ChecklistItem, FrequencyType, type OneTimeRecurrence } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
-import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import {
     IntervalOptions,
@@ -36,7 +35,7 @@ type RecurrenceFormValues = {
 
 type NewTaskFormValues = Inputs & RecurrenceFormValues;
 
-const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRightOpen: (open: boolean) => void }) => {
+const NewTaskForm = ({ setRightOpen }: { setRightOpen: (open: boolean) => void }) => {
     const { addItem } = useTask();
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
@@ -126,19 +125,9 @@ const NewTaskForm = ({ isDesktop, setRightOpen }: { isDesktop: boolean; setRight
         }
     }, [isSubmitSuccessful, reset]);
 
-    return (<div ref={panelRef} className="task-form-drawer">
+    return (<div ref={panelRef}>
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleAddItem)}>
-                <div className="task-form-drawer__header">
-                    <h2 className="task-form-drawer__title">New task</h2>
-                    {isDesktop && (
-                        <CloseButton
-                            onClick={() => setRightOpen(false)}
-                            label="Close new task form"
-                        />
-                    )}
-                </div>
-
                 <div className="task-form-drawer__body">
                     <div className="task-form-field">
                         <label className="task-form-field__label" htmlFor="new-task-form-text-input">Task name</label>

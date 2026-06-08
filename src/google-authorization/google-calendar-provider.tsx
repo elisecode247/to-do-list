@@ -266,7 +266,6 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
                 }
 
                 const updatedEventFromServer = await response.json();
-                console.log("%c Line:269 🍑 updatedEventFromServer", "color:#ed9ec7", updatedEventFromServer);
 
                 setEvents(prev =>
                     prev.map(event =>
