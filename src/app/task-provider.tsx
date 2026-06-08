@@ -385,20 +385,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         loadTasks(cancelled);
         const now = new Date();
         loadDateRef.current = now;
-        const handleVisibility = () => {
-            const staleAfter = 5 * 60 * 1000;
-            if (!loadDateRef.current || new Date().getTime() - loadDateRef.current.getTime() > staleAfter) {
-                loadTasks(cancelled);
-                const updatedNow = new Date();
-                loadDateRef.current = updatedNow;
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibility);
 
         return () => {
             cancelled = true;
-            document.removeEventListener('visibilitychange', handleVisibility)
         };
     }, [enabled])
 
