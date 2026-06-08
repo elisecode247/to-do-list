@@ -18,15 +18,14 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
+- bug: refresh google calendar events same time as lastUpdated
+- bug: events today also shows up in upcoming tab
 - feature: add google calendar event
-- feature: edit google calendar event
-- ux: improve ux for newly logged in user
-- security: security improvements to server
-- admin: add privacy policy to homepage and footer
-- feature: make google calendar integration optional
+- feature: improve ux for newly logged in user
 - feature: add templates for new users
 - feature: allow user delete account
 - feature: add undo to delete and uncheck
 - feature: custom categories
+- admin: add privacy policy to homepage and footer
 - security: Remove inline styles to tighten CSP
 - security: remove email in localStorage

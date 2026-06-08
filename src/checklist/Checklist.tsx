@@ -36,6 +36,7 @@ interface ChecklistProps {
     filterCategory: string;
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
+    onEditEvent: (item: GoogleEvent) => void;
     sparkles: ReactElement;
     onNotesChange?: (notes: string) => void;
 }
@@ -47,6 +48,7 @@ const Checklist: FC<ChecklistProps> = ({
     filterCategory,
     clearFilters,
     onEditItem,
+    onEditEvent,
     sparkles,
 }) => {
     const {
@@ -166,6 +168,16 @@ const Checklist: FC<ChecklistProps> = ({
         }
     };
 
+    const handleEventEdit = (id: string) => {
+        // Placeholder for event edit functionality
+        console.log('Edit event with id:', id);
+        const selectedEvent = events.find(event => event.id === id);
+        if (!selectedEvent) return;
+        onEditEvent({
+            ...selectedEvent,
+            itemType: 'google-event',
+        } as GoogleEvent);
+    };
 
     const handleEdit = (id: string) => {
         const selectedItem = items.find(item => item.id === id);
@@ -272,6 +284,7 @@ const Checklist: FC<ChecklistProps> = ({
                                     key={eventItem.id}
                                     event={eventItem}
                                     onHideItem={handleEventHide}
+                                    onEdit={handleEventEdit}
                                 />);
                             } else if (item.itemType === 'google-task') {
                                 const taskItem = item as GoogleTask;

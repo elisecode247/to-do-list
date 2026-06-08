@@ -11,6 +11,7 @@ export type GoogleCalendarContextValue = {
     markCalendarTaskCompletion: (taskId: string, listId: string, isCompleted: boolean) => Promise<void>;
     hideEventForToday: (eventId: string) => Promise<void>;
     unhideEventForToday: (eventId: string) => Promise<void>;
+    updateEvent: (updatedEvent: GoogleEvent) => Promise<void>;
     events: GoogleEvent[];
     tasks: GoogleTask[];
     isError: boolean;

@@ -60,4 +60,5 @@
     border-radius: 8px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%);
+    width: 100%;
 }

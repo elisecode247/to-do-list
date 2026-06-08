@@ -1,5 +1,6 @@
 
 import React, { useState, type SetStateAction } from 'react';
+import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
@@ -22,6 +23,8 @@ import { ListFilter, PencilIcon, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
+import type { GoogleEvent } from 'src/google-authorization/types';
+import EditEventForm from 'src/google-authorization/edit-event-form';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -42,7 +45,8 @@ const LoggedIn: React.FC = () => {
         loadDate,
         itemLength,
     } = useTask();
-    const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
+    const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
+    console.log("%c Line:48 🌽 editingItem", "color:#fca650", editingItem);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
@@ -54,6 +58,25 @@ const LoggedIn: React.FC = () => {
     const [isSaving, setIsSaving] = useState(false);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
+    const { updateEvent } = useGoogleCalendar();
+    async function handleEventSave(saveItem: GoogleEvent) {
+        console.log("%c Line:62 🥒 saveItem", "color:#b03734", saveItem);
+        setIsSaving(true);
+        try {
+            await updateEvent(saveItem);
+            setEditingItem(null);
+            showToast('Event updated successfully', 'success');
+        } catch (error) {
+            if (error instanceof Error && error?.message) {
+                showToast(`Failed to update event: ${error.message}`, 'error');
+            } else {
+                showToast('Failed to update event. Please try again.', 'error');
+            }
+        } finally {
+            setIsSaving(false);
+            setRightOpen(false);
+        }
+    }
 
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
@@ -77,6 +100,11 @@ const LoggedIn: React.FC = () => {
     const sparkles = <SparklesOverlay />;
 
     function handleEditItem(item: ChecklistItem) {
+        setEditingItem(item);
+        setRightOpen(true);
+    }
+
+    function handleEditEvent(item: GoogleEvent) {
         setEditingItem(item);
         setRightOpen(true);
     }
@@ -223,6 +251,7 @@ const LoggedIn: React.FC = () => {
                 ) : (
                     <Checklist
                         onEditItem={handleEditItem}
+                        onEditEvent={handleEditEvent}
                         sparkles={sparkles}
                         activeTab={activeTab}
                         modeFilter={modeFilter}
@@ -233,12 +262,20 @@ const LoggedIn: React.FC = () => {
                 )}
             </main>
             <aside className="right_panel">
-                {rightOpen && editingItem ? (
+                {rightOpen && editingItem && editingItem.itemType === 'checklist-item' ? (
                     <EditTaskForm
                         key={editingItem.id} // force remount when editing a different item
                         isSaving={isSaving}
-                        formData={editingItem}
+                        formData={editingItem as ChecklistItem}
                         onSave={handleSave}
+                        onClose={handleCloseEditModal}
+                    />
+                ) : rightOpen && editingItem && editingItem.itemType === 'google-event' ? (
+                    <EditEventForm
+                        key={editingItem.id} // force remount when editing a different item
+                        isSaving={isSaving}
+                        formData={editingItem as GoogleEvent}
+                        onSave={handleEventSave}
                         onClose={handleCloseEditModal}
                     />
                 ) : rightOpen ? (

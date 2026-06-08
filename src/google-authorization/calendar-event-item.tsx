@@ -4,14 +4,15 @@ import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
 import { getDaysFromNow } from 'src/utilities/days-ago';
 import { sanitizeUserHtml } from "src/utilities/sanitize-html";
-import { Ban, CalendarPlus2 } from "lucide-react";
+import { Ban, CalendarPlus2, BookMinus, BookPlus, Edit } from "lucide-react";
 
 interface CalendarEventItemProps {
     event: GoogleEvent;
     onHideItem: (id: string, isHidden: boolean) => void;
+    onEdit: (id: string) => void;
 }
 
-const CalendarEventItem = ({ event, onHideItem }: CalendarEventItemProps) => {
+const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps) => {
     const [collapsed, setCollapsed] = useState(true);
     const toggleCollapsed = () => setCollapsed(!collapsed);
     const dateString = getEventDateString(event);
@@ -34,16 +35,14 @@ const CalendarEventItem = ({ event, onHideItem }: CalendarEventItemProps) => {
                 <div className="calendar-event-controls">
                     {!!event.description && (
                         <button
+                            className="sortable-item_main-button sortable-item_hide-button"
                             onClick={toggleCollapsed}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                fontSize: "1.2rem",
-                            }}
-                            aria-label={collapsed ? "Expand event" : "Collapse event"}
+                            aria-label={collapsed ? "Expand task" : "Collapse task"}
+                            title={`${collapsed ? "Expand task to see details" : "Collapse task details"}`}
+                            type="button"
                         >
-                            {collapsed ? "➕" : "➖"}
+                            {collapsed ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                            <span className="sortable-item_button-text-span">Notes</span>
                         </button>
                     )}
                     <button
@@ -57,6 +56,18 @@ const CalendarEventItem = ({ event, onHideItem }: CalendarEventItemProps) => {
                         <span className="sortable-item_button-text-span">
                             {event.isHidden ? "Do Today" : "Skip"}
                         </span>
+                    </button>
+                    <button
+                        className="sortable-item_main-button sortable-item_edit-button"
+                        onClick={() => {
+                            onEdit(event.id);
+                        }}
+                        aria-label="Edit task"
+                        title="Edit task"
+                        type="button"
+                    >
+                        <Edit size={24} />
+                        <span className="sortable-item_button-text-span">Edit</span>
                     </button>
                 </div>
             </div>

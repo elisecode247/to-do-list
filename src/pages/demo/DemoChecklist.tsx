@@ -267,6 +267,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                     key={eventItem.id}
                                     event={eventItem}
                                     onHideItem={handleEventHide}
+                                    onEdit={handleEdit}
                                 />);
                             } else if (item.itemType === 'google-task') {
                                 const taskItem = item as GoogleTask;

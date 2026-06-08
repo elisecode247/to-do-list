@@ -39,6 +39,7 @@
 .task-form-field {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
 }
 
@@ -64,6 +65,15 @@
     outline: 2px solid color-mix(in srgb, var(--color-primary) 60%, transparent);
     outline-offset: 0;
     border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+}
+
+.task-form-checkbox {
+    width: 24px;
+    height: 24px;
+    min-height: initial;
+    padding: 0;
+    border-radius: 4px;
+    accent-color: var(--color-primary);
 }
 
 .task-form-select {
@@ -113,6 +123,10 @@
 
 .task-form-recurrence-start-date {
     max-width: 220px;
+}
+.task-form-field__helper-text {
+    font-size: 11px;
+    color: var(--color-text-secondary);
 }
 
 .task-form-drawer__footer {

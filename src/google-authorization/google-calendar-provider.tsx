@@ -249,6 +249,41 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         },
         [isAuthenticated, showToast]
     );
+
+    const updateEvent = useCallback(
+        async (updatedEvent: GoogleEvent) => {
+            if (!isAuthenticated) return;
+
+            try {
+                const response = await fetch(`${API_AUTH_URL}/google/calendar/events/${updatedEvent.id}`, {
+                    method: "PATCH",
+                    headers: await authHeaders(),
+                    body: JSON.stringify(updatedEvent),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to update event: ${response.status}`);
+                }
+
+                const updatedEventFromServer = await response.json();
+                console.log("%c Line:269 🍑 updatedEventFromServer", "color:#ed9ec7", updatedEventFromServer);
+
+                setEvents(prev =>
+                    prev.map(event =>
+                        event.id === updatedEvent.id ? {
+                            ...event,
+                            ...updatedEventFromServer.event
+                        } : event
+                    )
+                );
+            } catch (err) {
+                console.error("Caught error. Updating calendar event failed:", err);
+                throw err;
+            }
+        },
+        [isAuthenticated]
+    );
+
     useEffect(() => {
         void initializeCalendar();
     }, [initializeCalendar]);
@@ -265,6 +300,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         markCalendarTaskCompletion,
         hideEventForToday,
         unhideEventForToday,
+        updateEvent,
         events,
         tasks,
         isError,
@@ -280,6 +316,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         markCalendarTaskCompletion,
         hideEventForToday,
         unhideEventForToday,
+        updateEvent,
         events,
         tasks,
         isError,
