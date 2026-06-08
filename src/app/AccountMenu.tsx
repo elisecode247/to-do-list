@@ -9,6 +9,7 @@ import { ROUTES } from "src/router";
 import { createPortal } from 'react-dom';
 import { useOnClickOutside } from "usehooks-ts";
 import IconButton from 'src/components/icon-button/IconButton';
+import { useUserSettings } from "src/user-settings/use-user-settings";
 
 interface AccountMenuProps {
     isMenuOpen: boolean;
@@ -26,6 +27,7 @@ function AccountMenu({
     const menuRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { email, logout, isAuthenticated } = useAuthentication();
+    const { googleCalendarEnabled } = useUserSettings();
     const { reset } = useTask();
     const [location] = useLocation();
 
@@ -81,7 +83,9 @@ function AccountMenu({
                         >
                             Privacy Policy
                         </Link>
-                        <GoogleCalendarStatus />
+                        {googleCalendarEnabled && (
+                            <GoogleCalendarStatus />
+                        )}
                     </div>
                 </div>
                 , document.body) : null}
