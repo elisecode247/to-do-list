@@ -68,6 +68,8 @@ export interface ChecklistItem {
     parentUuid: string | null;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     nextDue: string | null;
+    createdAt?: string;
+    updatedAt?: string;
     /** google properties */
     due?: string;
     listId?: string;

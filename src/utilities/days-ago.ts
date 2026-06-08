@@ -1,4 +1,4 @@
-export function getDaysAgo(date1: Date) {
+export function getDaysAgo(date1: Date, done = true) {
     const now = new Date();
   // Convert both dates to UTC timestamps to avoid time zone issues
   const utcDate1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -10,7 +10,7 @@ export function getDaysAgo(date1: Date) {
 
   if (daysDifference === 0) return 'Done Today';
   if (daysDifference === 1) return 'Done Yesterday';
-  return `Done ${daysDifference} days ago`;
+  return `${done ? 'Done ' : ''}${daysDifference} days ago`;
 }
 
 export function getDaysFromNow(date1: Date) {

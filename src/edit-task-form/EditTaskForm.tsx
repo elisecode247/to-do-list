@@ -18,6 +18,7 @@ import {
 } from 'src/app/types';
 import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 'react-hook-form';
+import { getDaysAgo } from 'src/utilities/days-ago';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -236,6 +237,24 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                 )}
                             />
                         </div>
+                    </div>
+                    <div className="task-form__info">
+                        {formData.createdAt && (
+                            <div className="task-form__info-item">
+                                <span className="task-form__info-label">Created: {' '}
+                                    {new Date(formData.createdAt).toLocaleString()}{' '}
+                                    {getDaysAgo(new Date(formData.createdAt), false)}
+                                </span>
+                            </div>
+                        )}
+                        {formData.updatedAt && (
+                            <div className="task-form__info-item">
+                                <span className="task-form__info-label">Last Updated: {' '}
+                                    {new Date(formData.updatedAt).toLocaleString()}{' '}
+                                    {getDaysAgo(new Date(formData.updatedAt), false)}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
