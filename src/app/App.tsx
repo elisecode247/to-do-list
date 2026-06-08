@@ -24,6 +24,10 @@ const NotFoundLazy = lazy(async () => {
     return { default: (await import('src/pages/not-found/NotFound')).default };
 });
 
+const PrivacyPolicyLazy = lazy(async () => {
+    return { default: (await import('src/pages/PrivacyPolicy')).default };
+});
+
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
 
@@ -56,6 +60,9 @@ const App: FC = () => {
             </Route>
             <Route path={ROUTES.bulkEdit}>
                 <BulkEditLazy />
+            </Route>
+            <Route path={ROUTES.privacyPolicy}>
+                <PrivacyPolicyLazy />
             </Route>
             <Route>
                 <NotFoundLazy />

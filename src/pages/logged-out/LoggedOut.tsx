@@ -4,6 +4,8 @@ import GoogleLoginButton from "src/authentication/google-login-button";
 import DemoButton from 'src/pages/demo/DemoButton';
 import { useTheme } from "src/themes/use-theme";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from "src/themes/constants";
+import { ROUTES } from "src/router";
+import { Link } from 'wouter';
 
 // preload pages
 import('src/pages/demo/DemoPage');
@@ -16,6 +18,7 @@ export default function LoggedOut({
 }) {
     useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
     return (
+        <>
         <div className="logged-out-root">
             <div className="stars" />
             <div className="content">
@@ -62,5 +65,12 @@ export default function LoggedOut({
                 </motion.p>
             </div>
         </div>
+        <footer className="logged-out-footer">
+            
+            <Link href={ROUTES.privacyPolicy} className="footer-link">
+                Privacy Policy
+            </Link>
+        </footer>
+        </>
     );
 }

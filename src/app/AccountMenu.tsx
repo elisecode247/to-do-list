@@ -75,6 +75,12 @@ function AccountMenu({
                                 Bulk Edit
                             </Link>
                         )}
+                        <Link href={ROUTES.privacyPolicy}
+                            id="privacy-policy-link"
+                            className="settings-btn"
+                        >
+                            Privacy Policy
+                        </Link>
                         <GoogleCalendarStatus />
                     </div>
                 </div>

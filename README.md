@@ -20,7 +20,6 @@ Live: https://www.dailyresetlist.com
 ### To do
 - bug: refresh google calendar events same time as lastUpdated
 - bug: events today also shows up in upcoming tab
-- feature: add google calendar event
 - feature: improve ux for newly logged in user
 - feature: add templates for new users
 - feature: allow user delete account

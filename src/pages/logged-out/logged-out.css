@@ -98,3 +98,20 @@
     letter-spacing: 0.3em;
     text-transform: lowercase;
 }
+
+.logged-out-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 10;
+}
+.logged-out-footer .footer-link {
+    font-size: 0.75rem;
+    color: rgba(220, 225, 255, 0.7);
+    transition: color 0.3s ease;
+    text-decoration: none;
+}

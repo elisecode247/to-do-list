@@ -5,6 +5,7 @@ export const ROUTES = {
     demo: '/demo',
     userSettings: '/settings',
     bulkEdit: '/bulk-edit',
+    privacyPolicy: '/privacy-policy',
 } as const;
 
 

@@ -29,6 +29,7 @@ import EditEventForm from 'src/google-authorization/EditEventForm';
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
 import('src/pages/not-found/NotFound');
+import('src/pages/PrivacyPolicy');
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
