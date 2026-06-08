@@ -1,6 +1,7 @@
 import { lazy, type FC } from 'react';
 import './app.css';
 import './settings.css';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
@@ -30,6 +31,7 @@ const PrivacyPolicyLazy = lazy(async () => {
 
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
+    const { googleCalendarEnabled, isLoadingSettings, updateEnableCalendar } = useUserSettings();
 
     const handleLoginSuccess = async (token: string) => {
         try {
@@ -56,7 +58,10 @@ const App: FC = () => {
                 <DemoPageLazy />
             </Route>
             <Route path={ROUTES.userSettings}>
-                <UserSettingsLazy />
+                <UserSettingsLazy
+                    googleCalendarEnabled={googleCalendarEnabled}
+                    isLoadingSettings={isLoadingSettings}
+                    updateEnableCalendar={updateEnableCalendar} />
             </Route>
             <Route path={ROUTES.bulkEdit}>
                 <BulkEditLazy />
