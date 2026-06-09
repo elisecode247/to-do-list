@@ -18,7 +18,6 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- security: remove email in localStorage
 - feature: allow user delete account
 - admin: add privacy policy to homepage and footer
 - feature: add templates for new users

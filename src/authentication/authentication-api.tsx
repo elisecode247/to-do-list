@@ -1,8 +1,16 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
+const API_SESSION_URL = `${API_AUTH_URL}/session`;
 let accessToken: string | null = null;
 let expiresAtMs: number | null = null;
+let emailAddress: string | null = null;
+
+function clearAuthState(): void {
+    accessToken = null;
+    expiresAtMs = null;
+    emailAddress = null;
+}
 
 export async function loginWithGoogle(token: string): Promise<{email?: string}> {
     try {
@@ -18,12 +26,13 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
         }
 
         const data = await response.json();
-        if (!data?.accessToken || !data?.expiresIn || !data?.email) {
+        if (!data?.accessToken || !data?.expiresIn) {
             throw new Error("Invalid auth response from server");
         }
 
-        persistTokens(data.accessToken, data.expiresIn, data.email);
-        return { email: data.email };
+        persistTokens(data.accessToken, data.expiresIn);
+        const session = await getSessionUser();
+        return { email: session?.email };
     } catch (err) {
         console.error("Failed to authenticate:", err);
         throw new Error("Google authentication failed", { cause: err });
@@ -31,9 +40,7 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
 }
 
 export async function logout(): Promise<void> {
-    accessToken = null;
-    expiresAtMs = null;
-    localStorage.removeItem("email");
+    clearAuthState();
     await fetch(`${API_AUTH_URL}/logout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,6 +50,10 @@ export async function logout(): Promise<void> {
 
 export function getAuthToken(): string | null {
     return accessToken;
+}
+
+export function getAuthEmail(): string | undefined {
+    return emailAddress ?? undefined;
 }
 
 export function isAuthenticated(): boolean {
@@ -87,10 +98,32 @@ export async function getValidAuthToken(): Promise<string | null> {
     });
 }
 
-function persistTokens(access: string, expiresIn: number, email: string): void {
+function persistTokens(access: string, expiresIn: number): void {
     accessToken = access;
     expiresAtMs = Date.now() + expiresIn * 1000;
-    localStorage.setItem("email", email);
+}
+
+export async function getSessionUser(): Promise<{ email?: string } | null> {
+    try {
+        const headers = await authHeaders();
+        const response = await fetch(API_SESSION_URL, {
+            method: "GET",
+            headers,
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        const nextEmail = typeof data?.email === "string" ? data.email : undefined;
+        emailAddress = nextEmail ?? null;
+
+        return { email: nextEmail };
+    } catch {
+        return null;
+    }
 }
 
 export async function refreshAuthToken(): Promise<string | null> {
@@ -114,7 +147,7 @@ export async function refreshAuthToken(): Promise<string | null> {
         if (!data?.accessToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
-        persistTokens(data.accessToken, data.expiresIn, data.email ?? localStorage.getItem("email") ?? "");
+        persistTokens(data.accessToken, data.expiresIn);
         return data.accessToken;
     } catch {
         logout();

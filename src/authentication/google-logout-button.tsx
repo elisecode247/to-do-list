@@ -10,7 +10,7 @@ const GoogleLogoutButton: React.FC<GoogleLogoutButtonProps> = ({
     onLogout,
     email
 }) => {
-    const isEmail = email !== 'undefined';
+    const isEmail = Boolean(email);
     const handleLogout = () => {
         // Revoke Google session if available
         if (window.google?.accounts?.id) {
