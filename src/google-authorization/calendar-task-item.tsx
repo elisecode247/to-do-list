@@ -33,7 +33,7 @@ const CalendarTaskItem = ({task, markCompleted }: CalendarTaskItemProps) => {
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                 />
-                <div className="calendar-task-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div className="calendar-task-header">
                     <div>
                         <h4>Calendar Task: {task.text}</h4>
                         <p className="sortable-item_next-due-text calendar-event-time">

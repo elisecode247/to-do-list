@@ -23,6 +23,13 @@ export default tseslint.config(
                 'warn',
                 { allowConstantExport: true },
             ],
+            "no-restricted-syntax": [
+                "error",
+                {
+                    selector: "JSXAttribute[name.name='style'] > JSXExpressionContainer > ObjectExpression",
+                    message: "Inline styles are not allowed. Please use CSS modules, Tailwind CSS, or Styled Components instead."
+                }
+            ]
         },
     }
 )

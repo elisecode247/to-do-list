@@ -22,6 +22,12 @@
     margin: 0 0 5px 0;
 }
 
+.calendar-event-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .calendar-event-controls {
     display: flex;
     gap: var(--spacing-xs);

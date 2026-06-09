@@ -9,6 +9,12 @@
         sans-serif;
 }
 
+.demo-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
 .stars {
     position: absolute;
     inset: 0;
@@ -90,6 +96,7 @@
             rgba(120, 140, 255, 0.05) 70%,
             transparent);
     filter: drop-shadow(0 0 14px rgba(120, 140, 255, 0.35));
+    color-scheme: light;
 }
 
 .footer-hint {

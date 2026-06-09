@@ -99,3 +99,12 @@
     outline: none;
     text-decoration: none;
 }
+
+.note-editor-container {
+    position: relative;
+}
+
+.demo-placeholder {
+    height: 250px;
+    flex-shrink: 0;
+}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { API_AUTH_URL } from "src/app/constants";
 import { useAuthentication } from "src/authentication/use-authentication";
+import './google-login-button.css';
 
 interface GoogleCredentialResponse {
     credential: string;
@@ -81,7 +82,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         }
     }, [clientId, onSuccess, onError, setGoogleButtonState]);
 
-    return <div ref={buttonRef} style={{ colorScheme: 'light' }} />;
+    return <div ref={buttonRef} className="google-login-button" />;
 };
 
 export default GoogleLoginButton;

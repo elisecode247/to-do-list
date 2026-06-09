@@ -310,7 +310,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                             return null;
                         })}
                         {/* Placeholder div to ensure proper spacing at the end of the list */}
-                        <div style={{ height: '250px', flexShrink: 0 }} />
+                        <div className="demo-placeholder" />
                     </SortableContext>
                 </div>
             </DndContext>

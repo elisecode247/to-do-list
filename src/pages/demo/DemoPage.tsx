@@ -208,7 +208,7 @@ const DemoPage: React.FC = () => {
                     icon={<Plus size={24} strokeWidth={3} />}
                 />
                 {/** Reset with Demo Starter Data */}
-                <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
+                <div className="demo-buttons">
                 <IconButton
                     className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
                     onClick={reset}
@@ -253,7 +253,7 @@ const DemoPage: React.FC = () => {
                     />
                 ) : (
                     <>
-                        <div style={{ position: 'relative' }}>
+                        <div className="note-editor-container">
                             <NoteEditor
                                 className="app_note-editor"
                                 initialMarkdown={notes}

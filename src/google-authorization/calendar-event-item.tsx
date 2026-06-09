@@ -22,7 +22,7 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
     }
     return (
         <div className="calendar-event-item">
-            <div className="calendar-event-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div className="calendar-event-header">
                 <div>
                     <p className="calendar-event-subtitle">Google Calendar Event</p>
                     <h4>{event.title}</h4>

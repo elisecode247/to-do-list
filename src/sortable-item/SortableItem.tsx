@@ -1,5 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { FC, Dispatch, SetStateAction, RefObject } from 'react';
 import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
@@ -95,6 +95,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [alignLeft, setAlignLeft] = useState(false);
     const [animate, setAnimate] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const dragWrapperRef = useRef<HTMLDivElement>(null);
     const menuDropdownRef = useRef<HTMLElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
@@ -112,11 +113,20 @@ export const SortableItem: FC<SortableItemProps> = ({
         setOpenNewTaskForm(false);
     }
 
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
+    useEffect(() => {
+        const node = dragWrapperRef.current;
+        if (!node) return;
+
+        node.style.transform = CSS.Transform.toString(transform) ?? '';
+        node.style.transition = transition ?? '';
+        node.style.opacity = isDragging ? '0.5' : '1';
+    }, [transform, transition, isDragging]);
+
+    const setDragWrapperRef = (node: HTMLDivElement | null) => {
+        dragWrapperRef.current = node;
+        setNodeRef(node);
     };
+
     const showLastCompleted = !!lastCompleted;
     const lastCompletedDate = getDaysAgo(new Date(lastCompleted));
     const nextDueDate = nextDue ? getDaysFromNow(new Date(nextDue)) : null;
@@ -244,8 +254,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     return (
         <div
             className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
-            ref={setNodeRef}
-            style={style}
+            ref={setDragWrapperRef}
             {...attributes}
         >
             <AnimatePresence>

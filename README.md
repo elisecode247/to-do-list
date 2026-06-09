@@ -18,11 +18,11 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- feature: improve ux for newly logged in user
-- feature: add templates for new users
-- feature: allow user delete account
-- feature: add undo to delete and uncheck
-- feature: custom categories
-- admin: add privacy policy to homepage and footer
-- security: Remove inline styles to tighten CSP
 - security: remove email in localStorage
+- feature: allow user delete account
+- admin: add privacy policy to homepage and footer
+- feature: add templates for new users
+- feature: add undo to delete and uncheck
+- feature: improve ux for newly logged in user
+- feature: custom categories
+
