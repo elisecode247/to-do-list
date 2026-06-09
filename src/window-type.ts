@@ -12,6 +12,7 @@ declare global {
                         client_id: string;
                         callback: (response: GoogleCredentialResponse) => void;
                     }): void;
+                    prompt: () => void;
                     disableAutoSelect: () => void;
                     renderButton(
                         parent: HTMLElement | null,

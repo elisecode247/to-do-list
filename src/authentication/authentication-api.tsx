@@ -2,6 +2,8 @@ import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
 const API_SESSION_URL = `${API_AUTH_URL}/session`;
+const API_REAUTH_URL = `${API_AUTH_URL}/reauth/google`;
+const API_DELETE_ACCOUNT_URL = `${API_AUTH_URL}/account`;
 let accessToken: string | null = null;
 let expiresAtMs: number | null = null;
 let emailAddress: string | null = null;
@@ -153,6 +155,33 @@ export async function refreshAuthToken(): Promise<string | null> {
         logout();
         return null;
     }
+}
+
+export async function verifyGoogleReauth(token: string): Promise<void> {
+    const response = await fetch(API_REAUTH_URL, {
+        method: "POST",
+        headers: await authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ token }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Reauthentication failed");
+    }
+}
+
+export async function deleteAccount(): Promise<void> {
+    const response = await fetch(API_DELETE_ACCOUNT_URL, {
+        method: "DELETE",
+        headers: await authHeaders(),
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Delete account failed");
+    }
+
+    clearAuthState();
 }
 
 

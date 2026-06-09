@@ -2,10 +2,11 @@ import AccountMenu from "src/app/AccountMenu";
 import { Link, useLocation } from "wouter";
 import { Home } from "lucide-react";
 import { ROUTES } from "src/router";
-import './UserSettings.css';
+import './user-settings.css';
 import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import { useTheme } from "src/themes/use-theme";
 import { useState } from "react";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 interface UserSettingsProps {
     googleCalendarEnabled: boolean;
@@ -20,10 +21,16 @@ function UserSettings({
     useTheme();
     const [location] = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
 
     function toggleMenu() {
         setIsMenuOpen(prev => !prev);
     }
+
+    function openDeleteAccountDialog() {
+        setIsDeleteAccountDialogOpen(true);
+    }
+
 
     if (isLoadingSettings) {
         return (
@@ -71,6 +78,17 @@ function UserSettings({
                     </div>
                 </div>
                 <AppearanceSettings />
+                <div className="settings-section">
+                    <h3 className="settings-section-title">Danger Zone</h3>
+                    <p className="settings-section-description">Delete your account and all your data. This action cannot be undone.</p>
+                    <button className="settings-btn settings-btn--danger" type="button" onClick={openDeleteAccountDialog}>
+                        Delete Account
+                    </button>
+                </div>
+                {isDeleteAccountDialogOpen ? (
+                    <DeleteAccountDialog isOpen={isDeleteAccountDialogOpen} onClose={() => setIsDeleteAccountDialogOpen(false)} />
+                ) : null}
+                {isDeleteAccountDialogOpen && "open"}
             </div>
         </div>
     );

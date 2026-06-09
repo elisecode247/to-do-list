@@ -95,10 +95,12 @@ const App: FC = () => {
                 <DemoPageLazy />
             </Route>
             <Route path={ROUTES.userSettings}>
-                <UserSettingsLazy
-                    googleCalendarEnabled={googleCalendarEnabled}
-                    isLoadingSettings={isLoadingSettings}
-                    updateEnableCalendar={updateEnableCalendar} />
+                {isAuthenticated ? (
+                    <UserSettingsLazy
+                        googleCalendarEnabled={googleCalendarEnabled}
+                        isLoadingSettings={isLoadingSettings}
+                        updateEnableCalendar={updateEnableCalendar} />
+                ) : <NotFoundLazy />}
             </Route>
             <Route path={ROUTES.bulkEdit}>
                 <BulkEditLazy />

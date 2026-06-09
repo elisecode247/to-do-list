@@ -1,0 +1,67 @@
+.delete-dialog-container {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.delete-dialog-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 40;
+}
+
+.delete-dialog-panel {
+    padding: 3rem;
+    margin-top: 1rem;
+    border-width: 1px;
+    max-width: 32rem;
+    background-color: var(--color-surface);
+    z-index: 45;
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+}
+
+.delete-dialog__title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.delete-dialog-p {
+    margin: 12px 0 12px 0;
+}
+
+.delete-dialog-error {
+    margin: 8px 0 12px 0;
+    color: var(--color-danger);
+    font-size: 14px;
+}
+
+#confirm-deletion {
+    display: inline-block;
+    width: auto;
+}
+
+label[for="confirm-deletion"] {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    margin-left: 8px;
+}
+
+.dialog-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 24px;
+}

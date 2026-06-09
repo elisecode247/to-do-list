@@ -9,6 +9,7 @@ export interface AuthenticationContextType {
     email?: string;
     googleButtonState: 'pending' | 'success' | 'failure';
     setGoogleButtonState: Dispatch<SetStateAction<"pending" | "success" | "failure">>;
+    startGoogleReauth: () => Promise<string>;
 }
 
 export const AuthenticationContext = createContext<AuthenticationContextType | undefined>(undefined);
