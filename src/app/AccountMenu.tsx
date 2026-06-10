@@ -29,11 +29,12 @@ function AccountMenu({
     const { email, logout, isAuthenticated } = useAuthentication();
     const { googleCalendarEnabled } = useUserSettings();
     const { reset } = useTask();
-    const [location] = useLocation();
+    const [location, setLocation] = useLocation();
 
     function handleLogout() {
         logout();
         reset();
+        setLocation("/");
     }
 
     const handleLogoutClick = () => {
