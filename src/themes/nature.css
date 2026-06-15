@@ -69,7 +69,8 @@
     }
 
     .app_h1 {
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(0 2px 8px var(--color-border-light));
+        text-shadow: 0 1px 3px var(--color-border-light);
     }
 
     .app_subtitle {
