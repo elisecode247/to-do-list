@@ -189,15 +189,15 @@ export default function Journal() {
                         {badge && <span className="today-badge">{badge}</span>}
                     </div>
                     <div className="header-right">
-                            <button
-                                className="guide-toggle"
-                                onClick={() => setGuideOpen((o) => !o)}
-                                aria-label="Show guide"
-                                title="How to write an entry"
-                            >
-                                <HelpCircle size={24} />
-                            </button>
-                        </div>
+                        <button
+                            className="guide-toggle"
+                            onClick={() => setGuideOpen((o) => !o)}
+                            aria-label="Show guide"
+                            title="How to write an entry"
+                        >
+                            <HelpCircle size={24} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="journal-reminder" aria-label="Journal writing reminder">
@@ -226,6 +226,10 @@ export default function Journal() {
                 </div>
 
                 <div className="entries">
+                    <button className="add-row-btn" onClick={addEntry}>
+                        <span className="add-icon">+</span>
+                        Add entry
+                    </button>
                     {entries.map((entry: JournalEntry) => (
                         <EntryRow
                             key={entry.id}
@@ -236,12 +240,6 @@ export default function Journal() {
                         />
                     ))}
                 </div>
-
-                <button className="add-row-btn" onClick={addEntry}>
-                    <span className="add-icon">+</span>
-                    Add entry
-                </button>
-
             </div>
         </div>
     );

@@ -18,7 +18,6 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- bug: move add journal entry button to top
 - bug: fix end date in calendar event edit and create to end same day for same day events
 - bug: event validation
 - admin: add contact form
