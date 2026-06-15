@@ -39,6 +39,8 @@
     position: absolute;
     top: var(--spacing-md);
     right: var(--spacing-md);
+    width: 44px;
+    height: 44px;
 }
 
 .account-menu-container {
@@ -136,6 +138,12 @@
         top: 72px;
         right: 12px;
     }
+
+    .app_header_menu {
+        height: 44px;
+        width: fit-content;
+    }
+
 }
 
 

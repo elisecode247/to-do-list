@@ -20,6 +20,8 @@ Live: https://www.dailyresetlist.com
 ### To do
 - bug: fix end date in calendar event edit and create to end same day for same day events
 - bug: event validation
+- admin: add contact form
+- admin: encrypt journal entries
 - admin: add privacy policy to homepage and footer
 - feature: add templates for new users
 - feature: add undo to delete and uncheck
