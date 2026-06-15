@@ -89,6 +89,7 @@ export interface TaskContextType {
     taskError: string | null;
     loadTasks: (cancelled?: boolean) => void;
     addItem: (newItem: ChecklistItem) => Promise<void>;
+    partialUpdateItem: (partialItem: Partial<ChecklistItem>) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;
     bulkUpdate: (items: ChecklistItem[]) => Promise<void>;
     deleteItem: (id: string) => void;

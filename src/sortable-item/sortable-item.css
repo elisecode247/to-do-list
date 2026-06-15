@@ -313,6 +313,21 @@
     border-radius: var(--radius-sm);
 }
 
+.sortable-item_save-note-button {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    display: inline-block;
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs)var(--spacing-xs) var(--spacing-xs) 0;
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .sortable-item_container {

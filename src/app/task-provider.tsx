@@ -65,6 +65,36 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
+    const partialUpdateItem = async (partialItem: Partial<ChecklistItem>) => {
+        let previousItem: ChecklistItem | undefined;
+        setItems(prev => {
+            previousItem = prev.find(i => i.id === partialItem.id);
+            return prev.map(i => i.id === partialItem.id ? { ...i, ...partialItem } : i);
+        });
+
+        try {
+            const updatedItem = { ...previousItem, ...partialItem } as ChecklistItem;
+            const updatedTask = await updateTask(updatedItem);
+            setItems(prev => {
+                previousItem = prev.find(i => i.id === partialItem.id);
+                return prev.map(i => i.id === partialItem.id ? {
+                    ...i,
+                    ...updatedTask,
+                    done: isDateToday(updatedTask.lastCompleted),
+                    itemType: 'checklist-item',
+                } : i);
+            });
+        } catch (error) {
+            // rollback only that item
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i => i.id === previousItem!.id ? previousItem! : i)
+                );
+            }
+            throw error;
+        }
+    };
+
     const updateItem = async (updatedItem: ChecklistItem) => {
         let previousItem: ChecklistItem | undefined;
 
@@ -399,6 +429,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             taskError,
             loadTasks,
             addItem,
+            partialUpdateItem,
             updateItem,
             bulkUpdate,
             deleteItem,

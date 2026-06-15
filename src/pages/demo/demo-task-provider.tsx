@@ -140,6 +140,29 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const partialUpdateItem = async (partialItem: Partial<ChecklistItem>) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            previousItem = prev.find(i => i.id === partialItem.id);
+            return prev.map(i => i.id === partialItem.id ? { ...i, ...partialItem } : i);
+        });
+
+        try {
+            const updated = items.map(i =>
+                i.id === partialItem.id ? { ...i, ...partialItem } : i
+            );
+            saveTasksToStorage(updated);
+        } catch (error) {
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(i => i.id === partialItem.id ? previousItem! : i)
+                );
+            }
+            throw error;
+        }
+    };
+
     const updateItem = async (updatedItem: ChecklistItem) => {
         let previousItem: ChecklistItem | undefined;
 
@@ -469,6 +492,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             taskError,
             loadTasks,
             addItem,
+            partialUpdateItem,
             updateItem,
             bulkUpdate,
             deleteItem,

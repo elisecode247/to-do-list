@@ -83,7 +83,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     subtasks,
     nextDue,
 }) => {
-    const { getSubtasks, addItem } = useTask();
+    const { getSubtasks, addItem, partialUpdateItem } = useTask();
     const { showToast } = useToast();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
         useSortable({ id });
@@ -99,7 +99,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     const menuDropdownRef = useRef<HTMLElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
-
 
     const toggleNotes = () => {
         setShowNotes(!showNotes);
@@ -457,8 +456,24 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 key={note} // force remount to reset internal state when note changes
                                 initialMarkdown={note ?? ''}
                                 ref={noteRef}
-                                readOnly={true}
+                                readOnly={false}                                
                             />
+                            <button
+                                className="sortable-item_save-note-button"
+                                onClick={() => {
+                                    try {
+                                        partialUpdateItem({ id, note: noteRef.current?.getMarkdown() ?? '' });
+                                        showToast('Notes saved successfully', 'success');
+                                    } catch (error) {
+                                        console.error('Failed to save note:', error);
+                                        showToast('Failed to save note. Please try again.', 'error');
+                                    }
+                                }}
+                                aria-label="Save notes"
+                                title="Save notes"
+                            >
+                                Save Notes
+                            </button>
                         </div>
                     )}
                     {openNewTaskForm ? (
