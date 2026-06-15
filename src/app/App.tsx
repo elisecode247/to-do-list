@@ -10,6 +10,7 @@ import LoggedIn from 'src/pages/logged-in/LoggedIn';
 import { Route, Switch } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
+import NatureFirefliesCanvas from './NatureFirefliesCanvas';
 
 const DemoPageLazy = lazy(async () => {
     return { default: (await import('src/pages/demo/DemoPage')).default };
@@ -81,7 +82,9 @@ const App: FC = () => {
 
     return (
 
-        <Switch>
+        <>
+            <NatureFirefliesCanvas />
+            <Switch>
             <Route path={ROUTES.home}>
                 {isLoading ? null :
                 !isAuthenticated ? (
@@ -111,7 +114,8 @@ const App: FC = () => {
             <Route>
                 <NotFoundLazy />
             </Route>
-        </Switch>
+            </Switch>
+        </>
     );
 };
 
