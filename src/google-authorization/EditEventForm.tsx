@@ -8,6 +8,7 @@ import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { formatGoogleEventDateTime } from 'src/google-authorization/utilities/format-google-event-date-time';
 import { addOneDay } from 'src/google-authorization/utilities/add-one-day';
+import { subtractOneDay } from 'src/google-authorization/utilities/subtract-one-day';
 
 type FormData = GoogleEvent & {
     startTime: string;
@@ -35,7 +36,10 @@ export const EditEventForm: FC<EditEventFormProps> = ({
         endTime: formData.allDay ? '' : new Date(formData.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
         // format is 2026-02-31 for date inputs, so strip time portion if present. Google Calendar API will ignore time for all-day events but the form requires a date-only string.
         start: formData.allDay ? formData.start : formData.start.split('T')[0],
-        end: formData.allDay ? formData.end : formData.end.split('T')[0],
+        // for all-day events, subtract one day from the end date so that it displays correctly in the form.
+        // Google Calendar represents all-day events as ending on the day after the event ends,
+        // but the form expects the end date to be the actual last day of the event.
+        end: formData.allDay ? subtractOneDay(formData.end) : formData.end.split('T')[0],
         allDay: formData.allDay || false,
     };
 
@@ -44,7 +48,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
     const allDay = useWatch({ control, name: 'allDay' });
     const watchNote = useWatch({ control, name: 'note' });
     const noteRef = useRef<MDXEditorMethods>(null);
+    const startDate = useWatch({ control, name: 'start' });
     const startTime = useWatch({ control, name: 'startTime' });
+    const endDate = useWatch({ control, name: 'end' });
     const endTime = useWatch({ control, name: 'endTime' });
     const handleSaveItem: SubmitHandler<GoogleEvent> = async (data) => {
         // if timed event, send full ISO timestamps with timezone/offset rather than plain dates
@@ -58,7 +64,15 @@ export const EditEventForm: FC<EditEventFormProps> = ({
         onSave(updatedResource as GoogleEvent);
         onClose();
     };
-
+    const isEndDateTimeBeforeStartDateTime = () => {
+        const startDateTime = formatGoogleEventDateTime(startDate, startTime);
+        const endDateTime = formatGoogleEventDateTime(endDate, endTime);
+        if (new Date(endDateTime) < new Date(startDateTime)) {
+            return true;
+        }
+        return false;
+    }
+        
 
     return (
         <FormProvider {...methods}>
@@ -73,9 +87,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
 
                 <div className="task-form-drawer__body">
                     <div className="task-form-field">
-                        <label className="task-form-field__label" htmlFor="edit-task-form-name">Event name</label>
+                        <label className="task-form-field__label" htmlFor="edit-event-form-name">Event name</label>
                         <input
-                            id="edit-task-form-name"
+                            id="edit-event-form-name"
                             className="task-form-input"
                             type="text"
                             placeholder="Event name"
@@ -84,17 +98,18 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                         {errors.title && <p className="task-form-field__error">{errors.title.message}</p>}
                     </div>
                     <div className="task-form-field">
-                        <label className="task-form-field__label">All Day</label>
+                        <label className="task-form-field__label" htmlFor="edit-event-form-all-day">All Day</label>
                         <input
-                            id="edit-task-form-all-day"
+                            id="edit-event-form-all-day"
                             type="checkbox"
                             {...register('allDay')}
                             className="task-form-input task-form-checkbox"
                         />
                     </div>
                     <div className="task-form-field">
-                        <label className="task-form-field__label">Starting</label>
+                        <label className="task-form-field__label" htmlFor="edit-event-form-start">Starting</label>
                         <input
+                            id="edit-event-form-start"
                             className="task-form-input task-form-recurrence-start-date"
                             type="date"
                             onClick={(e) => e.currentTarget.showPicker?.()}
@@ -119,7 +134,17 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                             className="task-form-input task-form-recurrence-start-date"
                             type="date"
                             onClick={(e) => e.currentTarget.showPicker?.()}
-                            {...register('end', { required: 'End date is required' })}
+                            {...register('end', {
+                                required: 'End date is required',
+                                validate: (value) => {                                    
+                                    const startDateObj = parseDate(startDate);
+                                    const endDateObj = parseDate(value);
+                                    if (endDateObj < startDateObj) {
+                                        return 'End date cannot be before start date';
+                                    }
+                                    return true;
+                                }
+                            })} 
                         />
                         {errors.end && <p className="task-form-field__error">{errors.end.message}</p>}
                     </div>
@@ -129,7 +154,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                         <input
                             className="task-form-input task-form-recurrence-start-date"
                             type="time"
-                            {...register('endTime', { required: 'End time is required' })}
+                            {...register('endTime', { required: 'End time is required', validate: () => {
+                                return isEndDateTimeBeforeStartDateTime() ? 'End date and time cannot be before start date and time' : true;
+                            }})}
                         />
                         {!allDay && errors.endTime && <p className="task-form-field__error">{errors.endTime.message}</p>}
                     </div>
@@ -154,12 +181,6 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                 </div>
 
                 <div className="task-form-drawer__footer">
-
-                    {errors.start && (
-                        <div className="task-form-drawer__error">
-                            {errors.start.message || 'Start date is required'}
-                        </div>
-                    )}
                     <button
                         className="task-form-action-button task-form-action-button--cancel"
                         onClick={onClose}
@@ -181,5 +202,11 @@ export const EditEventForm: FC<EditEventFormProps> = ({
         </FormProvider >
     );
 };
+// 2016-6-16
+function parseDate(dateString: string): Date {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+};
+
 
 export default EditEventForm;
