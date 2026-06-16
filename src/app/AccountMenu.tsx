@@ -63,12 +63,12 @@ function AccountMenu({
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                         {location !== ROUTES.userSettings && (
-                            <Link href={ROUTES.userSettings}
+                            <a href={ROUTES.userSettings}
                                 id="user-settings-button"
                                 className="settings-btn"
                             >
                                 User Settings
-                            </Link>
+                            </a>
                         )}
                         {location !== ROUTES.bulkEdit && (
                             <Link href={ROUTES.bulkEdit}
@@ -84,6 +84,15 @@ function AccountMenu({
                         >
                             Privacy Policy
                         </Link>
+                        <a
+                            href="https://buymeacoffee.com/elisestraub"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="settings-btn buy-coffee-button"
+                        >
+                            ☕ Buy me a coffee
+                        </a>
+
                         {googleCalendarEnabled && (
                             <GoogleCalendarStatus />
                         )}

@@ -65,6 +65,12 @@
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+.buy-coffee-button {
+    background: var(--color-mode-priority-bg);
+    color: var(--color-mode-priority-text);
+    border: 1px solid var(--color-mode-priority-border);
+}
+
 /* Text wrapper: title + subtitle stacked */
 .settings-btn-text-wrapper {
     display: flex;
