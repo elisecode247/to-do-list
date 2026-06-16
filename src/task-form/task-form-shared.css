@@ -124,10 +124,6 @@
 .task-form-recurrence-start-date {
     max-width: 220px;
 }
-.task-form-field__helper-text {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-}
 
 .task-form-drawer__footer {
     padding: 12px 16px;

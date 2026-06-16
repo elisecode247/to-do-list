@@ -7,6 +7,7 @@ import { type FC, useRef } from 'react';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { formatGoogleEventDateTime } from 'src/google-authorization/utilities/format-google-event-date-time';
+import { addOneDay } from 'src/google-authorization/utilities/add-one-day';
 
 type FormData = GoogleEvent & {
     startTime: string;
@@ -52,7 +53,7 @@ export const EditEventForm: FC<EditEventFormProps> = ({
             title: data.title,
             description: watchNote,
             start: allDay ? data.start : formatGoogleEventDateTime(data.start, startTime),
-            end: allDay ? data.end : formatGoogleEventDateTime(data.end, endTime),
+            end: allDay ? addOneDay(data.end) : formatGoogleEventDateTime(data.end, endTime),
         };
         onSave(updatedResource as GoogleEvent);
         onClose();
@@ -120,9 +121,6 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                             onClick={(e) => e.currentTarget.showPicker?.()}
                             {...register('end', { required: 'End date is required' })}
                         />
-                        {allDay && (
-                            <p className="task-form-field__helper-text">The event will repeat up to but not including the end date.</p>
-                        )}
                         {errors.end && <p className="task-form-field__error">{errors.end.message}</p>}
                     </div>
                     {!allDay && (
