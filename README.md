@@ -18,7 +18,6 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- bug: event validation
 - admin: add contact form
 - admin: encrypt journal entries
 - admin: add privacy policy to homepage and footer

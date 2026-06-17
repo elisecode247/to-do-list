@@ -119,8 +119,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                     </div>
                     {!allDay && (
                         <div className="task-form-field">
-                            <label className="task-form-field__label">Starting Time</label>
+                            <label className="task-form-field__label" htmlFor="edit-event-form-start-time">Starting Time</label>
                             <input
+                                id="edit-event-form-start-time"
                                 className="task-form-input task-form-recurrence-start-date"
                                 type="time"
                                 {...register('startTime', { required: 'Start time is required' })}
@@ -129,8 +130,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                         </div>
                     )}
                     <div className="task-form-field">
-                        <label className="task-form-field__label">Ending</label>
+                        <label className="task-form-field__label" htmlFor="edit-event-form-end">Ending</label>
                         <input
+                            id="edit-event-form-end"
                             className="task-form-input task-form-recurrence-start-date"
                             type="date"
                             onClick={(e) => e.currentTarget.showPicker?.()}
@@ -150,8 +152,9 @@ export const EditEventForm: FC<EditEventFormProps> = ({
                     </div>
                     {!allDay && (
                     <div className="task-form-field">
-                        <label className="task-form-field__label">Ending Time</label>
+                        <label className="task-form-field__label" htmlFor="edit-event-form-end-time">Ending Time</label>
                         <input
+                            
                             className="task-form-input task-form-recurrence-start-date"
                             type="time"
                             {...register('endTime', { required: 'End time is required', validate: () => {

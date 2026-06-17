@@ -31,6 +31,16 @@
     box-shadow: 0 4px 12px var(--color-priority);
 }
 
+.task-form-field__error {
+    color: var(--form-error-color);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+    background: color-mix(in srgb, var(--form-error-color) 10%, #fef2f2 90%);
+    border: 1px solid var(--form-error-color);
+    border-radius: 8px;
+}
+
 @media (min-width: 900px) {
     .new-task-form-toggle-button {
         padding: 0 var(--spacing-md);
