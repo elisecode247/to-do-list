@@ -63,12 +63,12 @@ function AccountMenu({
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                         {location !== ROUTES.userSettings && (
-                            <a href={ROUTES.userSettings}
+                            <Link href={ROUTES.userSettings}
                                 id="user-settings-button"
                                 className="settings-btn"
                             >
                                 User Settings
-                            </a>
+                            </Link>
                         )}
                         {location !== ROUTES.bulkEdit && (
                             <Link href={ROUTES.bulkEdit}
