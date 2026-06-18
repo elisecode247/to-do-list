@@ -2,7 +2,7 @@
     color-scheme: light dark;
 
     /* Core Ocean Palette */
-    --color-primary: light-dark(#11FFFF, #38bdf8);
+    --color-primary: light-dark(#19b8fc, #38bdf8);
     /* ocean blue / moonlit aqua */
 
     --color-primary-dark: light-dark(#0369a1, #0369a1);
@@ -30,6 +30,8 @@
     --color-text-primary: light-dark(#1e3a8a, #e0f2fe);
     --color-text-secondary: light-dark(#1e40af, #bae6fd);
     --color-text-secondary-light: #bae6fd; /* same in both */
+    --color-text-light: light-dark(#f9fafb, #ffffff);
+    --color-text-dark: #111827;
 
     /* Surfaces */
     --color-background: light-dark(#33ddee, #022c3a);
