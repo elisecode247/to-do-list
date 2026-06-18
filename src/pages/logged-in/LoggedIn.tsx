@@ -25,6 +25,7 @@ import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import EditEventForm from 'src/google-authorization/EditEventForm';
+import Footer from 'src/footer/Footer';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -301,6 +302,7 @@ const LoggedIn: React.FC = () => {
                         ))}
                 </nav>
             )}
+            <Footer />
         </div >
     </>)
 

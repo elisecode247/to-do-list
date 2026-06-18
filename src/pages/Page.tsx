@@ -5,12 +5,14 @@ import { ROUTES } from "src/router";
 import './page.css';
 import { useTheme } from "src/themes/use-theme";
 import { useState } from "react";
+import Footer from "src/footer/Footer";
 
 interface PageProps {
     title: string;
     children: React.ReactNode;
+    privacyLink?: boolean;
 }
-function Page({ title, children }: PageProps) {
+function Page({ title, children, privacyLink = true }: PageProps) {
     useTheme();
     const [location] = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,6 +37,7 @@ function Page({ title, children }: PageProps) {
                 <h2 className="page_h2">{title}</h2>
                 {children}
             </div>
+            {privacyLink && <Footer />}
         </div>
     );
 }

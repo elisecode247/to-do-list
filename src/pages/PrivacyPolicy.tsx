@@ -6,7 +6,7 @@ const PrivacyPolicyPage: React.FC = () => {
         useTheme();
     
     return (
-        <Page title="Privacy Policy">
+        <Page title="Privacy Policy" privacyLink={false}>
         <div className="privacy-policy-page">
             <p>In Progress</p>
         </div>

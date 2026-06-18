@@ -24,6 +24,7 @@ import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useDebounceValue } from 'usehooks-ts';
 import { useDemoNotes } from './use-demo-notes';
 import IconButton from 'src/components/icon-button/IconButton';
+import Footer from 'src/footer/Footer';
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const DemoPage: React.FC = () => {
@@ -304,6 +305,7 @@ const DemoPage: React.FC = () => {
                         ))}
                 </nav>
             )}
+            <Footer />
         </div >
     </>)
 

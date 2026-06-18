@@ -7,6 +7,7 @@ import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import { useTheme } from "src/themes/use-theme";
 import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
+import Footer from "src/footer/Footer";
 
 interface UserSettingsProps {
     googleCalendarEnabled: boolean;
@@ -90,6 +91,7 @@ function UserSettings({
                 ) : null}
                 {isDeleteAccountDialogOpen && "open"}
             </div>
+            <Footer />
         </div>
     );
 }
