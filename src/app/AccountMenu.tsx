@@ -59,7 +59,7 @@ function AccountMenu({
             />
 
             {isMenuOpen && isAuthenticated ? createPortal(
-                <div ref={dropdownRef} className="app_header_settings">
+                <div ref={dropdownRef} className="app_header_settings" dir="auto">
                     <div className="app_header_button-group">
                         <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                         {location !== ROUTES.userSettings && (

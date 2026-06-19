@@ -37,8 +37,8 @@
 
 .app_header_menu {
     position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
+    inset-block-start: var(--spacing-md);
+    inset-inline-end: var(--spacing-md);
     width: 44px;
     height: 44px;
 }
@@ -49,7 +49,9 @@
     border: 0;
     padding: 0 var(--spacing-sm);
     z-index: 10;
-    margin: auto 0 auto auto;
+    margin-block: auto;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
     height: 44px;
     display: flex;
     font-size: 16px;
@@ -59,8 +61,8 @@
 
 .app_header_settings {
     position: absolute;
-    top: 48px;
-    right: 12px;
+    inset-block-start: 48px;
+    inset-inline-end: 12px;
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -98,7 +100,7 @@
 }
 
 .app_loading-container p {
-    margin-top: var(--spacing-md);
+    margin-block-start: var(--spacing-md);
     color: var(--color-text-secondary);
     font-size: 14px;
 }
@@ -131,12 +133,12 @@
     }
 
     .account-menu-container {
-        margin-left: 0;
+        margin-inline-start: 0;
     }
 
     .app_header_settings {
-        top: 72px;
-        right: 12px;
+        inset-block-start: 72px;
+        inset-inline-end: 12px;
     }
 
     .app_header_menu {

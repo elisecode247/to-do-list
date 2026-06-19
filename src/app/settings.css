@@ -2,7 +2,7 @@
 .app_header_settings {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: end;
 }
 
 .app_header_button-group {
@@ -109,8 +109,8 @@
 /* DROPDOWN PANEL */
 .settings-panel {
     position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    inset-block-start: calc(100% + 6px);
+    inset-inline-end: 0;
 
     width: 260px;
     box-sizing: border-box; /* include padding in width */

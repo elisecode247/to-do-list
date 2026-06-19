@@ -50,7 +50,7 @@
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 20px;
-    margin-left: 8px;
+    margin-inline-start: 8px;
 }
 
 .drawer-section {
@@ -257,9 +257,10 @@
     height: 14px;
     background: #fff;
     border-radius: 50%;
-    top: 3px;
-    right: 3px;
-    transition: left 0.2s ease, right 0.2s ease;
+    inset-block-start: 3px;
+    inset-inline-end: 3px;
+    inset-inline-start: auto;
+    transition: inset-inline-start 0.2s ease, inset-inline-end 0.2s ease;
 }
 
 .drawer-toggle.off {
@@ -267,8 +268,8 @@
 }
 
 .drawer-toggle.off .drawer-toggle-thumb {
-    right: auto;
-    left: 3px;
+    inset-inline-end: auto;
+    inset-inline-start: 3px;
 }
 
 .drawer-toggle:focus-visible {
