@@ -41,9 +41,19 @@ function AccountMenu({
         handleLogout();
     };
 
-    useOnClickOutside(dropdownRef as React.RefObject<HTMLDivElement>, () => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent | FocusEvent) => {
+        const target = event.target as Node | null;
+        if (target && menuRef.current?.contains(target)) {
+            return;
+        }
         if (isMenuOpen) onMenuClose();
-    });
+    }
+
+    const handleClickInside = () => {
+        onMenuToggleOpen();
+    }
+
+    useOnClickOutside(dropdownRef as React.RefObject<HTMLDivElement>, handleClickOutside);
 
     if (!isAuthenticated) return null
 
@@ -51,7 +61,7 @@ function AccountMenu({
         <div className="account-menu-container" ref={menuRef}>
             <IconButton
                 className="app_header_menu"
-                onClick={onMenuToggleOpen}
+                onClick={handleClickInside}
                 label="Menu"
                 ariaLabel="Account menu"
                 icon={<Menu className="app_header_menu-icon" size={24} />}
