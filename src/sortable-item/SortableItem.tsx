@@ -108,8 +108,6 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
-        setShowNotes(false);
-        setOpenNewTaskForm(false);
     }
 
     useEffect(() => {
@@ -141,6 +139,8 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Task details cannot be empty.', 'error');
             return;
         }
+        // get count of parent task's existing subtasks to determine new subtask's sort order
+        const existingSubtasks = getSubtasks(id);
         // inherit parent task's category and mode, but not priority or hidden status
         const newChecklistItem: ChecklistItem = {
             itemType: 'checklist-item',
@@ -149,7 +149,8 @@ export const SortableItem: FC<SortableItemProps> = ({
             done: false,
             lastCompleted: '',
             note: '',
-            sortOrder: 0,
+            // add subtask at the end of the list, but before any hidden or archived items
+            sortOrder: existingSubtasks.length,
             tabSortOrder: {},
             categoryUuid: null,
             category: category,
@@ -164,8 +165,6 @@ export const SortableItem: FC<SortableItemProps> = ({
         };
         try {
             await addItem(newChecklistItem);
-            setOpenNewTaskForm(false);
-            setCollapsed(true);
             setInputText('');
             showToast('Task added successfully', 'success');
         } catch {
@@ -235,7 +234,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     function handleOpenTaskForm() {
         setOpenNewTaskForm(!openNewTaskForm);
         setShowNotes(false);
-        setCollapsed(true);
+        toggleMenuOpen();
     }
 
     function toggleMenuOpen() {
@@ -247,7 +246,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     }
     function handleClickOutsideMenu () {
         setIsMenuOpen(false);
-    }
+    };
     useOnClickOutside(menuDropdownRef as RefObject<HTMLElement>, handleClickOutsideMenu)
 
     return (
@@ -476,41 +475,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </button>
                         </div>
                     )}
-                    {openNewTaskForm ? (
-                        <div className="sortable-item_new-item-form">
-                            <h3>New Task</h3>
-                            <button
-                                className="sortable-item_new-item-close-button"
-                                onClick={handleOpenTaskForm}
-                                aria-label="Close"
-                            >
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                </svg>
-                            </button>
-                            <div className="sortable-item_new-item-input-container">
-                                <input
-                                    className="sortable-item_new-item-input"
-                                    type="text"
-                                    placeholder="Task details..."
-                                    value={inputText}
-                                    onChange={(e) => setInputText(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        e.stopPropagation();
-                                        if (e.key === 'Enter') {
-                                            handleAdd(id);
-                                        }
-                                    }}
-                                />
-                                <button
-                                    className="sortable-item_new-item-add-button"
-                                    onClick={() => handleAdd(id)}
-                                >
-                                    Add
-                                </button>
-                            </div>
-                        </div>
-                    ) : null}
                     {/* RECURSIVE SUBTASKS */}
                     <div className="sortable-item_subtasks-container">
 
@@ -553,6 +517,41 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </SortableContext>
 
                     </div>
+                    {openNewTaskForm ? (
+                        <div className="sortable-item_new-item-form">
+                            <h3>New Task</h3>
+                            <button
+                                className="sortable-item_new-item-close-button"
+                                onClick={handleOpenTaskForm}
+                                aria-label="Close"
+                            >
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                </svg>
+                            </button>
+                            <div className="sortable-item_new-item-input-container">
+                                <input
+                                    className="sortable-item_new-item-input"
+                                    type="text"
+                                    placeholder="Task details..."
+                                    value={inputText}
+                                    onChange={(e) => setInputText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        e.stopPropagation();
+                                        if (e.key === 'Enter') {
+                                            handleAdd(id);
+                                        }
+                                    }}
+                                />
+                                <button
+                                    className="sortable-item_new-item-add-button"
+                                    onClick={() => handleAdd(id)}
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    ) : null}
                 </motion.div>}
             </AnimatePresence>
         </div>

@@ -2,12 +2,13 @@
 @layer base {
     .sortable-item_container {
         display: grid;
-        grid-template-rows: minmax(55px, auto) auto auto;
+        grid-template-rows: minmax(55px, auto) auto auto minmax(0, auto);
         grid-template-columns: 44px auto;
         grid-template-areas:
             "drag text"
             "drag button-group"
-            "subtasks subtasks";
+            "subtasks subtasks"
+            "add-task add-task";
         align-items: center;
         padding: var(--spacing-sm);
         background-color: var(--color-surface--transparent);
@@ -341,7 +342,8 @@
         grid-template-columns: 44px auto auto;
         grid-template-areas:
             "drag text button-group"
-            "subtasks subtasks subtasks";
+            "subtasks subtasks subtasks"
+            "add-task add-task add-task";
     }
 
     .sortable-item_text-container {
@@ -450,7 +452,7 @@
 /** New Item Section */
 .sortable-item_new-item-form {
     position: relative;
-    grid-area: subtasks;
+    grid-area: add-task;
 }
 
 .sortable-item_new-item-input-container {
