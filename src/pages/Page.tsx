@@ -8,7 +8,7 @@ import { useState } from "react";
 import Footer from "src/footer/Footer";
 
 interface PageProps {
-    title: string;
+    title?: string;
     children: React.ReactNode;
     privacyLink?: boolean;
 }
@@ -34,7 +34,7 @@ function Page({ title, children, privacyLink = true }: PageProps) {
 
             </header>
             <div className="page-content">
-                <h2 className="page_h2">{title}</h2>
+                {title && <h2 className="page_h2">{title}</h2>}
                 {children}
             </div>
             {privacyLink && <Footer />}

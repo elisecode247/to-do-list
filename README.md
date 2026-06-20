@@ -18,9 +18,7 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
-- admin: add contact form
 - admin: encrypt journal entries
-- admin: add privacy policy to homepage and footer
 - admin: remove google task integration
 - feature: add templates for new users
 - feature: add undo to delete and uncheck
