@@ -2,7 +2,7 @@
 @layer base {
     .sortable-item_container {
         display: grid;
-        grid-template-rows: 55px auto auto;
+        grid-template-rows: minmax(55px, auto) auto auto;
         grid-template-columns: 44px auto;
         grid-template-areas:
             "drag text"
