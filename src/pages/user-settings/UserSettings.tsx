@@ -1,13 +1,9 @@
-import AccountMenu from "src/app/AccountMenu";
-import { Link, useLocation } from "wouter";
-import { Home } from "lucide-react";
-import { ROUTES } from "src/router";
 import './user-settings.css';
 import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import { useTheme } from "src/themes/use-theme";
 import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
-import Footer from "src/footer/Footer";
+import Page from "../Page";
 
 interface UserSettingsProps {
     googleCalendarEnabled: boolean;
@@ -20,13 +16,7 @@ function UserSettings({
     updateEnableCalendar
 }: UserSettingsProps) {
     useTheme();
-    const [location] = useLocation();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
-
-    function toggleMenu() {
-        setIsMenuOpen(prev => !prev);
-    }
 
     function openDeleteAccountDialog() {
         setIsDeleteAccountDialogOpen(true);
@@ -41,20 +31,7 @@ function UserSettings({
         );
     }
     return (
-        <div>
-            <header className="app_header">
-                <h1 className="app_h1">Daily Reset</h1>
-                <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)}
-                />
-            </header>
-            <div className="user-settings-container">
-                {location !== ROUTES.home && (
-                    <Link href={ROUTES.home} className="settings-btn settings-btn--primary">
-                        <Home size={24} />
-                        <span>Back to Home</span>
-                    </Link>
-                )}
-                <h2 className="app_h2">User Settings</h2>
+        <Page title="User Settings">
                 <div className="settings-section">
                     <h3 className="settings-section-title">Enable Google Calendar</h3>
                     <div className="radio-group" role="radiogroup">
@@ -90,9 +67,7 @@ function UserSettings({
                     <DeleteAccountDialog isOpen={isDeleteAccountDialogOpen} onClose={() => setIsDeleteAccountDialogOpen(false)} />
                 ) : null}
                 {isDeleteAccountDialogOpen && "open"}
-            </div>
-            <Footer />
-        </div>
+        </Page>
     );
 }
 

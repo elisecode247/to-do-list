@@ -18,6 +18,7 @@ Live: https://www.dailyresetlist.com
 
 
 ### To do
+- bug: account menu toggle doesn't close when menu open
 - admin: add contact form
 - admin: encrypt journal entries
 - admin: add privacy policy to homepage and footer
