@@ -7,7 +7,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
 import NatureFirefliesCanvas from './NatureFirefliesCanvas';
@@ -37,10 +37,12 @@ const App: FC = () => {
     const { googleCalendarEnabled, isLoadingSettings, updateEnableCalendar } = useUserSettings();
     const { loadTasks, loadDate } = useTask();
     const { loadCalendarEvents } = useGoogleCalendar();
+    const [, setLocation] = useLocation();
 
     const handleLoginSuccess = async (token: string) => {
         try {
             await login(token);
+            setLocation(ROUTES.home);
         }
         catch (err) {
             console.error(err);
@@ -95,7 +97,7 @@ const App: FC = () => {
             </Route>
             <Route path={ROUTES.demo}>
                 {/** Demo page is faster without Suspense */}
-                <DemoPageLazy />
+                <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
             </Route>
             <Route path={ROUTES.userSettings}>
                 {isAuthenticated ? (

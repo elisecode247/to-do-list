@@ -47,7 +47,8 @@
     transition: all 0.2s ease;
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
-    width: 44px;
+    min-width: 44px;
+    width: fit-content;
     position: fixed;
     bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
     right: 25px;

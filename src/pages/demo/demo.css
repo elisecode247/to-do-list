@@ -1,3 +1,17 @@
+.app_header {
+    display: grid;
+    /* two rows, first row buttons, second row title */
+    grid-template-columns: auto auto auto;
+    grid-template-rows: 60px 60px;
+    grid-template-areas: "login clear reset" "title title title";
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    height: 120px;
+    padding: 0 16px;
+    width: 100%;
+}
+
 .demo-keep-copy {
     margin: 32px auto 12px;
     max-width: 280px;
@@ -43,7 +57,7 @@
     font-size: 13px;
 }
 
-.demo-reset {
+.header-btn {
     margin: 16px auto;
     padding: 8px 16px;
     display: flex;
@@ -71,7 +85,14 @@
         transform 0.2s ease;
 }
 
-.demo-reset:hover {
+.demo-reset {
+    grid-area: reset;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.header-button:hover {
     background: rgba(127, 47, 254, 0.22);
     border-color: rgba(200, 180, 255, 0.45);
     color: #ffffff;
@@ -79,13 +100,21 @@
     transform: scale(1.04);
 }
 
-.demo-reset:active {
+.header-button:active {
     transform: scale(0.98);
 }
 
-.demo-reset:focus {
+.header-button:focus {
     outline: none;
 }
+
+.demo-clear {
+    grid-area: clear;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
 
 .demo-link {
     margin-top: 12px;
@@ -107,4 +136,19 @@
 .demo-placeholder {
     height: 250px;
     flex-shrink: 0;
+}
+
+@media (min-width: 900px) {
+    .app_header {
+        grid-area: header;
+        display: grid;
+        grid-template-columns: auto 1fr auto auto auto auto;
+        grid-template-areas: "filter title login clear reset create menu";
+        grid-template-rows: 100px;
+        align-items: center;
+        gap: 8px;
+        height: 100px;
+        padding: 0 16px;
+        width: 100%;
+    }
 }

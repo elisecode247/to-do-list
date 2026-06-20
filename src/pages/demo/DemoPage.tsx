@@ -25,9 +25,11 @@ import { useDebounceValue } from 'usehooks-ts';
 import { useDemoNotes } from './use-demo-notes';
 import IconButton from 'src/components/icon-button/IconButton';
 import Footer from 'src/footer/Footer';
+import GoogleLoginButton from 'src/authentication/google-login-button';
+
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const DemoPage: React.FC = () => {
+const DemoPage: React.FC<{ onSuccessfulLogin: (token: string) => void }> = ({ onSuccessfulLogin }) => {
     useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
@@ -201,32 +203,32 @@ const DemoPage: React.FC = () => {
                         </span>
                     </p>
                 </div>
-                <IconButton
-                    className={`new-task-form-toggle-button
+                <GoogleLoginButton onSuccess={onSuccessfulLogin} />
+
+                    <IconButton
+                        className={`new-task-form-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={toggleAddForm}
-                    label="Add new task"
-                    icon={<Plus size={24} strokeWidth={3} />}
-                />
-                {/** Reset with Demo Starter Data */}
-                <div className="demo-buttons">
-                <IconButton
-                    className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={reset}
-                    label="Refresh with Dummy Data"
-                    ariaLabel="Reset demo data"
-                    icon={<RefreshCcw size={24} strokeWidth={3} />}
-                    showLabel={true}
-                />
-                <IconButton
-                    className={`demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={clear}
-                    label="Clear All Data"
-                    ariaLabel="Clear all tasks"
-                    icon={<Eraser size={24} strokeWidth={3} />}
-                    showLabel={true}
-                />
-                </div>
+                        onClick={toggleAddForm}
+                        label="Add new task"
+                        icon={<Plus size={24} strokeWidth={3} />}
+                    />
+                    {/** Reset with Demo Starter Data */}
+                    <IconButton
+                        className={`header-button demo-reset ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
+                        onClick={reset}
+                        label="Dummy Data"
+                        ariaLabel="Reset demo data"
+                        icon={<RefreshCcw size={24} strokeWidth={3} />}
+                        showLabel={true}
+                    />
+                    <IconButton
+                        className={`header-button demo-clear ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
+                        onClick={clear}
+                        label="Clear All Data"
+                        ariaLabel="Clear all tasks"
+                        icon={<Eraser size={24} strokeWidth={3} />}
+                        showLabel={true}
+                    />
             </header>
             <aside className="left_panel">
                 <AppToolBar
