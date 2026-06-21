@@ -9,7 +9,7 @@
     --color-info: light-dark(#60a5fa, #3b82f6); /* sky blue */
     --color-warning: light-dark(#fcd34d, #fcd34d); /* mellow yellow (same) */
     --color-danger: light-dark(#f87171, #ef4444); /* gentle red */
-
+    --color-white-black: light-dark(#ffffff, #111827); /* pure white / pure black */
     /* Text */
     --color-text-primary: light-dark(#1f2937, #f3f4f6); /* dark / light slate */
     --color-text-secondary: light-dark(#4b5563, #d1d5db); /* medium / soft gray */

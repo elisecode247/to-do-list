@@ -5,11 +5,16 @@
     cursor: pointer;
     transition: color 0.2s ease;
     z-index: 999;
+    position: relative;
+    inset-block-end: 8px;
+    inset-inline-start: 8px;
 }
 
-.footer-bottom-right {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
+.footer {
+    position: fixed;
+    bottom: 0;
+    height: 16px;
+    width: 100vw;
     z-index: 999;
+    background-color: var(--color-white-black);
 }
