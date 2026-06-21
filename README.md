@@ -1,20 +1,15 @@
-# To Do List
+# Daily Reset List
 
-An app so simple to use you will actually use it. This app will give you structure, flexibility, and instant feedback.
+A daily task list that offers *gentle remembering without emotional penalty.*
 
-Goal is not task management but *gentle remembering without emotional penalty.*
-
-Live: https://www.dailyresetlist.com
+Live: https://dailyresetlist.com
 
 ## Features
-
-- **Frequency-based mode**: Categorize tasks as daily, one-time, or occasional
-- **Smart filtering**: Quickly view tasks by category with visual counters [See here for rules](./task-filtering-notes.md)
-
-- **Drag and drop**: Easily reorder tasks to match your priorities
-- **Task management**: Check off completed items, edit tasks, or delete them
-- **Archive system**: Keep your list clean while preserving completed tasks
-- **Intuitive interface**: Clean, distraction-free design with a vibrant purple theme
+* low pressure: no goals or history tracking
+* repeatable tasks the reset each day
+* shows the last time you completed a task
+* tasks can be skipped
+* includes an interstitial journal to combat context switching and procrastination
 
 
 ### To do
