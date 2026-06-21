@@ -7,13 +7,12 @@
         grid-template-areas:
             "drag text"
             "drag button-group"
-            "subtasks subtasks"
-            "add-task add-task";
-        align-items: center;
+            "blank subtasks"
+            "blank add-task";
+        align-items: stretch;
         padding: var(--spacing-sm);
         background-color: var(--color-surface--transparent);
         border: 0;
-        transition: all var(--transition-fast);
         color: var(--color-text-primary);
         flex-wrap: wrap;
         position: relative;
@@ -335,15 +334,15 @@
 @media (min-width: 900px) {
     .sortable-item_container {
         padding-block-start: var(--spacing-md);
-        padding-block-end: 0;
+        padding-block-end: var(--spacing-md);
         padding-inline: var(--spacing-sm);
         display: grid;
         grid-template-rows: auto auto;
         grid-template-columns: 44px auto auto;
         grid-template-areas:
             "drag text button-group"
-            "subtasks subtasks subtasks"
-            "add-task add-task add-task";
+            "blank subtasks subtasks"
+            "blank add-task add-task";
     }
 
     .sortable-item_text-container {
@@ -407,10 +406,10 @@
 .sortable-item_subtasks-container {
     grid-area: subtasks;
     margin-block-start: var(--spacing-sm);
-    margin-inline-start: calc(40px + var(--spacing-md));
     /* Indent more for each level */
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: var(--spacing-xs);
 }
 
@@ -453,6 +452,29 @@
 .sortable-item_new-item-form {
     position: relative;
     grid-area: add-task;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--spacing-xs);
+    min-height: 116px;
+    padding: var(--spacing-sm);
+    background-color: var(--color-surface--transparent);
+    border: 0;
+    color: var(--color-text-primary);
+    flex-wrap: wrap;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+    gap: var(--spacing-xs);
+    margin: 1px;
+}
+
+.sortable-item_new-item-form:hover {
+    border-color: var(--color-border);
+    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
+    outline: 1px solid var(--color-primary);
+    z-index: 4;
+    background-color: var(--color-surface);
 }
 
 .sortable-item_new-item-input-container {
