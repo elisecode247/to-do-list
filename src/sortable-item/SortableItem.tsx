@@ -244,10 +244,15 @@ export const SortableItem: FC<SortableItemProps> = ({
             setIsMenuOpen(false);
         }
     }
-    function handleClickOutsideMenu () {
+    function handleClickOutsideMenu (event: MouseEvent | TouchEvent | FocusEvent) {
+        // if target is buttonRef, do not close menu, since button's onClick will handle toggling
+        const target = event.target as Node | null;
+        if (target && buttonRef.current?.contains(target)) {
+            return;
+        }
         setIsMenuOpen(false);
     };
-    useOnClickOutside(menuDropdownRef as RefObject<HTMLElement>, handleClickOutsideMenu)
+    useOnClickOutside(menuDropdownRef as React.RefObject<HTMLElement>, handleClickOutsideMenu)
 
     return (
         <div
@@ -351,7 +356,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </span>
                             </button>
                         )}
-
                         <div className="sortable-item_menu-wrapper">
                             <button
                                 className={`sortable-item_main-button sortable-item_menu-button
@@ -388,7 +392,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 {!hasSubChores && (
                                     <button
                                         className="sortable-item_hide-button"
-                                        onClick={() => setDropZoneOpen(!dropZoneOpen)}
+                                        onClick={() => {
+                                            setDropZoneOpen(!dropZoneOpen);
+                                            setIsMenuOpen(false);
+                                        }}
                                         aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
                                     >
                                         {dropZoneOpen ? <Minimize2 size={24} /> : <Expand size={24} />}
