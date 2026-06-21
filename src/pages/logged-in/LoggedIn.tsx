@@ -183,7 +183,7 @@ const LoggedIn: React.FC = () => {
                     isPriority={false}
                 />
                 <div className="app_header_title">
-                    <h1 className="app_h1">Daily Reset</h1>
+                    <h1 className="app_h1">Daily Reset List</h1>
                     <p className="app_subtitle">
                         <span>
                             {dayOfWeekName}
@@ -240,7 +240,7 @@ const LoggedIn: React.FC = () => {
                     </JournalProvider>
                 ) : itemLength === 0 ?(
                     <div className="empty-state">
-                        <h2>Welcome to Daily Reset!</h2>
+                        <h2>Welcome to Daily Reset List!</h2>
                         <div>
                         <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
                         <button className="empty-state-create-button" onClick={toggleAddForm}>

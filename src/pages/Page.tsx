@@ -28,7 +28,7 @@ function Page({ title, children, privacyLink = true }: PageProps) {
                         <Home size={24} />
                     </Link>
                 )}
-                <h1 className="app_h1 page_h1">Daily Reset</h1>
+                <h1 className="app_h1 page_h1">Daily Reset List</h1>
                 <div></div>
                 <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)} />
 

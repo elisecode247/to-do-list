@@ -26,7 +26,7 @@ export default function LoggedOut({
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{ duration: 4, ease: "easeOut" }}
                 >
-                    Daily Reset
+                    Daily Reset List
                 </motion.h1>
 
                 <motion.p

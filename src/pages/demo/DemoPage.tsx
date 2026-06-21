@@ -192,7 +192,7 @@ const DemoPage: React.FC<{ onSuccessfulLogin: (token: string) => void }> = ({ on
                     )}
                 </IconButton>
                 <div className="app_header_title">
-                    <h1 className="app_h1">Daily Reset</h1>
+                    <h1 className="app_h1">Daily Reset List</h1>
                     <p className="app_subtitle">
                         <span>
                             {dayOfWeekName}
