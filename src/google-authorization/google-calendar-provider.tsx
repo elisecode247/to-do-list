@@ -15,7 +15,7 @@ import {
     writeCalendarCache,
     clearCalendarCache,
 } from "./google-calendar-cache";
-import { type GoogleEvent, type GoogleTask } from "src/google-authorization/types";
+import { type GoogleEvent } from "src/google-authorization/types";
 import { useToast } from "src/toast/use-toast";
 import { parseGoogleDate } from "./utilities/parse-google-date";
 import { GoogleCalendarContext, type GoogleCalendarContextValue } from "./google-calendar-context";
@@ -31,7 +31,6 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState<GoogleEvent[]>([]);
-    const [tasks, setTasks] = useState<GoogleTask[]>([]);
     const [isError, setIsError] = useState(false);
     const hasShownEventsErrorRef = useRef(false);
     const clientId = CLIENT_ID;
@@ -103,14 +102,13 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         if (!isAuthenticated) return [];
         if (!opts?.skipConnectionCheck && !connected) {
             setEvents([]);
-            setTasks([]);
             hasShownEventsErrorRef.current = false;
             return [];
         }
 
         try {
             const res = await fetch(
-                `${API_AUTH_URL}/google/calendar/events-and-tasks`,
+                `${API_AUTH_URL}/google/calendar/events`,
                 { headers: await authHeaders() }
             );
             if (!res.ok) throw new Error("Failed to load calendar events");
@@ -139,13 +137,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
                     return true;
                 }
             });
-
-            const tasksData = jsonObject.tasks.map((task: GoogleTask) => ({
-                ...task,
-                itemType: "google-task",
-            }));
             setEvents(eventsData);
-            setTasks(tasksData);
             hasShownEventsErrorRef.current = false;
             return eventsData;
         } catch (err) {
@@ -155,7 +147,6 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
                 hasShownEventsErrorRef.current = true;
             }
             setEvents([]);
-            setTasks([]);
             return [];
         }
     }, [isAuthenticated, connected, showToast]);
@@ -167,34 +158,14 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
                 await loadCalendarEvents({ skipConnectionCheck: true });
             } else {
                 setEvents([]);
-                setTasks([]);
             }
         } else {
             setConnected(false);
             setLoading(false);
             setEvents([]);
-            setTasks([]);
             clearCalendarCache();
         }
     }, [isAuthenticated, fetchStatus, loadCalendarEvents]);
-
-    const markCalendarTaskCompletion = useCallback(
-        async (taskId: string, listId: string, isCompleted: boolean) => {
-            if (!isAuthenticated) return;
-
-            try {
-                await fetch(`${API_AUTH_URL}/google/calendar/tasks/${listId}/${taskId}`, {
-                    method: "PATCH",
-                    headers: await authHeaders(),
-                    body: JSON.stringify({ completed: isCompleted })
-                });
-            } catch (err) {
-                console.error("Marking calendar task as completed failed:", err);
-                showToast("Failed to update task completion status", "error");
-            }
-        },
-        [isAuthenticated, showToast]
-    );
 
     const hideEventForToday = useCallback(
         async (eventId: string) => {
@@ -296,12 +267,10 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         disconnectCalendar,
         initializeCalendar,
         loadCalendarEvents,
-        markCalendarTaskCompletion,
         hideEventForToday,
         unhideEventForToday,
         updateEvent,
         events,
-        tasks,
         isError,
         setIsError,
         clientId,
@@ -312,12 +281,10 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         disconnectCalendar,
         initializeCalendar,
         loadCalendarEvents,
-        markCalendarTaskCompletion,
         hideEventForToday,
         unhideEventForToday,
         updateEvent,
         events,
-        tasks,
         isError,
         clientId,
     ]);

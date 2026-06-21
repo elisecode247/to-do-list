@@ -17,17 +17,3 @@ export type GoogleEvent = Event & {
     recurrenceId?: string;
     isHidden: boolean;
 }
-
-export type GoogleTask = {
-    itemType: string;
-    id: string;
-    title: string;
-    status: string;
-    due: string | null;
-    lastCompleted: string | null;
-    listId: string;
-    note: string;
-    isHidden: boolean;
-    text: string;
-    done: boolean;
-}

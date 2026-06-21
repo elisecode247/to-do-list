@@ -12,7 +12,7 @@ export const connectGoogleCalendar = async (googleClientId: string): Promise<voi
     }
     window.google.accounts.oauth2.initCodeClient({
         client_id: googleClientId,
-        scope: "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/calendar",
+        scope: "https://www.googleapis.com/auth/calendar",
         ux_mode: "popup",
         callback: async ({ code }: GoogleAuthCodeResponse) => {
             await fetch(API_AUTH_URL + "/google/calendar", {

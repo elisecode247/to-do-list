@@ -24,7 +24,7 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
         window.google.accounts.oauth2
             .initCodeClient({
                 client_id: clientId,
-                scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks",
+                scope: "https://www.googleapis.com/auth/calendar",
                 ux_mode: "popup",
                 prompt: "consent",
                 callback: async ({ code }) => {

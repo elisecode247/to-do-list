@@ -8,13 +8,12 @@ import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import { useTask } from 'src/app/use-task';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
-import CalendarTaskItem from 'src/google-authorization/calendar-task-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
-import type { GoogleEvent, GoogleTask } from 'src/google-authorization/types';
+import type { GoogleEvent } from 'src/google-authorization/types';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
@@ -73,8 +72,6 @@ const Checklist: FC<ChecklistProps> = ({
     } = useTask();
     const {
         events,
-        tasks,
-        markCalendarTaskCompletion,
         hideEventForToday,
         unhideEventForToday,
     } = useGoogleCalendar();
@@ -84,13 +81,6 @@ const Checklist: FC<ChecklistProps> = ({
     const isActiveList = activeTab === TABS.today;
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
-
-    const filteredTasks = tasks.map(task => ({ ...task })).filter(task => {
-        if (activeTab === TABS.hidden && task.isHidden) return true;
-        if (activeTab === TABS.upcoming && !task.isHidden) return true;
-        if (activeTab === TABS.today && !task.isHidden) return true;
-        return false;
-    });
 
     const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
         .sort((a, b) => {
@@ -116,7 +106,7 @@ const Checklist: FC<ChecklistProps> = ({
         return false;
     }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
-    const getItemDate = (item: ChecklistItem | GoogleEvent | GoogleTask) => {
+    const getItemDate = (item: ChecklistItem | GoogleEvent) => {
         if ('startDate' in item) {
             return new Date(item.startDate).getTime();
         }
@@ -126,10 +116,10 @@ const Checklist: FC<ChecklistProps> = ({
         return item.nextDue ? new Date(item.nextDue).getTime() : Infinity;
     };
 
-    const allItems = [...filteredEvents, ...filteredTasks, ...filteredItems].sort((a, b) => {
+    const allItems = [...filteredEvents, ...filteredItems].sort((a, b) => {
         if (activeTab === TABS.upcoming) {
-            const aDate = getItemDate(a as ChecklistItem | GoogleEvent | GoogleTask);
-            const bDate = getItemDate(b as ChecklistItem | GoogleEvent | GoogleTask);
+            const aDate = getItemDate(a as ChecklistItem | GoogleEvent);
+            const bDate = getItemDate(b as ChecklistItem | GoogleEvent);
             return aDate - bDate;
         }
 
@@ -285,7 +275,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 type={completedDay ? 'completedDay' : 'noTasks'}
                             />
                         )}
-                        {(allItems as (ChecklistItem | GoogleEvent | GoogleTask)[]).map((item) => {
+                        {(allItems as (ChecklistItem | GoogleEvent )[]).map((item) => {
                             if ((item as GoogleEvent).itemType === 'google-event') {
                                 const eventItem = item as GoogleEvent;
                                 return (<CalendarEventItem
@@ -293,13 +283,6 @@ const Checklist: FC<ChecklistProps> = ({
                                     event={eventItem}
                                     onHideItem={handleEventHide}
                                     onEdit={handleEventEdit}
-                                />);
-                            } else if (item.itemType === 'google-task') {
-                                const taskItem = item as GoogleTask;
-                                return (<CalendarTaskItem
-                                    key={taskItem.id}
-                                    task={taskItem}
-                                    markCompleted={markCalendarTaskCompletion}
                                 />);
                             } else if (item.itemType === 'checklist-item') {
                                 const checklistItem = item as ChecklistItem;
