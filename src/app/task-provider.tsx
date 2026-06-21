@@ -254,6 +254,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         try {
             await updateTask({
                 ...previousItem!,
+                id: id,
                 done: checked,
                 lastCompleted: checked ? new Date().toISOString() : '',
             });
@@ -295,6 +296,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const archiveItem = (id: string) => {
         updateTask({
             ...items.find(item => item.id === id)!,
+            id,
             isArchived: !items.find(item => item.id === id)!.isArchived,
         }).then(() => {
             setItems(prev =>

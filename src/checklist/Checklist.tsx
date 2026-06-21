@@ -61,6 +61,7 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const {
         items,
+        partialUpdateItem,
         deleteItem,
         toggleItem,
         prioritizeItem,
@@ -157,6 +158,22 @@ const Checklist: FC<ChecklistProps> = ({
         }
         try {
             await toggleItem(id, checked);
+            const undoAction = () => {
+                // restore last completed date if unchecking
+                if (selectedItem && checked) {
+                    const updatedItem = {
+                        id: id,
+                        // unarchive if the item has been archived
+                        lastCompleted: selectedItem.lastCompleted,
+                        ...((selectedItem?.mode === ONE_TIME_MODE) ?
+                            { isArchived: false } : {}),
+                    } as Partial<ChecklistItem>;
+                    partialUpdateItem(updatedItem);
+                }
+            };
+            if (checked) {
+                showToast('Task complete', 'success', undoAction);
+            }
             // archive if item's mode is ONE_TIME_MODE and is being marked completed
             if (selectedItem?.mode === ONE_TIME_MODE && checked) {
                 await archiveItem(id);
@@ -217,10 +234,14 @@ const Checklist: FC<ChecklistProps> = ({
         }
     };
 
-    const handleMoveItem = async (id: string) => {
+    const handleMoveItem = async (id: string, isArchived: boolean) => {
         try {
             await archiveItem(id);
-            showToast('Task archived successfully', 'success');
+            if (isArchived) {
+                showToast('Task un-archived successfully', 'success');
+            } else {
+                showToast('Task archived successfully', 'success');
+            }
         } catch (err) {
             console.error('Failed to archive task:', err);
             showToast('Failed to archive task. Please try again.', 'error');

@@ -51,7 +51,7 @@ interface SortableItemProps {
     toggleChecked: (id: string, checked: boolean) => void;
     handleEdit: (id: string) => void;
     handleHideItem: (id: string, isHiddenItem: boolean) => void;
-    onMoveItem: (id: string) => void;
+    onMoveItem: (id: string, isArchived: boolean) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     isPriority: boolean;
     subtasks?: ChecklistItem[];
@@ -422,7 +422,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 {activeTab !== TAB_ARCHIVED ? (
                                     <button
                                         className="sortable-item_archive-button"
-                                        onClick={() => onMoveItem(id)}
+                                        onClick={() => onMoveItem(id, false)}
                                         aria-label="Archive task"
                                         title="Archive task"
                                         type="button"
@@ -433,7 +433,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 ) : (
                                     <button
                                         className="sortable-item_restore-button"
-                                        onClick={() => onMoveItem(id)}
+                                        onClick={() => onMoveItem(id, true)}
                                         aria-label="Restore archived task"
                                         title="Restore archived task"
                                         type="button"

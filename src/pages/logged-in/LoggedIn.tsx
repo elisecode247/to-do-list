@@ -4,7 +4,6 @@ import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar'
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
 import Checklist from 'checklist/Checklist';
-import Toast from 'src/toast/Toast';
 import ErrorState from 'src/error-state/ErrorState';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
@@ -38,7 +37,7 @@ const LoggedIn: React.FC = () => {
     useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
-    const { toasts, showToast, removeToast } = useToast();
+    const { showToast } = useToast();
     const {
         isLoading,
         taskError,
@@ -153,14 +152,6 @@ const LoggedIn: React.FC = () => {
     }
 
     return (<>
-        {toasts.map(toast => (
-            <Toast
-                key={toast.id}
-                message={toast.message}
-                type={toast.type}
-                onClose={() => removeToast(toast.id)}
-            />
-        ))}
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
             {(leftOpen || rightOpen || menuOpen) && (
                 <div
