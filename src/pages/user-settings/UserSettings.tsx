@@ -4,6 +4,7 @@ import { useTheme } from "src/themes/use-theme";
 import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import Page from "../Page";
+import { Skull } from 'lucide-react';
 
 interface UserSettingsProps {
     googleCalendarEnabled: boolean;
@@ -56,10 +57,14 @@ function UserSettings({
                     </div>
                 </div>
                 <AppearanceSettings />
-                <div className="settings-section">
-                    <h3 className="settings-section-title">Danger Zone</h3>
+                <div className="settings-section settings-section--danger">
+                    <h3 className="settings-section-title settings-section-title--danger">
+                        <Skull size={20} className="settings-section-icon--danger" />
+                        Danger Zone
+                    </h3>
                     <p className="settings-section-description">Delete your account and all your data. This action cannot be undone.</p>
                     <button className="settings-btn settings-btn--danger" type="button" onClick={openDeleteAccountDialog}>
+                        <Skull size={20} className="settings-btn-icon--danger" />
                         Delete Account
                     </button>
                 </div>

@@ -65,6 +65,15 @@
     cursor: not-allowed;
 }
 
+.settings-btn--danger {
+    background: var(--color-danger);
+    color: var(--color-text-light);
+}
+
+.settings-btn-icon--danger {
+    color: var(--color-text-light);
+}
+
 /* ─── Page heading ────────────────────────────────────────────────────── */
 
 .app_h2 {
@@ -87,6 +96,10 @@
     gap: var(--spacing-md);
 }
 
+.settings-section--danger {
+    border-color: var(--color-danger);
+}
+
 .settings-section-title {
     font-size: 13px;
     font-weight: 600;
@@ -94,6 +107,17 @@
     text-transform: uppercase;
     color: var(--color-text-secondary);
     margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.settings-section-title--danger {
+    color: var(--color-danger);
+}
+
+.settings-section-icon--danger {
+    color: var(--color-danger);
+    margin-right: 4px;
 }
 
 /* ─── Fieldset / legend (AppearanceSettings) ──────────────────────────── */
