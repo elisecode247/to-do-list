@@ -2,11 +2,12 @@
 @layer base {
     .sortable-item_container {
         display: grid;
-        grid-template-rows: minmax(55px, auto) auto auto minmax(0, auto);
+        grid-template-rows: minmax(55px, auto) auto minmax(0, auto) minmax(0, auto) auto;
         grid-template-columns: 44px auto;
         grid-template-areas:
             "drag text"
             "drag button-group"
+            "blank notes"
             "blank subtasks"
             "blank add-task";
         align-items: stretch;
@@ -337,10 +338,11 @@
         padding-block-end: var(--spacing-md);
         padding-inline: var(--spacing-sm);
         display: grid;
-        grid-template-rows: auto auto;
+        grid-template-rows: auto auto auto auto;
         grid-template-columns: 44px auto auto;
         grid-template-areas:
             "drag text button-group"
+            "blank notes notes"
             "blank subtasks subtasks"
             "blank add-task add-task";
     }
@@ -438,7 +440,7 @@
 }
 
 .sortable-item_note {
-    grid-area: subtasks;
+    grid-area: notes;
     margin-block-start: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 14px;
