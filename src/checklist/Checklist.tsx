@@ -214,6 +214,10 @@ const Checklist: FC<ChecklistProps> = ({
                 await unhideForToday(id as string);
             } else {
                 await hideForToday(id as string);
+                const undoAction = () => {
+                    unhideForToday(id as string);
+                };
+                showToast('Task hidden for today', 'success', undoAction);
             }
         } catch (err) {
             console.error('Failed to update task visibility:', err);
