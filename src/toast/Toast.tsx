@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { AlertCircle, CheckCircle, Undo2, X } from 'lucide-react';
 import './toast.css';
 
@@ -11,16 +11,18 @@ interface ToastProps {
 }
 
 const Toast = function({ message, type, onClose, duration = 4000, undoAction }: ToastProps) {
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const handleClose = useEffectEvent(onClose);
     useEffect(() => {
-        const timer = setTimeout(onClose, duration);
-        return () => clearTimeout(timer);
-    }, [duration, onClose]);
+        timerRef.current = setTimeout(handleClose, duration);
+        return () => clearTimeout(timerRef.current as NodeJS.Timeout);
+    }, [duration]);
 
     const handleUndo = () => {
         if (undoAction) {
             undoAction();
         }
-        onClose();
+        handleClose();
     }
 
     return (

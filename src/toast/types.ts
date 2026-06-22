@@ -1,5 +1,5 @@
 export type ToastMessage = {
-    id: number;
+    id: string;
     message: string;
     type: 'success' | 'error' | 'info';
     undoAction?: () => void;
@@ -8,5 +8,5 @@ export type ToastMessage = {
 export interface ToastContextType {
     toasts: ToastMessage[];
     showToast: (message: string, type?: 'success' | 'error' | 'info', undoAction?: () => void) => void;
-    removeToast: (id: number) => void;
+    removeToast: (id: string) => void;
 }
