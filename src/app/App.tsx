@@ -32,6 +32,14 @@ const PrivacyPolicyLazy = lazy(async () => {
     return { default: (await import('src/pages/PrivacyPolicy')).default };
 });
 
+const LoadingSpinner = () => {
+    return (
+        <div className="app_loading-container">
+            <div aria-busy="true" className="app_loading-spinner"></div>
+        </div>
+    );
+}
+
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
     const { googleCalendarEnabled, isLoadingSettings, updateEnableCalendar } = useUserSettings();
@@ -88,7 +96,7 @@ const App: FC = () => {
             <NatureFirefliesCanvas />
             <Switch>
             <Route path={ROUTES.home}>
-                {isLoading ? null :
+                {isLoading ? <LoadingSpinner /> :
                 !isAuthenticated ? (
                     <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
                 ) : (
@@ -100,7 +108,8 @@ const App: FC = () => {
                 <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
             </Route>
             <Route path={ROUTES.userSettings}>
-                {isAuthenticated ? (
+                {isLoading ? <LoadingSpinner /> :
+                isAuthenticated ? (
                     <UserSettingsLazy
                         googleCalendarEnabled={googleCalendarEnabled}
                         isLoadingSettings={isLoadingSettings}
@@ -108,7 +117,10 @@ const App: FC = () => {
                 ) : <NotFoundLazy />}
             </Route>
             <Route path={ROUTES.bulkEdit}>
-                <BulkEditLazy />
+                {isLoading ? <LoadingSpinner /> :
+                isAuthenticated ? (
+                    <BulkEditLazy />
+                ) : <NotFoundLazy />}
             </Route>
             <Route path={ROUTES.privacyPolicy}>
                 <PrivacyPolicyLazy />
