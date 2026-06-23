@@ -33,7 +33,7 @@ const providers = [
     AuthenticationProvider,
     ToastProvider,
     UserSettingsProvider,
-  GoogleCalendarProviderGate,
+    GoogleCalendarProviderGate,
     DemoProvider,
     DemoTaskProvider,
     TaskProvider,

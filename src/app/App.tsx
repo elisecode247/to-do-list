@@ -42,7 +42,7 @@ const LoadingSpinner = () => {
 
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
-    const { googleCalendarEnabled, isLoadingSettings, updateEnableCalendar } = useUserSettings();
+    const { googleCalendarEnabled, isLoadingSettings } = useUserSettings();
     const { loadTasks, loadDate } = useTask();
     const { loadCalendarEvents } = useGoogleCalendar();
     const [, setLocation] = useLocation();
@@ -108,12 +108,9 @@ const App: FC = () => {
                 <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
             </Route>
             <Route path={ROUTES.userSettings}>
-                {isLoading ? <LoadingSpinner /> :
+                {isLoading || isLoadingSettings ? <LoadingSpinner /> :
                 isAuthenticated ? (
-                    <UserSettingsLazy
-                        googleCalendarEnabled={googleCalendarEnabled}
-                        isLoadingSettings={isLoadingSettings}
-                        updateEnableCalendar={updateEnableCalendar} />
+                    <UserSettingsLazy />
                 ) : <NotFoundLazy />}
             </Route>
             <Route path={ROUTES.bulkEdit}>

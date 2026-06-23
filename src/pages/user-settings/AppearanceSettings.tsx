@@ -40,7 +40,7 @@ function AppearanceSettings() {
 
     return (
         <section className="settings-section">
-            <h3>Appearance</h3>
+            <h3 className="settings-section-title">Appearance</h3>
 
             {/* MODE */}
             <fieldset>

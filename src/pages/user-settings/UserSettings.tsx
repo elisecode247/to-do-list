@@ -5,32 +5,20 @@ import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import Page from "../Page";
 import { Skull } from 'lucide-react';
+import { useUserSettings } from "src/user-settings/use-user-settings";
 
-interface UserSettingsProps {
-    googleCalendarEnabled: boolean;
-    isLoadingSettings: boolean;
-    updateEnableCalendar: (nextValue: boolean) => Promise<void>;
-}
-function UserSettings({
-    googleCalendarEnabled,
-    isLoadingSettings,
-    updateEnableCalendar
-}: UserSettingsProps) {
+function UserSettings() {
     useTheme();
+    const {
+        googleCalendarEnabled,
+        updateEnableCalendar
+    } = useUserSettings();
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
 
     function openDeleteAccountDialog() {
         setIsDeleteAccountDialogOpen(true);
     }
 
-
-    if (isLoadingSettings) {
-        return (
-            <div className="app_loading-container">
-                <div aria-busy="true" className="app_loading-spinner"></div>
-            </div>
-        );
-    }
     return (
         <Page title="User Settings">
                 <div className="settings-section">
