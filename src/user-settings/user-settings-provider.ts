@@ -126,18 +126,23 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                     salt: toBase64(recoveryProtector.salt),
                 },
             });
-            await fetch('/user-settings/encryption-setup', {
+            const response = await fetch('/user-settings/encryption-setup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: payload
             });
+            if (!response.ok) {
+                console.error(`Failed to set up encryption: ${response.status}`);
+                throw new Error(`Failed to set up encryption: ${response.status}`);
+            }
             setIsEncryptionEnabled(true);
         } catch (err) {
             console.error("Setting up encryption failed:", err);
-            throw new Error(err instanceof Error ? err.message : 'Unknown error occurred during encryption setup');
+            throw err;
         }
+
     }, []);
 
     const value = useMemo<UserSettingsContextValue>(() => ({

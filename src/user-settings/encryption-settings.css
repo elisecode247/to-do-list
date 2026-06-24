@@ -94,3 +94,10 @@
     height: 24px;
     cursor: pointer;
 }
+
+.recovery-key-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-block-start: var(--spacing-md);
+}

@@ -200,7 +200,11 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
             showToast("Encryption setup complete. Your journal is now private.");
         } catch (error) {
             console.error("Error during encryption setup:", error);
-            showToast("An error occurred during encryption setup. Please try again.");
+            if (error instanceof Error) {
+                showToast(`Encryption setup failed: ${error.message}`);
+            } else {
+                showToast("Encryption setup failed. Please try again.");
+            }
             return;
         }
 
@@ -306,12 +310,20 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
                                 <strong>Important:</strong> If you lose both your password and recovery code,
                                 there is <strong>no way to recover your data</strong>.
                             </p>
-                            <button
-                                className="settings-btn settings-btn--primary"
-                                onClick={handleEncryptionSetup}
-                            >
-                                Encrypt Journal
-                            </button>
+                            <div className="recovery-key-actions">
+                                <button
+                                    className="settings-btn settings-btn--secondary"
+                                    onClick={() => setShowRecoveryKey(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="settings-btn settings-btn--primary"
+                                    onClick={handleEncryptionSetup}
+                                >
+                                    Encrypt Journal
+                                </button>
+                            </div>
                         </DialogPanel>
                     </Dialog>
                 </>
