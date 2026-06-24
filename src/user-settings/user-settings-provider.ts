@@ -12,8 +12,15 @@ import { useAuthentication } from "src/authentication/use-authentication";
 import { useToast } from "src/toast/use-toast";
 import { UserSettingsContext, type UserSettingsContextValue } from "./user-settings-context";
 
+const USER_SETTINGS_URL = API_URL + "/user-settings/";
+
+function toBase64(bytes: Uint8Array): string {
+    return btoa(String.fromCharCode(...bytes));
+}
+
 export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuthentication();
+    const [isEncryptionEnabled, setIsEncryptionEnabled] = useState(false);
     const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false);
     const [isLoadingSettings, setIsLoadingSettings] = useState(true);
     const { showToast } = useToast();
@@ -28,7 +35,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
         async function loadUserSettings() {
             try {
-                const response = await fetch(`${API_URL}/user-settings`, {
+                const response = await fetch(USER_SETTINGS_URL, {
                     method: "GET",
                     headers: await authHeaders(),
                 });
@@ -39,9 +46,14 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
                 const settings = await response.json();
                 const nextEnableCalendar = settings?.googleCalendarEnabled ?? settings?.userSettings?.googleCalendarEnabled;
+                const nextEncryptionEnabled = settings?.isEncryptionEnabled ?? settings?.userSettings?.isEncryptionEnabled;
 
                 if (!isCancelled && typeof nextEnableCalendar === "boolean") {
                     setGoogleCalendarEnabled(nextEnableCalendar);
+                }
+
+                if (!isCancelled && typeof nextEncryptionEnabled === "boolean") {
+                    setIsEncryptionEnabled(nextEncryptionEnabled);
                 }
 
                 if (!isCancelled) {
@@ -66,7 +78,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const updateEnableCalendar = useCallback(async (nextValue: boolean) => {
 
         try {
-            const response = await fetch(`${API_URL}/user-settings`, {
+            const response = await fetch(USER_SETTINGS_URL, {
                 method: "PUT",
                 headers: await authHeaders(),
                 body: JSON.stringify({ googleCalendarEnabled: nextValue }),
@@ -83,13 +95,62 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         }
     }, [showToast]);
 
+    const setupEncryption = useCallback(async ({
+        version,
+        passwordProtector,
+        recoveryProtector
+    }: {
+        version: number;
+        passwordProtector: {
+            wrappedKey: ArrayBuffer;
+            iv: Uint8Array;
+            salt: Uint8Array;
+        };
+        recoveryProtector: {
+            wrappedKey: ArrayBuffer;
+            iv: Uint8Array;
+            salt: Uint8Array;
+        };
+    }) => {
+        try {
+            const payload = JSON.stringify({
+                version,
+                passwordProtector: {
+                    wrappedKey: toBase64(new Uint8Array(passwordProtector.wrappedKey)),
+                    iv: toBase64(passwordProtector.iv),
+                    salt: toBase64(passwordProtector.salt),
+                },
+                recoveryProtector: {
+                    wrappedKey: toBase64(new Uint8Array(recoveryProtector.wrappedKey)),
+                    iv: toBase64(recoveryProtector.iv),
+                    salt: toBase64(recoveryProtector.salt),
+                },
+            });
+            await fetch('/user-settings/encryption-setup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: payload
+            });
+            setIsEncryptionEnabled(true);
+        } catch (err) {
+            console.error("Setting up encryption failed:", err);
+            throw new Error(err instanceof Error ? err.message : 'Unknown error occurred during encryption setup');
+        }
+    }, []);
+
     const value = useMemo<UserSettingsContextValue>(() => ({
         googleCalendarEnabled,
+        isEncryptionEnabled,
         isLoadingSettings,
+        setupEncryption,
         updateEnableCalendar,
     }), [
         googleCalendarEnabled,
+        isEncryptionEnabled,
         isLoadingSettings,
+        setupEncryption,
         updateEnableCalendar,
     ]);
 

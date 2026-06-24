@@ -5,12 +5,14 @@ import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import Page from "../Page";
 import { Skull } from 'lucide-react';
+import EncryptionSettings from "src/user-settings/EncryptionSettings";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 
 function UserSettings() {
     useTheme();
     const {
         googleCalendarEnabled,
+        isEncryptionEnabled,
         updateEnableCalendar
     } = useUserSettings();
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
@@ -44,6 +46,7 @@ function UserSettings() {
                         </label>
                     </div>
                 </div>
+                <EncryptionSettings enabled={isEncryptionEnabled} />
                 <AppearanceSettings />
                 <div className="settings-section settings-section--danger">
                     <h3 className="settings-section-title settings-section-title--danger">
