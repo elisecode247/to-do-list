@@ -12,7 +12,7 @@ import { useAuthentication } from "src/authentication/use-authentication";
 import { useToast } from "src/toast/use-toast";
 import { UserSettingsContext, type UserSettingsContextValue } from "./user-settings-context";
 
-const USER_SETTINGS_URL = API_URL + "/user-settings/";
+const USER_SETTINGS_URL = API_URL + "/user-settings";
 
 function toBase64(bytes: Uint8Array): string {
     return btoa(String.fromCharCode(...bytes));
@@ -46,7 +46,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
                 const settings = await response.json();
                 const nextEnableCalendar = settings?.googleCalendarEnabled ?? settings?.userSettings?.googleCalendarEnabled;
-                const nextEncryptionEnabled = settings?.isEncryptionEnabled ?? settings?.userSettings?.isEncryptionEnabled;
+                const nextEncryptionEnabled = settings?.encryptionEnabled ?? settings?.userSettings?.encryptionEnabled;
 
                 if (!isCancelled && typeof nextEnableCalendar === "boolean") {
                     setGoogleCalendarEnabled(nextEnableCalendar);
@@ -126,11 +126,9 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                     salt: toBase64(recoveryProtector.salt),
                 },
             });
-            const response = await fetch('/user-settings/encryption-setup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            const response = await fetch(`${USER_SETTINGS_URL}/encryption-setup`, {
+                method: 'PUT',
+                headers: await authHeaders(),
                 body: payload
             });
             if (!response.ok) {
