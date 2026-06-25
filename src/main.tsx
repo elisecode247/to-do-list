@@ -7,6 +7,7 @@ import { AuthenticationProvider } from 'src/authentication/authentication-provid
 import GoogleCalendarProviderGate from 'src/google-authorization/GoogleCalendarProviderGate';
 import { UserSettingsProvider } from 'src/user-settings/user-settings-provider';
 import { TaskProvider } from 'src/app/task-provider';
+import { EncryptionKeyProvider } from 'src/encryption/encryption-key-context';
 import { DemoProvider } from 'src/pages/demo/demo-provider';
 import { DemoTaskProvider } from 'src/pages/demo/demo-task-provider';
 import { AppRouter } from 'src/router';
@@ -37,6 +38,7 @@ const providers = [
     DemoProvider,
     DemoTaskProvider,
     TaskProvider,
+    EncryptionKeyProvider,
 ];
 
 const AppContextProvider = combineComponents(providers);

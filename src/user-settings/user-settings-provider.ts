@@ -11,7 +11,7 @@ import { authHeaders } from "src/authentication/authentication-api";
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useToast } from "src/toast/use-toast";
 import { UserSettingsContext, type UserSettingsContextValue } from "./user-settings-context";
-
+import { type EncryptionConfig, type ServerEncryptionConfig } from "src/encryption/types";
 const USER_SETTINGS_URL = API_URL + "/user-settings";
 
 function toBase64(bytes: Uint8Array): string {
@@ -21,6 +21,7 @@ function toBase64(bytes: Uint8Array): string {
 export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuthentication();
     const [isEncryptionEnabled, setIsEncryptionEnabled] = useState(false);
+    const [encryptionConfig, setEncryptionConfig] = useState<EncryptionConfig | null>(null);
     const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false);
     const [isLoadingSettings, setIsLoadingSettings] = useState(true);
     const { showToast } = useToast();
@@ -47,6 +48,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                 const settings = await response.json();
                 const nextEnableCalendar = settings?.googleCalendarEnabled ?? settings?.userSettings?.googleCalendarEnabled;
                 const nextEncryptionEnabled = settings?.encryptionEnabled ?? settings?.userSettings?.encryptionEnabled;
+                const nextEncryptionConfig = settings?.encryptionConfig ?? settings?.userSettings?.encryptionConfig;
 
                 if (!isCancelled && typeof nextEnableCalendar === "boolean") {
                     setGoogleCalendarEnabled(nextEnableCalendar);
@@ -54,6 +56,23 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
                 if (!isCancelled && typeof nextEncryptionEnabled === "boolean") {
                     setIsEncryptionEnabled(nextEncryptionEnabled);
+                }
+
+                if (!isCancelled && nextEncryptionConfig) {
+                    // Convert base64-encoded strings to ArrayBuffer and Uint8Array
+                    const convertProtector = (protector: ServerEncryptionConfig["passwordProtector"]) => ({
+                        wrappedKey: Uint8Array.from(atob(protector.wrappedKey), c => c.charCodeAt(0)).buffer,
+                        iv: Uint8Array.from(atob(protector.iv), c => c.charCodeAt(0)),
+                        salt: Uint8Array.from(atob(protector.salt), c => c.charCodeAt(0)),
+                    });
+
+                    const convertedEncryptionConfig: EncryptionConfig = {
+                        version: nextEncryptionConfig.version,
+                        passwordProtector: convertProtector(nextEncryptionConfig.passwordProtector),
+                        recoveryProtector: convertProtector(nextEncryptionConfig.recoveryProtector),
+                    };
+
+                    setEncryptionConfig(convertedEncryptionConfig);
                 }
 
                 if (!isCancelled) {
@@ -99,19 +118,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         version,
         passwordProtector,
         recoveryProtector
-    }: {
-        version: number;
-        passwordProtector: {
-            wrappedKey: ArrayBuffer;
-            iv: Uint8Array;
-            salt: Uint8Array;
-        };
-        recoveryProtector: {
-            wrappedKey: ArrayBuffer;
-            iv: Uint8Array;
-            salt: Uint8Array;
-        };
-    }) => {
+    }: EncryptionConfig) => {
         try {
             const payload = JSON.stringify({
                 version,
@@ -144,12 +151,14 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const value = useMemo<UserSettingsContextValue>(() => ({
+        encryptionConfig,
         googleCalendarEnabled,
         isEncryptionEnabled,
         isLoadingSettings,
         setupEncryption,
         updateEnableCalendar,
     }), [
+        encryptionConfig,
         googleCalendarEnabled,
         isEncryptionEnabled,
         isLoadingSettings,

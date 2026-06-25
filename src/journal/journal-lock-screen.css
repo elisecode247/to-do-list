@@ -1,0 +1,108 @@
+.journal-lock-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: var(--spacing-xl);
+}
+
+.journal-lock-card {
+    width: 100%;
+    max-width: 360px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xl);
+}
+
+.journal-lock-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background-color: var(--color-background-hover);
+    color: var(--color-primary-dark);
+}
+
+.journal-lock-title {
+    margin: 0 0 var(--spacing-xs);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.journal-lock-subtitle {
+    margin: 0 0 var(--spacing-lg);
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-text-secondary);
+}
+
+.journal-lock-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.journal-lock-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.journal-lock-field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+/* relies on the global input/textarea rule for base styling;
+   this just adds the error outline state */
+.journal-lock-field input[aria-invalid="true"] {
+    border-color: var(--form-error-color);
+}
+
+.journal-lock-submit {
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
+    border: none;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.journal-lock-submit:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.journal-lock-submit:active {
+    background-color: var(--color-primary-dark-hover);
+    transform: scale(0.98);
+}
+
+.journal-lock-submit:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.journal-lock-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.journal-lock-error {
+    margin: 0;
+    font-size: 13px;
+    color: var(--form-error-color);
+    text-align: center;
+}

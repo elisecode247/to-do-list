@@ -229,14 +229,14 @@ const LoggedIn: React.FC = () => {
                     <JournalProvider>
                         <Journal />
                     </JournalProvider>
-                ) : itemLength === 0 ?(
+                ) : itemLength === 0 ? (
                     <div className="empty-state">
                         <h2>Welcome to Daily Reset List!</h2>
                         <div>
-                        <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
-                        <button className="empty-state-create-button" onClick={toggleAddForm}>
-                            Get Started with your first task
-                        </button>
+                            <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
+                            <button className="empty-state-create-button" onClick={toggleAddForm}>
+                                Get Started with your first task
+                            </button>
                         </div>
                     </div>
                 ) : (

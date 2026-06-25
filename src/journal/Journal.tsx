@@ -6,6 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 import { useDebounceCallback } from 'usehooks-ts';
 import { ArrowBigLeft, ArrowBigRight, HelpCircle } from "lucide-react";
 import Guide from "./Guide";
+import JournalLockScreen from 'src/journal/JournalLockScreen';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
+import { useEncryptionKey } from 'src/encryption/encryption-key-context';
+
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -120,10 +124,15 @@ export default function Journal() {
     const [guideOpen, setGuideOpen] = useState(false);
     const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
     const selectedDay = formatDate(offset);
+    const { isUnlocked } = useEncryptionKey();
+    const { isEncryptionEnabled } = useUserSettings();
 
     useEffect(() => {
+        if (isEncryptionEnabled && !isUnlocked) {
+            return;
+        }
         void loadJournalEntries(selectedDay);
-    }, [loadJournalEntries, selectedDay]);
+    }, [loadJournalEntries, selectedDay, isEncryptionEnabled, isUnlocked]);
 
     const handleChange = useCallback((id: string, field: keyof JournalEntry, value: string) => {
         const entry = entries.find((e) => e.id === id);
@@ -151,7 +160,10 @@ export default function Journal() {
             entryTime: new Date().toISOString(),
             text: "",
             distraction: false,
-            day: selectedDay
+            day: selectedDay,
+            ciphertext: "",
+            iv: "",
+            encryptionVersion: 1,
         });
     };
 
@@ -163,6 +175,10 @@ export default function Journal() {
     };
 
     const badge = offsetBadge(offset);
+
+    if (isEncryptionEnabled && !isUnlocked) {
+        return <JournalLockScreen />;
+    }
 
     return (
         <div className="journal-page">

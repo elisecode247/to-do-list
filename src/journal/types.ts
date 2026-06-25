@@ -12,6 +12,12 @@ export interface JournalEntry {
      * ISO-8601 timestamp.
      */
     entryTime: string;
+    /** encrypted content */
+    ciphertext: string;
+    iv: string;
+    encryptionVersion: number;
+    // decrypted content
+    content?: string;
 }
 
 export interface JournalContextType {
