@@ -2,14 +2,11 @@ import { useState, useCallback, type ReactNode } from 'react';
 import { JournalContext } from './journal-context';
 import type { JournalEntry } from './types';
 import { addEntry, fetchJournalEntries, updateEntry, deleteEntry } from './api';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
-import { decryptData, encryptData } from 'src/encryption/utilities';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
 
 export const JournalProvider = ({ children }: { children: ReactNode }) => {
     const [entries, setEntries] = useState<JournalEntry[]>([]);
-    const { isEncryptionEnabled, encryptionConfig } = useUserSettings();
-    const { masterKey } = useEncryptionKey();
+    const { isUnlocked, decryptData, encryptData, isEncryptionEnabled, encryptionConfig } = useEncryptionKey();
 
     const loadJournalEntries = useCallback(async (day: string) => {
         try {
@@ -21,7 +18,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                 return;
             }
 
-            if (!masterKey) {
+            if (!isUnlocked) {
                 console.warn("Journal is locked; can't decrypt entries yet.");
                 return; // UI should be showing the lock screen in this state
             }
@@ -30,7 +27,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
             const decryptedEntries = await Promise.all(
                 data.map(async (entry) => ({
                     ...entry,
-                    text: await decryptData(entry.ciphertext, entry.iv, masterKey)
+                    text: entry.ciphertext ? await decryptData(entry.ciphertext, entry.iv) : entry.text,
                 }))
             );
 
@@ -38,22 +35,23 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
         } catch (err) {
             console.error("Failed to load journal entries:", err);
         }
-    }, [isEncryptionEnabled, encryptionConfig, masterKey]);
+    }, [isEncryptionEnabled, encryptionConfig, isUnlocked, decryptData]);
 
     const addJournalEntry = async (entry: JournalEntry) => {
         try {
             const newEntry = { ...entry };
             // encrypt the new entry if encryption is enabled
             if (isEncryptionEnabled && encryptionConfig) {
-                if (!masterKey) {
+                if (!isUnlocked) {
                     console.warn("Journal is locked; can't encrypt entries yet.");
                     return; // UI should be showing the lock screen in this state
                 }
-                const { ciphertext, iv } = await encryptData(newEntry.text, masterKey);
+                const { ciphertext, iv } = await encryptData(newEntry.text);
                 // Update the new entry with encrypted content and IV
                 newEntry.ciphertext = ciphertext;
                 newEntry.iv = iv;
                 newEntry.encryptionVersion = 1;
+                newEntry.text = ''; // Clear the plaintext text field for security
             }
             const createdEntry = await addEntry(newEntry);
             setEntries(prev => [createdEntry, ...prev]);
@@ -63,24 +61,28 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateJournalEntry = useCallback(async (entry: JournalEntry) => {
+        let updatedEntry = { ...entry };
         try {
             // encrypt the entry if encryption is enabled
             if (isEncryptionEnabled && encryptionConfig) {
-                if (!masterKey) {
+                if (!isUnlocked) {
                     console.warn("Journal is locked; can't encrypt entries yet.");
                     return; // UI should be showing the lock screen in this state
                 }
-                const { ciphertext, iv } = await encryptData(entry.text, masterKey);
-                entry.ciphertext = ciphertext;
-                entry.iv = iv;
-                entry.encryptionVersion = 1;
+                const { ciphertext, iv } = await encryptData(entry.text);
+                updatedEntry.ciphertext = ciphertext;
+                updatedEntry.iv = iv;
+                updatedEntry.encryptionVersion = 1;
+                updatedEntry.text = ''; // Clear the plaintext text field for security
             }
-            await updateEntry(entry);
-            setEntries(prev => prev.map(e => e.id === entry.id ? entry : e));
+            await updateEntry(updatedEntry);
+            const decryptedText = updatedEntry.ciphertext ? await decryptData(updatedEntry.ciphertext, updatedEntry.iv) : updatedEntry.text;
+            updatedEntry = { ...updatedEntry, text: decryptedText } // Restore the plaintext for local state
+            setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
         } catch (err) {
             console.error("Failed to update journal entry:", err);
         }
-    }, [isEncryptionEnabled, encryptionConfig, masterKey]);
+    }, [isEncryptionEnabled, encryptionConfig, isUnlocked, encryptData, decryptData]);
 
     const deleteJournalEntry = async (id: string) => {
         try {

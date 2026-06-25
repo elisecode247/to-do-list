@@ -12,7 +12,6 @@ function UserSettings() {
     useTheme();
     const {
         googleCalendarEnabled,
-        isEncryptionEnabled,
         updateEnableCalendar
     } = useUserSettings();
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
@@ -46,7 +45,7 @@ function UserSettings() {
                         </label>
                     </div>
                 </div>
-                <EncryptionSettings enabled={isEncryptionEnabled} />
+                <EncryptionSettings />
                 <AppearanceSettings />
                 <div className="settings-section settings-section--danger">
                     <h3 className="settings-section-title settings-section-title--danger">

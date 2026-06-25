@@ -7,7 +7,6 @@ import { useDebounceCallback } from 'usehooks-ts';
 import { ArrowBigLeft, ArrowBigRight, HelpCircle } from "lucide-react";
 import Guide from "./Guide";
 import JournalLockScreen from 'src/journal/JournalLockScreen';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
 
 
@@ -124,8 +123,7 @@ export default function Journal() {
     const [guideOpen, setGuideOpen] = useState(false);
     const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
     const selectedDay = formatDate(offset);
-    const { isUnlocked } = useEncryptionKey();
-    const { isEncryptionEnabled } = useUserSettings();
+    const { isUnlocked, isEncryptionEnabled } = useEncryptionKey();
 
     useEffect(() => {
         if (isEncryptionEnabled && !isUnlocked) {

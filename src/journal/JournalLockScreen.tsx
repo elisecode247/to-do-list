@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
 import './journal-lock-screen.css';
 import { Lock } from 'lucide-react';
 import { useAuthentication } from 'src/authentication/use-authentication';
@@ -8,8 +7,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 const JournalLockScreen = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const { unlock } = useEncryptionKey();
-    const { encryptionConfig,  } = useUserSettings();
+    const { unlock, encryptionConfig } = useEncryptionKey();
     const { email } = useAuthentication();
 
     const handleSubmit = async (e: FormEvent) => {

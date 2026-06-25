@@ -4,72 +4,16 @@ import { useWatch, useForm, type SubmitHandler } from 'react-hook-form';
 import { Description, DialogBackdrop, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useToast } from "src/toast/use-toast";
 import CopyButton from "src/components/copy-button/CopyButton";
-import { useUserSettings } from "./use-user-settings";
+import { deriveKey, generateMasterKey, generateRecoveryKey } from "src/encryption/utilities";
+import ChangeEncryptionPasswordForm from "./ChangeEncryptionPasswordForm";
+import { useEncryptionKey } from "src/encryption/encryption-key-context";
 
 interface EncryptionFormInputs {
     password1: string
     password2: string
 }
 
-function generateRecoveryKey(bytes = 24): string {
-    const randomBytes = crypto.getRandomValues(new Uint8Array(bytes));
-
-    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Crockford base32
-
-    let result = "";
-    let buffer = 0;
-    let bitsLeft = 0;
-
-    for (const byte of randomBytes) {
-        buffer = (buffer << 8) | byte;
-        bitsLeft += 8;
-
-        while (bitsLeft >= 5) {
-            result += alphabet[(buffer >> (bitsLeft - 5)) & 31];
-            bitsLeft -= 5;
-        }
-    }
-
-    if (bitsLeft > 0) {
-        result += alphabet[(buffer << (5 - bitsLeft)) & 31];
-    }
-
-    return result.match(/.{1,5}/g)?.join("-") ?? result;
-}
-
-function generateMasterKey(): ArrayBuffer {
-    return crypto.getRandomValues(new Uint8Array(32)).buffer;
-}
-
-async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
-    const encoder = new TextEncoder();
-
-    const passwordKey = await crypto.subtle.importKey(
-        "raw",
-        encoder.encode(password),
-        "PBKDF2",
-        false,
-        ["deriveKey"]
-    );
-
-    return crypto.subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: salt.slice().buffer,
-            iterations: 600_000,
-            hash: "SHA-256",
-        },
-        passwordKey,
-        {
-            name: "AES-GCM",
-            length: 256,
-        },
-        false,
-        ["encrypt", "decrypt"]
-    );
-}
-
-function EncryptionSettings({ enabled }: { enabled: boolean }) {
+function EncryptionSettings() {
     // React compiler interfering with react hook form
     "use no memo";
     const { showToast } = useToast();
@@ -83,7 +27,7 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
     const [encryptedMasterKeyWithRecovery, setEncryptedMasterKeyWithRecovery] = useState<ArrayBuffer | null>(null);
     const [recoverySalt, setRecoverySalt] = useState<Uint8Array | null>(null);
     const [recoveryIv, setRecoveryIv] = useState<Uint8Array | null>(null);
-    const { setupEncryption } = useUserSettings();
+    const { setupEncryption, unlock, isEncryptionEnabled } = useEncryptionKey();
     const { register,
         handleSubmit,
         control,
@@ -183,7 +127,7 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
             if (!encryptedMasterKeyWithPassword || !masterKeySalt || !masterKeyIv || !encryptedMasterKeyWithRecovery || !recoverySalt || !recoveryIv) {
                 throw new Error("Missing encryption data");
             }
-            await setupEncryption({
+            const encryptionConfig = {
                 version: 1,
                 passwordProtector: {
                     wrappedKey: encryptedMasterKeyWithPassword,
@@ -195,7 +139,9 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
                     iv: recoveryIv,
                     salt: recoverySalt
                 }
-            });
+            }
+            await setupEncryption(encryptionConfig);
+            unlock(password, encryptionConfig);
             setShowRecoveryKey(false);
             showToast("Encryption setup complete. Your journal is now private.");
         } catch (error) {
@@ -212,8 +158,10 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
 
     return (
         <div className="settings-section">
-            <h3 className="settings-section-title">Enable Private Journal</h3>
-            {!enabled ? (
+            <h3 className="settings-section-title">
+                {!isEncryptionEnabled ? "Enable Private Journal" : "Change Encryption Password"}
+            </h3>
+            {!isEncryptionEnabled ? (
                 <>
                     <p>
                         Enable end-to-end encryption to make your journal private.
@@ -328,12 +276,7 @@ function EncryptionSettings({ enabled }: { enabled: boolean }) {
                     </Dialog>
                 </>
             ) : (
-                <p>
-                    Client-side encryption is currently enabled on your account.
-                    This means that your data is encrypted on the client side before
-                    it is sent to the server, and only you can access your unencrypted data.
-                    If you want to disable client-side encryption, please contact support.
-                </p>
+                <ChangeEncryptionPasswordForm />
             )}
         </div>
     );

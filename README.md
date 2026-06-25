@@ -14,7 +14,7 @@ Live: https://dailyresetlist.com
 
 ### To do
 - admin: encrypt journal entries
-    - change password (and new recovery key)
+    - change password (and new recovery key) DONE
     - encrypt past journal entries
     - remove encryption
     - forgot password
