@@ -44,8 +44,16 @@ export function generateRecoveryKey(bytes = 24): string {
     return result.match(/.{1,5}/g)?.join("-") ?? result;
 }
 
-export function generateMasterKey(): ArrayBuffer {
-    return crypto.getRandomValues(new Uint8Array(32)).buffer;
+export function generateMasterKey(): Promise<CryptoKey> {
+    const raw = crypto.getRandomValues(new Uint8Array(32));
+
+    return crypto.subtle.importKey(
+        "raw",
+        raw,
+        { name: "AES-GCM" },
+        true,
+        ["encrypt", "decrypt"]
+    );
 }
 
 export async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {

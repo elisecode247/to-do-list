@@ -4,7 +4,7 @@ import { useWatch, useForm, type SubmitHandler } from 'react-hook-form';
 import { Description, DialogBackdrop, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useToast } from "src/toast/use-toast";
 import CopyButton from "src/components/copy-button/CopyButton";
-import { deriveKey, generateMasterKey, generateRecoveryKey } from "src/encryption/utilities";
+import { deriveKey, generateMasterKey, generateRecoveryKey, unlockMasterKeyWithRecoveryKey } from "src/encryption/utilities";
 import ChangeEncryptionPasswordForm from "./ChangeEncryptionPasswordForm";
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
 import ForgotEncryptionPasswordForm from "./ForgotEncryptionPasswordForm";
@@ -22,16 +22,18 @@ function EncryptionSettings() {
     const [showPasswordForm, setShowPasswordForm] = useState(false);
     const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [isResettingPassword, setIsResettingPassword] = useState(false);
+    const [oldRecoveryKey, setOldRecoveryKey] = useState<string>("");
     const [showRecoveryKey, setShowRecoveryKey] = useState(false);
     const [confirmedRecoveryKey, setConfirmedRecoveryKey] = useState(false);
     const [encryptedMasterKeyWithPassword, setEncryptedMasterKeyWithPassword] = useState<ArrayBuffer | null>(null);
-    const [masterKeySalt, setMasterKeySalt] = useState<Uint8Array | null>(null);
-    const [masterKeyIv, setMasterKeyIv] = useState<Uint8Array | null>(null);
+    const [passwordSalt, setPasswordSalt] = useState<Uint8Array | null>(null);
+    const [passwordIv, setPasswordIv] = useState<Uint8Array | null>(null);
     const [recoveryKey, setRecoveryKey] = useState<string | null>(null);
     const [encryptedMasterKeyWithRecovery, setEncryptedMasterKeyWithRecovery] = useState<ArrayBuffer | null>(null);
     const [recoverySalt, setRecoverySalt] = useState<Uint8Array | null>(null);
     const [recoveryIv, setRecoveryIv] = useState<Uint8Array | null>(null);
-    const { setupEncryption, unlock, isEncryptionEnabled } = useEncryptionKey();
+    const { setupEncryption, isEncryptionEnabled, encryptionConfig } = useEncryptionKey();
     const { register,
         handleSubmit,
         control,
@@ -55,31 +57,45 @@ function EncryptionSettings() {
         setShowForgotPassword(false);
     }
     const onShowResetPassword = () => {
+        setIsResettingPassword(true);
         setShowChangePasswordForm(false);
         setShowForgotPassword(false);
         setShowPasswordForm(true);
     }
     const onSubmit: SubmitHandler<EncryptionFormInputs> = async (data, event) => {
         event?.preventDefault();
-        reset();
-
+        let masterKey: CryptoKey | null = null;
         try {
-            // --- core randomness ---
-            const masterKey = generateMasterKey();
-            const masterKeyIv = crypto.getRandomValues(new Uint8Array(12));
-            const masterKeySalt = crypto.getRandomValues(new Uint8Array(16));
+            if (isResettingPassword) {
+                if (!encryptionConfig) {
+                    throw new Error("Encryption config is not available.");
+                }
+                masterKey = await unlockMasterKeyWithRecoveryKey(
+                    oldRecoveryKey,
+                    encryptionConfig
+                );
+            } else {
+                // 🆕 FIRST TIME SETUP
+                masterKey = await generateMasterKey();
+            }
+            const passwordIv = crypto.getRandomValues(new Uint8Array(12));
+            const passwordSalt = crypto.getRandomValues(new Uint8Array(16));
 
             // --- derive password key ---
-            const passwordKey = await deriveKey(data.password1, masterKeySalt);
+            const passwordKey = await deriveKey(data.password1, passwordSalt);
 
             // --- encrypt master key with password ---
+            const rawMasterKey = await crypto.subtle.exportKey(
+                "raw",
+                masterKey
+            );
             const encryptedMasterKeyWithPassword = await crypto.subtle.encrypt(
                 {
                     name: "AES-GCM",
-                    iv: masterKeyIv,
+                    iv: passwordIv,
                 },
                 passwordKey,
-                masterKey
+                rawMasterKey
             );
 
             // --- recovery setup ---
@@ -96,12 +112,12 @@ function EncryptionSettings() {
                     iv: recoveryIv,
                 },
                 recoveryCryptoKey,
-                masterKey
+                rawMasterKey
             );
             // --- verify encryption ---
             try {
                 await crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: masterKeyIv },
+                    { name: "AES-GCM", iv: passwordIv },
                     passwordKey,
                     encryptedMasterKeyWithPassword
                 );
@@ -115,14 +131,15 @@ function EncryptionSettings() {
             } catch (error) {
                 throw new Error("Encryption verification failed.", { cause: error });
             }
-
+            reset();
+            setIsResettingPassword(false);
             // --- UI state ---
             setRecoveryKey(recoveryKey);
             setShowRecoveryKey(true);
 
             setEncryptedMasterKeyWithPassword(encryptedMasterKeyWithPassword);
-            setMasterKeySalt(masterKeySalt);
-            setMasterKeyIv(masterKeyIv);
+            setPasswordSalt(passwordSalt);
+            setPasswordIv(passwordIv);
 
             setEncryptedMasterKeyWithRecovery(encryptedMasterKeyWithRecovery);
             setRecoverySalt(recoverySalt);
@@ -131,7 +148,7 @@ function EncryptionSettings() {
         } catch (error) {
             console.error("Error during encryption setup:", error);
 
-            showToast("Encryption setup failed. Try again.");
+            showToast("Encryption setup failed. Try again.", "error");
 
         }
     };
@@ -142,15 +159,15 @@ function EncryptionSettings() {
             return;
         }
         try {
-            if (!encryptedMasterKeyWithPassword || !masterKeySalt || !masterKeyIv || !encryptedMasterKeyWithRecovery || !recoverySalt || !recoveryIv) {
+            if (!encryptedMasterKeyWithPassword || !passwordSalt || !passwordIv || !encryptedMasterKeyWithRecovery || !recoverySalt || !recoveryIv) {
                 throw new Error("Missing encryption data");
             }
             const encryptionConfig = {
                 version: 1,
                 passwordProtector: {
                     wrappedKey: encryptedMasterKeyWithPassword,
-                    iv: masterKeyIv,
-                    salt: masterKeySalt
+                    iv: passwordIv,
+                    salt: passwordSalt
                 },
                 recoveryProtector: {
                     wrappedKey: encryptedMasterKeyWithRecovery,
@@ -159,18 +176,17 @@ function EncryptionSettings() {
                 }
             }
             await setupEncryption(encryptionConfig);
-            unlock(password, encryptionConfig);
             setShowRecoveryKey(false);
-            showToast("Encryption setup complete. Your journal is now private.");
+            showToast("Encryption setup complete. Your journal is now private.", "success");
             setShowPasswordForm(false);
             setShowChangePasswordForm(false);
             setShowForgotPassword(false);
         } catch (error) {
             console.error("Error during encryption setup:", error);
             if (error instanceof Error) {
-                showToast(`Encryption setup failed: ${error.message}`);
+                showToast(`Encryption setup failed: ${error.message}`, "error");
             } else {
-                showToast("Encryption setup failed. Please try again.");
+                showToast("Encryption setup failed. Please try again.", "error");
             }
             return;
         }
@@ -228,10 +244,14 @@ function EncryptionSettings() {
                         </button>
                     </div>
                     {showForgotPassword && (
-                        <ForgotEncryptionPasswordForm onShowPasswordForm={onShowResetPassword} />
+                        <ForgotEncryptionPasswordForm
+                            onShowPasswordForm={onShowResetPassword}
+                            oldRecoveryKey={oldRecoveryKey}
+                            onChangeOldRecoveryKey={(key) => setOldRecoveryKey(key)}
+                        />
                     )}
                     {showChangePasswordForm && (
-                        <ChangeEncryptionPasswordForm  onCloseForm={() => setShowChangePasswordForm(false)} />
+                        <ChangeEncryptionPasswordForm onCloseForm={() => setShowChangePasswordForm(false)} />
                     )}
                 </>
             )}
@@ -239,7 +259,7 @@ function EncryptionSettings() {
                 <form className="encryption-password-form" onSubmit={handleSubmit(onSubmit)}>
                     <input
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Enter your new password"
                         {...register('password1', { required: true, minLength: 8 })}
                         aria-invalid={errors.password1 ? "true" : "false"}
                         autoComplete="new-password"

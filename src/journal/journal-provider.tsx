@@ -74,11 +74,14 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                 updatedEntry.iv = iv;
                 updatedEntry.encryptionVersion = 1;
                 updatedEntry.text = ''; // Clear the plaintext text field for security
+                await updateEntry(updatedEntry);
+                const decryptedText = updatedEntry.ciphertext ? await decryptData(updatedEntry.ciphertext, updatedEntry.iv) : updatedEntry.text;
+                updatedEntry = { ...updatedEntry, text: decryptedText } // Restore the plaintext for local state
+                setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
+            } else {
+                await updateEntry(updatedEntry);
+                setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
             }
-            await updateEntry(updatedEntry);
-            const decryptedText = updatedEntry.ciphertext ? await decryptData(updatedEntry.ciphertext, updatedEntry.iv) : updatedEntry.text;
-            updatedEntry = { ...updatedEntry, text: decryptedText } // Restore the plaintext for local state
-            setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
         } catch (err) {
             console.error("Failed to update journal entry:", err);
         }

@@ -1,11 +1,13 @@
-import { useState } from "react";
 import { unlockMasterKeyWithRecoveryKey } from "src/encryption/utilities";
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
 import { useToast } from "src/toast/use-toast";
 
-
-const ForgotEncryptionPasswordForm = ({ onShowPasswordForm }: { onShowPasswordForm: (show: boolean) => void }) => {
-    const [recoveryKey, setRecoveryKey] = useState("");
+interface ForgotEncryptionPasswordFormProps {
+    onShowPasswordForm: (show: boolean) => void;
+    oldRecoveryKey: string;
+    onChangeOldRecoveryKey: (key: string) => void;
+}
+const ForgotEncryptionPasswordForm = ({ onShowPasswordForm, oldRecoveryKey, onChangeOldRecoveryKey }: ForgotEncryptionPasswordFormProps) => {
     const { encryptionConfig } = useEncryptionKey();
     const { showToast } = useToast();
     const handleSubmitRecoveryKey = async (event: React.FormEvent) => {
@@ -17,7 +19,7 @@ const ForgotEncryptionPasswordForm = ({ onShowPasswordForm }: { onShowPasswordFo
         }
         try {
             await unlockMasterKeyWithRecoveryKey(
-                recoveryKey,
+                oldRecoveryKey,
                 encryptionConfig
             );
         } catch (error) {
@@ -39,8 +41,8 @@ const ForgotEncryptionPasswordForm = ({ onShowPasswordForm }: { onShowPasswordFo
                 type="text"
                 name="recoveryKey"
                 placeholder="Enter your recovery key"
-                onChange={(e) => setRecoveryKey(e.target.value)}
-                value={recoveryKey}
+                onChange={(e) => onChangeOldRecoveryKey(e.target.value)}
+                value={oldRecoveryKey}
                 className="encryption-recovery-key-input"
             />
             <button
