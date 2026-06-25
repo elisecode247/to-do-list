@@ -156,13 +156,7 @@ const ChangeEncryptionPasswordForm = () => {
             showToast("Failed to change encryption password. Please try again.", "error");
         }
     };
-    return <>
-        <p>
-            Client-side encryption is currently enabled on your account.
-            This means that your data is encrypted on the client side before
-            it is sent to the server, and only you can access your unencrypted data.
-            If you want to disable client-side encryption, please contact support.
-        </p>
+    return <div>
         <form className="encryption-password-form" onSubmit={handleSubmit(onSubmit)}>
             <input
                 type="text"
@@ -257,7 +251,7 @@ const ChangeEncryptionPasswordForm = () => {
                 </div>
             </DialogPanel>
         </Dialog>
-    </>
+    </div>
 }
 
 

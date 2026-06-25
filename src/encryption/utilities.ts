@@ -7,6 +7,13 @@ export class InvalidPasswordError extends Error {
     }
 }
 
+export class InvalidRecoveryKeyError extends Error {
+    constructor() {
+        super("Incorrect recovery key");
+        this.name = "InvalidRecoveryKeyError";
+    }
+}
+
 export function toBase64(bytes: Uint8Array): string {
     return btoa(String.fromCharCode(...bytes));
 }
@@ -79,7 +86,6 @@ export function base64ToUint8Array(base64: string) {
     return bytes;
 }
 
-
 function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
     const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
     let binary = "";
@@ -131,6 +137,62 @@ export const unlockMasterKey = async (password: string, encryptionConfig: Encryp
         // not a real "operation" bug. Re-throw as a typed error.
         if (err instanceof DOMException && err.name === "OperationError") {
             throw new InvalidPasswordError();
+        } else {
+            throw err;
+        }
+    }
+    // 3. Import master key
+    const masterKey = await crypto.subtle.importKey(
+        "raw",
+        masterKeyBytes,
+        { name: "AES-GCM" },
+        false,
+        ["encrypt", "decrypt"]
+    );
+    return masterKey;
+};
+
+export const unlockMasterKeyWithRecoveryKey = async (recoveryKey: string, encryptionConfig: EncryptionConfig): Promise<CryptoKey> => {
+    // 1. Derive recovery key material
+    const recoveryKeyMaterial = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(recoveryKey),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
+
+    const recoveryCryptoKey = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: encryptionConfig.recoveryProtector.salt as BufferSource,
+            iterations: 600000,
+            hash: "SHA-256",
+        },
+        recoveryKeyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+    );
+
+    // 2. Decrypt master key
+    let masterKeyBytes: ArrayBuffer | null = null;
+    try {
+        masterKeyBytes = await crypto.subtle.decrypt(
+            {
+                name: "AES-GCM",
+                iv: encryptionConfig.recoveryProtector.iv as BufferSource,
+            },
+            recoveryCryptoKey,
+            encryptionConfig.recoveryProtector.wrappedKey
+        );
+
+    } catch (err) {
+        console.error(err);
+        // AES-GCM tag verification failure -> wrong recovery key (or corrupted data),
+        // not a real "operation" bug. Re-throw as a typed error.
+        if (err instanceof DOMException && err.name === "OperationError") {
+            throw new InvalidRecoveryKeyError();
         } else {
             throw err;
         }

@@ -7,6 +7,8 @@ import CopyButton from "src/components/copy-button/CopyButton";
 import { deriveKey, generateMasterKey, generateRecoveryKey } from "src/encryption/utilities";
 import ChangeEncryptionPasswordForm from "./ChangeEncryptionPasswordForm";
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
+import ForgotEncryptionPasswordForm from "./ForgotEncryptionPasswordForm";
+import { RotateCcwKey } from "lucide-react";
 
 interface EncryptionFormInputs {
     password1: string
@@ -18,6 +20,8 @@ function EncryptionSettings() {
     "use no memo";
     const { showToast } = useToast();
     const [showPasswordForm, setShowPasswordForm] = useState(false);
+    const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [showRecoveryKey, setShowRecoveryKey] = useState(false);
     const [confirmedRecoveryKey, setConfirmedRecoveryKey] = useState(false);
     const [encryptedMasterKeyWithPassword, setEncryptedMasterKeyWithPassword] = useState<ArrayBuffer | null>(null);
@@ -41,6 +45,20 @@ function EncryptionSettings() {
         },
     });
     const password = useWatch({ name: 'password1', control: control });
+
+    const onForgotPasswordClick = () => {
+        setShowForgotPassword(true);
+        setShowChangePasswordForm(false);
+    }
+    const onChangePasswordClick = () => {
+        setShowChangePasswordForm(true);
+        setShowForgotPassword(false);
+    }
+    const onShowResetPassword = () => {
+        setShowChangePasswordForm(false);
+        setShowForgotPassword(false);
+        setShowPasswordForm(true);
+    }
     const onSubmit: SubmitHandler<EncryptionFormInputs> = async (data, event) => {
         event?.preventDefault();
         reset();
@@ -144,6 +162,9 @@ function EncryptionSettings() {
             unlock(password, encryptionConfig);
             setShowRecoveryKey(false);
             showToast("Encryption setup complete. Your journal is now private.");
+            setShowPasswordForm(false);
+            setShowChangePasswordForm(false);
+            setShowForgotPassword(false);
         } catch (error) {
             console.error("Error during encryption setup:", error);
             if (error instanceof Error) {
@@ -159,7 +180,7 @@ function EncryptionSettings() {
     return (
         <div className="settings-section">
             <h3 className="settings-section-title">
-                {!isEncryptionEnabled ? "Enable Private Journal" : "Change Encryption Password"}
+                {!isEncryptionEnabled ? "Enable Private Journal" : "Private Journal Enabled"}
             </h3>
             {!isEncryptionEnabled ? (
                 <>
@@ -189,95 +210,116 @@ function EncryptionSettings() {
                     >
                         Enable Encryption
                     </button>
-                    {showPasswordForm && (
-                        <form className="encryption-password-form" onSubmit={handleSubmit(onSubmit)}>
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                {...register('password1', { required: true, minLength: 8 })}
-                                aria-invalid={errors.password1 ? "true" : "false"}
-                                autoComplete="new-password"
-                            />
-                            {errors.password1?.type === "required" ? (
-                                <span role="alert" className="error-message">Password is required</span>
-                            ) : null}
-                            {errors.password1?.type === "minLength" ? (
-                                <span role="alert" className="error-message">Password must be at least 8 characters</span>
-                            ) : null}
-                            <input
-                                type="password"
-                                placeholder="Confirm your password"
-                                {...register('password2',
-                                    { required: true, validate: (value) => value === password })}
-                                aria-invalid={errors.password2 ? "true" : "false"}
-                                autoComplete="new-password"
-                            />
-                            {errors.password2?.type === "required" ? (
-                                <span role="alert" className="error-message">Password is required</span>
-                            ) : null}
-                            {errors?.password2 && errors.password2.type === "validate" ? (
-                                <span role="alert" className="error-message">Passwords do not match</span>
-                            ) : null}
-                            <button className="settings-btn settings-btn--primary" type="submit">
-                                Set Password and Enable Encryption
-                            </button>
-                        </form>
-                    )}
-                    <Dialog open={showRecoveryKey} onClose={() => setShowRecoveryKey(false)} className="recovery-key-container">
-                        <DialogBackdrop className="recovery-key-backdrop" />
-
-                        <DialogPanel className="recovery-key-content">
-                            <DialogTitle>Recovery Key</DialogTitle>
-                            <Description>
-                                Please save this recovery key in a secure location.
-                                You will need it to recover your data if you forget your password.
-                            </Description>
-                            <ul className="encryption-list">
-                                <li>Write it down on a piece of paper and keep it in a secure location.</li>
-                                <li>Use a password manager that supports secure note storage to save your recovery key.</li>
-                                <li>Save it to a secure cloud storage service that you use, such as Google Drive, Dropbox, or iCloud Drive.</li>
-                                <li>Share it with a person you trust to store it securely.</li>
-                            </ul>
-                            <div className="recovery-key-wrapper">
-                                <CopyButton className="recovery-key-copy-button" text={recoveryKey ?? ''} />
-                                <div className="recovery-key-text">
-                                    <pre>{recoveryKey}</pre>
-                                </div>
-                            </div>
-                            <input
-                                type="checkbox"
-                                id="recovery-key-confirm"
-                                required
-                                checked={confirmedRecoveryKey}
-                                onChange={(e) => setConfirmedRecoveryKey(e.target.checked)}
-                            />
-                            <label htmlFor="recovery-key-confirm">
-                                I have saved my recovery key in a secure location.
-                            </label>
-                            <p className="recovery-key-warning">
-                                <strong>Important:</strong> If you lose both your password and recovery code,
-                                there is <strong>no way to recover your data</strong>.
-                            </p>
-                            <div className="recovery-key-actions">
-                                <button
-                                    className="settings-btn settings-btn--secondary"
-                                    onClick={() => setShowRecoveryKey(false)}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className="settings-btn settings-btn--primary"
-                                    onClick={handleEncryptionSetup}
-                                >
-                                    Encrypt Journal
-                                </button>
-                            </div>
-                        </DialogPanel>
-                    </Dialog>
                 </>
             ) : (
-                <ChangeEncryptionPasswordForm />
+                <>
+                    <p>
+                        Client-side encryption is currently enabled on your account.
+                        This means that your data is encrypted on the client side before
+                        it is sent to the server, and only you can access your unencrypted data.
+                        If you want to disable client-side encryption, please contact support.
+                    </p>
+                    <div className="action-buttons">
+                        <button className="settings-btn" type="button" onClick={onChangePasswordClick}>
+                            <RotateCcwKey /> Change Password
+                        </button>
+                        <button className="settings-btn" type="button" onClick={onForgotPasswordClick}>
+                            Forgot Password?
+                        </button>
+                    </div>
+                    {showForgotPassword && (
+                        <ForgotEncryptionPasswordForm onShowPasswordForm={onShowResetPassword} />
+                    )}
+                    {showChangePasswordForm && (
+                        <ChangeEncryptionPasswordForm />
+                    )}
+                </>
             )}
+            {showPasswordForm && (
+                <form className="encryption-password-form" onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...register('password1', { required: true, minLength: 8 })}
+                        aria-invalid={errors.password1 ? "true" : "false"}
+                        autoComplete="new-password"
+                    />
+                    {errors.password1?.type === "required" ? (
+                        <span role="alert" className="error-message">Password is required</span>
+                    ) : null}
+                    {errors.password1?.type === "minLength" ? (
+                        <span role="alert" className="error-message">Password must be at least 8 characters</span>
+                    ) : null}
+                    <input
+                        type="password"
+                        placeholder="Confirm your password"
+                        {...register('password2',
+                            { required: true, validate: (value) => value === password })}
+                        aria-invalid={errors.password2 ? "true" : "false"}
+                        autoComplete="new-password"
+                    />
+                    {errors.password2?.type === "required" ? (
+                        <span role="alert" className="error-message">Password is required</span>
+                    ) : null}
+                    {errors?.password2 && errors.password2.type === "validate" ? (
+                        <span role="alert" className="error-message">Passwords do not match</span>
+                    ) : null}
+                    <button className="settings-btn settings-btn--primary" type="submit">
+                        Set Password and Enable Encryption
+                    </button>
+                </form>
+            )}
+            <Dialog open={showRecoveryKey} onClose={() => setShowRecoveryKey(false)} className="recovery-key-container">
+                <DialogBackdrop className="recovery-key-backdrop" />
+
+                <DialogPanel className="recovery-key-content">
+                    <DialogTitle>Recovery Key</DialogTitle>
+                    <Description>
+                        Please save this recovery key in a secure location.
+                        You will need it to recover your data if you forget your password.
+                    </Description>
+                    <ul className="encryption-list">
+                        <li>Write it down on a piece of paper and keep it in a secure location.</li>
+                        <li>Use a password manager that supports secure note storage to save your recovery key.</li>
+                        <li>Save it to a secure cloud storage service that you use, such as Google Drive, Dropbox, or iCloud Drive.</li>
+                        <li>Share it with a person you trust to store it securely.</li>
+                    </ul>
+                    <div className="recovery-key-wrapper">
+                        <CopyButton className="recovery-key-copy-button" text={recoveryKey ?? ''} />
+                        <div className="recovery-key-text">
+                            <pre>{recoveryKey}</pre>
+                        </div>
+                    </div>
+                    <input
+                        type="checkbox"
+                        id="recovery-key-confirm"
+                        required
+                        checked={confirmedRecoveryKey}
+                        onChange={(e) => setConfirmedRecoveryKey(e.target.checked)}
+                    />
+                    <label htmlFor="recovery-key-confirm">
+                        I have saved my recovery key in a secure location.
+                    </label>
+                    <p className="recovery-key-warning">
+                        <strong>Important:</strong> If you lose both your password and recovery code,
+                        there is <strong>no way to recover your data</strong>.
+                    </p>
+                    <div className="recovery-key-actions">
+                        <button
+                            className="settings-btn settings-btn--secondary"
+                            onClick={() => setShowRecoveryKey(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="settings-btn settings-btn--primary"
+                            onClick={handleEncryptionSetup}
+                        >
+                            Encrypt Journal
+                        </button>
+                    </div>
+                </DialogPanel>
+            </Dialog>
         </div>
     );
 }
