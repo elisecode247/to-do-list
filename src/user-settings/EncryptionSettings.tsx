@@ -231,7 +231,7 @@ function EncryptionSettings() {
                         <ForgotEncryptionPasswordForm onShowPasswordForm={onShowResetPassword} />
                     )}
                     {showChangePasswordForm && (
-                        <ChangeEncryptionPasswordForm />
+                        <ChangeEncryptionPasswordForm  onCloseForm={() => setShowChangePasswordForm(false)} />
                     )}
                 </>
             )}

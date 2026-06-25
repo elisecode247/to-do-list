@@ -146,7 +146,7 @@ export const unlockMasterKey = async (password: string, encryptionConfig: Encryp
         "raw",
         masterKeyBytes,
         { name: "AES-GCM" },
-        false,
+        true,
         ["encrypt", "decrypt"]
     );
     return masterKey;
@@ -202,7 +202,7 @@ export const unlockMasterKeyWithRecoveryKey = async (recoveryKey: string, encryp
         "raw",
         masterKeyBytes,
         { name: "AES-GCM" },
-        false,
+        true,
         ["encrypt", "decrypt"]
     );
     return masterKey;

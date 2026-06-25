@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { generateMasterKey, deriveKey, generateRecoveryKey } from 'src/encryption/utilities';
+import { deriveKey, generateRecoveryKey } from 'src/encryption/utilities';
 import { useForm, useWatch, type SubmitHandler } from 'react-hook-form';
 import { unlockMasterKey, InvalidPasswordError } from 'src/encryption/utilities';
 import { useToast } from 'src/toast/use-toast';
@@ -20,7 +20,7 @@ type ChangeEncryptionPasswordFormInputs = {
             4: sends all the encrypted encryption configuration to server using existing PUT /encryption-setup endpoint
             5: show new recovery key to user and tell user to keep it safe
  */
-const ChangeEncryptionPasswordForm = () => {
+const ChangeEncryptionPasswordForm = ({ onCloseForm }: { onCloseForm: () => void }) => {
     "use no memo";
     const [showRecoveryKey, setShowRecoveryKey] = useState(false);
     const [confirmedRecoveryKey, setConfirmedRecoveryKey] = useState(false);
@@ -31,6 +31,7 @@ const ChangeEncryptionPasswordForm = () => {
         handleSubmit,
         control,
         formState: { errors },
+        reset
     } = useForm<ChangeEncryptionPasswordFormInputs>({
         mode: 'onBlur', reValidateMode: 'onSubmit', criteriaMode: 'all', shouldFocusError: true, shouldUnregister: false,
         defaultValues: {
@@ -44,9 +45,9 @@ const ChangeEncryptionPasswordForm = () => {
             showToast("Encryption is not enabled on your account.", "error");
             return;
         }
-        let masterKey: ArrayBuffer | null = null;
-        let masterKeySalt: Uint8Array | null = null;
-        let masterKeyIv: Uint8Array | null = null;
+        let masterKey: CryptoKey | null = null;
+        let passwordSalt: Uint8Array | null = null;
+        let passwordIv: Uint8Array | null = null;
         let encryptedMasterKeyWithRecovery: ArrayBuffer | null = null;
         let recoveryKey: string | null = null;
         let recoverySalt: Uint8Array | null = null;
@@ -58,7 +59,7 @@ const ChangeEncryptionPasswordForm = () => {
             if (!encryptionConfig) {
                 throw new Error("Encryption config is not available.");
             }
-            await unlockMasterKey(data.oldPassword, encryptionConfig);
+            masterKey = await unlockMasterKey(data.oldPassword, encryptionConfig);
 
         } catch (err) {
             if (err instanceof InvalidPasswordError) {
@@ -70,22 +71,25 @@ const ChangeEncryptionPasswordForm = () => {
             return;
         }
         try {
-            // --- core randomness ---
-            masterKey = generateMasterKey();
-            masterKeyIv = crypto.getRandomValues(new Uint8Array(12));
-            masterKeySalt = crypto.getRandomValues(new Uint8Array(16));
+            // --- generate a new password protector ---
+            passwordIv = crypto.getRandomValues(new Uint8Array(12));
+            passwordSalt = crypto.getRandomValues(new Uint8Array(16));
 
             // --- derive password key ---
-            const passwordKey = await deriveKey(data.password1, masterKeySalt);
+            const passwordKey = await deriveKey(data.password1, passwordSalt);
 
             // --- encrypt master key with password ---
+            const rawMasterKey = await crypto.subtle.exportKey(
+                "raw",
+                masterKey
+            );
             encryptedMasterKeyWithPassword = await crypto.subtle.encrypt(
                 {
                     name: "AES-GCM",
-                    iv: masterKeyIv as BufferSource,
+                    iv: passwordIv as BufferSource,
                 },
                 passwordKey,
-                masterKey
+                rawMasterKey
             );
 
             // --- recovery setup ---
@@ -102,12 +106,12 @@ const ChangeEncryptionPasswordForm = () => {
                     iv: recoveryIv as BufferSource,
                 },
                 recoveryCryptoKey,
-                masterKey
+                rawMasterKey
             );
             // --- verify encryption ---
             try {
                 await crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: masterKeyIv as BufferSource },
+                    { name: "AES-GCM", iv: passwordIv as BufferSource },
                     passwordKey,
                     encryptedMasterKeyWithPassword
                 );
@@ -133,15 +137,15 @@ const ChangeEncryptionPasswordForm = () => {
         }
         // send request to server to change password
         try {
-            if (!encryptedMasterKeyWithPassword || !masterKeySalt || !masterKeyIv || !encryptedMasterKeyWithRecovery || !recoverySalt || !recoveryIv) {
+            if (!encryptedMasterKeyWithPassword || !passwordSalt || !passwordIv || !encryptedMasterKeyWithRecovery || !recoverySalt || !recoveryIv) {
                 throw new Error("Missing encryption data");
             }
             await setupEncryption({
                 version: 1,
                 passwordProtector: {
                     wrappedKey: encryptedMasterKeyWithPassword,
-                    iv: masterKeyIv,
-                    salt: masterKeySalt
+                    iv: passwordIv,
+                    salt: passwordSalt
                 },
                 recoveryProtector: {
                     wrappedKey: encryptedMasterKeyWithRecovery,
@@ -244,14 +248,18 @@ const ChangeEncryptionPasswordForm = () => {
                     <button
                         disabled={!confirmedRecoveryKey}
                         className="settings-btn settings-btn--primary"
-                        onClick={() => setShowRecoveryKey(false)}
+                        onClick={() => {
+                            setShowRecoveryKey(false);
+                            onCloseForm();
+                            reset({oldPassword: "", password1: "", password2: "" });
+                        }}
                     >
-                        Close
-                    </button>
-                </div>
-            </DialogPanel>
-        </Dialog>
-    </div>
+                    Close
+                </button>
+            </div>
+        </DialogPanel>
+    </Dialog>
+    </div >
 }
 
 
