@@ -1,0 +1,104 @@
+#headlessui-portal-root {
+    z-index: 10001;
+}
+.remove-encryption-dialog-container {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.remove-encryption-dialog-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-danger);
+    z-index: 10002;
+}
+
+.remove-encryption-dialog-panel {
+    padding: 3rem;
+    margin-top: 1rem;
+    border-width: 1px;
+    min-width: 0;
+    width: 80vw;
+    max-width: 800px;
+    background-color: var(--color-surface);
+    z-index: 10003;
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.remove-encryption-dialog__title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.remove-encryption-dialog p {
+    margin: 12px 0 12px 0;
+}
+
+.remove-encryption-dialog-error {
+    margin: 8px 0 12px 0;
+    color: var(--color-danger);
+    font-size: 14px;
+}
+
+#confirm-deletion {
+    display: inline-block;
+    width: auto;
+}
+
+label[for="confirm-deletion"] {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    margin-left: 8px;
+}
+
+.remove-encryption-dialog-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+  margin: 0 auto; /* Center the spinner horizontally */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.skipped-entries {
+    height: 300px;
+    overflow-y: auto;
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+}
+.skipped-entry li {
+    display: inline;
+}

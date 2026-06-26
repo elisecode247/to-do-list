@@ -7,7 +7,8 @@ import CopyButton from "src/components/copy-button/CopyButton";
 import { deriveKey, generateMasterKey, generateRecoveryKey, unlockMasterKeyWithRecoveryKey } from "src/encryption/utilities";
 import ChangeEncryptionPasswordForm from "./ChangeEncryptionPasswordForm";
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
-import ForgotEncryptionPasswordForm from "./ForgotEncryptionPasswordForm";
+import ForgotEncryptionPasswordForm from "src/user-settings/ForgotEncryptionPasswordForm";
+import RemoveEncryptionForm from "src/user-settings/RemoveEncryptionForm";
 import { RotateCcwKey } from "lucide-react";
 
 interface EncryptionFormInputs {
@@ -23,6 +24,7 @@ function EncryptionSettings() {
     const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [isResettingPassword, setIsResettingPassword] = useState(false);
+    const [showRemoveEncryptionForm, setShowRemoveEncryptionForm] = useState(false);
     const [oldRecoveryKey, setOldRecoveryKey] = useState<string>("");
     const [showRecoveryKey, setShowRecoveryKey] = useState(false);
     const [confirmedRecoveryKey, setConfirmedRecoveryKey] = useState(false);
@@ -61,6 +63,12 @@ function EncryptionSettings() {
         setShowChangePasswordForm(false);
         setShowForgotPassword(false);
         setShowPasswordForm(true);
+    }
+    const onShowDeleteEncryptionForm = () => {
+        setShowRemoveEncryptionForm(true);
+        setShowChangePasswordForm(false);
+        setShowForgotPassword(false);
+        setShowPasswordForm(false);
     }
     const onSubmit: SubmitHandler<EncryptionFormInputs> = async (data, event) => {
         event?.preventDefault();
@@ -242,6 +250,9 @@ function EncryptionSettings() {
                         <button className="settings-btn" type="button" onClick={onForgotPasswordClick}>
                             Forgot Password?
                         </button>
+                        <button className="settings-btn settings-btn--danger" type="button" onClick={onShowDeleteEncryptionForm}>
+                            Remove Encryption
+                        </button>
                     </div>
                     {showForgotPassword && (
                         <ForgotEncryptionPasswordForm
@@ -253,6 +264,7 @@ function EncryptionSettings() {
                     {showChangePasswordForm && (
                         <ChangeEncryptionPasswordForm onCloseForm={() => setShowChangePasswordForm(false)} />
                     )}
+                    <RemoveEncryptionForm isFormOpen={showRemoveEncryptionForm} onCloseForm={() => setShowRemoveEncryptionForm(false)} />
                 </>
             )}
             {showPasswordForm && (

@@ -234,7 +234,7 @@ export const decryptData = async (ciphertext: string, iv: string, masterKey: Cry
         return new TextDecoder().decode(decryptedContent);
     } catch (err) {
         console.error(err);
-        return '[Unable to decrypt entry]';
+        throw new Error("Decryption failed. Possibly due to an incorrect master key or corrupted data.");
     }
 };
 

@@ -25,10 +25,15 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
 
             // 4. Decrypt journal entries
             const decryptedEntries = await Promise.all(
-                data.map(async (entry) => ({
-                    ...entry,
-                    text: entry.ciphertext ? await decryptData(entry.ciphertext, entry.iv) : entry.text,
-                }))
+                data.map(async (entry) => {
+                    try {
+                        const decryptedText = entry.ciphertext ? await decryptData(entry.ciphertext, entry.iv) : entry.text;
+                        return { ...entry, text: decryptedText };
+                    } catch (err) {
+                        console.error(`Failed to decrypt entry with id ${entry.id}:`, err);
+                        return { ...entry, text: '[Unable to decrypt entry]' };
+                    }
+                })
             );
 
             setEntries(decryptedEntries);

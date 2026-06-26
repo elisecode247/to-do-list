@@ -16,7 +16,7 @@
         position: fixed;
         bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
         right: 25px;
-        z-index: 99999;
+        z-index: 9999;
         backdrop-filter: blur(10px);
     }
 }

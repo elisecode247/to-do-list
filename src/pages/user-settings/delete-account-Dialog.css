@@ -17,7 +17,7 @@
     bottom: 0;
     left: 0;
     background-color: var(--color-danger);
-    z-index: 40;
+    z-index: 10001;
 }
 
 .delete-dialog-panel {
@@ -26,7 +26,7 @@
     border-width: 1px;
     max-width: 32rem;
     background-color: var(--color-surface);
-    z-index: 45;
+    z-index: 10001;
     border-radius: var(--radius-md);
     color: var(--color-text-primary);
 }

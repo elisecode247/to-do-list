@@ -108,6 +108,7 @@
     display: flex;
     gap: var(--spacing-sm);
     min-width: 0;
+    flex-wrap: wrap;
 }
 
 .encryption-recovery-key-input {

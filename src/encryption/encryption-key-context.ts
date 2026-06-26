@@ -4,6 +4,7 @@ import { unlockMasterKey, decryptData as decrypt, encryptData as encrypt, toBase
 import { type EncryptionConfig, type ServerEncryptionConfig } from "src/encryption/types";
 import { authHeaders } from 'src/authentication/authentication-api';
 import { API_URL } from 'src/app/constants';
+import type { JournalEntry } from 'src/journal/types';
 const USER_SETTINGS_URL = API_URL + "/user-settings";
 
 type EncryptionKeyContextValue = {
@@ -17,6 +18,8 @@ type EncryptionKeyContextValue = {
     encryptionConfig: EncryptionConfig | null;
     setEncryptionConfig: React.Dispatch<React.SetStateAction<EncryptionConfig | null>>;
     isEncryptionEnabled: boolean;
+    decryptAllEntries: (password: string, config: EncryptionConfig) => Promise<JournalEntry[]>;
+    removeEncryption: () => Promise<void>;
 };
 
 const EncryptionKeyContext = createContext<EncryptionKeyContextValue | null>(null);
@@ -135,6 +138,96 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
 
     }, [setIsEncryptionEnabled]);
 
+    const updateAllEntriesContent = useCallback(async (updatedEntries: JournalEntry[]) => {
+        try {
+            const response = await fetch(`${API_URL}/journal/all/update-text`, {
+                method: 'PATCH',
+                headers: {
+                    ...await authHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ entries: updatedEntries })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update entries: ${response.status}`);
+            }
+        } catch (err) {
+            console.error("Updating all entries failed:", err);
+            throw err;
+        }
+    }, []);
+
+    const decryptAllEntries = useCallback(async (password: string, config: EncryptionConfig) => {
+        try {
+            // Unlock the master key with the provided password
+            let key: CryptoKey;
+            try {
+                key = await unlockMasterKey(password, config);
+                setMasterKey(key);
+            } catch (err) {
+                console.error("Unlocking master key failed:", err);
+                throw err;
+            }
+
+            // Fetch all entries from the server
+            const response = await fetch(`${API_URL}/journal/all`, {
+                method: 'GET',
+                headers: await authHeaders(),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch entries: ${response.status}`);
+            }
+
+            const entries = await response.json();
+
+            // Decrypt each entry
+            const skippedEntries: JournalEntry[] = [];
+            const updatedEntries = await Promise.all(entries.map(async (entry: JournalEntry) => {
+                if (!entry.ciphertext) {
+                    return entry;
+                }
+                try {
+                    const decryptedContent = await decrypt(entry.ciphertext, entry.iv, key);
+                    return { ...entry, ciphertext: '', iv: null, encryptionVersion: null, text: decryptedContent };
+                } catch {
+                    skippedEntries.push(entry);
+                    return entry;
+                }
+            }));
+            if (skippedEntries.length > 0) {
+                console.warn(`Skipped ${skippedEntries.length} entries due to decryption errors.`);
+                return skippedEntries;
+            }
+
+            await updateAllEntriesContent(updatedEntries);
+            return [];
+
+        } catch (err) {
+            console.error("Decrypting all entries failed:", err);
+            throw err;
+        }
+    }, [updateAllEntriesContent]);
+
+    const removeEncryption = useCallback(async () => {
+        try {
+            const response = await fetch(`${USER_SETTINGS_URL}/encryption-config`, {
+                method: 'DELETE',
+                headers: await authHeaders(),
+            });
+            if (!response.ok) {
+                console.error(`Failed to remove encryption: ${response.status}`);
+                throw new Error(`Failed to remove encryption: ${response.status}`);
+            }
+            setIsEncryptionEnabled(false);
+            setEncryptionConfig(null);
+            setMasterKey(null);
+        } catch (err) {
+            console.error("Removing encryption failed:", err);
+            throw err;
+        }
+    }, []);
 
     const value = {
         masterKey,
@@ -147,6 +240,9 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
         encryptionConfig,
         setEncryptionConfig,
         isEncryptionEnabled,
+        decryptAllEntries,
+        updateAllEntriesContent,
+        removeEncryption
     };
 
     return createElement(EncryptionKeyContext.Provider, { value }, children);
