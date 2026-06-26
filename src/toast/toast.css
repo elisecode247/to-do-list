@@ -12,6 +12,7 @@
 
 .toast {
     position: relative;
+    min-width: 300px;
     width: fit-content;
     padding: var(--spacing-md);
     border: 1px solid var(--color-primary);
@@ -23,6 +24,8 @@
     animation: slideDown .4s ease-out;
     z-index: 10001;
     background-color: var(--color-surface);
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 @keyframes slideDown {
@@ -30,6 +33,7 @@
         transform: translateY(-40px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -60,6 +64,7 @@
     margin: 0;
     font-size: 14px;
     font-weight: 500;
+    text-align: center;
 }
 
 .toast__close {

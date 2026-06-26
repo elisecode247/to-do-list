@@ -171,8 +171,12 @@ const Checklist: FC<ChecklistProps> = ({
                     partialUpdateItem(updatedItem);
                 }
             };
+            let clippedText = selectedItem?.text ? selectedItem.text.substring(0, 20) : '';
+            if (selectedItem?.text && selectedItem.text.length > 20) {
+                clippedText += '...';
+            }
             if (checked) {
-                showToast('Task complete', 'success', undoAction);
+                showToast(`'Task "${clippedText}" complete'`, 'success', undoAction);
             }
             // archive if item's mode is ONE_TIME_MODE and is being marked completed
             if (selectedItem?.mode === ONE_TIME_MODE && checked) {
@@ -209,6 +213,8 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const handleHide = async (id: string, isHiddenItem: boolean) => {
+        const selectedItem = items.find(item => item.id === id);
+        if (!selectedItem) return;
         try {
             if (isHiddenItem) {
                 await unhideForToday(id as string);
@@ -217,7 +223,11 @@ const Checklist: FC<ChecklistProps> = ({
                 const undoAction = () => {
                     unhideForToday(id as string);
                 };
-                showToast('Task hidden for today', 'success', undoAction);
+                let clippedText = selectedItem?.text ? selectedItem.text.substring(0, 20) : '';
+                if (selectedItem?.text && selectedItem.text.length > 20) {
+                    clippedText += '...';
+                }
+                showToast(`Task "${clippedText}" hidden for today`, 'success', undoAction);
             }
         } catch (err) {
             console.error('Failed to update task visibility:', err);
