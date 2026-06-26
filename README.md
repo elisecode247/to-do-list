@@ -17,7 +17,7 @@ Live: https://dailyresetlist.com
     - change password (and new recovery key) DONE
     - forgot password DONE
     - encrypt past journal entries
-    - remove encryption
+    - remove encryption DONE
     - rate limiting on password attempts
 - feature: Biometric unlock
 - feature: search encrypted journal

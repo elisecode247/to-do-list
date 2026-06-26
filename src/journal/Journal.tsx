@@ -8,7 +8,7 @@ import { ArrowBigLeft, ArrowBigRight, HelpCircle } from "lucide-react";
 import Guide from "./Guide";
 import JournalLockScreen from 'src/journal/JournalLockScreen';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
-
+import { Lock } from "lucide-react";
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -183,6 +183,13 @@ export default function Journal() {
             <div className="journal-wrap">
 
                 <div className="journal-header">
+                    <h2 className="journal-title">
+                        Journal
+                        {isEncryptionEnabled && isUnlocked && (
+                            <span className="encryption-status"><Lock size={16} /> Encrypted</span>
+                        )}
+                    </h2>
+                    <div className="header-spacer" />
                     <div className="date-nav">
                         <button className="journal-nav-btn" onClick={() => setOffset((o) => o - 1)} aria-label="Previous day">
                             <ArrowBigLeft size={20} />

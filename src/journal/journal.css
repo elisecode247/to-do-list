@@ -21,17 +21,40 @@
 
 .journal-header {
     display: flex;
+    flex-wrap: wrap;
+    min-width: 0;
+    gap: 10px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 14px 20px;
     border-bottom: 1px solid var(--color-border, #e5e7eb);
     background: var(--color-surface, #f9fafb);
+}
+
+.journal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.encryption-status {
+    font-size: 12px;
+    color: var(--color-text-secondary, #6b7280);
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .date-nav {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
 }
 
 .journal-nav-btn {
@@ -57,6 +80,7 @@
     font-weight: 500;
     color: var(--color-text-primary, #111827);
     min-width: 200px;
+    width: fit-content;
     text-align: center;
 }
 
