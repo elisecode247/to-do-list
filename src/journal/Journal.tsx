@@ -4,11 +4,10 @@ import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
 import { useDebounceCallback } from 'usehooks-ts';
-import { ArrowBigLeft, ArrowBigRight, HelpCircle } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, HelpCircle, Unlock, Lock } from "lucide-react";
 import Guide from "./Guide";
 import JournalLockScreen from 'src/journal/JournalLockScreen';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
-import { Lock } from "lucide-react";
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -105,6 +104,9 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
                     onChange={handleTextChange}
                     placeholder="What just happened? How do you feel? What's next?"
                 />
+                {entry.ciphertext && entry.iv && entry.encryptionVersion ? (
+                    <span className="encryption-status" title="Encrypted"><Lock size={16} /></span>
+                ) : <span className="encryption-status" title="Not encrypted"><Unlock size={16} /></span>}
                 <button
                     className={`distraction-tag${entry.distraction ? " distraction-tag--active" : ""}`}
                     onClick={() => onToggleDistraction(entry.id)}
