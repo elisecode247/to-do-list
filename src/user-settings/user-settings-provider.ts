@@ -22,6 +22,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (!isAuthenticated) {
+            setIsLoadingSettings(false);
             return;
         }
 
