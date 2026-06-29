@@ -193,12 +193,6 @@ const EncryptionStatus = () => {
                                     </table>
                                 </div>
                             </div>
-                            <button className="settings-btn retry-failed-button" onClick={handleRetryFailed}>
-                                Retry Failed Entries
-                            </button>
-                            <button className="settings-btn skip-failed-button" onClick={handleSkipFailed}>
-                                Skip Failed Entries
-                            </button>
                         </>
                     )}
                 </>

@@ -45,6 +45,7 @@ export function useEncryptionMigration() {
     const [processingStep, setProcessingStep] = useState<ProcessingStep>("not_started");
     const [busy, setBusy] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [skippedEntries, setSkippedEntries] = useState<(FailedEncryptedEntry | FailedCommitEntry)[]>([]);
 
     const jobId = job?.jobId || null;
 
@@ -86,6 +87,7 @@ export function useEncryptionMigration() {
         } finally {
             setBusy(false);
         }
+        return job;
     }, [jobId, updateEncryptionStatus, job]);
 
     const start = useCallback(async () => {
@@ -167,7 +169,18 @@ export function useEncryptionMigration() {
     const commitMigration = useCallback(async (encryptedEntries?: EncryptedEntry[]) => {
         if (!job) return;
         setBusy(true);
-
+        const encryptedBufferToCommit = encryptedEntries ? encryptedEntries?.map(entry => ({
+            ...entry,
+            text: ''
+        })) : encryptedBuffer.map(entry => ({
+            ...entry,
+            text: ''
+        }));
+        if (!encryptedBufferToCommit || encryptedBufferToCommit.length === 0) {
+            setBusy(false);
+            throw new Error("No encrypted entries to commit");
+            return;
+        }
         try {
             const res = await fetch(
                 `${API_URL}/journal/batch-commit`,
@@ -175,8 +188,8 @@ export function useEncryptionMigration() {
                     method: "POST",
                     headers: await authHeaders(),
                     body: JSON.stringify({
-                        encryptedBuffer: encryptedEntries && encryptedEntries.length > 0 ?
-                            encryptedEntries : encryptedBuffer
+                        jobId: job.jobId,
+                        encryptedBuffer: encryptedBufferToCommit
                     })
                 }
             );
@@ -247,7 +260,10 @@ export function useEncryptionMigration() {
                     {
                         method: "POST",
                         headers: await authHeaders(),
-                        body: JSON.stringify({ encryptedBuffer: failedEntries.filter(entry => !entry.skipped && entry.error === 'failed_commit') as EncryptedEntry[] }),
+                        body: JSON.stringify({
+                            jobId: job.jobId,
+                            encryptedBuffer: failedEntries.filter(entry => !entry.skipped && entry.error === 'failed_commit') as EncryptedEntry[]
+                        }),
                     }
                 );
                 if (!res.ok) throw new Error("Failed to commit migration");
@@ -276,8 +292,21 @@ export function useEncryptionMigration() {
         if (!job) return;
         setBusy(true);
         try {
-            const updatedFailedEntries = failedEntries.map(entry => ({ ...entry, skipped: true }));
+            // filter out already skipped entries and mark the rest as skipped
+            const updatedFailedEntries = failedEntries.filter(entry => {
+                if (skippedEntries.some(skipped => skipped.id === entry.id)) {
+                    return false; // already skipped, remove from failedEntries
+                }
+                return true; // keep in failedEntries
+            }).map(entry => ({ ...entry, skipped: true })); // mark as skipped
             setFailedEntries(updatedFailedEntries);
+            setSkippedEntries([...skippedEntries, ...updatedFailedEntries]);
+            await fetch(`${ENCRYPTION_URL}/jobs/${job.jobId}/update-processed-count`, {
+                method: "POST",
+                headers: await authHeaders(),
+                body: JSON.stringify({ processedCount: updatedFailedEntries.length })
+            });
+            refresh(job.jobId);
             if (processingStep === 'retry_encrypt') {
                 setProcessingStep('committing');
             } else if (processingStep === 'retry_commit') {
@@ -289,7 +318,7 @@ export function useEncryptionMigration() {
         } finally {
             setBusy(false);
         }
-    }, [job, failedEntries, processingStep]);
+    }, [job, failedEntries, processingStep, skippedEntries, refresh]);
 
     // process batch encrypts and commits if no errors encountered
     const processBatch = useCallback(async () => {
@@ -327,14 +356,25 @@ export function useEncryptionMigration() {
             return;
         }
 
-        await refresh(job.jobId);
-        if (job.processed < job.total) {
+        const latestJob = await refresh(job.jobId);
+        if (!latestJob) {
+            setBusy(false);
+            throw new Error("Failed to refresh job after processing batch");
+            return;
+        }
+        if (latestJob && latestJob.processed < latestJob.total) {
             processBatch();
         } else {
             setProcessingStep("completed");
+            fetch(`${ENCRYPTION_URL}/jobs/${latestJob.jobId}/complete`, {
+                method: "POST",
+                headers: await authHeaders()
+            });
+            updateEncryptionStatus('encrypted');
         }
+        refresh(latestJob.jobId);
         setBusy(false);
-    }, [job, commitMigration, refresh, isUnlocked, setDialogOpen, encryptBatch, fetchBatch]);
+    }, [job, commitMigration, refresh, isUnlocked, setDialogOpen, encryptBatch, fetchBatch, updateEncryptionStatus]);
 
     const pageRefresh = useEffectEvent(refresh);
     useEffect(function onPageLoad() {
