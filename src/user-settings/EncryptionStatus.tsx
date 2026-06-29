@@ -1,5 +1,5 @@
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
-import "./EncryptionStatus.css";
+import "src/user-settings/EncryptionStatus.css";
 import { CircleAlert, Loader, Unlock, Lock } from "lucide-react";
 import { useToast } from "src/toast/use-toast";
 import ProgressBar from "src/components/progress-bar/ProgressBar";
