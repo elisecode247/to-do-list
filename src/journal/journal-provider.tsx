@@ -51,11 +51,11 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                     console.warn("Journal is locked; can't encrypt entries yet.");
                     return; // UI should be showing the lock screen in this state
                 }
-                const { ciphertext, iv } = await encryptData(newEntry.text);
+                const { ciphertext, iv, encryptionVersion } = await encryptData(newEntry.text);
                 // Update the new entry with encrypted content and IV
                 newEntry.ciphertext = ciphertext;
                 newEntry.iv = iv;
-                newEntry.encryptionVersion = 1;
+                newEntry.encryptionVersion = encryptionVersion;
                 newEntry.text = ''; // Clear the plaintext text field for security
             }
             const createdEntry = await addEntry(newEntry);
@@ -74,10 +74,10 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                     console.warn("Journal is locked; can't encrypt entries yet.");
                     return; // UI should be showing the lock screen in this state
                 }
-                const { ciphertext, iv } = await encryptData(entry.text);
+                const { ciphertext, iv, encryptionVersion } = await encryptData(entry.text);
                 updatedEntry.ciphertext = ciphertext;
                 updatedEntry.iv = iv;
-                updatedEntry.encryptionVersion = 1;
+                updatedEntry.encryptionVersion = encryptionVersion;
                 updatedEntry.text = ''; // Clear the plaintext text field for security
                 await updateEntry(updatedEntry);
                 const decryptedText = updatedEntry.ciphertext ? await decryptData(updatedEntry.ciphertext, updatedEntry.iv) : updatedEntry.text;

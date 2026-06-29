@@ -1,19 +1,26 @@
-// src/encryption/encryption-key-context.tsx
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode, createElement } from 'react';
 import { unlockMasterKey, decryptData as decrypt, encryptData as encrypt, toBase64 } from './utilities';
-import { type EncryptionConfig, type ServerEncryptionConfig } from "src/encryption/types";
 import { authHeaders } from 'src/authentication/authentication-api';
 import { API_URL } from 'src/app/constants';
 import type { JournalEntry } from 'src/journal/types';
-const USER_SETTINGS_URL = API_URL + "/user-settings";
+const ENCRYPTION_URL = API_URL + "/encryption";
+import {
+    ENCRYPTION_STATUS,
+    type EncryptedResult,
+    type EncryptionConfig,
+    type EncryptionStatus,
+    type ServerEncryptionConfig
+} from "src/encryption/types";
 
 type EncryptionKeyContextValue = {
+    encryptionStatus: EncryptionStatus;
+    updateEncryptionStatus: (val: EncryptionStatus) => void;
     masterKey: CryptoKey | null;
     isUnlocked: boolean;
     unlock: (password: string, config: EncryptionConfig) => Promise<void>;
     lock: () => void;
     decryptData: (ciphertext: string, iv: string) => Promise<string>;
-    encryptData: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
+    encryptData: (plaintext: string) => Promise<EncryptedResult>;
     setupEncryption: (encryptionData: EncryptionConfig) => Promise<void>;
     encryptionConfig: EncryptionConfig | null;
     setEncryptionConfig: React.Dispatch<React.SetStateAction<EncryptionConfig | null>>;
@@ -28,12 +35,11 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
     const [encryptionConfig, setEncryptionConfig] = useState<EncryptionConfig | null>(null);
     const [masterKey, setMasterKey] = useState<CryptoKey | null>(null);
     const [isEncryptionEnabled, setIsEncryptionEnabled] = useState(false);
-
+    const [encryptionStatus, setEncryptionStatus] = useState<EncryptionStatus>(ENCRYPTION_STATUS.NOT_ENCRYPTED);
     useEffect(() => {
-
         const fetchEncryptionConfig = async () => {
             try {
-                const response = await fetch(USER_SETTINGS_URL, {
+                const response = await fetch(ENCRYPTION_URL + '/status', {
                     method: "GET",
                     headers: await authHeaders(),
                 });
@@ -45,7 +51,7 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
                 const settings = await response.json();
                 const nextEncryptionEnabled = settings?.encryptionEnabled ?? settings?.userSettings?.encryptionEnabled;
                 const nextEncryptionConfig = settings?.encryptionConfig ?? settings?.userSettings?.encryptionConfig;
-
+                const nextEncryptionStatus = settings?.encryptionStatus ?? settings?.userSettings?.encryptionStatus;
 
                 if (typeof nextEncryptionEnabled === "boolean") {
                     setIsEncryptionEnabled(nextEncryptionEnabled);
@@ -66,6 +72,9 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
                     };
 
                     setEncryptionConfig(convertedEncryptionConfig);
+                }
+                if (nextEncryptionStatus) {
+                    setEncryptionStatus(nextEncryptionStatus);
                 }
 
             } catch (err) {
@@ -90,7 +99,7 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
         return decrypt(ciphertext, iv, masterKey);
     }, [masterKey]);
 
-    const encryptData = useCallback(async (plaintext: string): Promise<{ ciphertext: string; iv: string }> => {
+    const encryptData = useCallback(async (plaintext: string): Promise<EncryptedResult> => {
         if (!masterKey) {
             throw new Error("Master key is not available. Unlock the journal first.");
         }
@@ -116,7 +125,7 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
                     salt: toBase64(recoveryProtector.salt),
                 },
             });
-            const response = await fetch(`${USER_SETTINGS_URL}/encryption-setup`, {
+            const response = await fetch(`${ENCRYPTION_URL}/config`, {
                 method: 'PUT',
                 headers: await authHeaders(),
                 body: payload
@@ -212,7 +221,7 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
 
     const removeEncryption = useCallback(async () => {
         try {
-            const response = await fetch(`${USER_SETTINGS_URL}/encryption-config`, {
+            const response = await fetch(`${ENCRYPTION_URL}/config`, {
                 method: 'DELETE',
                 headers: await authHeaders(),
             });
@@ -229,7 +238,13 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
         }
     }, []);
 
+    const updateEncryptionStatus = useCallback((val: EncryptionStatus) => {
+        setEncryptionStatus(val);
+    }, []);
+
     const value = {
+        encryptionStatus,
+        updateEncryptionStatus,
         masterKey,
         isUnlocked: !!masterKey,
         unlock,

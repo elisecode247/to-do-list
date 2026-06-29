@@ -188,7 +188,7 @@ export default function Journal() {
                     <h2 className="journal-title">
                         Journal
                         {isEncryptionEnabled && isUnlocked && (
-                            <span className="encryption-status"><Lock size={16} /> Encrypted</span>
+                            <span className="journal-encryption-status"><Lock size={16} /> Encrypted</span>
                         )}
                     </h2>
                     <div className="header-spacer" />

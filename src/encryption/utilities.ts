@@ -1,4 +1,4 @@
-import type { EncryptionConfig } from "src/encryption/types";
+import type { EncryptedResult, EncryptionConfig } from "src/encryption/types";
 
 export class InvalidPasswordError extends Error {
     constructor() {
@@ -241,7 +241,7 @@ export const decryptData = async (ciphertext: string, iv: string, masterKey: Cry
 export const encryptData = async (
     plaintext: string,
     masterKey: CryptoKey
-): Promise<{ ciphertext: string; iv: string }> => {
+): Promise<EncryptedResult> => {
     const iv = crypto.getRandomValues(new Uint8Array(12));
 
     const encryptedContent = await crypto.subtle.encrypt(
@@ -253,5 +253,6 @@ export const encryptData = async (
     return {
         ciphertext: arrayBufferToBase64(encryptedContent),
         iv: arrayBufferToBase64(iv),
+        encryptionVersion: 1
     };
 };

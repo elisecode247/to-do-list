@@ -9,6 +9,7 @@ import ChangeEncryptionPasswordForm from "./ChangeEncryptionPasswordForm";
 import { useEncryptionKey } from "src/encryption/encryption-key-context";
 import ForgotEncryptionPasswordForm from "src/user-settings/ForgotEncryptionPasswordForm";
 import RemoveEncryptionForm from "src/user-settings/RemoveEncryptionForm";
+import EncryptionStatus from "src/user-settings/EncryptionStatus";
 import { RotateCcwKey } from "lucide-react";
 
 interface EncryptionFormInputs {
@@ -265,6 +266,7 @@ function EncryptionSettings() {
                         <ChangeEncryptionPasswordForm onCloseForm={() => setShowChangePasswordForm(false)} />
                     )}
                     <RemoveEncryptionForm isFormOpen={showRemoveEncryptionForm} onCloseForm={() => setShowRemoveEncryptionForm(false)} />
+                    <EncryptionStatus />
                 </>
             )}
             {showPasswordForm && (
