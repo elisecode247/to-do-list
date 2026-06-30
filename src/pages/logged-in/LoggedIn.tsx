@@ -18,7 +18,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { ListFilter, PencilIcon, Plus } from 'lucide-react';
+import { Check, ListFilter, PencilIcon, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -45,6 +45,7 @@ const LoggedIn: React.FC = () => {
         updateItem,
         loadDate,
         itemLength,
+        isUpdatedDate
     } = useTask();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
@@ -180,9 +181,10 @@ const LoggedIn: React.FC = () => {
                             {dayOfWeekName}
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
-                        <span className="app_subtitle_last-updated">
+                        <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
                             {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
                         </span>
+                        {isUpdatedDate && <Check className="app_subtitle_last-updated_fresh" size={16} />}
                     </p>
                 </div>
                 <IconButton

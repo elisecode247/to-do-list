@@ -32,6 +32,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(enabled);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
+    const [isUpdatedDate, setIsUpdatedDate] = useState(false);
     const itemLength = items.length;
 
     const reset = () => {
@@ -53,6 +54,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 }
             })
             setItems(formattedItems);
+            loadDateRef.current = new Date();
             setTaskError(null);
         }).catch(error => {
             if (!cancelled) {
@@ -62,6 +64,9 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             }
         }).finally(() => {
             setIsLoading(false);
+            setIsUpdatedDate(true);
+            const timer = setTimeout(() => setIsUpdatedDate(false), 3000);
+            return () => clearTimeout(timer);
         });
     }
 
@@ -106,13 +111,13 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         try {
             const updatedTask = await updateTask(updatedItem);
             setItems(prev => {
-            previousItem = prev.find(i => i.id === updatedItem.id);
-            return prev.map(i => i.id === updatedItem.id ? {
-                ...updatedTask,
-                done: isDateToday(updatedTask.lastCompleted),
-                itemType: 'checklist-item',
-            } : i);
-        });
+                previousItem = prev.find(i => i.id === updatedItem.id);
+                return prev.map(i => i.id === updatedItem.id ? {
+                    ...updatedTask,
+                    done: isDateToday(updatedTask.lastCompleted),
+                    itemType: 'checklist-item',
+                } : i);
+            });
         } catch (error) {
             // rollback only that item
             if (previousItem) {
@@ -405,7 +410,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-        useEffect(() => {
+    useEffect(() => {
         setIsLoading(enabled);
     }, [enabled]);
 
@@ -444,6 +449,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             hideForToday,
             unhideForToday,
             loadDate: loadDateRef,
+            isUpdatedDate
         }}>
             {children}
         </TaskContext.Provider>

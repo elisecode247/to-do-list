@@ -1,0 +1,27 @@
+.pull-to-refresh-container {
+    overscroll-behavior-y: contain;
+}
+
+.pull-refresh-icon {
+    color: var(--color-primary);
+    transform: rotate(var(--rotation));
+}
+
+.pull-to-refresh-icon-container {
+    position: fixed;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.pulling {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}

@@ -102,6 +102,7 @@ export interface TaskContextType {
     hideForToday: (id: string) => void;
     unhideForToday: (id: string) => void;
     loadDate: Ref<Date | null>;
+    isUpdatedDate?: boolean;
 }
 
 export type ApiRecurrence =

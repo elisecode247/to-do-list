@@ -15,6 +15,7 @@ import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
+import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -70,6 +71,7 @@ const Checklist: FC<ChecklistProps> = ({
         getSubtasks,
         hideForToday,
         unhideForToday,
+        loadTasks,
     } = useTask();
     const {
         events,
@@ -82,6 +84,12 @@ const Checklist: FC<ChecklistProps> = ({
     const isActiveList = activeTab === TABS.today;
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
+    const {
+        refreshContainerRef,
+        pullRefreshContainerClassName,
+        PullToRefresh,
+        pullDistance
+     } = usePullToRefresh(loadTasks);
 
     const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
         .sort((a, b) => {
@@ -299,7 +307,13 @@ const Checklist: FC<ChecklistProps> = ({
         <>
             {showSparkles && sparkles}
             <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
-                <div className="checklist_list-container">
+                <div
+                    className={`checklist_list-container ${pullRefreshContainerClassName} ${pullDistance ?
+                        "checklist_list-container--pulling" : ""
+                    }`}
+                    ref={refreshContainerRef}
+                >
+                    <PullToRefresh />
                     <SortableContext items={allItems.map(i => i.id)}>
                         {activeTab === TABS.today && !allItems.length && (
                             <EmptyStateFilters
@@ -310,7 +324,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 type={completedDay ? 'completedDay' : 'noTasks'}
                             />
                         )}
-                        {(allItems as (ChecklistItem | GoogleEvent )[]).map((item) => {
+                        {(allItems as (ChecklistItem | GoogleEvent)[]).map((item) => {
                             if ((item as GoogleEvent).itemType === 'google-event') {
                                 const eventItem = item as GoogleEvent;
                                 return (<CalendarEventItem

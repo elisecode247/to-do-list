@@ -116,6 +116,17 @@ body::after {
     opacity: 0.5;
 }
 
+.app_subtitle_last-updated--fresh {
+    opacity: 1;
+    color: var(--color-success);
+}
+.app_subtitle_last-updated_fresh {
+    opacity: 1;
+    color: var(--color-success);
+    position: relative;
+    top: 4px;
+}
+
 /** Form Styles */
 
 .form-group {

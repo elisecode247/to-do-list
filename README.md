@@ -13,16 +13,8 @@ Live: https://dailyresetlist.com
 
 
 ### To do
-- admin: encrypt journal entries
-    - change password (and new recovery key) DONE
-    - forgot password DONE
-    - encrypt past journal entries DONE
-    - remove encryption DONE
-    - rate limiting on password attempts
-- feature: Biometric unlock
 - feature: search encrypted journal
 - feature: export journal
 - feature: improve ux for newly logged in user
 - feature: custom categories
 - feature: add templates for new users
-- feature: mobile app with alarm?

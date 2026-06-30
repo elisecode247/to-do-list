@@ -23,6 +23,17 @@
     width: 100%;
 }
 
+.checklist_list-container--pulling,
+.checklist_list-container--pulling .sortable-item_container {
+    opacity: 1;
+    background-color: var(--color-surface);
+}
+
+.checklist_list-container--pulling .sortable-item_container.mode-priority {
+    opacity: 1;
+    background-color: var(--color-mode-priority-bg);
+}
+
 .sparkles {
     position: fixed;
     inset: 0;
