@@ -18,7 +18,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Check, ListFilter, PencilIcon, Plus } from 'lucide-react';
+import { Check, Eye, EyeOff, ListFilter, PencilIcon, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -174,6 +174,15 @@ const LoggedIn: React.FC = () => {
                     showLabel={isDesktop}
                     isPriority={false}
                 />
+                {!isDesktop && (
+                    <IconButton
+                        className={`show-completed-toggle-button
+                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
+                        onClick={() => setHideCompleted(prev => !prev)}
+                        label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
+                        icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                        isPriority={false}
+                    />)}
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset List</h1>
                     <p className="app_subtitle">

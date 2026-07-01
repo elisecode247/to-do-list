@@ -1,7 +1,8 @@
 .new-task-form-toggle-button {
     grid-area: create;
     height: 44px;
-    width: 44px;
+    min-width: 44px;
+    width: auto;
     background: var(--color-primary);
     opacity: 0.9;
     color: var(--color-text-light);
@@ -15,7 +16,6 @@
     transition: all 0.2s ease;
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
-    width: 44px;
     margin: auto 0 auto auto;
     position: fixed;
     bottom: calc(var(--mobile-tab-bar-height) + var(--fab-spacing));
@@ -29,6 +29,7 @@
 
 .new-task-form-toggle-button:active {
     box-shadow: 0 4px 12px var(--color-priority);
+    border-radius: var(--radius-md);
 }
 
 .task-form-field__error {

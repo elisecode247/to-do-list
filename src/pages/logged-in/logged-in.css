@@ -13,9 +13,9 @@
 .app_header {
     display: grid;
     /* two rows, first row buttons, second row title */
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto 1fr auto auto minmax(0, auto);
     grid-template-rows: 60px 60px;
-    grid-template-areas: "filter blank create menu" "title title title title";
+    grid-template-areas: "filter blank create menu show-completed" "title title title title";
     align-items: center;
     gap: 0;
     height: 120px;
@@ -50,7 +50,7 @@
     min-width: 44px;
     width: fit-content;
     position: fixed;
-    bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
+    bottom: calc(3 * var(--mobile-tab-bar-height) + var(--fab-spacing));
     right: 25px;
     z-index: 99999;
     backdrop-filter: blur(10px);
@@ -58,6 +58,29 @@
 
 .filter-toggle-button:hover {
     box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
+}
+
+.show-completed-toggle-button {
+    grid-area: show-completed;
+    height: 44px;
+    color: var(--color-priority);
+    background-color: var(--color-surface--transparent);
+    border: 1px solid var(--color-priority);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    min-width: 44px;
+    width: fit-content;
+    position: fixed;
+    bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
+    right: 25px;
+    z-index: 99999;
+    backdrop-filter: blur(10px);
 }
 
 .empty-state-create-button {
