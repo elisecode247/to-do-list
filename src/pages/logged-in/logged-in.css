@@ -37,7 +37,7 @@
     grid-area: filter;
     height: 44px;
     color: var(--color-priority);
-    background-color: transparent;
+    background-color: var(--color-surface--transparent);
     border: 1px solid var(--color-priority);
     border-radius: var(--radius-md);
     cursor: pointer;
