@@ -415,6 +415,10 @@
     gap: 0;
 }
 
+.sortable-item_show-upcoming-button {
+    margin: var(--spacing-xs) auto;
+}
+
 /* Reduce font size and padding for nested items */
 .sortable-item_subtasks-container .sortable-item_container {
     font-size: 0.95em;

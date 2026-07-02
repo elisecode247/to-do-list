@@ -70,6 +70,9 @@ export interface ChecklistItem {
     nextDue: string | null;
     createdAt?: string;
     updatedAt?: string;
+    /** upcoming indicates if subtask needs to be shown in subtask list for today,
+     *  even if it is not due today (e.g. if parent is due today) */
+    upcoming?: boolean;
     /** google properties */
     due?: string;
     listId?: string;

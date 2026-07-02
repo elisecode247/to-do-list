@@ -81,7 +81,6 @@ const Checklist: FC<ChecklistProps> = ({
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
-    const isActiveList = activeTab === TABS.today;
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
     const {
@@ -340,7 +339,6 @@ const Checklist: FC<ChecklistProps> = ({
                                         activeTab={activeTab}
                                         hasSubChores={checklistItem.hasSubChores}
                                         isSubChore={!!checklistItem.parentUuid}
-                                        isActive={isActiveList}
                                         isPriority={checklistItem.isPriority}
                                         checked={checklistItem.done}
                                         key={checklistItem.id}

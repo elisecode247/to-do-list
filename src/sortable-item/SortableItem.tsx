@@ -23,6 +23,8 @@ import {
     BookPlus,
     BookMinus,
     Star,
+    ListChevronsDownUp,
+    ListChevronsUpDown,
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
@@ -31,13 +33,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useOnClickOutside } from 'usehooks-ts';
+import IconButton from 'src/components/icon-button/IconButton';
 
 interface SortableItemProps {
     id: string;
     activeTab: string;
     hasSubChores?: boolean;
     isSubChore?: boolean;
-    isActive: boolean;
     isHidden: boolean;
     isHideCompleted: boolean;
     checked: boolean;
@@ -63,7 +65,6 @@ export const SortableItem: FC<SortableItemProps> = ({
     activeTab,
     hasSubChores = false,
     isSubChore = false,
-    isActive,
     isHidden,
     isHideCompleted,
     checked,
@@ -95,6 +96,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [alignLeft, setAlignLeft] = useState(false);
     const [animate, setAnimate] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [showUpcoming, setShowUpcoming] = useState(false);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
     const menuDropdownRef = useRef<HTMLElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -131,8 +133,13 @@ export const SortableItem: FC<SortableItemProps> = ({
     const filteredTasks = subtasks?.filter((t) => {
         if (t.isHidden || t.isArchived) return false;
         if (isHideCompleted && t.done) return false;
+        if (activeTab === TABS.today && t.upcoming) {
+            return false;
+        }
         return true;
     });
+
+    const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
 
     async function handleAdd(id: string) {
         if (!inputText.trim()) {
@@ -325,7 +332,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 onClick={toggleCollapsed}
                                 aria-label={collapsed ? "Expand task" : "Collapse task"}
                             >
-                                {collapsed ? <Expand size={24} /> : <Minimize2 size={24} />}
+                                {collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
                                 <span className="sortable-item_button-text-span">Subtasks</span>
                             </button>
                         )}
@@ -501,7 +508,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     id={subtask.id}
                                     activeTab={activeTab}
                                     hasSubChores={subtask.hasSubChores}
-                                    isActive={isActive}
                                     isHidden={subtask.isHidden}
                                     isHideCompleted={isHideCompleted}
                                     checked={subtask.done}
@@ -521,6 +527,43 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     subtasks={getSubtasks(subtask.id)}
                                 />
                             ))}
+                            {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
+                                <div className="sortable-item_upcoming-subtasks">
+                                    <IconButton
+                                        icon={showUpcoming ? (<ListChevronsUpDown /> ) : (<ListChevronsDownUp />)}
+                                        className="sortable-item_show-upcoming-button"
+                                        aria-label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
+                                        label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
+                                        onClick={() => setShowUpcoming(!showUpcoming)}
+                                        showLabel={true}
+                                    />
+                                    {showUpcoming && upcomingTasks.map((subtask) => (
+                                        <SortableItem
+                                            key={subtask.id}
+                                            id={subtask.id}
+                                            activeTab={activeTab}
+                                            hasSubChores={subtask.hasSubChores}
+                                            isHidden={subtask.isHidden}
+                                            isHideCompleted={isHideCompleted}
+                                            checked={subtask.done}
+                                            deleteItem={deleteItem}
+                                            prioritizeItem={prioritizeItem}
+                                            text={subtask.text}
+                                            note={subtask.note}
+                                            mode={subtask.mode}
+                                            category={subtask.category}
+                                            lastCompleted={subtask.lastCompleted}
+                                            toggleChecked={toggleChecked}
+                                            handleEdit={handleEdit}
+                                            handleHideItem={handleHideItem}
+                                            onMoveItem={onMoveItem}
+                                            isPriority={subtask.isPriority}
+                                            onSuccess={onSuccess}
+                                            subtasks={getSubtasks(subtask.id)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </SortableContext>
 
                     </div>

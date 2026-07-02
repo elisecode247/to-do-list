@@ -24,6 +24,7 @@ import {
 } from 'app/types';
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { TaskContext } from './task-context';
+import { getLocalTodayAtMidnight } from './utilities/filter-tasks';
 
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
@@ -51,6 +52,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                     ...item,
                     done: isDateToday(item.lastCompleted),
                     itemType: 'checklist-item',
+                    upcoming: item.nextDue !== null && new Date(item.nextDue) > getLocalTodayAtMidnight(),
                 }
             })
             setItems(formattedItems);

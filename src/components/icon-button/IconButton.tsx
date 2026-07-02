@@ -76,7 +76,7 @@ const IconButton = ({
         >
             {icon}
             {showLabel && <span>{label}</span>}
-            {showTooltip && (
+            {!showLabel && showTooltip && (
                 <span className="icon-button__tooltip" role="tooltip">
                     {longPressLabel ?? label}
                 </span>

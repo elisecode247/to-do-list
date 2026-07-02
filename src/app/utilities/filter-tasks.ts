@@ -25,7 +25,7 @@ export function filterTasks({
 
 
 /** Helper: Get today's date at midnight in local timezone for comparison */
-function getLocalTodayAtMidnight(): Date {
+export function getLocalTodayAtMidnight(): Date {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     return date;
