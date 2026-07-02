@@ -67,7 +67,7 @@ const IconButton = ({
     return (
         <button
             type="button"
-            className={`icon-button ${isPriority ? "icon-button--priority" : ""} ${className}}`}
+            className={`icon-button ${isPriority ? "icon-button--priority" : ""} ${className}`}
             onClick={handleClick}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
