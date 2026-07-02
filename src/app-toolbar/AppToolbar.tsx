@@ -28,8 +28,7 @@ const AppToolbar = ({
     setHideCompleted,
     filterCategory,
     setFilterCategory,
-    setLeftOpen,
-    isDesktop = false,
+    setLeftOpen
 }: AppToolbarProps) => {
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
@@ -71,12 +70,10 @@ const AppToolbar = ({
                         <span className="drawer-badge">{activeFilterCount}</span>
                     )}
                 </div>
-                {isDesktop && (
-                    <CloseButton
-                        onClick={() => setLeftOpen(false)}
-                        label="Close filters panel"
-                    />
-                )}
+                <CloseButton
+                    onClick={() => setLeftOpen(false)}
+                    label="Close filters panel"
+                />
             </div>
 
             <div className="drawer-section">

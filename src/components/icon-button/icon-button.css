@@ -13,9 +13,6 @@
         padding: var(--spacing-xs) var(--spacing-sm);
         gap: var(--spacing-xs);
         width: fit-content;
-        position: fixed;
-        bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
-        right: 25px;
         z-index: 9999;
         backdrop-filter: blur(10px);
     }
