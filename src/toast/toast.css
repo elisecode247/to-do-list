@@ -5,22 +5,23 @@
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-xl);
+    align-items: center;
+    gap: var(--spacing-sm);
     z-index: 10001;
 }
 
 .toast {
     position: relative;
     min-width: 300px;
-    width: fit-content;
-    padding: var(--spacing-md);
+    width: 90vw;
+    max-width: 500px;
+    padding: var(--spacing-xs);
     border: 1px solid var(--color-primary);
     border-radius: var(--radius-md);
-    box-shadow: 1px 1px 4px 6px var(--color-shadow);
+    box-shadow: 0px 3px 4px 0px var(--color-shadow);
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
     animation: slideDown .4s ease-out;
     z-index: 10001;
     background-color: var(--color-surface);
@@ -42,21 +43,24 @@
 
 .toast--error {
     color: var(--color-danger);
-    box-shadow: 1px 1px 4px 6px var(--color-danger);
+    box-shadow: 0px 3px 4px 0px var(--color-danger);
 }
 
 .toast--success {
     color: var(--color-success);
-    box-shadow: 1px 1px 4px 6px var(--color-success);
+    box-shadow: 0px 3px 4px 0px var(--color-success);
 }
 
 .toast--info {
     color: var(--color-info);
-    box-shadow: 1px 1px 4px 6px var(--color-info);
+    box-shadow: 0px 3px 4px 0px var(--color-info);
 }
 
 .toast__icon {
     flex-shrink: 0;
+    height: 16px;
+    width: 16px;
+    line-height: 0;
 }
 
 .toast__message {
@@ -70,9 +74,10 @@
 .toast__close {
     flex-shrink: 0;
     background: none;
-    border: none;
+    border: 1px solid var(--color-border);
     cursor: pointer;
     padding: var(--spacing-xs);
+    line-height: 0;
     border-radius: var(--radius-sm);
     color: inherit;
     opacity: 0.6;
@@ -88,11 +93,12 @@
     align-items: center;
     border: 1px solid var(--color-primary);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-xs);
     flex-shrink: 0;
     background: none;
     cursor: pointer;
     color: var(--color-primary);
     transition: opacity var(--transition-fast);
     gap: 1px;
+    font-size: 16px;
 }

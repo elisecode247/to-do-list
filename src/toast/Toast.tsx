@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useRef } from 'react';
-import { AlertCircle, CheckCircle, Undo2, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, X } from 'lucide-react';
 import './toast.css';
 
 interface ToastProps {
@@ -10,7 +10,7 @@ interface ToastProps {
     undoAction?: () => void;
 }
 
-const Toast = function({ message, type, onClose, duration = 4000, undoAction }: ToastProps) {
+const Toast = function({ message, type, onClose, duration = 3000, undoAction }: ToastProps) {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const handleClose = useEffectEvent(onClose);
     useEffect(() => {
@@ -28,9 +28,9 @@ const Toast = function({ message, type, onClose, duration = 4000, undoAction }: 
     return (
         <div className={`toast toast--${type}`}>
             <div className="toast__icon">
-                {type === 'error' && <AlertCircle size={20} />}
-                {type === 'success' && <CheckCircle size={20} />}
-                {type === 'info' && <AlertCircle size={20} />}
+                {type === 'error' && <AlertCircle size={16} />}
+                {type === 'success' && <CheckCircle size={16} />}
+                {type === 'info' && <AlertCircle size={16} />}
             </div>
             <p className="toast__message">{message}</p>
             {undoAction && (
@@ -40,7 +40,6 @@ const Toast = function({ message, type, onClose, duration = 4000, undoAction }: 
                     aria-label="Undo action"
                 >
                     Undo
-                    <Undo2 size={16} />
                 </button>
             )}
             <button

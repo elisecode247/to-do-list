@@ -143,7 +143,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         } catch (err) {
             console.error("Loading calendar events failed:", err);
             if (!hasShownEventsErrorRef.current) {
-                showToast("Failed to load calendar events and tasks", "error");
+                showToast("Failed to load calendar events", "error");
                 hasShownEventsErrorRef.current = true;
             }
             setEvents([]);

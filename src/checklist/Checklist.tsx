@@ -183,7 +183,7 @@ const Checklist: FC<ChecklistProps> = ({
                 clippedText += '...';
             }
             if (checked) {
-                showToast(`'Task "${clippedText}" complete'`, 'success', undoAction);
+                showToast(`"${clippedText}" completed`, 'success', undoAction);
             }
             // archive if item's mode is ONE_TIME_MODE and is being marked completed
             if (selectedItem?.mode === ONE_TIME_MODE && checked) {
@@ -234,7 +234,7 @@ const Checklist: FC<ChecklistProps> = ({
                 if (selectedItem?.text && selectedItem.text.length > 20) {
                     clippedText += '...';
                 }
-                showToast(`Task "${clippedText}" hidden for today`, 'success', undoAction);
+                showToast(`"${clippedText}" hidden for today`, 'success', undoAction);
             }
         } catch (err) {
             console.error('Failed to update task visibility:', err);
