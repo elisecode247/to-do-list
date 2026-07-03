@@ -56,8 +56,9 @@ interface SortableItemProps {
     onMoveItem: (id: string, isArchived: boolean) => void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     isPriority: boolean;
-    subtasks?: ChecklistItem[];
-    nextDue?: string | null;
+    subtasks: ChecklistItem[];
+    nextDue: string | null;
+    isUpcomingSubtask?: boolean;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -83,6 +84,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     onSuccess,
     subtasks,
     nextDue,
+    isUpcomingSubtask = false,
 }) => {
     const { getSubtasks, addItem, partialUpdateItem } = useTask();
     const { showToast } = useToast();
@@ -307,7 +309,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {lastCompletedDate}
                                     </span>
                                 )}
-                                {activeTab === TABS.upcoming && nextDue && (
+                                {(activeTab === TABS.upcoming && nextDue) || (isUpcomingSubtask && nextDue) && (
                                     <span className="sortable-item_next-due-text">
                                         {nextDueDate}
                                     </span>
@@ -469,7 +471,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 key={note} // force remount to reset internal state when note changes
                                 initialMarkdown={note ?? ''}
                                 ref={noteRef}
-                                readOnly={false}                                
+                                readOnly={false}
                             />
                             <button
                                 className="sortable-item_save-note-button"
@@ -525,6 +527,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     isPriority={subtask.isPriority}
                                     onSuccess={onSuccess}
                                     subtasks={getSubtasks(subtask.id)}
+                                    nextDue={subtask.nextDue}
                                 />
                             ))}
                             {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
@@ -560,6 +563,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             isPriority={subtask.isPriority}
                                             onSuccess={onSuccess}
                                             subtasks={getSubtasks(subtask.id)}
+                                            nextDue={subtask.nextDue}
+                                            isUpcomingSubtask={true}
                                         />
                                     ))}
                                 </div>
