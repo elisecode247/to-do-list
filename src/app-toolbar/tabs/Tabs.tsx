@@ -110,7 +110,7 @@ function Tabs<T extends string>({
                         onKeyDown={(e) => onKeyDown(e, index)}
                         className={`
                         tab
-                        tab-${value === tab.id ? "active" : "inactive"}
+                        ${value === tab.id ? "tab-active" : "tab-inactive"}
                         ${tab.priority ? "tab--weighty" : ""}
                     `}
                     >

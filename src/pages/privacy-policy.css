@@ -70,7 +70,7 @@
 }
 
 .privacy-policy-toc a:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-primary-hover);
 }
 
 .privacy-policy-content {

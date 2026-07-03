@@ -1,81 +1,42 @@
+
+/* Nature: forest green + golden yellow */
 :root[data-theme-style="nature"] {
-    color-scheme: light dark;
-    /* Brand */
-    --color-primary: light-dark(#15803d, #166534);
-    --color-primary-dark: light-dark(#166534, #14532d);
-    --color-primary-dark-hover: light-dark(#14532d, #15803d);
+    --color-primary: light-dark(#15803d, #22c55e);
 
-    --color-priority: light-dark(#b45309, #f59e0b);
-    --color-success: light-dark(#15803d, #22c55e);
-    --color-info: light-dark(#1d4ed8, #38bdf8);
-    --color-warning: light-dark(#b45309, #d97706);
-    --color-danger: light-dark(#b91c1c, #ef4444);
+    --color-accent: light-dark(#b45309, #facc15);
 
-    /* Text */
-    --color-text-primary: light-dark(#1f2937, #f0fdf4);
-    --color-text-secondary: light-dark(#374151, #d1fae5);
-    --color-text-light: light-dark(#f9fafb, #ffffff);
-    --color-text-dark-light: light-dark(#14532d, #dcfce7);
-    --color-text-secondary-light: light-dark(#4b5563, #d1fae5);
-
-
-    /* Surfaces */
     --color-background: light-dark(#f0fdf4, #020617);
+    --color-background-hover: light-dark(#bbf7d0, #064e3b);
     --color-surface: light-dark(#ffffff, #052e16);
+    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(5, 46, 22, 0.35));
     --color-hover: light-dark(#bbf7d0, #064e3b);
 
-    /* Borders & Shadows */
     --color-border: light-dark(#bbf7d0, #14532d);
     --color-border-light: light-dark(#bef264, #166534);
     --color-shadow: light-dark(rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.25));
 
-    --shadow-sm: light-dark(0 1px 4px rgba(22, 163, 74, 0.15), 0 1px 4px rgba(34, 197, 94, 0.2));
-    --shadow-md: light-dark(0 10px 30px rgba(22, 163, 74, 0.2), 0 10px 30px rgba(20, 83, 45, 0.35));
+    --color-success: light-dark(#15803d, #22c55e);
+    --color-info: light-dark(#1d4ed8, #38bdf8);
+    --color-danger: light-dark(#b91c1c, #ef4444);
+}
 
-    /* Mode Colors */
-    --color-mode-daily-bg: light-dark(#d1fae5, #064e3b);
-    --color-mode-daily-text: light-dark(#065f46, #d1fae5);
-    --color-mode-daily-border: light-dark(#22c55e, #22c55e);
-
-    --color-mode-one-time-bg: light-dark(#eff6ff, #1e293b);
-    --color-mode-one-time-text: light-dark(#1e3a8a, #e5e7eb);
-    --color-mode-one-time-border: light-dark(#3b82f6, #38bdf8);
-
-    --color-mode-occasional-bg: light-dark(#fef3c7, #422006);
-    --color-mode-occasional-text: light-dark(#92400e, #fde68a);
-    --color-mode-occasional-border: light-dark(#f59e0b, #facc15);
-
-    --color-mode-priority-bg: light-dark(#96ee89, #177200);
-    --color-mode-priority-text: light-dark(#324a01, #ecfccb);
-    --color-mode-priority-border: light-dark(#395d00, #a3e635);
-
-    .nature-fireflies-canvas {
+:root[data-theme-style="nature"] .nature-fireflies-canvas {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 2;
     opacity: 0.9;
 }
-    body {
-        background: linear-gradient(to bottom,
-                #15803d 0%,
-                #166534 30%,
-                #14532d 60%,
-                #052e16 100%);
-        background-attachment: fixed;
-        color: var(--color-text-primary);
-        position: relative;
-        overflow: hidden;
-    }
 
-    .app_h1 {
-        filter: drop-shadow(0 2px 8px var(--color-border-light));
-        text-shadow: 0 1px 3px var(--color-border-light);
-    }
-
-    .app_subtitle {
-        color: var(--color-text-dark-light);
-    }
-
+:root[data-theme-style="nature"] body {
+    background: linear-gradient(
+        to bottom,
+        light-dark(#c0fcd6, #064e3b) 0%,
+        light-dark(#71e69c, #14532d) 30%,
+        light-dark(#54f095, #052e16) 60%,
+        light-dark(#1caa57, #020617) 100%
+    );
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
 }
-

@@ -68,9 +68,6 @@
     text-decoration: underline;
 }
 
-.bulk-edit-task-row--subtask {
-    background-color: var(--color-background);
-}
 .bulk-edit-actions-cell {
     vertical-align: top;
     text-align: center;

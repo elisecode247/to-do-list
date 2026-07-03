@@ -1,6 +1,5 @@
 import { API_AUTH_URL } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
-import 'src/google-authorization/google-calendar-button.css';
 import { useGoogleCalendar } from "./use-google-calendar";
 
 interface Props {

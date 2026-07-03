@@ -69,6 +69,7 @@ function AppearanceSettings() {
                         { value: 'space', label: 'Space' },
                         { value: 'nature', label: 'Nature' },
                         { value: 'ocean', label: 'Ocean' },
+                        { value: 'winter', label: 'Winter' },
                     ]}
                 />
             </fieldset>

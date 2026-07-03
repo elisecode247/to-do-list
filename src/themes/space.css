@@ -1,260 +1,41 @@
+
+/* Space: purple + magenta */
 :root[data-theme-style="space"] {
-    color-scheme: light dark;
+    --color-primary: light-dark(#7c3aed, #a78bfa);
+    --color-accent: light-dark(#fd70af, #fd05e8);
 
-    /* Core Space Palette */
-    --color-primary: light-dark(#8b5cf6, #a78bfa);
-    --color-primary-dark: light-dark(#6d28d9, #6314ec);
-    --color-primary-dark-hover: light-dark(rgb(109, 40, 217, .8), #894fec);
+    --color-background: light-dark(#f4f1ff, #0f172a);
+    --color-background-hover: light-dark(#ece7ff, #1e1b4b);
+    --color-surface: light-dark(#ffffff, #1e1b4b);
+    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(30, 27, 75, 0.35));
+    --color-hover: light-dark(#e9d5ff, #312e81);
 
-    --color-priority: light-dark(#ec4899, #f472b6);
-    --color-success: light-dark(#22d3ee, #22d3ee);
-    --color-info: light-dark(#60a5fa, #7dd3fc);
-    --color-warning: light-dark(#f472b6, #f9a8d4);
-    --color-danger: light-dark(#fb7185, #fb7185);
+    --color-border: light-dark(#c4b5fd, #6d28d9);
+    --color-border-light: light-dark(#ddd6fe, #7c3aed);
+    --color-shadow: light-dark(rgba(124, 58, 237, 0.18), rgba(236, 72, 153, 0.22));
 
-    /* Text */
-    --color-text-primary: light-dark(#1f1147, #f5f3ff);
-    --color-text-dark: light-dark(#260139, #f5f3ff);
-    --color-text-secondary: light-dark(#4b3b82, #c4b5fd);
-    --color-text-secondary-light: #c4b5fd; /* same in both */
-    --color-text-light: light-dark(#e7e1fd, #f5f3ff);
-    --color-text-dark-light: light-dark(#28054b, rgba(192, 132, 252, 0.9));
+    --color-success: light-dark(#bf11fe, #f04fff);
+    --color-info: light-dark(#6366f1, #818cf8);
+    --color-danger: light-dark(#e11d48, #fb7185);
 
-    /* Surfaces */
-    --color-background: light-dark(#f2effd, #0b061f);
-    --color-background-hover: light-dark(rgb(247, 245, 255, .8), #221a4d);
-    --color-surface: light-dark(#ffffff, #161032);
-    --color-hover: light-dark(#f0ecff, #221a4d);
+    --space-bg-1: light-dark(#f4f1ff, #0f172a);
+    --space-bg-2: light-dark(#ece7ff, #1e1b4b);
+    --space-bg-3: light-dark(#e3dcff, #312e81);
 
-    /* Borders & Shadows */
-    --color-border: light-dark(#ddd6fe, #2e1065);
-    --color-border-light: light-dark(#ede9fe, #3b0764);
-    --color-shadow: light-dark(rgba(139, 92, 246, 0.15), rgba(168, 139, 250, 0.35));
-
-    /* Shadows */
-    --shadow-sm: light-dark(0 1px 3px rgba(139, 92, 246, 0.15),
-            0 1px 4px rgba(168, 139, 250, 0.25));
-
-    --shadow-md: light-dark(0 6px 20px rgba(139, 92, 246, 0.18),
-            0 10px 30px rgba(236, 72, 153, 0.25));
-
-    /* Spacing (same in both) */
-    --spacing-xs: 8px;
-    --spacing-sm: 12px;
-    --spacing-md: 16px;
-    --spacing-lg: 20px;
-    --spacing-xl: 24px;
-
-    /* Radius */
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-full: 50%;
-
-    /* Motion */
-    --transition-fast: 0.2s ease;
-
-    /* Mode Frequency */
-    --color-mode-daily-bg: light-dark(#ede9fe, #2e1065);
-    --color-mode-daily-text: light-dark(#5b21b6, #ddd6fe);
-    --color-mode-daily-border: light-dark(#c4b5fd, #7c3aed);
-
-    --color-mode-one-time-bg: light-dark(#fae8ff, #4a044e);
-    --color-mode-one-time-text: light-dark(#86198f, #f5d0fe);
-    --color-mode-one-time-border: light-dark(#f0abfc, #d946ef);
-
-    --color-mode-occasional-bg: light-dark(#cffafe, #083344);
-    --color-mode-occasional-text: light-dark(#155e75, #67e8f9);
-    --color-mode-occasional-border: light-dark(#67e8f9, #22d3ee);
-
-    --color-mode-priority-bg: light-dark(#b0a7ff, #581c87);
-    --color-mode-priority-text: light-dark(#2f003b, #f0abfc);
-    --color-mode-priority-border: light-dark(#38016b, #ec4899);
+    --space-nebula-purple: light-dark(rgba(139, 92, 246, 0.22), rgba(139, 92, 246, 0.3));
+    --space-nebula-pink: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.3));
+    --space-nebula-blue: light-dark(rgba(99, 102, 241, 0.14), rgba(99, 102, 241, 0.2));
 }
-
 
 :root[data-theme-style="space"] body {
     background:
-        radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 70%, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
-        linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-    color: var(--color-surface);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-:root[data-theme-style="space"] body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        /* tiny stars (background density) */
-        radial-gradient(1px 1px at 10% 40%, white, transparent),
-        radial-gradient(1px 1px at 12% 42%, white, transparent),
-        radial-gradient(1px 1px at 14% 38%, white, transparent),
-        radial-gradient(1px 1px at 18% 41%, white, transparent),
-        radial-gradient(1px 1px at 20% 39%, white, transparent),
-        radial-gradient(1px 1px at 22% 43%, white, transparent),
-        radial-gradient(1px 1px at 24% 40%, white, transparent),
-        radial-gradient(1px 1px at 26% 42%, white, transparent),
-        radial-gradient(1px 1px at 28% 41%, white, transparent),
-        radial-gradient(1px 1px at 30% 39%, white, transparent),
-        radial-gradient(1px 1px at 32% 40%, white, transparent),
-        radial-gradient(1px 1px at 34% 42%, white, transparent),
-        radial-gradient(1px 1px at 36% 41%, white, transparent),
-        radial-gradient(1px 1px at 38% 39%, white, transparent),
-        radial-gradient(1px 1px at 40% 40%, white, transparent),
-        radial-gradient(1px 1px at 42% 41%, white, transparent),
-        radial-gradient(1px 1px at 44% 39%, white, transparent),
-        radial-gradient(1px 1px at 46% 42%, white, transparent),
-        radial-gradient(1px 1px at 48% 41%, white, transparent),
-        radial-gradient(1px 1px at 50% 40%, white, transparent),
-        /* slightly bigger stars for highlights */
-        radial-gradient(2px 2px at 15% 40%, white, transparent),
-        radial-gradient(2px 2px at 25% 42%, white, transparent),
-        radial-gradient(2px 2px at 35% 41%, white, transparent),
-        radial-gradient(3px 3px at 45% 39%, white, transparent),
-        radial-gradient(2px 2px at 55% 40%, white, transparent),
-        radial-gradient(3px 3px at 60% 41%, white, transparent),
-        radial-gradient(2px 2px at 65% 42%, white, transparent),
-        radial-gradient(2px 2px at 70% 40%, white, transparent),
-        radial-gradient(3px 3px at 75% 41%, white, transparent),
-        radial-gradient(2px 2px at 80% 39%, white, transparent),
-        /* random stars */
-        radial-gradient(2px 2px at 20% 30%, white, transparent),
-        radial-gradient(4px 4px at 60% 70%, white, transparent),
-        radial-gradient(2px 2px at 80% 10%, white, transparent),
-        radial-gradient(4px 4px at 15% 80%, white, transparent),
-        radial-gradient(4px 4px at 75% 45%, white, transparent),
-        radial-gradient(1px 1px at 41% 25%, white, transparent),
-        radial-gradient(1px 1px at 62% 49%, white, transparent),
-        radial-gradient(2px 2px at 27% 88%, white, transparent),
-        radial-gradient(1px 1px at 58% 72%, white, transparent),
-        radial-gradient(1px 1px at 94% 11%, white, transparent),
-        radial-gradient(2px 2px at 87% 93%, white, transparent),
-        radial-gradient(1px 1px at 46% 90%, white, transparent),
-        radial-gradient(1px 1px at 78% 64%, white, transparent),
-        radial-gradient(2px 2px at 33% 38%, white, transparent),
-        radial-gradient(2px 2px at 29% 44%, white, transparent),
-        radial-gradient(1px 1px at 54% 13%, white, transparent),
-        radial-gradient(1px 1px at 91% 58%, white, transparent),
-        radial-gradient(2px 2px at 36% 76%, white, transparent),
-        radial-gradient(1px 1px at 73% 34%, white, transparent),
-        radial-gradient(1px 1px at 19% 67%, white, transparent),
-        radial-gradient(2px 2px at 85% 82%, white, transparent),
-        radial-gradient(3px 3px at 10% 15%, white, transparent),
-        radial-gradient(4px 4px at 50% 50%, white, transparent),
-        radial-gradient(3px 3px at 75% 20%, white, transparent),
-        radial-gradient(4px 4px at 30% 80%, white, transparent),
-        radial-gradient(3px 3px at 85% 60%, white, transparent),
-        radial-gradient(5px 5px at 20% 40%, white, transparent),
-        radial-gradient(3px 3px at 60% 10%, white, transparent),
-        radial-gradient(4px 4px at 90% 85%, white, transparent),
-        radial-gradient(3px 3px at 45% 70%, white, transparent),
-        radial-gradient(5px 5px at 15% 25%, white, transparent);
-    background-size: 100vw 100vh;
-    animation:
-        starsMove 120s linear infinite alternate,
-        starsTwinkle 5s ease-in-out infinite alternate;
-    will-change: transform, opacity;
-}
-
-:root[data-theme-style="space"] body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-size: 100vw 100vh;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent);
-    background-image:
-        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent),
-        radial-gradient(1px 1px at 15% 80%, white, transparent),
-        radial-gradient(2px 2px at 75% 45%, white, transparent),
-        radial-gradient(1px 1px at 95% 85%, white, transparent),
-        radial-gradient(1px 1px at 12% 18%, white, transparent),
-        radial-gradient(2px 2px at 48% 62%, white, transparent),
-        radial-gradient(1px 1px at 83% 27%, white, transparent),
-        radial-gradient(1px 1px at 67% 91%, white, transparent);
-    opacity: 0.8;
-    background-size: 100vw 100vh;
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    pointer-events: none;
-    transform: translateX(-100%);
-    animation:
-        shimmerSweep 15s ease-in-out infinite alternate,
-        stars-move 60s linear infinite alternate,
-        twinkle 9s ease-in-out infinite alternate;
-    will-change: transform;
-}
-
-@keyframes starsMove {
-    from {
-        transform: translate3d(0, 0, 0);
-    }
-
-    to {
-        transform: translate3d(-120px, -120px, 0);
-    }
-}
-
-@keyframes starsTwinkle {
-    from {
-        opacity: 0.2;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes shimmerSweep {
-    from {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(100%);
-    }
-}
-
-@keyframes glow {
-
-    0%,
-    100% {
-        text-shadow:
-            0 0 10px rgba(139, 92, 246, 0.8),
-            0 0 20px rgba(139, 92, 246, 0.6),
-            0 0 30px rgba(139, 92, 246, 0.4),
-            0 0 40px rgba(139, 92, 246, 0.2);
-    }
-
-    50% {
-        text-shadow:
-            0 0 20px rgba(236, 72, 153, 0.8),
-            0 0 30px rgba(236, 72, 153, 0.6),
-            0 0 40px rgba(236, 72, 153, 0.4),
-            0 0 50px rgba(236, 72, 153, 0.2);
-    }
-}
-
-:root[data-theme-style="space"] {
-
-    .app_h1 {
-        background: transparent;
-        color: var(--color-primary);
-        font-weight: 600;
-    }
-
-    .app_subtitle {
-        color: var(--color-text-light);
-    }
-
-    .new-task-form-toggle-button {
-        background: linear-gradient(135deg, #7c3aed, #9333ea);
-    }
-
+        radial-gradient(ellipse at 20% 30%, var(--space-nebula-purple) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, var(--space-nebula-pink) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, var(--space-nebula-blue) 0%, transparent 50%),
+        linear-gradient(
+            135deg,
+            var(--space-bg-1) 0%,
+            var(--space-bg-2) 50%,
+            var(--space-bg-3) 100%
+        );
 }

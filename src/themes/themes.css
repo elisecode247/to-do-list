@@ -1,37 +1,70 @@
-/* Calm Theme - Light / Dark combined using light-dark() */
 :root {
-    /* Core Calm Palette */
-    --color-primary: light-dark(#5b9bd5, #3a78b4); /* calm blue */
-    --color-primary-dark: light-dark(#3a78b4, #1e3a8a);
-    --color-primary-dark-hover: light-dark(#2e5e8c, #16325e);
-    --color-priority: light-dark(#fbbf24, #facc15); /* soft yellow */
-    --color-success: light-dark(#34d399, #10b981); /* mint green */
-    --color-info: light-dark(#60a5fa, #3b82f6); /* sky blue */
-    --color-warning: light-dark(#fcd34d, #fcd34d); /* mellow yellow (same) */
-    --color-danger: light-dark(#f87171, #ef4444); /* gentle red */
-    --color-white-black: light-dark(#ffffff, #111827); /* pure white / pure black */
+    color-scheme: light dark;
+
+    /* Brand */
+    --color-primary: light-dark(#5b9bd5, #3a78b4);
+    --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, light-dark(white, black));
+    --color-accent: light-dark(#fbbf24, #facc15);
+
+    /* Status */
+    --color-success: light-dark(#34d399, #10b981);
+    --color-info: light-dark(#60a5fa, #3b82f6);
+    --color-warning: var(--color-accent);
+    --color-danger: light-dark(#f87171, #ef4444);
+    --form-error-color: var(--color-danger);
+
     /* Text */
-    --color-text-primary: light-dark(#1f2937, #f3f4f6); /* dark / light slate */
-    --color-text-secondary: light-dark(#4b5563, #d1d5db); /* medium / soft gray */
+    --color-text-primary: light-dark(#1f2937, #f3f4f6);
+    --color-text-secondary: light-dark(#4b5563, #d1d5db);
+    --color-text-secondary-light: #d1d5db;
     --color-text-light: light-dark(#f9fafb, #ffffff);
     --color-text-dark-light: light-dark(#111827, #e5e7eb);
-    --color-text-secondary-light: #d1d5db; /* same in both */
+    --color-white-black: light-dark(#ffffff, #111827);
 
     /* Surfaces */
-    --color-background: light-dark(#f0f4f8, #111827); /* soft white / very dark gray */
-    --color-surface: light-dark(#ffffff, #1f2937); /* card / panel */
-    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(31, 41, 55, 0.8)); /* for overlays and modals */
-    --color-hover: light-dark(#e2e8f0, #374151); /* subtle hover */
-    --color-background-hover: light-dark(#e0f2fe, #1e3a8a); /* optional highlight */
+    --color-background: color-mix(in srgb, var(--color-primary) 95%, light-dark(white, black));
+    --color-background-hover: light-dark(#e0f2fe, #1e3a8a);
+    --color-surface: light-dark(#ffffff, #1f2937);
+    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(31, 41, 55, 0.3));
+    --color-hover: light-dark(#e2e8f0, #374151);
 
     /* Borders & Shadows */
     --color-border: light-dark(#d1d5db, #374151);
     --color-border-light: light-dark(#e5e7eb, #4b5563);
     --color-shadow: light-dark(rgba(97, 97, 97, 0.328), rgba(3, 3, 3, 0.35));
 
-    /* Shadows */
-    --shadow-sm: light-dark(0 1px 4px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.25));
-    --shadow-md: light-dark(0 6px 20px rgba(0,0,0,0.15), 0 10px 30px rgba(0,0,0,0.35));
+    --shadow-sm: 0 1px 4px var(--color-shadow);
+    --shadow-md: 0 10px 30px var(--color-shadow);
+
+    /* Accent / Priority */
+    --color-accent-bg: light-dark(
+        color-mix(in srgb, var(--color-accent) 64%, white),
+        color-mix(in srgb, var(--color-accent) 80%, black)
+    );
+    --color-accent-text: light-dark(
+        color-mix(in srgb, var(--color-accent) 55%, black),
+        color-mix(in srgb, var(--color-accent) 65%, white)
+    );
+    --color-accent-border: light-dark(
+        color-mix(in srgb, var(--color-accent) 70%, black),
+        color-mix(in srgb, var(--color-accent) 75%, white)
+    );
+
+    --color-priority: var(--color-accent);
+    --color-mode-priority-bg: var(--color-accent-bg);
+    --color-mode-priority-text: var(--color-accent-text);
+    --color-mode-priority-border: var(--color-accent-border);
+
+    /* Journal */
+    --color-badge-bg: var(--color-accent-bg);
+    --color-badge-text: var(--color-accent-text);
+
+    --color-distract-row-bg: light-dark(#fffbf0, rgba(250, 199, 117, 0.05));
+    --color-distract-row-bg-hover: light-dark(#fff8e6, rgba(250, 199, 117, 0.08));
+    --color-distract-pill-bg: light-dark(#faeeda, #5c3a0a);
+    --color-distract-pill-text: light-dark(#854f0b, #fde68a);
+    --color-distract-pill-border: light-dark(#ef9f27, #fbbf24);
+    --color-distract-pill-bg-hover: light-dark(#f5c475, #854f0b);
 
     /* Spacing */
     --spacing-xs: 8px;
@@ -49,53 +82,19 @@
     /* Motion */
     --transition-fast: 0.2s ease;
 
-    /* Mode Frequency (Task Colors) */
-    --color-mode-daily-bg: light-dark(#dbeafe, #1e3a8a);
-    --color-mode-daily-text: light-dark(#1e40af, #dbeafe);
-    --color-mode-daily-border: light-dark(#93c5fd, #3b82f6);
-
-    --color-mode-one-time-bg: light-dark(#fef3c7, #78350f);
-    --color-mode-one-time-text: light-dark(#78350f, #fde68a);
-    --color-mode-one-time-border: light-dark(#fbbf24, #fbbf24);
-
-    --color-mode-occasional-bg: light-dark(#d1fae5, #065f46);
-    --color-mode-occasional-text: light-dark(#065f46, #d1fae5);
-    --color-mode-occasional-border: light-dark(#34d399, #10b981);
-
-    --color-mode-priority-bg: light-dark(#C9E8EE, #04275f);
-    --color-mode-priority-text: light-dark(#000c8d, #b7beff);
-    --color-mode-priority-border: light-dark(#1d178b, #888ff1);
-
-    /** floating action button */
+    /* Layout */
     --mobile-tab-bar-height: 60px;
     --fab-spacing: 45px;
-
-    /** form specific */
-    --form-error-color: light-dark(#ef4444, #f87171);
-
-    /* Journal */
-    --color-badge-bg: light-dark(#eeedfe, #3c3489);
-    --color-badge-text: light-dark(#534ab7, #cecbf6);
-    --color-distract-row-bg: light-dark(#fffbf0, rgba(250, 199, 117, 0.05));
-    --color-distract-row-bg-hover: light-dark(#fff8e6, rgba(250, 199, 117, 0.08));
-    --color-distract-pill-bg: #faeeda;
-    --color-distract-pill-text: #854f0b;
-    --color-distract-pill-border: #ef9f27;
-    --color-distract-pill-bg-hover: #f5c475;
 }
 
-body::before {
-    content: '';
-    background: none;
-}
-
-body::after {
-    content: '';
-    background: none;
+/* Default body */
+body {
+    background: var(--color-background);
+    color: var(--color-text-primary);
 }
 
 :root:focus-visible {
-    outline: 3px solid light-dark(#2563eb, #60a5fa);
+    outline: 3px solid var(--color-primary);
     outline-offset: 3px;
     border-radius: 8px;
 }
@@ -120,6 +119,7 @@ body::after {
     opacity: 1;
     color: var(--color-success);
 }
+
 .app_subtitle_last-updated_fresh {
     opacity: 1;
     color: var(--color-success);
@@ -224,3 +224,9 @@ textarea {
     font-family: inherit;
 }
 
+/** Canvas Styles */
+.theme-particles-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}

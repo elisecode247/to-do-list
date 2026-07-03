@@ -66,20 +66,9 @@
   text-decoration: underline;
 }
 
-.calendar-event-item .calendar-event-link {
-    margin-top: 8px;
-    display: inline-block;
-    color: #1a73e8;
-    text-decoration: none;
-}
-
 @media (prefers-color-scheme: dark) {
     .calendar-event-item {
         background-color: var(--color-surface);
         color: var(--color-text-primary);
-    }
-
-    .calendar-event-item .calendar-event-link {
-        color: #8ab4f8;
     }
 }

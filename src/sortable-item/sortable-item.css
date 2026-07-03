@@ -17,10 +17,10 @@
         color: var(--color-text-primary);
         flex-wrap: wrap;
         position: relative;
-        transition: box-shadow 0.3s ease;
         gap: 0;
         margin: 1px;
         z-index:1;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, background-color 0.3s ease;
     }
 
     .sortable-item_container:hover {
@@ -73,11 +73,6 @@
 
 .sortable-item_drag-handle:active {
     cursor: grabbing;
-}
-
-.sortable-item_drag-handle_label {
-    opacity: 0.7;
-    letter-spacing: 0.02em;
 }
 
 /* Checkbox */
@@ -221,8 +216,6 @@
 }
 
 /* Action Buttons Base */
-.calendar-task_hide-button,
-.calendar-event_hide-button,
 .sortable-item_archive-button,
 .sortable-item_restore-button,
 .sortable-item_edit-button,
@@ -262,14 +255,10 @@
 }
 
 /* Hide Button */
-.calendar-task_hide-button,
-.calendar-event_hide-button,
 .sortable-item_hide-button {
     color: var(--color-text-secondary);
 }
 
-.calendar-task_hide-button,
-.calendar-event_hide-button,
 .sortable-item_hide-button:hover {
     background-color: rgba(59, 130, 246, 0.1);
     color: var(--color-text-secondary);
@@ -376,9 +365,6 @@
         font-size: 12px;
         margin-inline-start: var(--spacing-md);
     }
-
-    .calendar-task_hide-button,
-    .calendar-event_hide-button,
     .sortable-item_archive-button,
     .sortable-item_restore-button,
     .sortable-item_edit-button,
@@ -390,9 +376,6 @@
 }
 
 /* Focus styles for accessibility */
-.calendar-task_checkbox:focus-visible,
-.calendar-task_hide-button:focus-visible,
-.calendar-event_hide-button:focus-visible,
 .sortable-item_drag-handle:focus-visible,
 .sortable-item_checkbox:focus-visible,
 .sortable-item_archive-button:focus-visible,
@@ -417,6 +400,7 @@
 
 .sortable-item_show-upcoming-button {
     margin: var(--spacing-xs) auto;
+    color: var(--color-text-primary);
 }
 
 /* Reduce font size and padding for nested items */
@@ -427,20 +411,6 @@
 .sortable-item_subtasks-container .sortable-item_subtasks-container {
     margin-inline-start: var(--spacing-lg);
     /* Each nested level indents more */
-}
-
-.sortable-item_subtask-item {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--color-hover);
-    border-radius: var(--radius-sm);
-    font-size: 0.9em;
-    color: var(--color-text-secondary);
-    transition: var(--transition-fast);
-}
-
-.sortable-item_subtask-item:hover {
-    background-color: var(--color-surface);
-    border-inline-start-color: var(--color-primary);
 }
 
 .sortable-item_note {

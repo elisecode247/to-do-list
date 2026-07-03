@@ -1,6 +1,5 @@
 import './frequency-button-group.css';
 import { MODES } from 'checklist/constants';
-import { getModeColor } from 'src/checklist/utilities/get-mode-color';
 import type { Mode } from 'src/app/types';
 import { useRef } from 'react';
 
@@ -59,7 +58,7 @@ function FrequencyButtonGroup({ mode, onClick }: FrequencyButtonGroupProps) {
                             onKeyDown={(e) => handleKeyDown(e, index)}
                             className={`frequency-selector__button
                                 ${isSelected
-                                    ? `frequency-selector__button--active ${getModeColor(modeOption)}`
+                                    ? 'frequency-selector__button--active'
                                     : ''
                                 }`}
                         >

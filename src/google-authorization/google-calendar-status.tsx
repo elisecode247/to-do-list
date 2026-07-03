@@ -1,4 +1,3 @@
-import "src/google-authorization/google-calendar-status.css";
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useGoogleCalendar } from "src/google-authorization/use-google-calendar";
 import GoogleCalendarConnectButton from "src/google-authorization/google-calendar-button";

@@ -1,143 +1,49 @@
+
+/* Ocean: dark blue + bright turquoise */
 :root[data-theme-style="ocean"] {
-    color-scheme: light dark;
+    --color-primary: light-dark(#0284c7, #1444d4);
+    --color-accent: light-dark(#06b6d4, #00ddff);
 
-    /* Core Ocean Palette */
-    --color-primary: light-dark(#19b8fc, #38bdf8);
-    /* ocean blue / moonlit aqua */
+    --color-background: light-dark(#eefbff, #001a24);
+    --color-background-hover: light-dark(#cbf1ff, #023d52);
+    --color-surface: light-dark(#ffffff, #022c3a);
+    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(2, 44, 58, 0.35));
+    --color-hover: light-dark(#cbf1ff, #024b63);
 
-    --color-primary-dark: light-dark(#0369a1, #0369a1);
-    /* deep sea */
+    --color-border: light-dark(#a5e5fa, #0369a1);
+    --color-border-light: light-dark(#cbf1ff, #0284c7);
+    --color-shadow: light-dark(rgba(14, 165, 233, 0.18), rgba(56, 189, 248, 0.22));
 
-    --color-primary-dark-hover: light-dark(#075985, #075985);
-    /* waves hover */
-
-    --color-priority: light-dark(#facc15, #facc15);
-    /* sunbeam yellow */
-
-    --color-success: light-dark(#06b6d4, #06b6d4);
-    /* turquoise glow */
-
+    --color-success: light-dark(#06b6d4, #22d3ee);
     --color-info: light-dark(#38bdf8, #0ea5e9);
-    /* sky reflection / deep sky reflection */
+    --color-danger: light-dark(#ef4444, #f87171);
 
-    --color-warning: light-dark(#fbbf24, #fbbf24);
-    /* sandy highlight */
-
-    --color-danger: light-dark(#ef4444, #ef4444);
-    /* coral red */
-
-    /* Text */
-    --color-text-primary: light-dark(#1e3a8a, #e0f2fe);
-    --color-text-secondary: light-dark(#1e40af, #bae6fd);
-    --color-text-secondary-light: #bae6fd; /* same in both */
-    --color-text-light: light-dark(#f9fafb, #ffffff);
-    --color-text-dark: #111827;
-
-    /* Surfaces */
-    --color-background: light-dark(#33ddee, #022c3a);
-    /* light aqua water / deep twilight water */
-
-    --color-surface: light-dark(#ffffff, #075985);
-    /* foam white / dark ocean floor */
-
-    --color-hover: light-dark(#bae6fd, #0c4a6e);
-    /* shallow water hover / damp reef */
-
-    /* Borders & Shadows */
-    --color-border: light-dark(#7dd3fc, #0ea5e9);
-    --color-border-light: light-dark(#38bdf8, #38bdf8);
-    --color-shadow: light-dark(rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.25));
-
-    --shadow-sm: light-dark(0 1px 4px rgba(14, 165, 233, 0.15), 0 1px 4px rgba(14, 165, 233, 0.2));
-    --shadow-md: light-dark(0 10px 30px rgba(14, 165, 233, 0.25), 0 10px 30px rgba(3, 105, 161, 0.35));
-
-    --color-mode-priority-bg: light-dark(#33ffdd, #00a2ff);
-    --color-mode-priority-text: light-dark(#003e60, #78c9ff);
-    --color-mode-priority-border: light-dark(#003148, #8adeff);
-
-    & body {
-        background:
-            linear-gradient(to bottom,
-                #001a24 0%,
-                #022c3a 30%,
-                #023d52 60%,
-                #024b63 100%);
-        background-attachment: fixed;
-        color: var(--color-text-primary);
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Sunlight rays / light penetration for Ocean Theme */
-    & body::after {
-        content: '';
-        position: fixed;
-        inset: -20%;
-        pointer-events: none;
-        z-index: 1;
-        background-size: 100% 100%;
-        animation: lightRays 30s ease-in-out infinite;
-        background-image:
-            radial-gradient(circle 250px at 20% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 80%),
-            radial-gradient(circle 300px at 75% 20%, rgba(51, 187, 204, 0.12) 0%, transparent 85%),
-            radial-gradient(circle 200px at 50% 80%, rgba(51, 255, 221, 0.13) 0%, transparent 90%),
-            radial-gradient(circle 280px at 30% 60%, rgba(17, 255, 255, 0.1) 0%, transparent 85%),
-            radial-gradient(circle 220px at 80% 50%, rgba(51, 221, 238, 0.12) 0%, transparent 90%),
-            radial-gradient(circle 260px at 10% 70%, rgba(119, 170, 187, 0.1) 0%, transparent 85%),
-            radial-gradient(circle 240px at 60% 30%, rgba(51, 255, 221, 0.08) 0%, transparent 85%),
-            linear-gradient(160deg, transparent 0%, transparent 48%, rgba(17, 255, 255, 0.12) 50%, transparent 52%, transparent 100%),
-            linear-gradient(140deg, transparent 0%, transparent 48%, rgba(51, 221, 238, 0.1) 50%, transparent 52%, transparent 100%),
-            linear-gradient(130deg, transparent 0%, transparent 47%, rgba(51, 255, 221, 0.1) 50%, transparent 53%, transparent 100%),
-            linear-gradient(150deg, transparent 0%, transparent 49%, rgba(51, 187, 204, 0.08) 50%, transparent 51%, transparent 100%),
-            linear-gradient(165deg, transparent 0%, transparent 48%, rgba(17, 255, 255, 0.09) 50%, transparent 52%, transparent 100%);
-        opacity: 0.75;
-    }
-
-    & .app_h1 {
-        font-weight: 600;
-        color: var(--color-primary);
-    }
-
-
-    & .app_subtitle {
-        color: var(--color-text-light);
-    }
-
+    --ocean-bg-1: light-dark(#eefbff, #0099ff);
+    --ocean-bg-2: light-dark(#cbf1ff, #0059c6);
+    --ocean-bg-3: light-dark(#a5e5fa, #0035f6);
+    --ocean-bg-4: light-dark(#68f2ff, #0029a5);
 }
 
-/* Sunlight rays animation */
-@keyframes lightRays {
-
-    0%,
-    100% {
-        transform: rotate(0deg) translateX(0) translateY(0);
-        opacity: 1;
-    }
-
-    25% {
-        transform: rotate(2deg) translateX(-25px) translateY(10px);
-        opacity: 0.9;
-    }
-
-    50% {
-        transform: rotate(-2deg) translateX(25px) translateY(-10px);
-        opacity: 1;
-    }
-
-    75% {
-        transform: rotate(1deg) translateX(-15px) translateY(5px);
-        opacity: 0.95;
-    }
+:root[data-theme-style="ocean"] body {
+    background: linear-gradient(
+        to bottom,
+        var(--ocean-bg-1) 0%,
+        var(--ocean-bg-2) 30%,
+        var(--ocean-bg-3) 60%,
+        var(--ocean-bg-4) 100%
+    );
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes oceanGlow {
-
-    0%,
-    100% {
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15)) brightness(1);
-    }
-
-    50% {
-        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.9)) brightness(1.1);
-    }
+:root[data-theme-style="ocean"] .sun-beam {
+    position: absolute;
+    background: linear-gradient(
+        transparent,
+        rgba(17, 255, 255, var(--opacity)),
+        transparent
+    );
+    filter: blur(40px);
+    transform-origin: center;
 }

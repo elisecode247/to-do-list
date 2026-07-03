@@ -101,29 +101,6 @@
     text-transform: lowercase;
 }
 
-.cal-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: 1px solid var(--color-border, #e5e7eb);
-    border-radius: 8px;
-    padding: 5px 12px;
-    cursor: pointer;
-    color: var(--color-text-primary, #6b7280);
-    font-size: 13px;
-    transition: background 0.15s;
-}
-
-.cal-btn:hover {
-    background: var(--color-hover, #f3f4f6);
-}
-
-.cal-icon {
-    font-size: 14px;
-}
-
-
 /* ── Guide button ────────────────────────────────────── */
 
 .guide-toggle {

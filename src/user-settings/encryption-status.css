@@ -93,7 +93,7 @@
     max-height: 200px;
     overflow: auto;
     max-width: 100%;
-    -webkit-overflow-scrolling: touch;/
+    -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 650px) {

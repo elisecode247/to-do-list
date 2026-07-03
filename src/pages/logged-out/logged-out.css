@@ -9,12 +9,6 @@
         sans-serif;
 }
 
-.demo-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: 1rem;
-}
-
 .stars {
     position: absolute;
     inset: 0;
@@ -46,13 +40,6 @@
     font-size: 1rem;
     line-height: 1.6;
     color: rgba(230, 235, 255, 0.85);
-}
-
-.cta-row {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 
 .login-orbit {
@@ -106,19 +93,3 @@
     text-transform: lowercase;
 }
 
-.logged-out-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 12px 24px;
-    display: flex;
-    justify-content: flex-end;
-    z-index: 10;
-}
-.logged-out-footer .footer-link {
-    font-size: 0.75rem;
-    color: rgba(220, 225, 255, 0.7);
-    transition: color 0.3s ease;
-    text-decoration: none;
-}

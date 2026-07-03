@@ -1,18 +1,3 @@
-/* Toolbar */
-.checklist_toolbar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    flex-shrink: 0;
-    align-items: flex-start;
-    width: 100%;
-}
-
-.filter-toggle-icon-button {
-    height: 44px;
-    width: 44px;
-}
-
 /* Drawer shell */
 .checklist_filter-container {
     display: flex;
@@ -277,21 +262,7 @@
     outline-offset: 2px;
 }
 
-/* Legacy classes retained to avoid accidental breakage */
-.checklist_hide-completed-checkbox-container,
-.checklist_hide-completed-checkbox-input,
-.checklist_hide-completed-checkbox-label {
-    display: none;
-}
-
 @media (min-width: 900px) {
-    .checklist_toolbar {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--spacing-md);
-    }
-
     .checklist_filter-container {
         min-height: 560px;
     }

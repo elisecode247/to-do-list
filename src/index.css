@@ -1,14 +1,10 @@
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
 /* Reset and Base Styles */
 @layer base {
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        scroll-behavior: smooth;
     }
 }
 
@@ -25,28 +21,6 @@ body {
     position: relative;
     overflow: hidden;
     height: 100vh;
-}
-
-
-/* Daily Mode */
-.mode-frequency--daily {
-    background-color: var(--color-mode-daily-bg);
-    color: var(--color-mode-daily-text);
-    border-color: var(--color-mode-daily-border);
-}
-
-/* One-Time Mode */
-.mode-frequency--one-time {
-    background-color: var(--color-mode-one-time-bg);
-    color: var(--color-mode-one-time-text);
-    border-color: var(--color-mode-one-time-border);
-}
-
-/* Occasional Mode */
-.mode-frequency--occasional {
-    background-color: var(--color-mode-occasional-bg);
-    color: var(--color-mode-occasional-text);
-    border-color: var(--color-mode-occasional-border);
 }
 
 /* Priority Mode */
