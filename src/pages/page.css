@@ -5,7 +5,7 @@
 .page_container {
     max-width: 100vw;
     height: 100dvh;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -33,6 +33,7 @@
     font-weight: 600;
     letter-spacing: 0.5px;
     margin: 0 0 0 var(--spacing-md);
+    color: contrast-color(var(--color-background));
 }
 .app_subtitle {
     font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -40,14 +41,11 @@
     font-weight: 500;
     letter-spacing: 0.5px;
     opacity: 0.75;
-    margin: var(--spacing-xs) 0 0 var(--spacing-md);
-    color: var(--color-text-dark-light);
+    margin: 0;
+    color: contrast-color(var(--color-background));
 }
 
-.app_subtitle {
-    margin: 0;
-}
-.app_subtitle>span {
+.app_subtitle > span {
     margin: 0;
     font-size: 12px;
 }
@@ -56,6 +54,7 @@
     font-size: 18px;
     font-weight: 500;
     margin: var(--spacing-xl) 0 0 var(--spacing-md);
+    color: contrast-color(var(--color-background));
 }
 
 /* =========================
@@ -86,7 +85,7 @@
 /* Primary Button */
 .page-btn--primary {
     background: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
 }
 
 .page-btn--primary:hover {

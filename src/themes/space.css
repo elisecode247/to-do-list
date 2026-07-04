@@ -1,22 +1,19 @@
 
 /* Space: purple + magenta */
 :root[data-theme-style="space"] {
-    --color-primary: light-dark(#7c3aed, #a78bfa);
-    --color-accent: light-dark(#fd70af, #fd05e8);
+    color-scheme: light dark;
 
-    --color-background: light-dark(#f4f1ff, #0f172a);
-    --color-background-hover: light-dark(#ece7ff, #1e1b4b);
-    --color-surface: light-dark(#ffffff, #1e1b4b);
-    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(30, 27, 75, 0.35));
-    --color-hover: light-dark(#e9d5ff, #312e81);
+    /* user-defined colors */
+    --color-primary-light: #7c3aed;
+    --color-primary-dark: #a78bfa;
+    --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
+    --color-accent-light: #fd70af;
+    --color-accent-dark: #fd05e8;
+    --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+    --color-background-light: #f4f1ff;
+    --color-background-dark: #0f172a;
+    --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
-    --color-border: light-dark(#c4b5fd, #6d28d9);
-    --color-border-light: light-dark(#ddd6fe, #7c3aed);
-    --color-shadow: light-dark(rgba(124, 58, 237, 0.18), rgba(236, 72, 153, 0.22));
-
-    --color-success: light-dark(#bf11fe, #f04fff);
-    --color-info: light-dark(#6366f1, #818cf8);
-    --color-danger: light-dark(#e11d48, #fb7185);
 
     --space-bg-1: light-dark(#f4f1ff, #0f172a);
     --space-bg-2: light-dark(#ece7ff, #1e1b4b);

@@ -37,7 +37,7 @@
     inset-inline-end: var(--spacing-md);
     width: 44px;
     height: 44px;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-surface--transparent));
     border: 1px solid var(--color-border);
     background-color: var(--color-surface--transparent);
 }
@@ -100,7 +100,6 @@
 
 .app_loading-container p {
     margin-block-start: var(--spacing-md);
-    color: var(--color-text-secondary);
     font-size: 14px;
 }
 

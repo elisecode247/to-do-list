@@ -8,17 +8,18 @@
     padding: 5px 12px;
     border-radius: 20px;
     border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
-    background: transparent;
+    background: var(--color-shadow);
     font-size: 12px;
-    color: var(--color-text-secondary);
+    color: contrast-color(var(--color-shadow));
     cursor: pointer;
     font-family: inherit;
     transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
 .edit-task-chip:hover {
-    border-color: color-mix(in srgb, var(--color-text-secondary) 60%, var(--color-border));
-    color: var(--color-text-primary);
+    border-color: var(--color-shadow);
+    background: var(--color-hover);
+    color: contrast-color(var(--color-hover));
 }
 
 .edit-task-chip--active {
@@ -37,7 +38,6 @@
     border: 1.5px dashed color-mix(in srgb, var(--color-border) 90%, #d1d5db 10%);
     background: transparent;
     font-size: 13px;
-    color: var(--color-text-secondary);
     cursor: pointer;
     font-family: inherit;
     width: fit-content;
@@ -49,9 +49,9 @@
 }
 
 .edit-task-priority--active {
-    border-color: color-mix(in srgb, var(--color-mode-priority-border) 65%, #ca8a04 35%);
-    background: color-mix(in srgb, var(--color-mode-priority-bg) 65%, #fefce8 35%);
-    color: color-mix(in srgb, var(--color-mode-priority-text) 70%, #a16207 30%);
+    border-color: color-mix(in srgb, var(--color-accent-border) 65%, #ca8a04 35%);
+    background: color-mix(in srgb, var(--color-accent-bg) 65%, #fefce8 35%);
+    color: contrast-color(color-mix(in srgb, var(--color-accent-bg) 65%, #fefce8 35%));
     font-weight: 500;
 }
 
@@ -60,5 +60,6 @@
     border-radius: 8px;
     overflow: hidden;
     background: color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%));
     width: 100%;
 }

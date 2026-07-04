@@ -1,23 +1,18 @@
-
 /* Nature: forest green + golden yellow */
 :root[data-theme-style="nature"] {
-    --color-primary: light-dark(#15803d, #22c55e);
 
-    --color-accent: light-dark(#b45309, #facc15);
+    color-scheme: light dark;
 
-    --color-background: light-dark(#f0fdf4, #020617);
-    --color-background-hover: light-dark(#bbf7d0, #064e3b);
-    --color-surface: light-dark(#ffffff, #052e16);
-    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(5, 46, 22, 0.35));
-    --color-hover: light-dark(#bbf7d0, #064e3b);
-
-    --color-border: light-dark(#bbf7d0, #14532d);
-    --color-border-light: light-dark(#bef264, #166534);
-    --color-shadow: light-dark(rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.25));
-
-    --color-success: light-dark(#15803d, #22c55e);
-    --color-info: light-dark(#1d4ed8, #38bdf8);
-    --color-danger: light-dark(#b91c1c, #ef4444);
+    /* user-defined colors */
+    --color-primary-light: #15803d;
+    --color-primary-dark: #22c55e;
+    --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
+    --color-accent-light: #ffcc00;
+    --color-accent-dark: #d7ac00;
+    --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+    --color-background-light: #d6ffe2;
+    --color-background-dark: #004102;
+    --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 }
 
 :root[data-theme-style="nature"] .nature-fireflies-canvas {
@@ -29,13 +24,11 @@
 }
 
 :root[data-theme-style="nature"] body {
-    background: linear-gradient(
-        to bottom,
-        light-dark(#c0fcd6, #064e3b) 0%,
-        light-dark(#71e69c, #14532d) 30%,
-        light-dark(#54f095, #052e16) 60%,
-        light-dark(#1caa57, #020617) 100%
-    );
+    background: linear-gradient(to bottom,
+            light-dark(#c0fcd6, #064e3b) 0%,
+            light-dark(#71e69c, #14532d) 30%,
+            light-dark(#54f095, #052e16) 60%,
+            light-dark(#1caa57, #020617) 100%);
     background-attachment: fixed;
     position: relative;
     overflow: hidden;

@@ -34,7 +34,7 @@
 .journal-title {
     font-size: 18px;
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
     display: flex;
     align-items: center;
     gap: 8px;
@@ -42,7 +42,7 @@
 
 .journal-encryption-status {
     font-size: 12px;
-    color: var(--color-text-secondary, #6b7280);
+    color: inherit;
     margin-left: 8px;
     display: inline-flex;
     align-items: center;
@@ -64,7 +64,7 @@
     border-radius: 8px;
     padding: 4px 10px;
     cursor: pointer;
-    color: var(--color-text-secondary, #6b7280);
+    color: inherit;
     font-size: 18px;
     line-height: 1;
     display: flex;
@@ -107,7 +107,6 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--color-text-secondary, #6b7280);
     padding: 8px 12px;
     border-radius: 8px;
     display: flex;
@@ -120,15 +119,15 @@
 }
 
 .guide-toggle:hover {
-    color: var(--color-text-primary, #111827);
+    color: contrast-color(var(--color-hover));
     background: var(--color-hover, #f3f4f6);
 }
 
 .journal-reminder {
     padding: 8px 20px;
     font-size: 12px;
-    color: var(--color-text-secondary, #6b7280);
-    background: var(--color-surface, #f9fafb);
+    color: contrast-color(var(--color-surface));
+    background: var(--color-surface);
     border-bottom: 1px solid var(--color-border, #e5e7eb);
     white-space: nowrap;
     overflow-x: auto;
@@ -145,12 +144,11 @@
     padding: 1px 8px;
     border-radius: 999px;
     background: var(--color-background, #f0f4f8);
-    color: var(--color-text-primary, #111827);
+    color: contrast-color(var(--color-background, #f0f4f8));
     font-weight: 500;
 }
 
 .journal-reminder-num {
-    color: var(--color-primary, #5b9bd5);
     font-weight: 700;
 }
 
@@ -183,7 +181,7 @@
 .col-hdr {
     font-size: 11px;
     font-weight: 500;
-    color: var(--color-text-secondary, #9ca3af);
+    color: contrast-color(var(--color-surface));
     text-transform: uppercase;
     letter-spacing: 0.07em;
     padding: 6px 14px;
@@ -230,7 +228,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--color-text-secondary);
+    color: contrast-color(var(--color-surface));
     font-size: 16px;
     padding: 0 4px 0 0;
     flex-shrink: 0;
@@ -249,21 +247,19 @@
     border: none;
     outline: none;
     font-size: 13px;
-    color: var(--color-text-secondary, #6b7280);
+    background-color: var(--color-white-black);
+    color: contrast-color(var(--color-white-black));
     font-family: var(--font-mono, monospace);
     width: 100%;
     padding: 0;
     cursor: text;
 }
 
-.time-input::placeholder {
-    color: var(--color-text-secondary, #d1d5db);
-}
-
 .note-cell {
     padding: 10px 14px;
     display: flex;
-    align-items: flex-start;
+    align-items: baseline;
+    justify-content: space-between;
     gap: 8px;
 }
 
@@ -274,7 +270,7 @@
     outline: none;
     resize: none;
     font-size: 14px;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
     font-family: var(--font-sans, system-ui, sans-serif);
     line-height: 1.65;
     overflow: hidden;
@@ -283,7 +279,7 @@
 }
 
 .entry-textarea::placeholder {
-    color: var(--color-text-secondary, #d1d5db);
+    color: color-mix(in srgb, contrast-color(var(--color-white-black)) 80%, var(--color-white-black) 20%);
 }
 
 
@@ -306,7 +302,6 @@
 .distraction-tag:not(.distraction-tag--active) {
     background: none;
     border-color: var(--color-border, #e5e7eb);
-    color: var(--color-text-secondary, #9ca3af);
     opacity: 0;
 }
 
@@ -337,7 +332,6 @@
     border: none;
     border-top: 1px solid var(--color-border, #e5e7eb);
     font-size: 13px;
-    color: var(--color-text-secondary, #9ca3af);
     cursor: pointer;
     text-align: left;
     transition: background 0.15s, color 0.15s;
@@ -345,8 +339,8 @@
 }
 
 .add-row-btn:hover {
-    background: var(--color-hover, #f3f4f6);
-    color: var(--color-text-secondary, #6b7280);
+    background: var(--color-hover);
+    color: contrast-color(var(hover));
 }
 
 .add-icon {
@@ -354,21 +348,6 @@
     line-height: 1;
 }
 
-
-/* ── Dark mode overrides ─────────────────────────────── */
-
-@media (prefers-color-scheme: dark) {
-    .journal-wrap {
-        --color-bg: #1a1a2e;
-        --color-surface: #16162a;
-        --color-border: rgba(255, 255, 255, 0.1);
-        --color-text: #f0eefc;
-        --color-text-secondary: #9b97c8;
-        --color-text-secondary: #5c5880;
-        --color-hover: rgba(255, 255, 255, 0.04);
-        --color-hover-subtle: rgba(255, 255, 255, 0.02);
-    }
-}
 
 /* ── Mobile responsiveness ──────────────────────────── */
 

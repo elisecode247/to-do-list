@@ -12,7 +12,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-background));
     background-color: var(--color-background);
     min-width: 375px;
     padding: 0;
@@ -25,7 +25,7 @@ body {
 
 /* Priority Mode */
 .mode-priority {
-    background-color: var(--color-mode-priority-bg);
-    color: var(--color-mode-priority-text);
-    border-color: var(--color-mode-priority-border);
+    background-color: var(--color-accent-bg);
+    color: var(--color-accent-text);
+    border-color: var(--color-accent-border);
 }

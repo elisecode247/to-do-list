@@ -111,7 +111,6 @@ function Tabs<T extends string>({
                         className={`
                         tab
                         ${value === tab.id ? "tab-active" : "tab-inactive"}
-                        ${tab.priority ? "tab--weighty" : ""}
                     `}
                     >
                         {tab.label}

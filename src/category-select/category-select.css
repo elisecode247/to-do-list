@@ -13,7 +13,6 @@
     font-size: 14px;
     font-weight: 600;
     margin-bottom: var(--spacing-xs);
-    color: var(--color-text-primary);
 }
 
 
@@ -21,13 +20,11 @@
 .category-select_filter {
     margin: 0;
     padding: var(--spacing-xs);
-    color: var(--color-text-primary);
 }
 
 .category-select-wrapper_filter {
     margin: 0;
     padding: 0;
-    color: var(--color-text-light);
 }
 
 /* Responsive adjustments for larger screens */
@@ -49,7 +46,6 @@
     .category-select-wrapper_filter {
         margin: 0;
         padding: 0;
-        color: var(--color-text-primary);
     }
 }
 

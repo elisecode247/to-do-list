@@ -33,14 +33,13 @@
     font-size: 18px;
     font-weight: 600;
     text-align: center;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
 }
 
 .journal-lock-subtitle {
     margin: 0 0 var(--spacing-lg);
     font-size: 14px;
     text-align: center;
-    color: var(--color-text-secondary);
 }
 
 .journal-lock-form {
@@ -58,7 +57,7 @@
 .journal-lock-field label {
     font-size: 13px;
     font-weight: 500;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
 }
 
 /* relies on the global input/textarea rule for base styling;
@@ -74,7 +73,7 @@
     border: none;
     border-radius: var(--radius-md);
     background-color: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;

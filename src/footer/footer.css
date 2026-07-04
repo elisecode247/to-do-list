@@ -1,5 +1,5 @@
 .footer-link {
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
     text-decoration: none;
     font-size: 8px;
     cursor: pointer;
@@ -19,4 +19,5 @@
     width: 100vw;
     z-index: 999;
     background-color: var(--color-white-black);
+    color: contrast-color(var(--color-white-black));
 }

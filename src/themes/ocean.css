@@ -1,22 +1,16 @@
-
 /* Ocean: dark blue + bright turquoise */
 :root[data-theme-style="ocean"] {
-    --color-primary: light-dark(#0284c7, #1444d4);
-    --color-accent: light-dark(#06b6d4, #00ddff);
+    color-scheme: light dark;
 
-    --color-background: light-dark(#eefbff, #001a24);
-    --color-background-hover: light-dark(#cbf1ff, #023d52);
-    --color-surface: light-dark(#ffffff, #022c3a);
-    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(2, 44, 58, 0.35));
-    --color-hover: light-dark(#cbf1ff, #024b63);
-
-    --color-border: light-dark(#a5e5fa, #0369a1);
-    --color-border-light: light-dark(#cbf1ff, #0284c7);
-    --color-shadow: light-dark(rgba(14, 165, 233, 0.18), rgba(56, 189, 248, 0.22));
-
-    --color-success: light-dark(#06b6d4, #22d3ee);
-    --color-info: light-dark(#38bdf8, #0ea5e9);
-    --color-danger: light-dark(#ef4444, #f87171);
+    /* user-defined colors */
+    --color-primary-light: #2ab8ff;
+    --color-primary-dark: #1444d4;
+    --color-accent-light: #06b6d4;
+    --color-accent-dark: #00ddff;
+    --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+    --color-background-light: #a5e5fa;
+    --color-background-dark: #0035f6;
+    --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
     --ocean-bg-1: light-dark(#eefbff, #0099ff);
     --ocean-bg-2: light-dark(#cbf1ff, #0059c6);
@@ -25,13 +19,11 @@
 }
 
 :root[data-theme-style="ocean"] body {
-    background: linear-gradient(
-        to bottom,
-        var(--ocean-bg-1) 0%,
-        var(--ocean-bg-2) 30%,
-        var(--ocean-bg-3) 60%,
-        var(--ocean-bg-4) 100%
-    );
+    background: linear-gradient(to bottom,
+            var(--ocean-bg-1) 0%,
+            var(--ocean-bg-2) 30%,
+            var(--ocean-bg-3) 60%,
+            var(--ocean-bg-4) 100%);
     background-attachment: fixed;
     position: relative;
     overflow: hidden;
@@ -39,11 +31,9 @@
 
 :root[data-theme-style="ocean"] .sun-beam {
     position: absolute;
-    background: linear-gradient(
-        transparent,
-        rgba(17, 255, 255, .8),
-        transparent
-    );
+    background: linear-gradient(transparent,
+            rgba(17, 255, 255, .8),
+            transparent);
     filter: blur(40px);
     transform-origin: center;
 }

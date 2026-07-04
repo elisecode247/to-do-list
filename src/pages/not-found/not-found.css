@@ -22,7 +22,7 @@
 .not-found__title {
     margin-bottom: 2rem;
     font-size: 1.5rem;
-    color: var(--color-text-primary)
+    color: contrast-color(var(--color-text-primary))
 }
 
 .not-found__actions {
@@ -46,23 +46,23 @@
 
 .btn--primary {
     background: var(--color-primary);
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
     border: none;
     box-shadow: 0 8px 20px rgba(127, 47, 254, 0.25);
 }
 
 .btn--secondary {
     background: transparent;
-    color: var(--color-priority);
-    border: 1px solid var(--color-priority);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
 }
 
 .btn--secondary:hover {
     transform: none;
     background: transparent;
-    color: var(--color-priority);
-    border: 1px solid var(--color-priority);
-    box-shadow: 0 4px 12px var(--color-priority);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    box-shadow: 0 4px 12px var(--color-accent);
     text-shadow: 1px 1px 2px #fa17dc82;
 }
 

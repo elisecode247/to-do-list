@@ -14,6 +14,7 @@
     padding: 14px 16px;
     border-bottom: 1px solid color-mix(in srgb, var(--color-border) 90%, #e5e7eb 10%);
     background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%));
     flex-shrink: 0;
 }
 
@@ -21,7 +22,6 @@
     margin: 0;
     font-size: 15px;
     font-weight: 500;
-    color: var(--color-text-primary);
     text-transform: none;
     letter-spacing: 0;
 }
@@ -34,6 +34,7 @@
     flex-direction: column;
     gap: 14px;
     background-color: var(--color-surface);
+    color: contrast-color(var(--color-surface));
 }
 
 .task-form-field {
@@ -45,7 +46,6 @@
 
 .task-form-field__label {
     font-size: 12px;
-    color: var(--color-text-secondary);
 }
 
 .task-form-input {
@@ -54,9 +54,9 @@
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
-    background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
+    background: var(--color-surface);
     font-size: 16px;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-surface));
     font-family: inherit;
     box-sizing: border-box;
 }
@@ -101,7 +101,6 @@
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text-secondary) 75%, #9ca3af 25%);
     padding-top: 6px;
     padding-bottom: 4px;
     border-top: 1px solid color-mix(in srgb, var(--color-border) 90%, #e5e7eb 10%);
@@ -147,17 +146,17 @@
 .task-form-action-button--cancel {
     border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
     background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
-    color: var(--color-text-secondary);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%));
 }
 
 .task-form-action-button--cancel:hover {
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
 }
 
 .task-form-action-button--save {
     border: none;
     background: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     font-weight: 500;
 }
 

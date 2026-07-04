@@ -7,6 +7,6 @@
 }
 
 .drawer-close-icon {
-    color: var(--color-mode-priority-text);
+    color: inherit;
     cursor: pointer;
 }

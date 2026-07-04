@@ -17,13 +17,13 @@
 .error-state__title {
     font-size: 20px;
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-background));
     margin: 0 0 var(--spacing-xs) 0;
 }
 
 .error-state__message {
     font-size: 14px;
-    color: var(--color-text-secondary);
+    color: contrast-color(var(--color-background));
     margin: 0 0 var(--spacing-lg) 0;
     max-width: 400px;
 }
@@ -34,7 +34,7 @@
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-lg);
     background-color: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     border: none;
     border-radius: var(--radius-md);
     font-size: 14px;

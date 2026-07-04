@@ -1,10 +1,29 @@
 :root {
     color-scheme: light dark;
 
-    /* Brand */
-    --color-primary: light-dark(#5b9bd5, #3a78b4);
+    /* user-defined colors */
+    --color-primary-light: #82c3ff;
+    --color-primary-dark: #0053a5;
+    --color-accent-light: #8cd4d9;
+    --color-accent-dark: #6bb1b9;
+    --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+    --color-background-light: #ffffff;
+    --color-background-dark: #000000;
+    --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
+
+    /** Derived colors */
+    --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
+    --color-primary-hover: oklch(from var(--color-primary) calc(l * 0.3) c h);
     --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, light-dark(white, black));
-    --color-accent: light-dark(#fbbf24, #facc15);
+    --color-secondary-light: color-mix(in srgb, var(--color-primary-light) 50%, white);
+    --color-secondary-dark: color-mix(in srgb, var(--color-primary-dark) 50%, black);
+    --color-secondary: light-dark(var(--color-secondary-light), var(--color-secondary-dark));
+    /* Accent / Priority */
+    --color-accent-bg: light-dark(color-mix(in srgb, var(--color-accent) 64%, white),
+            color-mix(in srgb, var(--color-accent) 80%, black));
+    --color-accent-text: contrast-color(var(--color-accent-bg));
+    --color-accent-border: light-dark(color-mix(in srgb, var(--color-accent) 70%, black),
+            color-mix(in srgb, var(--color-accent) 75%, white));
 
     /* Status */
     --color-success: light-dark(#34d399, #10b981);
@@ -13,47 +32,25 @@
     --color-danger: light-dark(#f87171, #ef4444);
     --form-error-color: var(--color-danger);
 
-    /* Text */
-    --color-text-primary: light-dark(#1f2937, #f3f4f6);
-    --color-text-secondary: light-dark(#4b5563, #d1d5db);
-    --color-text-secondary-light: #d1d5db;
-    --color-text-light: light-dark(#f9fafb, #ffffff);
-    --color-text-dark-light: light-dark(#111827, #e5e7eb);
-    --color-white-black: light-dark(#ffffff, #111827);
-
     /* Surfaces */
-    --color-background: color-mix(in srgb, var(--color-primary) 95%, light-dark(white, black));
-    --color-background-hover: light-dark(#e0f2fe, #1e3a8a);
-    --color-surface: light-dark(#ffffff, #1f2937);
-    --color-surface--transparent: light-dark(rgba(255, 255, 255, 0.8), rgba(31, 41, 55, 0.3));
-    --color-hover: light-dark(#e2e8f0, #374151);
+
+    --color-background-hover: light-dark(color(from color-mix(in srgb, var(--color-background), black 20%) srgb r g b / 0.4),
+            color(from color-mix(in srgb, var(--color-background), white 20%) srgb r g b / 0.4));
+    --color-surface: light-dark(color-mix(in srgb, var(--color-background) 96%, white),
+            color-mix(in srgb, var(--color-background) 88%, white));
+    --color-surface--transparent: light-dark(color(from var(--color-surface) srgb r g b / 0.8),
+            color(from var(--color-surface) srgb r g b / 0.3));
+    --color-hover: light-dark(color-mix(in srgb, var(--color-surface) 88%, black),
+            color-mix(in srgb, var(--color-surface) 88%, white));
+    --color-white-black: light-dark(white, black);
 
     /* Borders & Shadows */
-    --color-border: light-dark(#d1d5db, #374151);
-    --color-border-light: light-dark(#e5e7eb, #4b5563);
+    --color-border: light-dark(#484747, #d7d5d5);
+    --color-border-light: #dbdbdb;
     --color-shadow: light-dark(rgba(97, 97, 97, 0.328), rgba(3, 3, 3, 0.35));
 
     --shadow-sm: 0 1px 4px var(--color-shadow);
     --shadow-md: 0 10px 30px var(--color-shadow);
-
-    /* Accent / Priority */
-    --color-accent-bg: light-dark(
-        color-mix(in srgb, var(--color-accent) 64%, white),
-        color-mix(in srgb, var(--color-accent) 80%, black)
-    );
-    --color-accent-text: light-dark(
-        color-mix(in srgb, var(--color-accent) 55%, black),
-        color-mix(in srgb, var(--color-accent) 65%, white)
-    );
-    --color-accent-border: light-dark(
-        color-mix(in srgb, var(--color-accent) 70%, black),
-        color-mix(in srgb, var(--color-accent) 75%, white)
-    );
-
-    --color-priority: var(--color-accent);
-    --color-mode-priority-bg: var(--color-accent-bg);
-    --color-mode-priority-text: var(--color-accent-text);
-    --color-mode-priority-border: var(--color-accent-border);
 
     /* Journal */
     --color-badge-bg: var(--color-accent-bg);
@@ -90,7 +87,7 @@
 /* Default body */
 body {
     background: var(--color-background);
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-background));
 }
 
 :root:focus-visible {
@@ -104,12 +101,8 @@ body {
     font-size: 18px;
     font-weight: 500;
     letter-spacing: 1px;
-    color: var(--color-text-primary);
 }
 
-.app_subtitle {
-    color: var(--color-text-dark-light);
-}
 
 .app_subtitle_last-updated {
     opacity: 0.5;
@@ -117,21 +110,25 @@ body {
 
 .app_subtitle_last-updated--fresh {
     opacity: 1;
-    color: var(--color-success);
+    padding: 4px 6px;
+    color: contrast-color(var(--color-background));
+    text-shadow: 2px 2px 1px var(--color-info);
+    font-weight: 500;
 }
 
-.app_subtitle_last-updated_fresh {
+.app_subtitle_last-updated_fresh_icon {
     opacity: 1;
-    color: var(--color-success);
+    color: contrast-color(var(--color-background));
+    text-shadow: 2px 2px 1px var(--color-info);
     position: relative;
     top: 4px;
+    inset-inline-start: 2px;
 }
 
 /** Form Styles */
 
 .form-group {
     margin-bottom: var(--spacing-md);
-    color: var(--color-text-primary);
     display: flex;
     align-items: baseline;
     gap: var(--spacing-xs);
@@ -142,7 +139,6 @@ body {
     margin-bottom: 4px;
     font-weight: 500;
     font-size: 16px;
-    color: var(--color-text-primary);
 }
 
 .form-group input[type="date"] {
@@ -158,7 +154,7 @@ body {
     cursor: pointer;
     transition: all var(--transition-fast);
     background-color: transparent;
-    color: var(--color-text-primary);
+    color: inherit;
     white-space: nowrap;
     min-width: 150px;
     min-height: 44px;
@@ -173,7 +169,7 @@ body {
     cursor: pointer;
     transition: all var(--transition-fast);
     background-color: transparent;
-    color: var(--color-text-primary);
+    color: inherit;
     white-space: nowrap;
     min-width: 150px;
     min-height: 44px;
@@ -195,7 +191,7 @@ body {
 /* Option styling within select */
 .select-input option {
     background-color: var(--color-surface);
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-surface));
     padding: var(--spacing-md);
 }
 
@@ -208,8 +204,8 @@ textarea {
     border-radius: var(--radius-sm);
     box-sizing: border-box;
     font-size: 16px;
-    color: var(--color-text-primary);
-    background-color: var(--color-surface);
+    color: black;
+    background-color: white;
     transition: border-color var(--transition-fast);
 }
 

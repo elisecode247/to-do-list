@@ -1,8 +1,14 @@
-:root {
-    --color-primary: #1e00fe;     /* main brand color */
-    --color-accent: #9f00fb;     /* priority, badges, highlights */
-    --color-background: light-dark(contrast-color(#070252), #070252);   /* app/page background */
-    --color-surface: light-dark(#d6dbff, contrast-color(#d6dbff));      /* cards, panels, modals */
-    --color-text-primary: light-dark(contrast-color(#b4d2ff), #b4d2ff); /* main readable text */
-    --color-border: light-dark(contrast-color(#5cd6ff), #5cd6ff);      /* outlines/dividers */
+:root[data-theme-style="winter"] {
+    color-scheme: light dark;
+
+    /* user-defined colors */
+    --color-primary-light: #78baf7;
+    --color-primary-dark: #1e00fe;
+    --color-accent-light: #00ffb3;
+    --color-accent-dark: rgb(0, 207, 158);
+    --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+    --color-background-light: color-mix(in oklab, #0c00b9, white 90%);
+    --color-background-dark: #090080;
+    --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
+
 }

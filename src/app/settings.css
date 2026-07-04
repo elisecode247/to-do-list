@@ -26,7 +26,7 @@
     border: 1px solid rgba(0, 0, 0, 0.12);
 
     background: var(--color-background);
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-background));
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
@@ -50,7 +50,7 @@
 /* VARIANTS */
 .settings-btn--primary {
     background: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     border: 1px solid #111;
 }
 
@@ -60,15 +60,15 @@
 }
 
 .settings-btn--secondary {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: color-mix(in srgb, var(--color-background) 80%, white 30%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 80%, white 30%));
+    border: 1px solid var(--color-border);
 }
 
 .buy-coffee-button {
-    background: var(--color-mode-priority-bg);
-    color: var(--color-mode-priority-text);
-    border: 1px solid var(--color-mode-priority-border);
+    background: var(--color-accent-bg);
+    color: var(--color-accent-text);
+    border: 1px solid var(--color-accent-border);
 }
 
 /* Text wrapper: title + subtitle stacked */
@@ -126,7 +126,7 @@
     transform: translateY(6px);
     transition: all 0.15s ease;
     z-index: 100;
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-background));
 }
 
 /* OPEN PANEL ON HOVER OR FOCUS */

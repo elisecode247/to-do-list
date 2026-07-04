@@ -3,9 +3,9 @@
     height: 44px;
     min-width: 44px;
     width: auto;
-    background: var(--color-primary);
+    background-color: var(--color-primary);
     opacity: 0.9;
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     border: none;
     border-radius: var(--radius-full);
     box-sizing: border-box;
@@ -25,10 +25,11 @@
 
 .new-task-form-toggle-button:hover {
     box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
+    background-color: var(--color-primary-hover);
 }
 
 .new-task-form-toggle-button:active {
-    box-shadow: 0 4px 12px var(--color-priority);
+    box-shadow: 0 4px 12px var(--color-accent);
     border-radius: var(--radius-md);
 }
 

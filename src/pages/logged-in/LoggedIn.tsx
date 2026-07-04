@@ -18,7 +18,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Check, Eye, EyeOff, ListFilter, PencilIcon, Plus } from 'lucide-react';
+import { CircleCheckBig, Eye, EyeOff, ListFilter, PencilIcon, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -192,8 +192,8 @@ const LoggedIn: React.FC = () => {
                         </span>
                         <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
                             {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                            {isUpdatedDate && <CircleCheckBig className="app_subtitle_last-updated_fresh_icon" size={16} strokeWidth={4} />}
                         </span>
-                        {isUpdatedDate && <Check className="app_subtitle_last-updated_fresh" size={16} />}
                     </p>
                 </div>
                 <IconButton

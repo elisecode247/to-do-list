@@ -21,7 +21,7 @@
 
 .settings-btn--primary {
     background: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
 }
 
 .settings-btn--primary:not(:disabled):hover {
@@ -29,13 +29,12 @@
 }
 
 .settings-btn--primary:disabled {
-    color: var(--color-text-light);
+    color: color-mix(in srgb, var(--color-primary) 50%, white 30%);
     cursor: not-allowed;
     opacity: 0.7;
 }
 
 .settings-btn:disabled {
-    color: var(--color-text-light);
     cursor: not-allowed;
     opacity: 0.7;
 }
@@ -49,11 +48,11 @@
 
 .settings-btn--danger {
     background: var(--color-danger);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-danger));
 }
 
 .settings-btn-icon--danger {
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-danger));
 }
 
 /* ─── Section card ────────────────────────────────────────────────────── */
@@ -66,6 +65,7 @@
     margin-bottom: var(--spacing-md);
     display: grid;
     gap: var(--spacing-md);
+    color: contrast-color(var(--color-surface));
 }
 
 .settings-section--danger {
@@ -77,7 +77,6 @@
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
     margin: 0;
     display: flex;
     align-items: center;
@@ -107,7 +106,6 @@ legend {
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
     padding: 0;
     margin-bottom: 6px;
 }
@@ -142,12 +140,12 @@ legend {
     gap: 8px;
     padding: 8px 16px;
     border-radius: var(--radius-md);
-    background: transparent;
+    background: var(--color-background);
     border: 1px solid var(--color-border);
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    color: var(--color-text-secondary);
+    color: contrast-color(var(--color-background));
     transition:
         background var(--transition-fast),
         border-color var(--transition-fast),
@@ -158,16 +156,16 @@ legend {
 }
 
 .radio-option:hover {
-    background: var(--color-hover);
+    background: var(--color-background-hover);
     border-color: var(--color-border-light);
-    color: var(--color-text-primary);
+    color: contrast-color(var(--color-text-primary));
 }
 
 /* Selected state — driven by a checked sibling selector */
 .radio-option:has(input:checked) {
     background: var(--color-primary);
     border-color: var(--color-primary);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-primary));
     box-shadow: 0 2px 8px rgba(58, 120, 180, 0.35);
 }
 
@@ -190,7 +188,7 @@ legend {
 }
 
 .radio-option:has(input:checked)::before {
-    background: var(--color-text-light);
-    border-color: var(--color-text-light);
+    background-color: black;
+    border-color: black;
     opacity: 1;
 }

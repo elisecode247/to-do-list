@@ -8,7 +8,7 @@
         radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.22) 0%, transparent 52%),
         radial-gradient(ellipse at 82% 72%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
         linear-gradient(135deg, #0f172a 0%, #1e1b4b 48%, #312e81 100%);
-    color: var(--color-text-light);
+    color: contrast-color(var(--color-background));
 }
 
 .app_skeleton_shimmer {

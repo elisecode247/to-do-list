@@ -18,7 +18,7 @@
 
 .checklist_list-container--pulling .sortable-item_container.mode-priority {
     opacity: 1;
-    background-color: var(--color-mode-priority-bg);
+    background-color: var(--color-accent-bg);
 }
 
 .sparkles {

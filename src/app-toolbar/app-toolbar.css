@@ -10,6 +10,7 @@
     padding: 12px;
     border: 1px solid color-mix(in srgb, var(--color-border) 70%, #252530 30%);
     background: color-mix(in srgb, var(--color-background) 100%, #16161a 14%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 100%, #16161a 14%));
 }
 
 .drawer-header {
@@ -25,12 +26,11 @@
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
 }
 
 .drawer-badge {
-    background: var(--color-mode-priority-border);
-    color: var(--color-surface);
+    background: var(--color-accent-bg);
+    color: contrast-color(var(--color-accent-bg));
     font-size: 10px;
     font-weight: 700;
     padding: 2px 8px;
@@ -51,7 +51,6 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text-secondary) 70%, #444 30%);
     margin-bottom: 10px;
 }
 
@@ -82,7 +81,6 @@
     border: none;
     border-radius: 9px;
     background: transparent;
-    color: var(--color-text-secondary);
     text-align: left;
     font-size: 13px;
     font-weight: 400;
@@ -93,23 +91,13 @@
 .checklist_filter-container .tab:hover,
 .checklist_filter-container .tab:focus-visible {
     background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-    color: var(--color-text-primary);
-}
-
-.checklist_filter-container .tab--weighty {
-    background: transparent;
-    color: var(--color-text-secondary);
+    color: contrast-color(var(--color-text-primary));
 }
 
 .checklist_filter-container .tab.tab-active {
-    background: color-mix(in srgb, var(--color-mode-priority-bg) 35%, transparent);
-    color: var(--color-mode-priority-border);
-    border: 1px solid color-mix(in srgb, var(--color-mode-priority-border) 45%, transparent);
+    background: color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-border) 45%, transparent);
     font-weight: 500;
-}
-
-.checklist_filter-container .tab.tab-inactive {
-    color: var(--color-text-secondary);
     opacity: 1;
 }
 
@@ -135,7 +123,6 @@
         border-radius: 9px;
         border: none;
         background: transparent;
-        color: var(--color-text-secondary);
         font-size: 13px;
         font-weight: 400;
         text-align: left;
@@ -146,7 +133,7 @@
 
     .filter-button:hover {
         background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-        color: var(--color-text-primary);
+        color: contrast-color(var(--color-text-primary));
     }
 
     .filter-button-all,
@@ -157,9 +144,9 @@
 
     .filter-button-all-active,
     .filter-button-active {
-        background: color-mix(in srgb, var(--color-mode-priority-bg) 35%, transparent);
-        color: var(--color-mode-priority-border);
-        border: 1px solid color-mix(in srgb, var(--color-mode-priority-border) 45%, transparent);
+        background: color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
+        color: var(--color-accent-border);
+        border: 1px solid color-mix(in srgb, var(--color-accent-border) 45%, transparent);
         font-weight: 500;
     }
 }
@@ -179,21 +166,20 @@
     border-radius: 20px;
     border: 1px solid color-mix(in srgb, var(--color-border) 70%, #252530 30%);
     font-size: 12px;
-    color: var(--color-text-secondary);
     cursor: pointer;
     transition: all 0.15s;
     background: transparent;
 }
 
 .drawer-category-pill:hover {
-    border-color: color-mix(in srgb, var(--color-border) 30%, var(--color-text-secondary) 70%);
-    color: var(--color-text-primary);
+    border-color: color-mix(in srgb, var(--color-border) 30%, #252530 70%);
+    color: contrast-color(color-mix(in srgb, var(--color-border) 30%, #252530 70%));
 }
 
 .drawer-category-pill.active {
-    border-color: var(--color-mode-priority-border);
-    color: var(--color-mode-priority-border);
-    background: color-mix(in srgb, var(--color-mode-priority-bg) 30%, transparent);
+    border-color: var(--color-accent-border);
+    color: var(--color-accent-border);
+    background: color-mix(in srgb, var(--color-accent-bg) 30%, transparent);
 }
 
 .drawer-dot {
@@ -221,13 +207,12 @@
 
 .drawer-toggle-label {
     font-size: 13px;
-    color: var(--color-text-secondary);
 }
 
 .drawer-toggle {
     width: 36px;
     height: 20px;
-    background: var(--color-mode-priority-border);
+    background: var(--color-accent-border);
     border-radius: 10px;
     position: relative;
     border: none;
@@ -258,7 +243,7 @@
 }
 
 .drawer-toggle:focus-visible {
-    outline: 2px solid var(--color-mode-priority-border);
+    outline: 2px solid var(--color-accent-border);
     outline-offset: 2px;
 }
 
