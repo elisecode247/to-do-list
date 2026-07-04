@@ -21,7 +21,7 @@
     border-collapse: collapse;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
 }
@@ -84,7 +84,7 @@
 .bulk_table select {
     width: 100%;
     min-width: 80px;
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     border: 1px solid var(--color-border);
     background: var(--color-bg);
     color: var(--color-text);

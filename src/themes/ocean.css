@@ -41,7 +41,7 @@
     position: absolute;
     background: linear-gradient(
         transparent,
-        rgba(17, 255, 255, var(--opacity)),
+        rgba(17, 255, 255, .8),
         transparent
     );
     filter: blur(40px);

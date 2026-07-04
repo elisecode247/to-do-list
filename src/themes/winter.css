@@ -1,8 +1,8 @@
 :root {
-    --color-primary: light-dark(contrast(#1e00fe), #1e00fe);     /* main brand color */
-    --color-accent: light-dark(#9f00fb, #9f00fb);      /* priority, badges, highlights */
-    --color-background: light-dark(contrast(#070252), #070252);   /* app/page background */
-    --color-surface: light-dark(#d6dbff, contrast(#d6dbff));      /* cards, panels, modals */
-    --color-text-primary: light-dark(#8dbbff, contrast(#8dbbff)); /* main readable text */
-    --color-border: light-dark(contrast(#5cd6ff), #5cd6ff);      /* outlines/dividers */
+    --color-primary: #1e00fe;     /* main brand color */
+    --color-accent: #9f00fb;     /* priority, badges, highlights */
+    --color-background: light-dark(contrast-color(#070252), #070252);   /* app/page background */
+    --color-surface: light-dark(#d6dbff, contrast-color(#d6dbff));      /* cards, panels, modals */
+    --color-text-primary: light-dark(contrast-color(#b4d2ff), #b4d2ff); /* main readable text */
+    --color-border: light-dark(contrast-color(#5cd6ff), #5cd6ff);      /* outlines/dividers */
 }
