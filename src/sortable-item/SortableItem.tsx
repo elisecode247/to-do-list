@@ -309,11 +309,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {lastCompletedDate}
                                     </span>
                                 )}
-                                {(activeTab === TABS.upcoming && nextDue) || (isUpcomingSubtask && nextDue) && (
+                                {(activeTab === TABS.upcoming && nextDue) || (isUpcomingSubtask && nextDue) ? (
                                     <span className="sortable-item_next-due-text">
                                         {nextDueDate}
                                     </span>
-                                )}
+                                ) : null}
                             </span>
                         </div>
                     </div>
