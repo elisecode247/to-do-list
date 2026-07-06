@@ -99,25 +99,26 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
                     type="time"
                 />
             </div>
-            <div className="note-cell">
-                <AutoTextarea
-                    id={`entry-textarea-${entry.id}`}
-                    value={text}
-                    onChange={handleTextChange}
-                    placeholder="What just happened? How do you feel? What's next?"
-                />
-            </div>
-            <div className="action-buttons-cell">
-                {entry.ciphertext && entry.iv && entry.encryptionVersion ? (
-                    <span className="encryption-status" title="Encrypted"><Lock size={16} /></span>
-                ) : <span className="encryption-status" title="Not encrypted"><Unlock size={16} /></span>}
-                <button
-                    className={`distraction-tag ${entry.distraction ? " distraction-tag--active" : ""}`}
-                    onClick={() => onToggleDistraction(entry.id)}
-                    title={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
-                >
-                    {entry.distraction ? "distraction" : "+"}
-                </button>
+            <div className="text-container-cell">
+                <div className="note-cell">
+                    <AutoTextarea
+                        id={`entry-textarea-${entry.id}`}
+                        value={text}
+                        onChange={handleTextChange}
+                        placeholder="What just happened? How do you feel? What's next?"
+                    />
+                </div>
+                <div className="action-buttons-cell">
+                    {entry.ciphertext && entry.iv && !entry.encryptionVersion ? (
+                        <span className="encryption-status" title="Not encrypted"><Unlock size={16} /></span>) : null}
+                    <button
+                        className={`distraction-tag ${entry.distraction ? " distraction-tag--active" : ""}`}
+                        onClick={() => onToggleDistraction(entry.id)}
+                        title={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
+                    >
+                        {entry.distraction ? "distraction" : "+"}
+                    </button>
+                </div>
             </div>
         </div>
     );
