@@ -33,7 +33,7 @@
     font-size: 18px;
     font-weight: 600;
     text-align: center;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
 }
 
 .journal-lock-subtitle {
@@ -57,7 +57,7 @@
 .journal-lock-field label {
     font-size: 13px;
     font-weight: 500;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
 }
 
 /* relies on the global input/textarea rule for base styling;

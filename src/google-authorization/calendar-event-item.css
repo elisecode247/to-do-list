@@ -7,7 +7,7 @@
     border-left: 4px solid var(--color-primary);
     background-color: var(--color-surface--transparent);
     border-left: 4px solid #4285f4;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     margin: 1px;
 }
 

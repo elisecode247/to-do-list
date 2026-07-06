@@ -4,6 +4,7 @@
     padding: 0;
     margin-left: 12px;
     cursor: pointer;
+    color: inherit;
 }
 
 .drawer-close-icon {

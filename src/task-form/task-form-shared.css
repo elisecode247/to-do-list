@@ -95,6 +95,7 @@
     font-size: 16px;
     font-weight: 400;
     background: color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 65%, #f9fafb 35%));
 }
 
 .task-form-section-divider {
@@ -150,7 +151,7 @@
 }
 
 .task-form-action-button--cancel:hover {
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
 }
 
 .task-form-action-button--save {

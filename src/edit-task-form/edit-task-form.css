@@ -50,8 +50,8 @@
 
 .edit-task-priority--active {
     border-color: color-mix(in srgb, var(--color-accent-border) 65%, #ca8a04 35%);
-    background: color-mix(in srgb, var(--color-accent-bg) 65%, #fefce8 35%);
-    color: contrast-color(color-mix(in srgb, var(--color-accent-bg) 65%, #fefce8 35%));
+    background: var(--color-accent);
+    color: contrast-color(var(--color-accent));
     font-weight: 500;
 }
 

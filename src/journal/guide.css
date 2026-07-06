@@ -50,7 +50,7 @@
 
 .guide-popup-close:hover {
     background: var(--color-hover, #f3f4f6);
-    color: var(--color-text-primary, #111827);
+    color: inherit;
 }
 
 .guide-popup-content {
@@ -109,7 +109,7 @@
   font-style: italic;
   font-size: 38px;
   line-height: 1;
-  color: contrast-color(var(--color-text-primary));
+  color: inherit;
 }
 
 .guide-q2 {
@@ -161,7 +161,7 @@
 .guide-step-label {
   font-size: 15px;
   font-weight: 500;
-  color: contrast-color(var(--color-text-primary));
+  color: inherit;
   line-height: 1.3;
 }
 

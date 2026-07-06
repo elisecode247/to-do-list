@@ -33,7 +33,7 @@
     background-color: var(--color-surface);
     z-index: 10003;
     border-radius: var(--radius-md);
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -59,7 +59,7 @@
 label[for="confirm-deletion"] {
     display: inline-block;
     font-size: 14px;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     margin-left: 8px;
 }
 

@@ -22,7 +22,7 @@
 .not-found__title {
     margin-bottom: 2rem;
     font-size: 1.5rem;
-    color: contrast-color(var(--color-text-primary))
+    color: inherit
 }
 
 .not-found__actions {
@@ -46,7 +46,7 @@
 
 .btn--primary {
     background: var(--color-primary);
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     border: none;
     box-shadow: 0 8px 20px rgba(127, 47, 254, 0.25);
 }

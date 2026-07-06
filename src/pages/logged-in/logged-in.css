@@ -118,7 +118,7 @@
     min-width: 0;
     height: 100%;
     max-height: 660px;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     background: var(--color-background);
     border-radius: 0;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);

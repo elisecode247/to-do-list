@@ -91,7 +91,7 @@
 .checklist_filter-container .tab:hover,
 .checklist_filter-container .tab:focus-visible {
     background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-    color: contrast-color(var(--color-text-primary));
+    color: contrast-color(color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%));
 }
 
 .checklist_filter-container .tab.tab-active {
@@ -129,11 +129,12 @@
         text-transform: capitalize;
         cursor: pointer;
         transition: all 0.15s ease;
+        color: inherit;
     }
 
     .filter-button:hover {
         background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-        color: contrast-color(var(--color-text-primary));
+        color: contrast-color(color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%));
     }
 
     .filter-button-all,
@@ -145,7 +146,7 @@
     .filter-button-all-active,
     .filter-button-active {
         background: color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
-        color: var(--color-accent-border);
+        color: inherit;
         border: 1px solid color-mix(in srgb, var(--color-accent-border) 45%, transparent);
         font-weight: 500;
     }
@@ -169,6 +170,7 @@
     cursor: pointer;
     transition: all 0.15s;
     background: transparent;
+    color: inherit;
 }
 
 .drawer-category-pill:hover {
@@ -178,7 +180,7 @@
 
 .drawer-category-pill.active {
     border-color: var(--color-accent-border);
-    color: var(--color-accent-border);
+    color: inherit;
     background: color-mix(in srgb, var(--color-accent-bg) 30%, transparent);
 }
 

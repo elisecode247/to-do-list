@@ -50,7 +50,7 @@
     padding-block: var(--spacing-lg) var(--spacing-lg);
     padding-inline: var(--spacing-lg);
     background-color: var(--color-surface);
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     border-radius: var(--border-radius);
     max-width: 600px;
     width: 90%;

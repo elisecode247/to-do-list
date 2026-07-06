@@ -28,7 +28,7 @@
     background-color: var(--color-surface);
     z-index: 10001;
     border-radius: var(--radius-md);
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
 }
 
 .delete-dialog__title {
@@ -55,7 +55,7 @@
 label[for="confirm-deletion"] {
     display: inline-block;
     font-size: 14px;
-    color: contrast-color(var(--color-text-primary));
+    color: inherit;
     margin-left: 8px;
 }
 
