@@ -2,11 +2,20 @@ import { useState } from 'react';
 import { useTheme } from 'src/themes/use-theme';
 import type { ThemeMode, ThemeStyle, Density } from 'src/themes/types';
 import { readPersistentSetting } from 'src/utilities/persistent-storage';
+import { cssVariableToHex } from 'src/themes/utilities/convertToHex';
+import styles from "src/themes/ThemePlayground.module.css";
+import "./appearance-settings.css";
 
 function getStored<T extends string>(key: string, fallback: T): T {
     if (typeof window === 'undefined') return fallback;
     return (readPersistentSetting(key) as T) ?? fallback;
 }
+
+const colors = [
+    ["Background", "--color-background", styles.swatchBackground],
+    ["Primary", "--color-primary", styles.swatchPrimary],
+    ["Accent", "--color-accent", styles.swatchAccent],
+];
 
 function AppearanceSettings() {
     const [mode, setMode] = useState<ThemeMode>(() =>
@@ -25,6 +34,11 @@ function AppearanceSettings() {
         getStored('theme-graphics', 'true')
     );
 
+    const [customColors, setCustomColors] = useState(() => {
+        const stored = readPersistentSetting('theme-custom-colors');
+        return stored ? JSON.parse(stored) : {};
+    });
+
     const { updateTheme } = useTheme();
 
     function handleSetMode(newMode: ThemeMode) {
@@ -35,6 +49,12 @@ function AppearanceSettings() {
     function handleSetStyle(newStyle: ThemeStyle) {
         setStyle(newStyle);
         updateTheme({ style: newStyle });
+    }
+
+    function handleSetCustomColor(variable: string, color: string) {
+        const newCustomColors = { ...customColors, [variable]: color };
+        setCustomColors(newCustomColors);
+        updateTheme({ customColors: newCustomColors });
     }
 
     function handleSetDensity(newDensity: Density) {
@@ -50,6 +70,29 @@ function AppearanceSettings() {
     return (
         <section className="settings-section">
             <h3 className="settings-section-title">Appearance</h3>
+            <div className="swatches">
+                {colors.map(([label, variable, swatchClass]) => {
+                    const colorValue = cssVariableToHex(variable);
+                    return (
+                        <div key={variable} className={`swatch ${swatchClass}`}>
+                            <strong>{label}</strong>
+                            {style === 'custom' ? (
+                                <>
+                                <input
+                                    className="color-input"
+                                    type="color"
+                                    value={customColors[variable] || colorValue}
+                                    onChange={(e) => handleSetCustomColor(variable, e.target.value)}
+                                />
+                                <strong>{customColors[variable] || colorValue}</strong>
+                                </>
+                            ) : (
+                                <p className="tp-color-value">{colorValue}</p>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
 
             {/* MODE */}
             <fieldset>
@@ -79,6 +122,7 @@ function AppearanceSettings() {
                         { value: 'nature', label: 'Nature' },
                         { value: 'ocean', label: 'Ocean' },
                         { value: 'winter', label: 'Winter' },
+                        { value: 'custom', label: 'Custom' },
                     ]}
                 />
             </fieldset>
@@ -98,7 +142,7 @@ function AppearanceSettings() {
             </fieldset>
 
             {/* GRAPHICS */}
-            {style !== 'calm' ? (
+            {style !== 'calm' && style !== 'custom' ? (
                 <fieldset>
                     <legend>Background Animation</legend>
                     <RadioGroup

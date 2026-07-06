@@ -17,4 +17,5 @@ export interface ThemeState {
     style: ThemeStyle;
     density: Density;
     graphics: ThemeGraphic;
+    customColors?: Record<string, string>;
 }

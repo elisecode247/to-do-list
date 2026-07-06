@@ -1,16 +1,44 @@
 import { useLayoutEffect, useEffect, useState, useEffectEvent } from 'react';
 import type { ThemeMode, ThemeStyle, Density, ThemeState, ThemeGraphic } from './types';
 import {
+    removePersistentSetting,
     readPersistentSetting,
     requestPersistentStorage,
     writePersistentSetting,
 } from 'src/utilities/persistent-storage';
+
+const THEME_CUSTOM_COLORS_KEY = 'theme-custom-colors';
+
+const readStoredCustomColors = (): Record<string, string> => {
+    const stored = readPersistentSetting(THEME_CUSTOM_COLORS_KEY);
+
+    if (!stored) {
+        return {};
+    }
+
+    try {
+        const parsed = JSON.parse(stored) as unknown;
+
+        if (parsed && typeof parsed === 'object') {
+            return Object.fromEntries(
+                Object.entries(parsed).filter((entry): entry is [string, string] =>
+                    typeof entry[0] === 'string' && typeof entry[1] === 'string',
+                ),
+            );
+        }
+    } catch {
+        // Ignore malformed stored values and fall back to an empty custom palette.
+    }
+
+    return {};
+};
 
 const getStoredTheme = (): ThemeState => ({
     mode: (readPersistentSetting('theme-mode') as ThemeMode) || 'system',
     style: (readPersistentSetting('theme-style') as ThemeStyle) || 'calm',
     density: (readPersistentSetting('theme-density') as Density) || 'comfortable',
     graphics: (readPersistentSetting('theme-graphics') as ThemeGraphic) ?? 'true',
+    customColors: readStoredCustomColors(),
 });
 
 export function useTheme(
@@ -28,10 +56,10 @@ export function useTheme(
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride
             ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: 'true' }
-            : getStoredTheme()
+            : getStoredTheme(),
     );
 
-    const applyTheme = useEffectEvent(({ mode, style, density, graphics }: ThemeState) => {
+    const applyTheme = useEffectEvent(({ mode, style, density, graphics, customColors }: ThemeState) => {
         const root = document.documentElement;
 
         // Mode
@@ -49,6 +77,18 @@ export function useTheme(
             root.removeAttribute('data-theme-style');
         } else {
             root.setAttribute('data-theme-style', style);
+        }
+
+        if (style === 'custom' && customColors) {
+            for (const variable in customColors) {
+                document.documentElement.style.setProperty(variable, customColors[variable]);
+            }
+        } else if (style !== 'custom') {
+            const storedCustomColors = readStoredCustomColors();
+
+            for (const variable of Object.keys(storedCustomColors)) {
+                document.documentElement.style.removeProperty(variable);
+            }
         }
 
         // Density
@@ -81,6 +121,12 @@ export function useTheme(
         writePersistentSetting('theme-density', theme.density);
         writePersistentSetting('theme-graphics', theme.graphics);
 
+        if (theme.customColors) {
+            writePersistentSetting(THEME_CUSTOM_COLORS_KEY, JSON.stringify(theme.customColors));
+        } else {
+            removePersistentSetting(THEME_CUSTOM_COLORS_KEY);
+        }
+
         // System mode listener
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleSystemChange = () => {
@@ -95,7 +141,8 @@ export function useTheme(
                 e.key === 'theme-mode' ||
                 e.key === 'theme-style' ||
                 e.key === 'theme-density' ||
-                e.key === 'theme-graphics'
+                e.key === 'theme-graphics' ||
+                e.key === THEME_CUSTOM_COLORS_KEY
             ) {
                 setTheme(getStoredTheme());
             }

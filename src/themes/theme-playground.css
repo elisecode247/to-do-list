@@ -36,6 +36,8 @@
     place-items: center;
     margin-bottom: 6px;
     font-weight: bold;
+    max-width: 100px;
+    width: 100%;
 }
 
 .tp-row {
