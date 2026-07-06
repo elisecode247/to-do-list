@@ -52,7 +52,7 @@ function toEntryTimeIso(timeValue: string, day: string, fallbackIso: string): st
     return base.toISOString();
 }
 
-function AutoTextarea({ value, onChange, placeholder }: { value: string; onChange: (val: string) => void; placeholder?: string; autoFocus?: boolean }) {
+function AutoTextarea({ value, onChange, placeholder, id }: { value: string; onChange: (val: string) => void; placeholder?: string; autoFocus?: boolean; id?: string }) {
     const ref = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -64,6 +64,7 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
 
     return (
         <textarea
+            id={id}
             ref={ref}
             className="entry-textarea"
             value={value}
@@ -86,7 +87,7 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
         onChange(entry.id, 'entryTime', toEntryTimeIso(value, entry.day, entry.entryTime));
     }
     return (
-        <div className={`entry-row${entry.distraction ? " entry-row--distraction" : ""}`}>
+        <div className={`entry-row ${entry.distraction ? " entry-row--distraction" : ""}`}>
             <div className="time-cell">
                 <button className="delete-btn" onClick={() => onDelete(entry.id)}>×</button>
                 <input
@@ -100,15 +101,18 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
             </div>
             <div className="note-cell">
                 <AutoTextarea
+                    id={`entry-textarea-${entry.id}`}
                     value={text}
                     onChange={handleTextChange}
                     placeholder="What just happened? How do you feel? What's next?"
                 />
+            </div>
+            <div className="action-buttons-cell">
                 {entry.ciphertext && entry.iv && entry.encryptionVersion ? (
                     <span className="encryption-status" title="Encrypted"><Lock size={16} /></span>
                 ) : <span className="encryption-status" title="Not encrypted"><Unlock size={16} /></span>}
                 <button
-                    className={`distraction-tag${entry.distraction ? " distraction-tag--active" : ""}`}
+                    className={`distraction-tag ${entry.distraction ? " distraction-tag--active" : ""}`}
                     onClick={() => onToggleDistraction(entry.id)}
                     title={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
                 >

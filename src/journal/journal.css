@@ -199,9 +199,12 @@
 }
 
 .entry-row {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid var(--color-border);
     transition: background 0.1s;
 }
 
@@ -261,6 +264,18 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    width: calc(100% - 225px);
+}
+
+.action-buttons-cell {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    flex-wrap: wrap;
+    width: 113px;
 }
 
 .entry-textarea {
@@ -274,7 +289,7 @@
     font-family: var(--font-sans), system-ui, sans-serif;
     line-height: 1.65;
     overflow: hidden;
-    padding: 0;
+    padding: 4px;
     min-height: 24px;
 }
 
@@ -288,7 +303,6 @@
 
 .distraction-tag {
     flex-shrink: 0;
-    align-self: flex-start;
     margin-top: 2px;
     font-size: 11px;
     border-radius: 20px;
@@ -305,7 +319,7 @@
     background: none;
     color: contrast-color(var(--color-surface), 0.5);
     border-color: var(--color-border, #e5e7eb);
-    opacity: 0;
+    opacity: .3;
 }
 
 .entry-row:hover .distraction-tag:not(.distraction-tag--active) {

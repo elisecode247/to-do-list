@@ -165,16 +165,18 @@ const LoggedIn: React.FC = () => {
                 />
             )}
             <header className="app_header">
-                <IconButton
-                    className={`filter-toggle-button
+                {activeTab !== TABS.journal && (
+                    <IconButton
+                        className={`filter-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={toggleLeft}
-                    label="Filters"
-                    icon={<ListFilter size={24} />}
-                    showLabel={isDesktop}
-                    isPriority={false}
-                />
-                {!isDesktop && (
+                        onClick={toggleLeft}
+                        label="Filters"
+                        icon={<ListFilter size={24} />}
+                        showLabel={isDesktop}
+                        isPriority={false}
+                    />
+                )}
+                {(!isDesktop && activeTab !== TABS.journal) && (
                     <IconButton
                         className={`show-completed-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
@@ -196,14 +198,16 @@ const LoggedIn: React.FC = () => {
                         </span>
                     </p>
                 </div>
-                <IconButton
-                    className={`new-task-form-toggle-button
+                {activeTab !== TABS.journal && (
+                    <IconButton
+                        className={`new-task-form-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                    onClick={toggleAddForm}
-                    label="Add new task"
-                    icon={<Plus size={24} strokeWidth={3} />}
-                    isPriority={true}
-                />
+                        onClick={toggleAddForm}
+                        label="Add new task"
+                        icon={<Plus size={24} strokeWidth={3} />}
+                        isPriority={true}
+                    />
+                )}
                 <AccountMenu
                     isDesktop={isDesktop}
                     isMenuOpen={menuOpen}
