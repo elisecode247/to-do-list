@@ -211,13 +211,15 @@ function BulkEdit() {
                                                 ))}
                                             </select>
                                         </td>
-                                        <td className="bulk-edit-actions-cell">
+                                        <td>
+                                            <div className="bulk-edit-actions-cell">
                                             {task.hasSubChores && (
-                                                <button onClick={() => displaySubtasks(task)}>
+                                                <button className="page-btn" onClick={() => displaySubtasks(task)}>
                                                     {showSubtasksFor.has(task.id) ? "Hide Subtasks" : "View Subtasks"}
                                                 </button>
                                             )}
-                                            <button onClick={() => handleDelete(task.id)}>Delete</button>
+                                            <button className="page-btn" onClick={() => handleDelete(task.id)}>Delete</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 )

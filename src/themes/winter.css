@@ -7,8 +7,25 @@
     --color-accent-light: #d4576b;
     --color-accent-dark: #c94f5c;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
-    --color-background-light: color-mix(in oklab, #0c00b9, white 90%);
+    --color-background-light: #e2f9fb;
     --color-background-dark: #0d1321;
     --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
+    --winter-sky-1: light-dark(#e2f9fb, #435fa2);
+    --winter-sky-2: light-dark(#60f1fe, #2e4373);
+    --winter-sky-3: light-dark(#5af1ff, #0d1321);
+
+}
+
+:root[data-theme-style="winter"] body {
+    background:
+        radial-gradient(ellipse at 20% 30%, var(--winter-sky-1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, var(--winter-sky-2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, var(--winter-sky-3) 0%, transparent 50%),
+        linear-gradient(
+            135deg,
+            var(--winter-sky-3) 0%,
+            var(--winter-sky-2) 50%,
+            var(--winter-sky-1) 100%
+        );
 }

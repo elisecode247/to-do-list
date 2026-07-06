@@ -21,3 +21,18 @@
     border-radius: 999px;
     cursor: pointer;
 }
+
+.reset-colors-button {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-secondary);
+    color: contrast-color(var(--color-secondary));
+    cursor: pointer;
+    width: fit-content;
+}
+
+.reset-colors-button:hover {
+    background: color-mix(in srgb, var(--color-surface) 85%, var(--color-primary));
+}

@@ -1,0 +1,18 @@
+:root[data-theme-style="custom"] {
+    --custom-background-1: light-dark(#ffffff, #000000);
+    --custom-background-2: light-dark(#ffffff, #000000);
+    --custom-background-3: light-dark(#ffffff, #000000);
+}
+
+:root[data-theme-style="custom"] body {
+    background:
+        radial-gradient(ellipse at 20% 30%, var(--custom-background-3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, var(--custom-background-2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, var(--custom-background-1) 0%, transparent 50%),
+        linear-gradient(
+            135deg,
+            var(--custom-background-3) 0%,
+            var(--custom-background-2) 50%,
+            var(--custom-background-1) 100%
+        );
+}

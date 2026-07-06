@@ -1,5 +1,5 @@
 
-import React, { useState, type SetStateAction } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type SetStateAction } from 'react';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
@@ -30,6 +30,7 @@ import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
 import('src/pages/not-found/NotFound');
 import('src/pages/PrivacyPolicy');
+import { AnimatePresence, motion } from 'framer-motion';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -112,6 +113,31 @@ const LoggedIn: React.FC = () => {
     const handleTabChange = (tab: SetStateAction<Tab>) => {
         setActiveTab(tab);
     }
+    const mobileTabs: Tab[] = [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
+    const mobileTabBarRef = useRef<HTMLElement | null>(null);
+    const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+    const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0, y: 0, height: 0 });
+
+    const updateMobileIndicator = useCallback(() => {
+        const barEl = mobileTabBarRef.current;
+        const activeEl = mobileTabButtonRefs.current[activeTab];
+        if (!barEl || !activeEl) return;
+
+        setMobileIndicator({
+            x: activeEl.offsetLeft,
+            width: activeEl.offsetWidth,
+            y: activeEl.offsetTop,
+            height: activeEl.offsetHeight
+        });
+    }, [activeTab]);
+
+    useEffect(() => {
+        updateMobileIndicator();
+        const onResize = () => updateMobileIndicator();
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, [updateMobileIndicator]);
+
     function clearFilters() {
         setModeFilter(ALL_MODES);
         setFilterCategory(ALL_CATEGORIES);
@@ -151,6 +177,9 @@ const LoggedIn: React.FC = () => {
     const handleCloseAccountMenu = () => {
         setMenuOpen(false);
     }
+
+    const pageTransitionKey = isLoading ? 'loading' : taskError ? 'error' :
+        activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? 'empty' : activeTab;
 
     return (<>
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
@@ -193,7 +222,7 @@ const LoggedIn: React.FC = () => {
                             {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                         </span>
                         <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
-                            {lastUpdatedDate ? ` Last updated: ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                            {lastUpdatedDate ? `Updated ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
                             {isUpdatedDate && <CircleCheckBig className="app_subtitle_last-updated_fresh_icon" size={16} strokeWidth={4} />}
                         </span>
                     </p>
@@ -230,42 +259,53 @@ const LoggedIn: React.FC = () => {
                 />
             </aside>
             <main className="main_content">
-                {isLoading ? (
-                    <div className="app_loading-container">
-                        <div aria-busy="true" className="app_loading-spinner"></div>
-                        <p>Loading your tasks...</p>
-                    </div>
-                ) : taskError ? (
-                    <ErrorState
-                        message={taskError}
-                        onRetry={loadTasks}
-                    />
-                ) : activeTab === TABS.journal ? (
-                    <JournalProvider>
-                        <Journal />
-                    </JournalProvider>
-                ) : itemLength === 0 ? (
-                    <div className="empty-state">
-                        <h2>Welcome to Daily Reset List!</h2>
-                        <div>
-                            <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
-                            <button className="empty-state-create-button" onClick={toggleAddForm}>
-                                Get Started with your first task
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <Checklist
-                        onEditItem={handleEditItem}
-                        onEditEvent={handleEditEvent}
-                        sparkles={sparkles}
-                        activeTab={activeTab}
-                        modeFilter={modeFilter}
-                        hideCompleted={hideCompleted}
-                        filterCategory={filterCategory}
-                        clearFilters={clearFilters}
-                    />
-                )}
+                <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                        key={pageTransitionKey}
+                        className="main_content_page"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                    >
+                        {isLoading ? (
+                            <div className="app_loading-container">
+                                <div aria-busy="true" className="app_loading-spinner"></div>
+                                <p>Loading your tasks...</p>
+                            </div>
+                        ) : taskError ? (
+                            <ErrorState
+                                message={taskError}
+                                onRetry={loadTasks}
+                            />
+                        ) : activeTab === TABS.journal ? (
+                            <JournalProvider>
+                                <Journal />
+                            </JournalProvider>
+                        ) : itemLength === 0 ? (
+                            <div className="empty-state">
+                                <h2>Welcome to Daily Reset List!</h2>
+                                <div>
+                                    <p>It looks like you don't have any tasks yet. Let's add your first one!</p>
+                                    <button className="empty-state-create-button" onClick={toggleAddForm}>
+                                        Get Started with your first task
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <Checklist
+                                onEditItem={handleEditItem}
+                                onEditEvent={handleEditEvent}
+                                sparkles={sparkles}
+                                activeTab={activeTab}
+                                modeFilter={modeFilter}
+                                hideCompleted={hideCompleted}
+                                filterCategory={filterCategory}
+                                clearFilters={clearFilters}
+                            />
+                        )}
+                    </motion.div>
+                </AnimatePresence>
             </main>
             <aside className="right_panel">
                 {rightOpen && editingItem && editingItem.itemType === 'checklist-item' ? (
@@ -289,21 +329,27 @@ const LoggedIn: React.FC = () => {
                 ) : null}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (
-                <nav className="mobile-tab-bar">
-                    {Object.values(TABS)
-                        .filter(tab =>
-                            tab === TABS.journal ||
-                            tab === TABS.priority ||
-                            tab === TABS.today ||
-                            tab === TABS.upcoming
-                        )
-                        .map(tab => (
+                <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
+                    <motion.span
+                        className="mobile-tab-motion"
+                        animate={{
+                            x: mobileIndicator.x,
+                            width: mobileIndicator.width
+                        }}
+                        transition={{ type: 'spring', stiffness: 580, damping: 44 }}
+                    />
+                    {mobileTabs.map(tab => (
                             <button
                                 key={tab}
+                                ref={el => {
+                                    mobileTabButtonRefs.current[tab] = el;
+                                }}
                                 className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
                                 onClick={() => handleTabChange(tab)}
                             >
-                                {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
+                                <span className="mobile-tab-button-content">
+                                    {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
+                                </span>
                             </button>
                         ))}
                 </nav>

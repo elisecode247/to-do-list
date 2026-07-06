@@ -23,9 +23,3 @@ body {
     height: 100vh;
 }
 
-/* Priority Mode */
-.mode-priority {
-    background-color: var(--color-accent);
-    color: contrast-color(var(--color-accent));
-    border-color: var(--color-border);
-}

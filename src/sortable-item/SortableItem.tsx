@@ -465,84 +465,85 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </div>
                         </div>
                     </div>
-                    {showNotes && (
-                        <div className="sortable-item_note">
-                            <NoteEditor
-                                key={note} // force remount to reset internal state when note changes
-                                initialMarkdown={note ?? ''}
-                                ref={noteRef}
-                                readOnly={false}
-                            />
-                            <button
-                                className="sortable-item_save-note-button"
-                                onClick={() => {
-                                    try {
-                                        partialUpdateItem({ id, note: noteRef.current?.getMarkdown() ?? '' });
-                                        showToast('Notes saved successfully', 'success');
-                                    } catch (error) {
-                                        console.error('Failed to save note:', error);
-                                        showToast('Failed to save note. Please try again.', 'error');
-                                    }
-                                }}
-                                aria-label="Save notes"
-                                title="Save notes"
+                    <AnimatePresence initial={false}>
+                        {showNotes && (
+                            <motion.div
+                                key={`notes-${id}`}
+                                className="sortable-item_note"
+                                initial={{ height: 0, opacity: 0, y: -4 }}
+                                animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                exit={{ height: 0, opacity: 0, y: -4 }}
+                                transition={{ duration: 0.22, ease: 'easeOut' }}
                             >
-                                Save Notes
-                            </button>
-                        </div>
-                    )}
+                                <NoteEditor
+                                    key={note} // force remount to reset internal state when note changes
+                                    initialMarkdown={note ?? ''}
+                                    ref={noteRef}
+                                    readOnly={false}
+                                />
+                                <button
+                                    className="sortable-item_save-note-button"
+                                    onClick={() => {
+                                        try {
+                                            partialUpdateItem({ id, note: noteRef.current?.getMarkdown() ?? '' });
+                                            showToast('Notes saved successfully', 'success');
+                                        } catch (error) {
+                                            console.error('Failed to save note:', error);
+                                            showToast('Failed to save note. Please try again.', 'error');
+                                        }
+                                    }}
+                                    aria-label="Save notes"
+                                    title="Save notes"
+                                >
+                                    Save Notes
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     {/* RECURSIVE SUBTASKS */}
                     <div className="sortable-item_subtasks-container">
 
                         <SortableContext items={filteredTasks?.map(i => i.id) || []}>
-                            {!hasSubChores && dropZoneOpen && (
-                                <SortableItemPlaceholder id={id as string} />
-                            )}
-                            {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
-                                <div className="sortable-item_no-subtasks">
-                                    No subtasks to show. You have hidden or completed subtasks.<br/>
-                                    Adjust filters or go to "Not Today" tab to see all subtasks.
-                                </div>
-                            )}
-                            {!collapsed && filteredTasks?.map((subtask) => (
-                                <SortableItem
-                                    key={subtask.id}
-                                    id={subtask.id}
-                                    activeTab={activeTab}
-                                    hasSubChores={subtask.hasSubChores}
-                                    isHidden={subtask.isHidden}
-                                    isHideCompleted={isHideCompleted}
-                                    checked={subtask.done}
-                                    deleteItem={deleteItem}
-                                    prioritizeItem={prioritizeItem}
-                                    text={subtask.text}
-                                    note={subtask.note}
-                                    mode={subtask.mode}
-                                    category={subtask.category}
-                                    lastCompleted={subtask.lastCompleted}
-                                    toggleChecked={toggleChecked}
-                                    handleEdit={handleEdit}
-                                    handleHideItem={handleHideItem}
-                                    onMoveItem={onMoveItem}
-                                    isPriority={subtask.isPriority}
-                                    onSuccess={onSuccess}
-                                    subtasks={getSubtasks(subtask.id)}
-                                    nextDue={subtask.nextDue}
-                                />
-                            ))}
-                            {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
-                                <div className="sortable-item_upcoming-subtasks">
-                                    <IconButton
-                                        icon={showUpcoming ? (<ListChevronsUpDown /> ) : (<ListChevronsDownUp />)}
-                                        className="sortable-item_show-upcoming-button"
-                                        aria-label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
-                                        label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
-                                        onClick={() => setShowUpcoming(!showUpcoming)}
-                                        showLabel={true}
-                                    />
-                                    {showUpcoming && upcomingTasks.map((subtask) => (
+                            <AnimatePresence initial={false} mode="popLayout">
+                                {!hasSubChores && dropZoneOpen && (
+                                    <motion.div
+                                        key={`placeholder-${id}`}
+                                        className="sortable-item_subtasks-motion-shell"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                                    >
+                                        <SortableItemPlaceholder id={id as string} />
+                                    </motion.div>
+                                )}
+
+                                {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
+                                    <motion.div
+                                        key={`empty-subtasks-${id}`}
+                                        className="sortable-item_subtasks-motion-shell"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                                    >
+                                        <div className="sortable-item_no-subtasks">
+                                            No subtasks to show. You have hidden or completed subtasks.<br/>
+                                            Adjust filters or go to "Not Today" tab to see all subtasks.
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {!collapsed && filteredTasks?.map((subtask) => (
+                                    <motion.div
+                                        key={subtask.id}
+                                        className="sortable-item_subtasks-motion-shell"
+                                        initial={{ height: 0, opacity: 0, y: -4 }}
+                                        animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                        exit={{ height: 0, opacity: 0, y: -4 }}
+                                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                                    >
                                         <SortableItem
-                                            key={subtask.id}
                                             id={subtask.id}
                                             activeTab={activeTab}
                                             hasSubChores={subtask.hasSubChores}
@@ -564,11 +565,67 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             onSuccess={onSuccess}
                                             subtasks={getSubtasks(subtask.id)}
                                             nextDue={subtask.nextDue}
-                                            isUpcomingSubtask={true}
                                         />
-                                    ))}
-                                </div>
-                            )}
+                                    </motion.div>
+                                ))}
+
+                                {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
+                                    <motion.div
+                                        key={`upcoming-subtasks-${id}`}
+                                        className="sortable-item_upcoming-subtasks"
+                                        initial={{ height: 0, opacity: 0, y: -4 }}
+                                        animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                        exit={{ height: 0, opacity: 0, y: -4 }}
+                                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                                    >
+                                        <IconButton
+                                            icon={showUpcoming ? (<ListChevronsUpDown /> ) : (<ListChevronsDownUp />)}
+                                            className="sortable-item_show-upcoming-button"
+                                            aria-label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
+                                            label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
+                                            onClick={() => setShowUpcoming(!showUpcoming)}
+                                            showLabel={true}
+                                        />
+                                        <AnimatePresence initial={false}>
+                                            {showUpcoming && upcomingTasks.map((subtask) => (
+                                                <motion.div
+                                                    key={subtask.id}
+                                                    className="sortable-item_subtasks-motion-shell"
+                                                    initial={{ height: 0, opacity: 0, y: -4 }}
+                                                    animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                                    exit={{ height: 0, opacity: 0, y: -4 }}
+                                                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                                                >
+                                                    <SortableItem
+                                                        id={subtask.id}
+                                                        activeTab={activeTab}
+                                                        hasSubChores={subtask.hasSubChores}
+                                                        isHidden={subtask.isHidden}
+                                                        isHideCompleted={isHideCompleted}
+                                                        checked={subtask.done}
+                                                        deleteItem={deleteItem}
+                                                        prioritizeItem={prioritizeItem}
+                                                        text={subtask.text}
+                                                        note={subtask.note}
+                                                        mode={subtask.mode}
+                                                        category={subtask.category}
+                                                        lastCompleted={subtask.lastCompleted}
+                                                        toggleChecked={toggleChecked}
+                                                        handleEdit={handleEdit}
+                                                        handleHideItem={handleHideItem}
+                                                        onMoveItem={onMoveItem}
+                                                        isPriority={subtask.isPriority}
+                                                        onSuccess={onSuccess}
+                                                        subtasks={getSubtasks(subtask.id)}
+                                                        nextDue={subtask.nextDue}
+                                                        isUpcomingSubtask={true}
+                                                    />
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </SortableContext>
 
                     </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useTheme } from 'src/themes/use-theme';
 import type { ThemeMode, ThemeStyle, Density } from 'src/themes/types';
 import { readPersistentSetting } from 'src/utilities/persistent-storage';
@@ -17,6 +17,47 @@ const colors = [
     ["Accent", "--color-accent", styles.swatchAccent],
 ];
 
+const customBackgroundColors = [
+    ["Gradient Color 1", "--custom-background-1"],
+    ["Gradient Color 2", "--custom-background-2"],
+    ["Gradient Color 3", "--custom-background-3"],
+];
+
+const resettableVariables = [
+    '--custom-background-1',
+    '--custom-background-2',
+    '--custom-background-3',
+];
+
+function readStoredCustomColors(): Record<string, string> {
+    const stored = readPersistentSetting('theme-custom-colors');
+    if (!stored) return {};
+
+    try {
+        const parsed = JSON.parse(stored) as unknown;
+        if (!parsed || typeof parsed !== 'object') return {};
+
+        return Object.fromEntries(
+            Object.entries(parsed).filter((entry): entry is [string, string] =>
+                typeof entry[0] === 'string' && typeof entry[1] === 'string'
+            )
+        );
+    } catch {
+        return {};
+    }
+}
+
+function getBackgroundFallbackColor(mode: ThemeMode): string {
+    if (mode === 'light') return '#ffffff';
+    if (mode === 'dark') return '#000000';
+
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return '#000000';
+    }
+
+    return '#ffffff';
+}
+
 function AppearanceSettings() {
     const [mode, setMode] = useState<ThemeMode>(() =>
         getStored('theme-mode', 'system')
@@ -34,10 +75,10 @@ function AppearanceSettings() {
         getStored('theme-graphics', 'true')
     );
 
-    const [customColors, setCustomColors] = useState(() => {
-        const stored = readPersistentSetting('theme-custom-colors');
-        return stored ? JSON.parse(stored) : {};
-    });
+    const [customColors, setCustomColors] = useState<Record<string, string>>(() => readStoredCustomColors());
+    const [resolvedThemeColors, setResolvedThemeColors] = useState<Record<string, string>>({});
+    const [resolvedCustomBackgroundColors, setResolvedCustomBackgroundColors] = useState<Record<string, string>>({});
+    const customBackgroundFallbackColor = getBackgroundFallbackColor(mode);
 
     const { updateTheme } = useTheme();
 
@@ -67,24 +108,53 @@ function AppearanceSettings() {
         updateTheme({ graphics: newGraphics });
     }
 
+    function handleResetAllColorsToBackground() {
+        const backgroundColor = customColors['--color-background'] || cssVariableToHex('--color-background');
+
+        const newCustomColors = resettableVariables.reduce<Record<string, string>>((acc, variable) => {
+            acc[variable] = backgroundColor;
+            return acc;
+        }, { ...customColors });
+
+        setCustomColors(newCustomColors);
+        updateTheme({ customColors: newCustomColors });
+    }
+
+    useLayoutEffect(() => {
+        const frameId = window.requestAnimationFrame(() => {
+            const nextResolvedColors = Object.fromEntries(
+                colors.map(([, variable]) => [variable, cssVariableToHex(variable)])
+            ) as Record<string, string>;
+
+            const nextResolvedCustomBackgroundColors = Object.fromEntries(
+                customBackgroundColors.map(([, variable]) => [variable, cssVariableToHex(variable)])
+            ) as Record<string, string>;
+
+            setResolvedThemeColors(nextResolvedColors);
+            setResolvedCustomBackgroundColors(nextResolvedCustomBackgroundColors);
+        });
+
+        return () => window.cancelAnimationFrame(frameId);
+    }, [mode, style, customColors]);
+
     return (
         <section className="settings-section">
             <h3 className="settings-section-title">Appearance</h3>
             <div className="swatches">
                 {colors.map(([label, variable, swatchClass]) => {
-                    const colorValue = cssVariableToHex(variable);
+                    const colorValue = resolvedThemeColors[variable] || cssVariableToHex(variable);
                     return (
                         <div key={variable} className={`swatch ${swatchClass}`}>
                             <strong>{label}</strong>
                             {style === 'custom' ? (
                                 <>
-                                <input
-                                    className="color-input"
-                                    type="color"
-                                    value={customColors[variable] || colorValue}
-                                    onChange={(e) => handleSetCustomColor(variable, e.target.value)}
-                                />
-                                <strong>{customColors[variable] || colorValue}</strong>
+                                    <input
+                                        className="color-input"
+                                        type="color"
+                                        value={customColors[variable] || colorValue}
+                                        onChange={(e) => handleSetCustomColor(variable, e.target.value)}
+                                    />
+                                    <strong>{customColors[variable] || colorValue}</strong>
                                 </>
                             ) : (
                                 <p className="tp-color-value">{colorValue}</p>
@@ -93,6 +163,36 @@ function AppearanceSettings() {
                     );
                 })}
             </div>
+
+            {style === 'custom' ? (
+                <fieldset>
+                    <legend>Custom Background Colors</legend>
+                    <div className="swatches">
+                        {customBackgroundColors.map(([label, variable]) => {
+                            const colorValue = resolvedCustomBackgroundColors[variable] || customBackgroundFallbackColor;
+                            return (
+                                <div key={variable} className="swatch">
+                                    <strong>{label}</strong>
+                                    <input
+                                        className="color-input"
+                                        type="color"
+                                        value={customColors[variable] || colorValue}
+                                        onChange={(e) => handleSetCustomColor(variable, e.target.value)}
+                                    />
+                                    <strong>{customColors[variable] || colorValue}</strong>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <button
+                        className="reset-colors-button"
+                        type="button"
+                        onClick={handleResetAllColorsToBackground}
+                    >
+                        Reset custom background colors
+                    </button>
+                </fieldset>
+            ) : null}
 
             {/* MODE */}
             <fieldset>

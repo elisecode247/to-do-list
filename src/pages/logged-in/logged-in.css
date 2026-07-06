@@ -107,6 +107,10 @@
     overflow: hidden;
 }
 
+.main_content_page {
+    height: 100%;
+}
+
 /* Shared bottom-sheet styles */
 .left_panel,
 .right_panel {
@@ -146,7 +150,7 @@
     margin: auto;
     width: 340px;
     height: var(--mobile-tab-bar-height);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-rounded);
     background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
     backdrop-filter: blur(4px);
     border-top: 1px solid var(--color-border);
@@ -154,24 +158,61 @@
     justify-content: space-around;
     align-items: center;
     z-index: 500;
+    overflow: hidden;
 }
 
 .mobile-tab-button {
-    border-radius: 0;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+    border-radius: var(--radius-rounded);
     padding: 8px 12px;
-    border: 1px solid var(--color-border);
+    border: 0;
+    background-color: transparent;
+    color: inherit;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    border-radius: var(--radius-md);
+}
+
+.mobile-tab-button-content {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mobile-tab-button--active:hover,
 .mobile-tab-button--active {
-    background-color: var(--color-primary);
-    color: contrast-color(var(--color-primary));
-    border: 1px solid var(--color-accent-border);
+    --mobile-tab-glass-mid: color-mix(in srgb, var(--color-primary) 30%, white 70%);
+    color: contrast-color(var(--mobile-tab-glass-mid));
+    border: 0;
     z-index: 10;
+}
+
+.mobile-tab-motion {
+    position: absolute;
+    left: 0;
+    top: 9px;
+    bottom: 9px;
+    background:
+        linear-gradient(
+            235deg,
+            color-mix(in srgb, var(--color-primary) 34%, white 26%) 0%,
+            color-mix(in srgb, var(--color-primary) 32%, white 98%) 55%,
+            color-mix(in srgb, var(--color-primary) 42%, white 28%) 100%
+        );
+    backdrop-filter: blur(10px) saturate(145%);
+    -webkit-backdrop-filter: blur(10px) saturate(145%);
+    border: 0;
+    border-radius: var(--radius-rounded);
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, white 78%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, black 16%, transparent),
+        0 8px 20px color-mix(in srgb, var(--color-shadow) 42%, transparent);
+    z-index: 1;
+    pointer-events: none;
 }
 
 .applied-filter-count-badge {

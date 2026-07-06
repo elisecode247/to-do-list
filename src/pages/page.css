@@ -28,26 +28,27 @@
 ========================= */
 
 .page_h1 {
-    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-family: "Outfit", Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 1px;
     margin: 0 0 0 var(--spacing-md);
     color: contrast-color(var(--color-background));
 }
 .app_subtitle {
-    font-family: 'Space Grotesk', 'Orbitron', 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 16px;
     font-weight: 500;
     letter-spacing: 0.5px;
     opacity: 0.75;
     margin: 0;
     color: contrast-color(var(--color-background));
+    transform: translateY(0px);
 }
 
 .app_subtitle > span {
     margin: 0;
     font-size: 12px;
+    opacity: 0.75;
 }
 
 .page_h2 {
@@ -97,6 +98,10 @@
 
     .page_h2 {
         margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+    }
+
+    .app_subtitle {
+        transform: translateY(4px);
     }
 
 

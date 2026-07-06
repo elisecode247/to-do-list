@@ -210,11 +210,10 @@ function EncryptionSettings() {
             {!isEncryptionEnabled ? (
                 <>
                     <p>
-                        Enable end-to-end encryption to make your journal private.
+                        Keep your journal private by turning on end-to-end encryption.
                         <strong> Even Daily Reset List cannot read it. </strong>
-                        If you enable this setting, you will be prompted to create a password
-                        and you will receive a recovery key. Only you will be
-                        able to see your journal entries.
+                        When you turn this on, you'll create a password and receive a recovery key.
+                        Keep both in a safe place. Only you will be able to read your journal entries.
                     </p>
                     <p>
                         <strong>Important:</strong> If you lose both your password and recovery code,
@@ -239,10 +238,8 @@ function EncryptionSettings() {
             ) : (
                 <>
                     <p>
-                        Client-side encryption is currently enabled on your account.
-                        This means that your data is encrypted on the client side before
-                        it is sent to the server, and only you can access your unencrypted data.
-                        If you want to disable client-side encryption, please contact support.
+                        Your journal entries are locked with your personal
+                        password before they leave your device, so only you can read them.
                     </p>
                     <div className="action-buttons">
                         <button className="settings-btn" type="button" onClick={onChangePasswordClick}>

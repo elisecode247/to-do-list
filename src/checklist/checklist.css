@@ -16,6 +16,7 @@
     flex-direction: column;
     min-height: 100%;
     will-change: transform;
+    gap: var(--spacing-xs);
 }
 
 .checklist_list-container--pulling .sortable-item_container {

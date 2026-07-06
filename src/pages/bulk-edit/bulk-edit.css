@@ -69,8 +69,13 @@
 }
 
 .bulk-edit-actions-cell {
-    vertical-align: top;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-xs);
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .bulk_table tr:not([data-depth="0"]) {
@@ -114,4 +119,5 @@
 .bulk_footer {
     display: flex;
     justify-content: flex-end;
+    padding: var(--spacing-md) 0;
 }

@@ -33,13 +33,14 @@
     font-size: 18px;
     font-weight: 600;
     text-align: center;
-    color: inherit;
+    color: contrast-color(var(--color-surface));
 }
 
 .journal-lock-subtitle {
     margin: 0 0 var(--spacing-lg);
     font-size: 14px;
     text-align: center;
+    color: contrast-color(var(--color-surface));
 }
 
 .journal-lock-form {
@@ -57,7 +58,7 @@
 .journal-lock-field label {
     font-size: 13px;
     font-weight: 500;
-    color: inherit;
+    color: contrast-color(var(--color-surface));
 }
 
 /* relies on the global input/textarea rule for base styling;

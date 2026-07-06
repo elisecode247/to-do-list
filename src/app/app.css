@@ -5,6 +5,7 @@
 @import '../themes/winter.css';
 @import '../themes/density.css';
 @import '../themes/skeleton.css';
+@import '../themes/custom.css';
 
 /* App Container */
 .app_container {
