@@ -329,11 +329,13 @@ const THEME_REGISTRY: ThemeRegistry = {
 // ---------------------------------------------------------------------------
 
 const getActiveThemeStyle = () => document.documentElement.getAttribute('data-theme-style');
+const getEnableParticles = () => document.documentElement.getAttribute('data-graphics');
 
 const ThemeParticlesCanvas: FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [themeStyle, setThemeStyle] = useState<string | null>(null);
     const [reduceMotion, setReduceMotion] = useState(false);
+    const [enableParticles, setEnableParticles] = useState(true);
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -342,6 +344,7 @@ const ThemeParticlesCanvas: FC = () => {
 
         const sync = () => {
             setThemeStyle(getActiveThemeStyle());
+            setEnableParticles(getEnableParticles() === 'true');
             setReduceMotion(mediaQuery.matches);
         };
 
@@ -349,11 +352,12 @@ const ThemeParticlesCanvas: FC = () => {
 
         const observer = new MutationObserver(() => {
             setThemeStyle(getActiveThemeStyle());
+            setEnableParticles(getEnableParticles() === 'true');
         });
 
         observer.observe(document.documentElement, {
             attributes: true,
-            attributeFilter: ['data-theme-style'],
+            attributeFilter: ['data-theme-style', 'data-graphics'],
         });
 
         const onMotionChange = () => setReduceMotion(mediaQuery.matches);
@@ -371,7 +375,7 @@ const ThemeParticlesCanvas: FC = () => {
             : undefined;
 
     useEffect(() => {
-        if (!activeTheme || reduceMotion) return;
+        if (!activeTheme || reduceMotion || !enableParticles) return;
 
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -414,9 +418,9 @@ const ThemeParticlesCanvas: FC = () => {
         };
         // activeTheme is derived from themeStyle, so themeStyle is the real dependency
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [themeStyle, reduceMotion]);
+    }, [themeStyle, reduceMotion, enableParticles]);
 
-    if (!activeTheme || reduceMotion) {
+    if (!activeTheme || reduceMotion || !enableParticles) {
         return null;
     }
 

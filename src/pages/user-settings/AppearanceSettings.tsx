@@ -21,6 +21,10 @@ function AppearanceSettings() {
         getStored('theme-density', 'comfortable')
     );
 
+    const [graphics, setGraphics] = useState<'true' | 'false'>(() =>
+        getStored('theme-graphics', 'true')
+    );
+
     const { updateTheme } = useTheme();
 
     function handleSetMode(newMode: ThemeMode) {
@@ -36,6 +40,11 @@ function AppearanceSettings() {
     function handleSetDensity(newDensity: Density) {
         setDensity(newDensity);
         updateTheme({ density: newDensity });
+    }
+
+    function handleSetGraphics(newGraphics: 'true' | 'false') {
+        setGraphics(newGraphics);
+        updateTheme({ graphics: newGraphics });
     }
 
     return (
@@ -87,6 +96,22 @@ function AppearanceSettings() {
                     ]}
                 />
             </fieldset>
+
+            {/* GRAPHICS */}
+            {style !== 'calm' ? (
+                <fieldset>
+                    <legend>Background Animation</legend>
+                    <RadioGroup
+                        name="theme-graphics"
+                        value={graphics}
+                        onChange={handleSetGraphics}
+                        options={[
+                            { value: 'true', label: 'Enabled' },
+                            { value: 'false', label: 'Disabled' },
+                        ]}
+                    />
+                </fieldset>
+            ) : null}
         </section>
     );
 }

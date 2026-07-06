@@ -5,17 +5,17 @@
     /* user-defined colors */
     --color-primary-light: #2ab8ff;
     --color-primary-dark: #1444d4;
-    --color-accent-light: #06b6d4;
+    --color-accent-light: #ff8c69;
     --color-accent-dark: #00ddff;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
     --color-background-light: #a5e5fa;
-    --color-background-dark: #0035f6;
+    --color-background-dark: #0a1f4d;
     --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
-    --ocean-bg-1: light-dark(#eefbff, #0099ff);
-    --ocean-bg-2: light-dark(#cbf1ff, #0059c6);
-    --ocean-bg-3: light-dark(#a5e5fa, #0035f6);
-    --ocean-bg-4: light-dark(#68f2ff, #0029a5);
+    --ocean-bg-1: light-dark(#eefbff, #005d9b);
+    --ocean-bg-2: light-dark(#cbf1ff, #001936);
+    --ocean-bg-3: light-dark(#a5e5fa, #011d83);
+    --ocean-bg-4: light-dark(#68f2ff, #001657);
 }
 
 :root[data-theme-style="ocean"] body {

@@ -6,6 +6,7 @@ export const ROUTES = {
     userSettings: '/settings',
     bulkEdit: '/bulk-edit',
     privacyPolicy: '/privacy-policy',
+    themePlayground: '/theme-playground',
 } as const;
 
 

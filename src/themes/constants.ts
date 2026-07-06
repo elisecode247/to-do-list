@@ -13,3 +13,7 @@ export const STYLES = [CALM_STYLE, SPACE_STYLE, NATURE_STYLE, OCEAN_STYLE, WINTE
 export const COMFORTABLE_DENSITY = 'comfortable';
 export const COMPACT_DENSITY = 'compact';
 export const DENSITIES = [COMFORTABLE_DENSITY, COMPACT_DENSITY] as const;
+
+export const GRAPHICS_TRUE = 'true';
+export const GRAPHICS_FALSE = 'false';
+export const GRAPHICS = [GRAPHICS_TRUE, GRAPHICS_FALSE] as const;

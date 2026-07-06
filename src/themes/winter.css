@@ -3,12 +3,12 @@
 
     /* user-defined colors */
     --color-primary-light: #78baf7;
-    --color-primary-dark: #1e00fe;
-    --color-accent-light: #00ffb3;
-    --color-accent-dark: rgb(0, 207, 158);
+    --color-primary-dark: #4a90c2;
+    --color-accent-light: #d4576b;
+    --color-accent-dark: #c94f5c;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
     --color-background-light: color-mix(in oklab, #0c00b9, white 90%);
-    --color-background-dark: #090080;
+    --color-background-dark: #0d1321;
     --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
 }

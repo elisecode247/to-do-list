@@ -1,0 +1,83 @@
+.swatchBackground {
+    background: var(--color-background);
+    color: contrast-color(var(--color-background));
+    border: 1px solid var(--color-border);
+}
+
+.swatchSurface {
+    background: var(--color-surface);
+    color: contrast-color(var(--color-surface));
+    border: 1px solid var(--color-border);
+}
+
+.swatchSurfaceTransparent {
+    background: var(--color-surface--transparent);
+    color: contrast-color(var(--color-surface--transparent));
+    border: 1px solid var(--color-border);
+}
+
+.swatchPrimary {
+    background: var(--color-primary);
+    color: contrast-color(var(--color-primary));
+    border: 1px solid var(--color-border);
+}
+
+.swatchPrimaryHover {
+    background: var(--color-primary-hover);
+    color: contrast-color(var(--color-primary-hover));
+    border: 1px solid var(--color-border);
+}
+
+.swatchSecondary {
+    background: var(--color-secondary);
+    color: contrast-color(var(--color-secondary));
+    border: 1px solid var(--color-border);
+}
+
+.swatchAccent {
+    background: var(--color-accent);
+    color: contrast-color(var(--color-accent));
+    border: 1px solid var(--color-border);
+}
+
+.swatchAccentBackground {
+    background: var(--color-accent-bg);
+    color: contrast-color(var(--color-accent-bg));
+    border: 1px solid var(--color-border);
+}
+
+.swatchSuccess {
+    background: var(--color-success);
+    color: contrast-color(var(--color-success));
+    border: 1px solid var(--color-border);
+}
+
+.swatchInfo {
+    background: var(--color-info);
+    color: contrast-color(var(--color-info));
+    border: 1px solid var(--color-border);
+}
+
+.swatchWarning {
+    background: var(--color-warning);
+    color: contrast-color(var(--color-warning));
+    border: 1px solid var(--color-border);
+}
+
+.swatchDanger {
+    background: var(--color-danger);
+    color: contrast-color(var(--color-danger));
+    border: 1px solid var(--color-border);
+}
+
+.swatchBorder {
+    background: var(--color-border);
+    color: contrast-color(var(--color-border));
+    border: 1px solid var(--color-border);
+}
+
+.swatchHover {
+    background: var(--color-hover);
+    color: contrast-color(var(--color-hover));
+    border: 1px solid var(--color-border);
+}

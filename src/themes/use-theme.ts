@@ -1,5 +1,5 @@
 import { useLayoutEffect, useEffect, useState, useEffectEvent } from 'react';
-import type { ThemeMode, ThemeStyle, Density, ThemeState } from './types';
+import type { ThemeMode, ThemeStyle, Density, ThemeState, ThemeGraphic } from './types';
 import {
     readPersistentSetting,
     requestPersistentStorage,
@@ -10,25 +10,28 @@ const getStoredTheme = (): ThemeState => ({
     mode: (readPersistentSetting('theme-mode') as ThemeMode) || 'system',
     style: (readPersistentSetting('theme-style') as ThemeStyle) || 'calm',
     density: (readPersistentSetting('theme-density') as Density) || 'comfortable',
+    graphics: (readPersistentSetting('theme-graphics') as ThemeGraphic) ?? 'true',
 });
 
 export function useTheme(
     overrideMode?: ThemeMode,
     overrideStyle?: ThemeStyle,
-    overrideDensity?: Density
+    overrideDensity?: Density,
+    overrideGraphics?: ThemeGraphic,
 ) {
     const hasOverride =
         overrideMode !== undefined &&
         overrideStyle !== undefined &&
-        overrideDensity !== undefined;
+        overrideDensity !== undefined &&
+        overrideGraphics !== undefined;
 
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity! }
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: 'true' }
             : getStoredTheme()
     );
 
-    const applyTheme = useEffectEvent(({ mode, style, density }: ThemeState) => {
+    const applyTheme = useEffectEvent(({ mode, style, density, graphics }: ThemeState) => {
         const root = document.documentElement;
 
         // Mode
@@ -50,16 +53,19 @@ export function useTheme(
 
         // Density
         root.setAttribute('data-density', density);
+
+        // Graphics
+        root.setAttribute('data-graphics', graphics);
     });
 
     // Apply theme whenever stored theme or override changes
     useLayoutEffect(() => {
         const nextTheme = hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity! }
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: 'true' as ThemeGraphic }
             : theme;
 
         applyTheme(nextTheme);
-    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity]);
+    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity, overrideGraphics]);
 
 
     useEffect(() => {
@@ -73,6 +79,7 @@ export function useTheme(
         writePersistentSetting('theme-mode', theme.mode);
         writePersistentSetting('theme-style', theme.style);
         writePersistentSetting('theme-density', theme.density);
+        writePersistentSetting('theme-graphics', theme.graphics);
 
         // System mode listener
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -87,7 +94,8 @@ export function useTheme(
             if (
                 e.key === 'theme-mode' ||
                 e.key === 'theme-style' ||
-                e.key === 'theme-density'
+                e.key === 'theme-density' ||
+                e.key === 'theme-graphics'
             ) {
                 setTheme(getStoredTheme());
             }

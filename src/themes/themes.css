@@ -7,28 +7,28 @@
     --color-accent-light: #8cd4d9;
     --color-accent-dark: #6bb1b9;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
-    --color-background-light: #ffffff;
-    --color-background-dark: #000000;
+    --color-background-light: #f0f4f8;
+    --color-background-dark: #151a23;
     --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
     /** Derived colors */
     --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
     --color-primary-hover: oklch(from var(--color-primary) calc(l * 0.3) c h);
     --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, light-dark(white, black));
-    --color-secondary-light: color-mix(in srgb, var(--color-primary-light) 50%, white);
-    --color-secondary-dark: color-mix(in srgb, var(--color-primary-dark) 50%, black);
+    --color-secondary-light: color-mix(in srgb, var(--color-primary-light) 50%, grey);
+    --color-secondary-dark: color-mix(in srgb, var(--color-primary-dark) 50%, grey);
     --color-secondary: light-dark(var(--color-secondary-light), var(--color-secondary-dark));
     /* Accent / Priority */
-    --color-accent-bg: light-dark(color-mix(in srgb, var(--color-accent) 64%, white),
-            color-mix(in srgb, var(--color-accent) 80%, black));
+    --color-accent-bg: light-dark(color-mix(in srgb, var(--color-accent) 34%, white),
+            color-mix(in srgb, var(--color-accent) 34%, black));
     --color-accent-text: contrast-color(var(--color-accent-bg));
     --color-accent-border: light-dark(color-mix(in srgb, var(--color-accent) 70%, black),
             color-mix(in srgb, var(--color-accent) 75%, white));
 
     /* Status */
     --color-success: light-dark(#34d399, #10b981);
-    --color-info: light-dark(#60a5fa, #3b82f6);
-    --color-warning: var(--color-accent);
+    --color-info: light-dark(#3b82f6, #3b82f6);
+    --color-warning: light-dark(#ffc15c, #fcb634);
     --color-danger: light-dark(#f87171, #ef4444);
     --form-error-color: var(--color-danger);
 
@@ -36,8 +36,9 @@
 
     --color-background-hover: light-dark(color(from color-mix(in srgb, var(--color-background), black 20%) srgb r g b / 0.4),
             color(from color-mix(in srgb, var(--color-background), white 20%) srgb r g b / 0.4));
-    --color-surface: light-dark(color-mix(in srgb, var(--color-background) 96%, white),
-            color-mix(in srgb, var(--color-background) 88%, white));
+    --color-surface-light: #ffffff;
+    --color-surface-dark: color-mix(in srgb, var(--color-background) 39%, black);
+    --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
     --color-surface--transparent: light-dark(color(from var(--color-surface) srgb r g b / 0.8),
             color(from var(--color-surface) srgb r g b / 0.3));
     --color-hover: light-dark(color-mix(in srgb, var(--color-surface) 88%, black),
@@ -45,8 +46,9 @@
     --color-white-black: light-dark(white, black);
 
     /* Borders & Shadows */
-    --color-border: light-dark(#484747, #d7d5d5);
-    --color-border-light: #dbdbdb;
+    --color-border-light: color-mix(in srgb, var(--color-surface-light) 85%, black);
+    --color-border-dark: color-mix(in srgb, var(--color-surface-dark) 60%, white);
+    --color-border: light-dark(var(--color-border-light), var(--color-border-dark));
     --color-shadow: light-dark(rgba(97, 97, 97, 0.328), rgba(3, 3, 3, 0.35));
 
     --shadow-sm: 0 1px 4px var(--color-shadow);

@@ -11,7 +11,7 @@
     --color-accent-dark: #fd05e8;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
     --color-background-light: #f4f1ff;
-    --color-background-dark: #0f172a;
+    --color-background-dark: #360069;
     --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
 
 
