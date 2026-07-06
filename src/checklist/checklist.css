@@ -11,6 +11,13 @@
     width: 100%;
 }
 
+.checklist_list-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    will-change: transform;
+}
+
 .checklist_list-container--pulling .sortable-item_container {
     opacity: 1;
     background-color: var(--color-surface);

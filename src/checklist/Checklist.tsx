@@ -81,6 +81,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
+    const listContentRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
     const {
@@ -302,6 +303,14 @@ const Checklist: FC<ChecklistProps> = ({
         }
     }, [completedDay, activeTab, modeFilter, filterCategory]);
 
+    useEffect(() => {
+        const contentElement = listContentRef.current;
+        if (!contentElement) return;
+
+        contentElement.style.transform = pullDistance ? `translateY(${pullDistance}px)` : 'translateY(0px)';
+        contentElement.style.transition = pullDistance ? 'none' : 'transform 220ms ease-out';
+    }, [pullDistance]);
+
     return (
         <>
             {showSparkles && sparkles}
@@ -313,60 +322,65 @@ const Checklist: FC<ChecklistProps> = ({
                     ref={refreshContainerRef}
                 >
                     <PullToRefresh />
-                    <SortableContext items={allItems.map(i => i.id)}>
-                        {activeTab === TABS.today && !allItems.length && (
-                            <EmptyStateFilters
-                                modeFilter={modeFilter}
-                                onClearFilters={clearFilters}
-                                filterCategory={filterCategory}
-                                hideCompleted={hideCompleted}
-                                type={completedDay ? 'completedDay' : 'noTasks'}
-                            />
-                        )}
-                        {(allItems as (ChecklistItem | GoogleEvent)[]).map((item) => {
-                            if ((item as GoogleEvent).itemType === 'google-event') {
-                                const eventItem = item as GoogleEvent;
-                                return (<CalendarEventItem
-                                    key={eventItem.id}
-                                    event={eventItem}
-                                    onHideItem={handleEventHide}
-                                    onEdit={handleEventEdit}
-                                />);
-                            } else if (item.itemType === 'checklist-item') {
-                                const checklistItem = item as ChecklistItem;
-                                return (
-                                    <SortableItem
-                                        activeTab={activeTab}
-                                        hasSubChores={checklistItem.hasSubChores}
-                                        isSubChore={!!checklistItem.parentUuid}
-                                        isPriority={checklistItem.isPriority}
-                                        checked={checklistItem.done}
-                                        key={checklistItem.id}
-                                        id={checklistItem.id}
-                                        isHidden={checklistItem.isHidden}
-                                        isHideCompleted={hideCompleted}
-                                        text={checklistItem.text}
-                                        note={checklistItem.note}
-                                        mode={checklistItem.mode}
-                                        category={checklistItem.category}
-                                        lastCompleted={checklistItem.lastCompleted}
-                                        deleteItem={deleteItem}
-                                        prioritizeItem={prioritizeItem}
-                                        toggleChecked={toggleChecked}
-                                        handleEdit={handleEdit}
-                                        handleHideItem={handleHide}
-                                        subtasks={getSubtasks(checklistItem.id)}
-                                        onMoveItem={handleMoveItem}
-                                        onSuccess={displaySparkles}
-                                        nextDue={checklistItem.nextDue}
-                                    />
-                                );
-                            }
-                            return null;
-                        })}
-                        {/* Placeholder div to ensure proper spacing at the end of the list */}
-                        <div className="placeholder" />
-                    </SortableContext>
+                    <div
+                        className="checklist_list-content"
+                        ref={listContentRef}
+                    >
+                        <SortableContext items={allItems.map(i => i.id)}>
+                            {activeTab === TABS.today && !allItems.length && (
+                                <EmptyStateFilters
+                                    modeFilter={modeFilter}
+                                    onClearFilters={clearFilters}
+                                    filterCategory={filterCategory}
+                                    hideCompleted={hideCompleted}
+                                    type={completedDay ? 'completedDay' : 'noTasks'}
+                                />
+                            )}
+                            {(allItems as (ChecklistItem | GoogleEvent)[]).map((item) => {
+                                if ((item as GoogleEvent).itemType === 'google-event') {
+                                    const eventItem = item as GoogleEvent;
+                                    return (<CalendarEventItem
+                                        key={eventItem.id}
+                                        event={eventItem}
+                                        onHideItem={handleEventHide}
+                                        onEdit={handleEventEdit}
+                                    />);
+                                } else if (item.itemType === 'checklist-item') {
+                                    const checklistItem = item as ChecklistItem;
+                                    return (
+                                        <SortableItem
+                                            activeTab={activeTab}
+                                            hasSubChores={checklistItem.hasSubChores}
+                                            isSubChore={!!checklistItem.parentUuid}
+                                            isPriority={checklistItem.isPriority}
+                                            checked={checklistItem.done}
+                                            key={checklistItem.id}
+                                            id={checklistItem.id}
+                                            isHidden={checklistItem.isHidden}
+                                            isHideCompleted={hideCompleted}
+                                            text={checklistItem.text}
+                                            note={checklistItem.note}
+                                            mode={checklistItem.mode}
+                                            category={checklistItem.category}
+                                            lastCompleted={checklistItem.lastCompleted}
+                                            deleteItem={deleteItem}
+                                            prioritizeItem={prioritizeItem}
+                                            toggleChecked={toggleChecked}
+                                            handleEdit={handleEdit}
+                                            handleHideItem={handleHide}
+                                            subtasks={getSubtasks(checklistItem.id)}
+                                            onMoveItem={handleMoveItem}
+                                            onSuccess={displaySparkles}
+                                            nextDue={checklistItem.nextDue}
+                                        />
+                                    );
+                                }
+                                return null;
+                            })}
+                            {/* Placeholder div to ensure proper spacing at the end of the list */}
+                            <div className="placeholder" />
+                        </SortableContext>
+                    </div>
                 </div>
             </DndContext>
         </>

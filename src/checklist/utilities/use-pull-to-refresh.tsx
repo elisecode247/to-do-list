@@ -6,6 +6,17 @@ export const usePullToRefresh = (refreshData: () => void) => {
     const [pullDistance, setPullDistance] = useState(0);
     const refreshContainerRef = useRef<HTMLDivElement>(null);
     const startPoint = useRef<number | null>(null);
+    const MAX_PULL_DISTANCE = 140;
+
+    const dampedPullDistance = useCallback((rawPullDistance: number) => {
+        const clamped = Math.max(0, rawPullDistance);
+        if (clamped <= 80) {
+            return clamped;
+        }
+
+        // Add resistance after the first segment so pulling feels natural.
+        return Math.min(80 + (clamped - 80) * 0.35, MAX_PULL_DISTANCE);
+    }, []);
 
     const triggerRefresh = useCallback(() => {
         if (!refreshContainerRef.current) {
@@ -21,13 +32,24 @@ export const usePullToRefresh = (refreshData: () => void) => {
         const { clientY } = e.targetTouches[0];
         startPoint.current = clientY;
     }, []);
+
     const pull = useCallback((e: TouchEvent) => {
         if (startPoint.current === null) return;
+
+        if (refreshContainerRef.current?.scrollTop !== 0) {
+            return;
+        }
+
         const touch = e.targetTouches[0];
         const { clientY } = touch;
         const pullLength = startPoint.current < clientY ? clientY - startPoint.current : 0;
-        setPullDistance(pullLength);
-    }, []);
+
+        if (pullLength > 0) {
+            e.preventDefault();
+        }
+
+        setPullDistance(dampedPullDistance(pullLength));
+    }, [dampedPullDistance]);
 
     const endPull = useCallback(() => {
         const shouldRefresh = pullDistance > 100;
@@ -39,12 +61,14 @@ export const usePullToRefresh = (refreshData: () => void) => {
     useEffect(() => {
         const refreshContCurrent = refreshContainerRef.current;
         refreshContCurrent?.addEventListener("touchstart", pullStart);
-        refreshContCurrent?.addEventListener("touchmove", pull);
+        refreshContCurrent?.addEventListener("touchmove", pull, { passive: false });
         refreshContCurrent?.addEventListener("touchend", endPull);
+        refreshContCurrent?.addEventListener("touchcancel", endPull);
         return () => {
             refreshContCurrent?.removeEventListener("touchstart", pullStart);
             refreshContCurrent?.removeEventListener("touchmove", pull);
             refreshContCurrent?.removeEventListener("touchend", endPull);
+            refreshContCurrent?.removeEventListener("touchcancel", endPull);
         };
     }, [endPull, pull, pullStart]);
 
