@@ -67,7 +67,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }).finally(() => {
             setIsLoading(false);
             setIsUpdatedDate(true);
-            const timer = setTimeout(() => setIsUpdatedDate(false), 3000);
+            const timer = setTimeout(() => setIsUpdatedDate(false), 30000);
             return () => clearTimeout(timer);
         });
     }

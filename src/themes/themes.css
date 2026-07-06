@@ -112,10 +112,8 @@ body {
 
 .app_subtitle_last-updated--fresh {
     opacity: 1;
-    padding: 4px 6px;
     color: contrast-color(var(--color-background));
-    text-shadow: 2px 2px 1px var(--color-info);
-    font-weight: 500;
+    font-weight: 900;
 }
 
 .app_subtitle_last-updated_fresh_icon {
