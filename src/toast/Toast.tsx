@@ -46,7 +46,7 @@ const getToastCopy = (message: string, type: ToastProps['type'], hasUndoAction: 
     return { title: message };
 };
 
-const Toast = function({ message, type, onClose, duration = 300000, undoAction }: ToastProps) {
+const Toast = function({ message, type, onClose, duration = 3000, undoAction }: ToastProps) {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const handleClose = useEffectEvent(onClose);
     const toastCopy = getToastCopy(message, type, Boolean(undoAction));
