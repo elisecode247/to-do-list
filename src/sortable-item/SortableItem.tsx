@@ -504,7 +504,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <div className="sortable-item_subtasks-container">
 
                         <SortableContext items={filteredTasks?.map(i => i.id) || []}>
-                            <AnimatePresence initial={false} mode="popLayout">
+                            <AnimatePresence initial={false}>
                                 {!hasSubChores && dropZoneOpen && (
                                     <motion.div
                                         key={`placeholder-${id}`}
@@ -534,40 +534,43 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     </motion.div>
                                 )}
 
-                                {!collapsed && filteredTasks?.map((subtask) => (
+                                {!collapsed && (filteredTasks?.length ?? 0) > 0 && (
                                     <motion.div
-                                        key={subtask.id}
+                                        key={`subtasks-${id}`}
                                         className="sortable-item_subtasks-motion-shell"
                                         initial={{ height: 0, opacity: 0, y: -4 }}
                                         animate={{ height: 'auto', opacity: 1, y: 0 }}
                                         exit={{ height: 0, opacity: 0, y: -4 }}
                                         transition={{ duration: 0.22, ease: 'easeOut' }}
                                     >
-                                        <SortableItem
-                                            id={subtask.id}
-                                            activeTab={activeTab}
-                                            hasSubChores={subtask.hasSubChores}
-                                            isHidden={subtask.isHidden}
-                                            isHideCompleted={isHideCompleted}
-                                            checked={subtask.done}
-                                            deleteItem={deleteItem}
-                                            prioritizeItem={prioritizeItem}
-                                            text={subtask.text}
-                                            note={subtask.note}
-                                            mode={subtask.mode}
-                                            category={subtask.category}
-                                            lastCompleted={subtask.lastCompleted}
-                                            toggleChecked={toggleChecked}
-                                            handleEdit={handleEdit}
-                                            handleHideItem={handleHideItem}
-                                            onMoveItem={onMoveItem}
-                                            isPriority={subtask.isPriority}
-                                            onSuccess={onSuccess}
-                                            subtasks={getSubtasks(subtask.id)}
-                                            nextDue={subtask.nextDue}
-                                        />
+                                        {filteredTasks?.map((subtask) => (
+                                            <SortableItem
+                                                key={subtask.id}
+                                                id={subtask.id}
+                                                activeTab={activeTab}
+                                                hasSubChores={subtask.hasSubChores}
+                                                isHidden={subtask.isHidden}
+                                                isHideCompleted={isHideCompleted}
+                                                checked={subtask.done}
+                                                deleteItem={deleteItem}
+                                                prioritizeItem={prioritizeItem}
+                                                text={subtask.text}
+                                                note={subtask.note}
+                                                mode={subtask.mode}
+                                                category={subtask.category}
+                                                lastCompleted={subtask.lastCompleted}
+                                                toggleChecked={toggleChecked}
+                                                handleEdit={handleEdit}
+                                                handleHideItem={handleHideItem}
+                                                onMoveItem={onMoveItem}
+                                                isPriority={subtask.isPriority}
+                                                onSuccess={onSuccess}
+                                                subtasks={getSubtasks(subtask.id)}
+                                                nextDue={subtask.nextDue}
+                                            />
+                                        ))}
                                     </motion.div>
-                                ))}
+                                )}
 
                                 {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
                                     <motion.div
@@ -587,41 +590,44 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             showLabel={true}
                                         />
                                         <AnimatePresence initial={false}>
-                                            {showUpcoming && upcomingTasks.map((subtask) => (
+                                            {showUpcoming && (
                                                 <motion.div
-                                                    key={subtask.id}
+                                                    key={`upcoming-list-${id}`}
                                                     className="sortable-item_subtasks-motion-shell"
                                                     initial={{ height: 0, opacity: 0, y: -4 }}
                                                     animate={{ height: 'auto', opacity: 1, y: 0 }}
                                                     exit={{ height: 0, opacity: 0, y: -4 }}
                                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                                 >
-                                                    <SortableItem
-                                                        id={subtask.id}
-                                                        activeTab={activeTab}
-                                                        hasSubChores={subtask.hasSubChores}
-                                                        isHidden={subtask.isHidden}
-                                                        isHideCompleted={isHideCompleted}
-                                                        checked={subtask.done}
-                                                        deleteItem={deleteItem}
-                                                        prioritizeItem={prioritizeItem}
-                                                        text={subtask.text}
-                                                        note={subtask.note}
-                                                        mode={subtask.mode}
-                                                        category={subtask.category}
-                                                        lastCompleted={subtask.lastCompleted}
-                                                        toggleChecked={toggleChecked}
-                                                        handleEdit={handleEdit}
-                                                        handleHideItem={handleHideItem}
-                                                        onMoveItem={onMoveItem}
-                                                        isPriority={subtask.isPriority}
-                                                        onSuccess={onSuccess}
-                                                        subtasks={getSubtasks(subtask.id)}
-                                                        nextDue={subtask.nextDue}
-                                                        isUpcomingSubtask={true}
-                                                    />
+                                                    {upcomingTasks.map((subtask) => (
+                                                        <SortableItem
+                                                            key={subtask.id}
+                                                            id={subtask.id}
+                                                            activeTab={activeTab}
+                                                            hasSubChores={subtask.hasSubChores}
+                                                            isHidden={subtask.isHidden}
+                                                            isHideCompleted={isHideCompleted}
+                                                            checked={subtask.done}
+                                                            deleteItem={deleteItem}
+                                                            prioritizeItem={prioritizeItem}
+                                                            text={subtask.text}
+                                                            note={subtask.note}
+                                                            mode={subtask.mode}
+                                                            category={subtask.category}
+                                                            lastCompleted={subtask.lastCompleted}
+                                                            toggleChecked={toggleChecked}
+                                                            handleEdit={handleEdit}
+                                                            handleHideItem={handleHideItem}
+                                                            onMoveItem={onMoveItem}
+                                                            isPriority={subtask.isPriority}
+                                                            onSuccess={onSuccess}
+                                                            subtasks={getSubtasks(subtask.id)}
+                                                            nextDue={subtask.nextDue}
+                                                            isUpcomingSubtask={true}
+                                                        />
+                                                    ))}
                                                 </motion.div>
-                                            ))}
+                                            )}
                                         </AnimatePresence>
                                     </motion.div>
                                 )}
