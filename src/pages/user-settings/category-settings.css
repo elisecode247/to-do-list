@@ -117,7 +117,7 @@
     padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid;
-    background: color-mix(in srgb, var(--color-surface) 74%, transparent);
+    background-color: var(--category-preview-color), color-mix(in srgb, var(--color-surface) 74%, transparent);
     font-size: 14px;
 }
 
@@ -125,6 +125,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    background-color: var(--category-preview-color);
 }
 
 @media (min-width: 900px) {

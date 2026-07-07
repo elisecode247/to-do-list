@@ -189,15 +189,8 @@
     height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
+    background-color: var(--category-background-color);
 }
-
-.drawer-dot--all { background: #8888ff; }
-.drawer-dot--work { background: #4ade80; }
-.drawer-dot--housework { background: #fbbf24; }
-.drawer-dot--self-care { background: #f87171; }
-.drawer-dot--people { background: #38bdf8; }
-.drawer-dot--pets { background: #a78bfa; }
-.drawer-dot--leisure { background: #34d399; }
 
 /* drawer toggle */
 .drawer-toggle-row {

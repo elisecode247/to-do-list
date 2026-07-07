@@ -116,11 +116,9 @@ const AppToolbar = ({
                             >
                                 <span
                                     className="drawer-dot"
-                                    style={{
-                                        backgroundColor: value === ALL_CATEGORIES
+                                    style={{ "--category-background-color": value === ALL_CATEGORIES
                                             ? '#8888ff'
-                                            : (value === NO_CATEGORY_ID ? '#94a3b8' : color),
-                                    }}
+                                            : (value === NO_CATEGORY_ID ? '#94a3b8' : color)} as React.CSSProperties}
                                 />
                                 {icon && value !== ALL_CATEGORIES ? <span aria-hidden="true">{icon}</span> : null}
                                 {displayLabel}

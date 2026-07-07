@@ -11,8 +11,8 @@ const DEFAULT_NEW_CATEGORY_COLOR = '#14b8a6';
 
 function CategoryPreview({ category }: { category: CategoryDefinition }) {
     return (
-        <div className="category-preview-pill" style={{ borderColor: category.color }}>
-            <span className="category-preview-pill__dot" style={{ backgroundColor: category.color }} />
+        <div className="category-preview-pill" style={{ "--category-preview-color": category.color } as React.CSSProperties}>
+            <span className="category-preview-pill__dot" style={{ "--category-preview-color": category.color } as React.CSSProperties} />
             {category.icon ? <span aria-hidden="true">{category.icon}</span> : null}
             <span>{category.name}</span>
         </div>
