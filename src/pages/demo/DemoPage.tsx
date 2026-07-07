@@ -175,7 +175,7 @@ const DemoPage: React.FC<{ onSuccessfulLogin: (token: string) => void }> = ({ on
                     }}
                 />
             )}
-            <header className="app_header">
+            <header className="demo-app_header">
                 <IconButton
                     className={`filter-toggle-button
                         ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}

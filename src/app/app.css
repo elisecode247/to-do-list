@@ -57,7 +57,7 @@
     grid-area: menu;
     background-color: transparent;
     border: 0;
-    padding: 0 var(--spacing-sm);
+    padding: 0;
     z-index: 10;
     margin-block: auto;
     margin-inline-start: auto;
@@ -143,6 +143,7 @@
 
     .account-menu-container {
         margin-inline-start: 0;
+        inset-inline-start: 0;
     }
 
     .app_header_settings {

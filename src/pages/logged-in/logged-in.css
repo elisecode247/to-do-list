@@ -15,7 +15,7 @@
     /* two rows, first row buttons, second row title */
     grid-template-columns: auto 1fr auto auto minmax(0, auto);
     grid-template-rows: 60px 60px;
-    grid-template-areas: "filter blank create menu show-completed" "title title title title";
+    grid-template-areas: "filter blank create menu show-completed" "title title title title title";
     align-items: center;
     gap: 0;
     height: 120px;
@@ -354,7 +354,7 @@
         grid-template-areas: "filter title create menu";
         grid-template-rows: 100px;
         align-items: center;
-        gap: 0;
+        gap: var(--spacing-md);
         height: 100px;
         padding: 0 16px;
         width: 100%;
