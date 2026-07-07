@@ -22,19 +22,17 @@ function Page({ title, children, privacyLink = true }: PageProps) {
     }
     return (
         <div className="page_container">
-            <header className="app_header">
+            <header className="page_header">
                 {location !== ROUTES.home && (
-                    <Link href={ROUTES.home} className="page-btn page-btn--primary">
+                    <Link href={ROUTES.home} className="page-btn page-btn--primary page-home-btn">
                         <Home size={24} />
                     </Link>
                 )}
-                <h1 className="app_h1 page_h1">Daily Reset List</h1>
-                <div></div>
+                <h1 className="page_h1">Daily Reset List</h1>
                 <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)} />
-
             </header>
             <div className="page-content">
-                {title && <h2 className="page_h2">{title}</h2>}
+                {title && <h2 className="visually-hidden">{title}</h2>}
                 {children}
             </div>
             {privacyLink && <Footer />}

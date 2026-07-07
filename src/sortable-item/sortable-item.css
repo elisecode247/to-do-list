@@ -397,7 +397,8 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
+    margin-block-start: var(--spacing-xs);
+    margin-block-end: var(--spacing-xs);
 }
 
 .sortable-item_subtasks-motion-shell {
@@ -412,6 +413,7 @@
 /* Reduce font size and padding for nested items */
 .sortable-item_subtasks-container .sortable-item_container {
     font-size: 0.95em;
+    margin: var(--spacing-xs) 2px;
 }
 
 .sortable-item_subtasks-container .sortable-item_subtasks-container {
