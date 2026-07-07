@@ -542,7 +542,6 @@
 .mode-priority .sortable-item_priority-button {
     background: color-mix(in srgb, var(--color-accent) 24%, transparent);
     border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
 
 .mode-priority .sortable-item_priority-button svg {
