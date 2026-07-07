@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useRef } from 'react';
-import { AlertCircle, CheckCircle, X } from 'lucide-react';
+import { AlertCircle, Check, Info, X } from 'lucide-react';
 import './toast.css';
 
 interface ToastProps {
@@ -10,9 +10,47 @@ interface ToastProps {
     undoAction?: () => void;
 }
 
-const Toast = function({ message, type, onClose, duration = 3000, undoAction }: ToastProps) {
+type ToastCopy = {
+    title: string;
+    subtitle?: string;
+};
+
+const toSentenceCase = (value: string) => {
+    if (!value) {
+        return value;
+    }
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+const getToastCopy = (message: string, type: ToastProps['type'], hasUndoAction: boolean): ToastCopy => {
+    if (!hasUndoAction) {
+        return { title: message };
+    }
+
+    const quotedMessageMatch = message.match(/^"(.+)"\s+(.+)$/);
+    if (quotedMessageMatch) {
+        return {
+            title: quotedMessageMatch[1],
+            subtitle: toSentenceCase(quotedMessageMatch[2])
+        };
+    }
+
+    if (type === 'success') {
+        return {
+            title: message,
+            subtitle: 'Action completed'
+        };
+    }
+
+    return { title: message };
+};
+
+const Toast = function({ message, type, onClose, duration = 300000, undoAction }: ToastProps) {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const handleClose = useEffectEvent(onClose);
+    const toastCopy = getToastCopy(message, type, Boolean(undoAction));
+
     useEffect(() => {
         timerRef.current = setTimeout(handleClose, duration);
         return () => clearTimeout(timerRef.current as NodeJS.Timeout);
@@ -27,12 +65,17 @@ const Toast = function({ message, type, onClose, duration = 3000, undoAction }: 
 
     return (
         <div className={`toast toast--${type}`}>
-            <div className="toast__icon">
-                {type === 'error' && <AlertCircle size={16} />}
-                {type === 'success' && <CheckCircle size={16} />}
-                {type === 'info' && <AlertCircle size={16} />}
+            <div className="toast__icon" aria-hidden="true">
+                {type === 'error' && <AlertCircle size={22} strokeWidth={2.3} />}
+                {type === 'success' && <Check size={24} strokeWidth={2.6} />}
+                {type === 'info' && <Info size={22} strokeWidth={2.3} />}
             </div>
-            <p className="toast__message">{message}</p>
+            <div className="toast__content">
+                <p className="toast__message">{toastCopy.title}</p>
+                {toastCopy.subtitle && (
+                    <p className="toast__subtitle">{toastCopy.subtitle}</p>
+                )}
+            </div>
             {undoAction && (
                 <button
                     className="toast__undo"
@@ -47,7 +90,7 @@ const Toast = function({ message, type, onClose, duration = 3000, undoAction }: 
                 onClick={onClose}
                 aria-label="Close notification"
             >
-                <X size={16} />
+                <X size={28} strokeWidth={1.4} />
             </button>
         </div>
     );
