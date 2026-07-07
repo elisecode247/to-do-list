@@ -113,16 +113,14 @@ body {
 .app_subtitle_last-updated--fresh {
     opacity: 1;
     color: contrast-color(var(--color-background));
-    font-weight: 900;
 }
 
 .app_subtitle_last-updated_fresh_icon {
     opacity: 1;
     color: contrast-color(var(--color-background));
-    text-shadow: 2px 2px 1px var(--color-info);
-    position: relative;
-    top: 4px;
-    inset-inline-start: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 4px;
 }
 
 /** Form Styles */

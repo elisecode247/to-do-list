@@ -49,19 +49,14 @@
 }
 
 .app_subtitle {
-    font-size: 16px;
-    font-weight: 500;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
     letter-spacing: 0.5px;
     opacity: 0.75;
     margin: 0;
     color: contrast-color(var(--color-background));
-    transform: translateY(0px);
-}
-
-.app_subtitle>span {
-    margin: 0;
     font-size: 12px;
-    opacity: 0.75;
 }
 
 .page_h2 {
@@ -114,15 +109,6 @@
 
     .page_h2 {
         margin: var(--spacing-xl) 0 var(--spacing-md) 0;
-    }
-
-    .app_subtitle {
-        transform: translateY(4px);
-    }
-
-
-    .app_subtitle>span {
-        margin: 0 var(--spacing-xs);
     }
 
 }
