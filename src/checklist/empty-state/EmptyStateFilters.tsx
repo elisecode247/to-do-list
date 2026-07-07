@@ -3,9 +3,10 @@
 import React from 'react';
 import './EmptyStateFilters.css';
 import { Filter } from 'lucide-react';
-import { ALL_CATEGORIES } from 'src/category-select/category-constants';
+import { ALL_CATEGORIES, getCategoryLabel, NO_CATEGORY_ID } from 'src/category-select/category-constants';
 import type { Mode } from 'src/app/types';
 import { ALL_MODES } from 'src/checklist/constants';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 interface EmptyStateFiltersProps {
     modeFilter: Mode | typeof ALL_MODES;
@@ -26,6 +27,10 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     onClearFilters,
     type = 'noTasks',
 }) => {
+    const { categories } = useUserSettings();
+    const filterCategoryLabel = filterCategory === NO_CATEGORY_ID
+        ? 'No category'
+        : getCategoryLabel(categories, filterCategory);
 
     return (
         <div className="empty-state">
@@ -45,7 +50,7 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
                         )}
                         {filterCategory !== ALL_CATEGORIES && (
                             <li className="filters-applied__item">
-                                Category: {filterCategory ? filterCategory : 'No category'}
+                                Category: {filterCategoryLabel}
                             </li>)}
                         {hideCompleted && (
                             <li className="filters-applied__item">

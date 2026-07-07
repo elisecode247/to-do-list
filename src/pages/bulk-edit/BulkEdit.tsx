@@ -5,9 +5,10 @@ import Page from "src/pages/Page";
 import '../page.css';
 import './bulk-edit.css';
 import { MODES } from "src/checklist/constants";
-import { categories } from "src/category-select/category-constants";
+import { getCategoryOptions } from "src/category-select/category-constants";
 import { useToast } from "src/toast/use-toast";
 import { useTask } from "src/app/use-task";
+import { useUserSettings } from "src/user-settings/use-user-settings";
 
 interface ChecklistItemWithDepth extends ChecklistItem {
     depth: number;
@@ -16,6 +17,7 @@ interface ChecklistItemWithDepth extends ChecklistItem {
 function BulkEdit() {
     const { showToast } = useToast();
     const { items, updateItem, deleteItem, bulkUpdate } = useTask();
+    const { categories } = useUserSettings();
 
     const [localItems, setLocalItems] = useState<ChecklistItem[]>(items);
     const [showSubtasksFor, setShowSubtasksFor] = useState<Set<string>>(new Set());
@@ -156,7 +158,10 @@ function BulkEdit() {
                         </thead>
                         <tbody>
                             {filteredTasks.map((task, index) => {
-                                const taskCategory = Object.keys(categories).includes(task.category) ? task.category : "";
+                                const categoryOptions = getCategoryOptions(categories, {
+                                    includeNone: true,
+                                    includeId: task.category,
+                                });
                                 return (
                                     <tr
                                         key={task.id}
@@ -199,14 +204,14 @@ function BulkEdit() {
                                         <td>
                                             <select
                                                 className="select-input"
-                                                value={taskCategory}
+                                                value={task.category}
                                                 onChange={e => {
                                                     updateLocal(task.id, "category", e.target.value)
                                                 }}
                                             >
-                                                {Object.entries(categories).map(([value, name]) => (
+                                                {categoryOptions.map(({ value, label }) => (
                                                     <option key={value} value={value}>
-                                                        {name}
+                                                        {label}
                                                     </option>
                                                 ))}
                                             </select>

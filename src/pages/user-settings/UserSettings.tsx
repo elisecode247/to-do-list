@@ -7,6 +7,7 @@ import Page from "../Page";
 import { Skull } from 'lucide-react';
 import EncryptionSettings from "src/user-settings/EncryptionSettings";
 import { useUserSettings } from "src/user-settings/use-user-settings";
+import CategorySettings from "src/pages/user-settings/CategorySettings";
 
 function UserSettings() {
     useTheme();
@@ -47,6 +48,7 @@ function UserSettings() {
                 </div>
                 <EncryptionSettings />
                 <AppearanceSettings />
+                <CategorySettings />
                 <div className="settings-section settings-section--danger">
                     <h3 className="settings-section-title settings-section-title--danger">
                         <Skull size={20} className="settings-section-icon--danger" />

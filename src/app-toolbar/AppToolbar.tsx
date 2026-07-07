@@ -1,11 +1,12 @@
 import React from 'react';
 import Tabs from 'src/app-toolbar/tabs/Tabs';
 import { ALL_MODES, MODES } from 'src/checklist/constants';
-import { ALL_CATEGORIES, categories } from 'src/category-select/category-constants';
+import { ALL_CATEGORIES, getCategoryOptions, NO_CATEGORY_ID } from 'src/category-select/category-constants';
 import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
 import CloseButton from 'components/close-button/CloseButton';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 interface AppToolbarProps {
     activeTab: Tab;
@@ -30,36 +31,17 @@ const AppToolbar = ({
     setFilterCategory,
     setLeftOpen
 }: AppToolbarProps) => {
+    const { categories } = useUserSettings();
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
         (modeFilter === ALL_MODES ? 0 : 1) +
         (filterCategory === ALL_CATEGORIES ? 0 : 1);
 
-    const categoryOptions = [
-        { value: ALL_CATEGORIES, label: 'All' },
-        ...Object.entries(categories)
-            .filter(([value]) => value !== '')
-            .map(([value, label]) => ({ value, label }))
-    ];
-
-    const getCategoryDotClass = (value: string) => {
-        switch (value) {
-            case ALL_CATEGORIES:
-                return 'drawer-dot--all';
-            case 'work':
-                return 'drawer-dot--work';
-            case 'housework':
-                return 'drawer-dot--housework';
-            case 'self-care':
-                return 'drawer-dot--self-care';
-            case 'people':
-                return 'drawer-dot--people';
-            case 'pets':
-                return 'drawer-dot--pets';
-            default:
-                return 'drawer-dot--leisure';
-        }
-    };
+    const categoryOptions = getCategoryOptions(categories, {
+        includeAll: true,
+        includeNone: true,
+        includeId: filterCategory,
+    });
 
     return (
         <div className="checklist_filter-container">
@@ -122,8 +104,9 @@ const AppToolbar = ({
             <div className="drawer-section">
                 <div className="drawer-section-label">Category</div>
                 <div className="drawer-category-pills">
-                    {categoryOptions.map(({ value, label }) => {
+                    {categoryOptions.map(({ value, label, color, icon }) => {
                         const isActive = filterCategory === value;
+                        const displayLabel = value === ALL_CATEGORIES ? 'All' : label;
                         return (
                             <button
                                 key={value}
@@ -131,8 +114,16 @@ const AppToolbar = ({
                                 className={`drawer-category-pill ${isActive ? 'active' : ''}`}
                                 onClick={() => setFilterCategory(value)}
                             >
-                                <span className={`drawer-dot ${getCategoryDotClass(value)}`} />
-                                {label}
+                                <span
+                                    className="drawer-dot"
+                                    style={{
+                                        backgroundColor: value === ALL_CATEGORIES
+                                            ? '#8888ff'
+                                            : (value === NO_CATEGORY_ID ? '#94a3b8' : color),
+                                    }}
+                                />
+                                {icon && value !== ALL_CATEGORIES ? <span aria-hidden="true">{icon}</span> : null}
+                                {displayLabel}
                             </button>
                         );
                     })}

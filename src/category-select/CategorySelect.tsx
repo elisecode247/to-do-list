@@ -1,6 +1,7 @@
 import './category-select.css';
-import { categories } from './category-constants';
+import { getCategoryOptions } from './category-constants';
 import { useFormContext } from 'react-hook-form';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 interface CategorySelectProps {
     id: string;
@@ -16,9 +17,15 @@ const CategorySelect = ({
     onChange,
 }: CategorySelectProps) => {
     const methods = useFormContext();
+    const { categories } = useUserSettings();
     const registration = methods?.register
         ? methods.register('category', { required: true })
         : undefined;
+    const categoryOptions = getCategoryOptions(categories, {
+        includeAll: isFilter,
+        includeNone: true,
+        includeId: selectedCategory,
+    });
 
     return (
         <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper_filter' : ''}`}>
@@ -33,8 +40,7 @@ const CategorySelect = ({
                     onChange?.(event.target.value);
                 }}
             >
-                {isFilter && <option value="all">All Category</option>}
-                {Object.entries(categories).map(([value, label]) => (
+                {categoryOptions.map(({ value, label }) => (
                     <option key={value} value={value}>{label}</option>
                 ))}
             </select>

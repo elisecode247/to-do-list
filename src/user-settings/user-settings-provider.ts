@@ -7,18 +7,54 @@ import {
     type ReactNode,
 } from "react";
 import { API_URL } from "src/app/constants";
+import {
+    mergeStoredCategories,
+    type CategoryDefinition,
+} from "src/category-select/category-constants";
 import { authHeaders } from "src/authentication/authentication-api";
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useToast } from "src/toast/use-toast";
+import {
+    readPersistentSetting,
+    requestPersistentStorage,
+    writePersistentSetting,
+} from "src/utilities/persistent-storage";
 import { UserSettingsContext, type UserSettingsContextValue } from "./user-settings-context";
 
 const USER_SETTINGS_URL = API_URL + "/user-settings";
+const CATEGORY_SETTINGS_KEY = "custom-task-categories";
+
+function loadStoredCategories(): CategoryDefinition[] {
+    const stored = readPersistentSetting(CATEGORY_SETTINGS_KEY);
+
+    if (!stored) {
+        return mergeStoredCategories([]);
+    }
+
+    try {
+        return mergeStoredCategories(JSON.parse(stored));
+    } catch {
+        return mergeStoredCategories([]);
+    }
+}
+
+function normalizeCategoryUpdate(value?: string): string | undefined {
+    if (typeof value !== 'string') return undefined;
+    const trimmed = value.trim();
+    return trimmed || undefined;
+}
 
 export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuthentication();
     const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false);
+    const [categories, setCategories] = useState<CategoryDefinition[]>(() => loadStoredCategories());
     const [isLoadingSettings, setIsLoadingSettings] = useState(true);
     const { showToast } = useToast();
+
+    useEffect(() => {
+        void requestPersistentStorage();
+        writePersistentSetting(CATEGORY_SETTINGS_KEY, JSON.stringify(categories));
+    }, [categories]);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -86,14 +122,80 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         }
     }, [showToast]);
 
+    const createCategory = useCallback<UserSettingsContextValue['createCategory']>((input) => {
+        const id = `custom-${crypto.randomUUID()}`;
+
+        setCategories(prev => ([
+            ...prev,
+            {
+                id,
+                name: input.name.trim(),
+                color: input.color,
+                icon: normalizeCategoryUpdate(input.icon),
+                isVisible: true,
+                isBuiltIn: false,
+                isDeleted: false,
+            },
+        ]));
+
+        return id;
+    }, []);
+
+    const updateCategory = useCallback<UserSettingsContextValue['updateCategory']>((id, updates) => {
+        setCategories(prev => prev.map(category => {
+            if (category.id !== id) return category;
+
+            return {
+                ...category,
+                name: normalizeCategoryUpdate(updates.name) ?? category.name,
+                color: normalizeCategoryUpdate(updates.color) ?? category.color,
+                icon: normalizeCategoryUpdate(updates.icon),
+            };
+        }));
+    }, []);
+
+    const setCategoryVisibility = useCallback<UserSettingsContextValue['setCategoryVisibility']>((id, isVisible) => {
+        setCategories(prev => prev.map(category => {
+            if (category.id !== id) return category;
+
+            return {
+                ...category,
+                isVisible,
+                isDeleted: category.isBuiltIn ? false : category.isDeleted,
+            };
+        }));
+    }, []);
+
+    const deleteCategory = useCallback<UserSettingsContextValue['deleteCategory']>((id) => {
+        setCategories(prev => prev.map(category => {
+            if (category.id !== id || category.isBuiltIn) return category;
+
+            return {
+                ...category,
+                isVisible: false,
+                isDeleted: true,
+            };
+        }));
+    }, []);
+
     const value = useMemo<UserSettingsContextValue>(() => ({
         googleCalendarEnabled,
+        categories,
         isLoadingSettings,
         updateEnableCalendar,
+        createCategory,
+        updateCategory,
+        setCategoryVisibility,
+        deleteCategory,
     }), [
         googleCalendarEnabled,
+        categories,
         isLoadingSettings,
         updateEnableCalendar,
+        createCategory,
+        updateCategory,
+        setCategoryVisibility,
+        deleteCategory,
     ]);
 
     return createElement(UserSettingsContext.Provider, { value }, children);

@@ -5,15 +5,13 @@ A daily task list that offers *gentle remembering without emotional penalty.*
 Live: https://dailyresetlist.com
 
 ## Features
-* low pressure: no goals or history tracking
-* repeatable tasks the reset each day
+* low pressure: no goals, no habit tracking, and no gamification
+* tasks that reset each day and an be easily skipped and delayed
 * shows the last time you completed a task
-* tasks can be skipped
-* includes an interstitial journal to combat context switching and procrastination
+* includes an encrypted interstitial journal to combat context switching and procrastination
 
 
 ### To do
-- feature: search encrypted journal
 - feature: export journal
 - feature: improve ux for newly logged in user
 - feature: custom categories
