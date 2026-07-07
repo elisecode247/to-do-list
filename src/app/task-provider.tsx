@@ -52,7 +52,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                     ...item,
                     done: isDateToday(item.lastCompleted),
                     itemType: 'checklist-item',
-                    upcoming: item.nextDue !== null && new Date(item.nextDue) > getLocalTodayAtMidnight(),
+                    // and if it was completed today, it is not upcoming, otherwise it is upcoming if nextDue is in the future
+                    upcoming: item.lastCompleted ? !isDateToday(item.lastCompleted) && item.nextDue !== null && new Date(item.nextDue) > getLocalTodayAtMidnight() : item.nextDue !== null && new Date(item.nextDue) > getLocalTodayAtMidnight(),
                 }
             })
             setItems(formattedItems);
