@@ -9,7 +9,6 @@ type CategoryIconProps = {
 
 export function CategoryIcon({ iconKey, size = 16, color = '#ffffff' }: CategoryIconProps) {
     const Icon = iconKey ? CATEGORY_ICON_COMPONENTS[iconKey as CategoryIconKey] : undefined;
-    console.log("%c Line:12 🍯 iconKey", "color:#b03734", iconKey);
 
     if (!Icon) {
         return <div

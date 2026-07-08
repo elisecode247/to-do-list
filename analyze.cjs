@@ -4,7 +4,7 @@ const { purgecssConfig } = require('./purgecss.config.cjs');
 
 PurgeCSS.purgeCSSWithOptions =  new PurgeCSS().purge(purgecssConfig).then(results => {
   results.forEach(result => {
-    console.log(`\n--- ${result.file} ---`);
-    console.log('Rejected selectors:', result.rejected);
+    console.info(`\n--- ${result.file} ---`);
+    console.info('Rejected selectors:', result.rejected);
   });
 });

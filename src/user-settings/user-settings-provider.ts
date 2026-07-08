@@ -191,7 +191,6 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     }, [fetchUserCategories, showToast]);
 
     const updateCategory = useCallback<UserSettingsContextValue['updateCategory']>((id, updates) => {
-        console.log("%c Line:199 🍇 id, updates", "color:#b03734", id, updates);
         const name = normalizeCategoryUpdate(updates.name);
         const color = normalizeCategoryUpdate(updates.color);
         const icon = normalizeCategoryUpdate(updates.icon);
