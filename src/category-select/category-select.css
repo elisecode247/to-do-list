@@ -27,6 +27,19 @@
     padding: 0;
 }
 
+.category-settings-icon-picker {
+    width: 100px;
+}
+
+.category-settings-icon-picker-options {
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    width: 100px;
+    background: var(--color-surface);
+    color: contrast-color(var(--color-surface));
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .category-select-wrapper {

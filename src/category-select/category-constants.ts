@@ -1,5 +1,34 @@
+import { normalizeCategoryIcon } from './category-icon-keys';
+import type { CategoryIconKey, CategoryIconOption } from './types';
 export const ALL_CATEGORIES = "all";
 export const NO_CATEGORY_ID = "";
+import {
+    type LucideIcon,
+    Briefcase,
+    House,
+    Heart,
+    Users,
+    PawPrint,
+    Sparkles,
+    BookOpen,
+    Coffee,
+    Dumbbell,
+    Flower2,
+    Music,
+    Plane,
+    CalendarDays,
+    ShoppingCart,
+    Receipt,
+    Wallet,
+    Laptop,
+    Wrench,
+    Smartphone,
+    Pill,
+    GraduationCap,
+    Car,
+    ClipboardList,
+    Bell,
+} from 'lucide-react';
 
 export interface CategoryDefinition {
     id: string;
@@ -25,7 +54,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "work",
         name: "Work",
         color: "#4ade80",
-        icon: "Briefcase",
+        icon: "briefcase",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -33,7 +62,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "housework",
         name: "Home",
         color: "#fbbf24",
-        icon: "Home",
+        icon: "house",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -41,7 +70,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "self-care",
         name: "Self-Care",
         color: "#f87171",
-        icon: "Heart",
+        icon: "heart",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -49,7 +78,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "people",
         name: "People",
         color: "#38bdf8",
-        icon: "Users",
+        icon: "users",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -57,7 +86,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "pets",
         name: "Pets",
         color: "#a78bfa",
-        icon: "PawPrint",
+        icon: "paw",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -65,7 +94,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "leisure",
         name: "Leisure",
         color: "#34d399",
-        icon: "Sparkles",
+        icon: "sparkles",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -97,7 +126,7 @@ function normalizeCategoryDefinition(category: unknown): CategoryDefinition | nu
         id,
         name: sanitizeString(candidate.name) || id,
         color: sanitizeString(candidate.color) || FALLBACK_CUSTOM_CATEGORY_COLOR,
-        icon: sanitizeString(candidate.icon) || undefined,
+        icon: normalizeCategoryIcon(sanitizeString(candidate.icon)),
         isVisible: typeof candidate.isVisible === 'boolean' ? candidate.isVisible : true,
         isBuiltIn: Boolean(candidate.isBuiltIn),
         isDeleted: Boolean(candidate.isDeleted),
@@ -153,9 +182,8 @@ export function getCategoryLabel(categoryDefinitions: CategoryDefinition[], cate
 }
 
 export function formatCategoryOptionLabel(category: Pick<CategoryDefinition, 'name' | 'icon' | 'isVisible' | 'isDeleted'>): string {
-    const prefix = category.icon ? `${category.icon} ` : '';
     const suffix = category.isDeleted ? ' (Removed)' : (!category.isVisible ? ' (Hidden)' : '');
-    return `${prefix}${category.name}${suffix}`;
+    return `${category.name}${suffix}`;
 }
 
 export function getCategoryOptions(
@@ -216,3 +244,57 @@ export const isCategoryIncluded = (selectedCategory: CategoryType, taskCategory:
     if (selectedCategory === NO_CATEGORY_ID) return taskCategory === NO_CATEGORY_ID;
     return selectedCategory === taskCategory;
 }
+
+export const CATEGORY_ICON_COMPONENTS: Record<CategoryIconKey, LucideIcon> = {
+    briefcase: Briefcase,
+    house: House,
+    heart: Heart,
+    users: Users,
+    paw: PawPrint,
+    sparkles: Sparkles,
+    book: BookOpen,
+    coffee: Coffee,
+    dumbbell: Dumbbell,
+    flower: Flower2,
+    music: Music,
+    plane: Plane,
+    calendar: CalendarDays,
+    cart: ShoppingCart,
+    receipt: Receipt,
+    wallet: Wallet,
+    laptop: Laptop,
+    wrench: Wrench,
+    smartphone: Smartphone,
+    pill: Pill,
+    graduation: GraduationCap,
+    car: Car,
+    clipboard: ClipboardList,
+    bell: Bell,
+};
+
+export const CATEGORY_ICON_OPTIONS: CategoryIconOption[] = [
+    { key: 'briefcase', label: 'Work', Icon: Briefcase },
+    { key: 'house', label: 'Home', Icon: House },
+    { key: 'heart', label: 'Care', Icon: Heart },
+    { key: 'users', label: 'People', Icon: Users },
+    { key: 'paw', label: 'Pets', Icon: PawPrint },
+    { key: 'sparkles', label: 'Leisure', Icon: Sparkles },
+    { key: 'book', label: 'Study', Icon: BookOpen },
+    { key: 'coffee', label: 'Break', Icon: Coffee },
+    { key: 'dumbbell', label: 'Fitness', Icon: Dumbbell },
+    { key: 'flower', label: 'Wellness', Icon: Flower2 },
+    { key: 'music', label: 'Music', Icon: Music },
+    { key: 'plane', label: 'Travel', Icon: Plane },
+    { key: 'calendar', label: 'Schedule', Icon: CalendarDays },
+    { key: 'cart', label: 'Shopping', Icon: ShoppingCart },
+    { key: 'receipt', label: 'Bills', Icon: Receipt },
+    { key: 'wallet', label: 'Finance', Icon: Wallet },
+    { key: 'laptop', label: 'Tech', Icon: Laptop },
+    { key: 'wrench', label: 'Maintenance', Icon: Wrench },
+    { key: 'smartphone', label: 'Calls', Icon: Smartphone },
+    { key: 'pill', label: 'Medication', Icon: Pill },
+    { key: 'graduation', label: 'Learning', Icon: GraduationCap },
+    { key: 'car', label: 'Errands', Icon: Car },
+    { key: 'clipboard', label: 'Checklist', Icon: ClipboardList },
+    { key: 'bell', label: 'Reminders', Icon: Bell },
+];

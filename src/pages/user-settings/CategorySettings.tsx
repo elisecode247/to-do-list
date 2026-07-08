@@ -4,6 +4,8 @@ import {
     formatCategoryOptionLabel,
     type CategoryDefinition,
 } from 'src/category-select/category-constants';
+import { CategoryIcon } from 'src/category-select/category-icons';
+import IconPicker from 'src/category-select/IconPicker';
 import { useToast } from 'src/toast/use-toast';
 import { useUserSettings } from 'src/user-settings/use-user-settings';
 
@@ -11,9 +13,11 @@ const DEFAULT_NEW_CATEGORY_COLOR = '#14b8a6';
 
 function CategoryPreview({ category }: { category: CategoryDefinition }) {
     return (
-        <div className="category-preview-pill" style={{ "--category-preview-color": category.color } as React.CSSProperties}>
-            <span className="category-preview-pill__dot" style={{ "--category-preview-color": category.color } as React.CSSProperties} />
-            {category.icon ? <span aria-hidden="true">{category.icon}</span> : null}
+        <div
+            className="category-preview-pill"
+            style={{ "--category-preview-color": category.color } as React.CSSProperties}
+        >
+            <CategoryIcon iconKey={category.icon} color={category.color} />
             <span>{category.name}</span>
         </div>
     );
@@ -64,7 +68,7 @@ function CategorySettings() {
                 Tasks keep the category ID, so renaming never changes stored task data.
             </p>
 
-            <div className="category-settings-grid">
+            <div className="category-settings-container">
                 {builtInCategories.map(category => (
                     <article key={category.id} className="category-settings-card">
                         <div className="category-settings-card__header">
@@ -93,15 +97,11 @@ function CategorySettings() {
                                 />
                             </label>
 
-                            <label className="category-settings-field">
-                                <span>Icon</span>
-                                <input
-                                    className="task-form-input"
-                                    placeholder="Optional"
-                                    value={category.icon ?? ''}
-                                    onChange={(event) => updateCategory(category.id, { icon: event.target.value })}
-                                />
-                            </label>
+                            <IconPicker
+                                label="Icon"
+                                value={category.icon}
+                                onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
+                            />
                         </div>
 
                         <label className="category-settings-toggle">
@@ -149,22 +149,21 @@ function CategorySettings() {
                     />
                 </label>
 
-                <label className="category-settings-field">
-                    <span>Icon</span>
-                    <input
-                        className="task-form-input"
-                        value={icon}
-                        onChange={(event) => setIcon(event.target.value)}
-                        placeholder="Optional"
-                    />
-                </label>
+                <IconPicker
+                    label="Icon"
+                    value={icon || undefined}
+                    onChange={(nextIcon) => setIcon(nextIcon ?? '')}
+                />
 
-                <button className="settings-btn settings-btn--primary" type="submit">
+                <button
+                    className="settings-btn settings-btn--primary custom-category-submit-btn"
+                    type="submit"
+                >
                     Add Category
                 </button>
             </form>
 
-            <div className="category-settings-grid">
+            <div className="category-settings-container">
                 {customCategories.length === 0 ? (
                     <div className="category-settings-empty">No custom categories yet.</div>
                 ) : customCategories.map(category => (
@@ -197,15 +196,11 @@ function CategorySettings() {
                                 />
                             </label>
 
-                            <label className="category-settings-field">
-                                <span>Icon</span>
-                                <input
-                                    className="task-form-input"
-                                    value={category.icon ?? ''}
-                                    onChange={(event) => updateCategory(category.id, { icon: event.target.value })}
-                                    placeholder="Optional"
-                                />
-                            </label>
+                            <IconPicker
+                                label="Icon"
+                                value={category.icon}
+                                onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
+                            />
                         </div>
 
                         <div className="category-settings-actions">

@@ -1,7 +1,8 @@
 import React from 'react';
 import Tabs from 'src/app-toolbar/tabs/Tabs';
 import { ALL_MODES, MODES } from 'src/checklist/constants';
-import { ALL_CATEGORIES, getCategoryOptions, NO_CATEGORY_ID } from 'src/category-select/category-constants';
+import { ALL_CATEGORIES, getCategoryOptions } from 'src/category-select/category-constants';
+import { CategoryIcon } from 'src/category-select/category-icons';
 import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
@@ -114,13 +115,7 @@ const AppToolbar = ({
                                 className={`drawer-category-pill ${isActive ? 'active' : ''}`}
                                 onClick={() => setFilterCategory(value)}
                             >
-                                <span
-                                    className="drawer-dot"
-                                    style={{ "--category-background-color": value === ALL_CATEGORIES
-                                            ? '#8888ff'
-                                            : (value === NO_CATEGORY_ID ? '#94a3b8' : color)} as React.CSSProperties}
-                                />
-                                {icon && value !== ALL_CATEGORIES ? <span aria-hidden="true">{icon}</span> : null}
+                                {value !== ALL_CATEGORIES ? <CategoryIcon iconKey={icon} color={color} /> : null}
                                 {displayLabel}
                             </button>
                         );

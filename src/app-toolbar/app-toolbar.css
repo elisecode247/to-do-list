@@ -165,7 +165,7 @@
     gap: 6px;
     padding: 5px 11px;
     border-radius: 20px;
-    border: 1px solid color-mix(in srgb, var(--color-border) 70%, #252530 30%);
+    border: 1px solid var(--category-background-color, var(--color-border));
     font-size: 12px;
     cursor: pointer;
     transition: all 0.15s;
@@ -182,14 +182,6 @@
     border-color: var(--color-accent-border);
     color: inherit;
     background: color-mix(in srgb, var(--color-accent-bg) 30%, transparent);
-}
-
-.drawer-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background-color: var(--category-background-color);
 }
 
 /* drawer toggle */
