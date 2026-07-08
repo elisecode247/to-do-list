@@ -1,5 +1,9 @@
-import { normalizeCategoryIcon } from './category-icon-keys';
-import type { CategoryIconKey, CategoryIconOption } from './types';
+import type {
+    CategoryIconKey,
+    CategoryIconOption,
+    CategoryDefinition,
+    CategoryOption
+} from './types';
 export const ALL_CATEGORIES = "all";
 export const NO_CATEGORY_ID = "";
 import {
@@ -9,6 +13,7 @@ import {
     Heart,
     Users,
     PawPrint,
+    Gamepad2,
     Sparkles,
     BookOpen,
     Coffee,
@@ -30,24 +35,35 @@ import {
     Bell,
 } from 'lucide-react';
 
-export interface CategoryDefinition {
-    id: string;
-    name: string;
-    color: string;
-    icon?: string;
-    isVisible: boolean;
-    isBuiltIn: boolean;
-    isDeleted?: boolean;
-}
 
-export interface CategoryOption {
-    value: string;
-    label: string;
-    color?: string;
-    icon?: string;
-    isHidden?: boolean;
-    isDeleted?: boolean;
-}
+export const CATEGORY_ICON_KEYS = [
+    'briefcase',
+    'house',
+    'heart',
+    'users',
+    'paw',
+    'paw-print',
+    'gamepad-2',
+    'sparkles',
+    'book',
+    'coffee',
+    'dumbbell',
+    'flower',
+    'music',
+    'plane',
+    'calendar',
+    'cart',
+    'receipt',
+    'wallet',
+    'laptop',
+    'wrench',
+    'smartphone',
+    'pill',
+    'graduation',
+    'car',
+    'clipboard',
+    'bell',
+] as const;
 
 export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
     {
@@ -86,7 +102,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "pets",
         name: "Pets",
         color: "#a78bfa",
-        icon: "paw",
+        icon: "paw-print",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -94,7 +110,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
         id: "leisure",
         name: "Leisure",
         color: "#34d399",
-        icon: "sparkles",
+        icon: "gamepad-2",
         isVisible: true,
         isBuiltIn: true,
     },
@@ -108,66 +124,6 @@ export const categories = {
 };
 
 type CategoryType = string;
-
-const FALLBACK_CUSTOM_CATEGORY_COLOR = "#94a3b8";
-
-function sanitizeString(value: unknown): string {
-    return typeof value === 'string' ? value.trim() : '';
-}
-
-function normalizeCategoryDefinition(category: unknown): CategoryDefinition | null {
-    if (!category || typeof category !== 'object') return null;
-
-    const candidate = category as Partial<CategoryDefinition>;
-    const id = sanitizeString(candidate.id);
-    if (!id) return null;
-
-    return {
-        id,
-        name: sanitizeString(candidate.name) || id,
-        color: sanitizeString(candidate.color) || FALLBACK_CUSTOM_CATEGORY_COLOR,
-        icon: normalizeCategoryIcon(sanitizeString(candidate.icon)),
-        isVisible: typeof candidate.isVisible === 'boolean' ? candidate.isVisible : true,
-        isBuiltIn: Boolean(candidate.isBuiltIn),
-        isDeleted: Boolean(candidate.isDeleted),
-    };
-}
-
-export function mergeStoredCategories(storedCategories: unknown): CategoryDefinition[] {
-    const normalizedDefaults = DEFAULT_CATEGORIES.map(category => ({ ...category }));
-    const defaultMap = new Map(normalizedDefaults.map(category => [category.id, category]));
-    const normalizedStored = Array.isArray(storedCategories)
-        ? storedCategories.map(normalizeCategoryDefinition)
-        : [];
-
-    const mergedDefaults = normalizedDefaults.map(category => {
-        const stored = normalizedStored.find(candidate => candidate?.id === category.id);
-
-        if (!stored) return category;
-
-        return {
-            ...category,
-            name: stored.name || category.name,
-            color: stored.color || category.color,
-            icon: stored.icon || undefined,
-            isVisible: stored.isVisible,
-            isDeleted: false,
-            isBuiltIn: true,
-        };
-    });
-
-    const customCategories = normalizedStored
-        .filter((category): category is CategoryDefinition => {
-            if (!category) return false;
-            return !defaultMap.has(category.id);
-        })
-        .map(category => ({
-            ...category,
-            isBuiltIn: false,
-        }));
-
-    return [...mergedDefaults, ...customCategories];
-}
 
 export function getCategoryById(categoryDefinitions: CategoryDefinition[], categoryId: string): CategoryDefinition | undefined {
     return categoryDefinitions.find(category => category.id === categoryId);
@@ -251,6 +207,8 @@ export const CATEGORY_ICON_COMPONENTS: Record<CategoryIconKey, LucideIcon> = {
     heart: Heart,
     users: Users,
     paw: PawPrint,
+    'paw-print': PawPrint,
+    'gamepad-2': Gamepad2,
     sparkles: Sparkles,
     book: BookOpen,
     coffee: Coffee,
@@ -278,6 +236,8 @@ export const CATEGORY_ICON_OPTIONS: CategoryIconOption[] = [
     { key: 'heart', label: 'Care', Icon: Heart },
     { key: 'users', label: 'People', Icon: Users },
     { key: 'paw', label: 'Pets', Icon: PawPrint },
+    { key: 'paw-print', label: 'Pets', Icon: PawPrint },
+    { key: 'gamepad-2', label: 'Gaming', Icon: Gamepad2 },
     { key: 'sparkles', label: 'Leisure', Icon: Sparkles },
     { key: 'book', label: 'Study', Icon: BookOpen },
     { key: 'coffee', label: 'Break', Icon: Coffee },

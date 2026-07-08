@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { CategoryDefinition } from "src/category-select/category-constants";
+import type { CategoryDefinition } from "src/category-select/types";
 
 export type CreateCategoryInput = {
     name: string;

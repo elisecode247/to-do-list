@@ -12,6 +12,8 @@ Live: https://dailyresetlist.com
 
 
 ### To do
+- bug: toast font too big
+- bug: prevent pull to refresh if drag and drop
 - feature: export journal
 - feature: improve ux for newly logged in user
 - feature: custom categories

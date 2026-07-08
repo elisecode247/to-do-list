@@ -40,6 +40,14 @@
     color: contrast-color(var(--color-surface));
 }
 
+.category-dot-icon {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: var(--category-background-color);
+}
+
 /* Responsive adjustments for larger screens */
 @media (min-width: 900px) {
     .category-select-wrapper {

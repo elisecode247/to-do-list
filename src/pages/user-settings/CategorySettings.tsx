@@ -1,9 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import './category-settings.css';
-import {
-    formatCategoryOptionLabel,
-    type CategoryDefinition,
-} from 'src/category-select/category-constants';
+import type { CategoryDefinition } from 'src/category-select/types';
+import { formatCategoryOptionLabel } from 'src/category-select/category-constants';
 import { CategoryIcon } from 'src/category-select/category-icons';
 import IconPicker from 'src/category-select/IconPicker';
 import { useToast } from 'src/toast/use-toast';
@@ -36,9 +34,8 @@ function CategorySettings() {
     const [color, setColor] = useState(DEFAULT_NEW_CATEGORY_COLOR);
     const [icon, setIcon] = useState('');
 
-    const editableCategories = categories.filter(category => !category.isDeleted);
-    const builtInCategories = editableCategories.filter(category => category.isBuiltIn);
-    const customCategories = editableCategories.filter(category => !category.isBuiltIn);
+    const builtInCategories = categories.filter(category => category.isBuiltIn);
+    const customCategories = categories.filter(category => !category.isBuiltIn);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -69,7 +66,9 @@ function CategorySettings() {
             </p>
 
             <div className="category-settings-container">
-                {builtInCategories.map(category => (
+                {builtInCategories.map(category => {
+                    console.log("%c Line:73 🥕 category", "color:#ffdd4d", category);
+                    return (
                     <article key={category.id} className="category-settings-card">
                         <div className="category-settings-card__header">
                             <CategoryPreview category={category} />
@@ -101,6 +100,7 @@ function CategorySettings() {
                                 label="Icon"
                                 value={category.icon}
                                 onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
+                                color={category.color}
                             />
                         </div>
 
@@ -113,7 +113,7 @@ function CategorySettings() {
                             <span>Show in category lists</span>
                         </label>
                     </article>
-                ))}
+                )})}
             </div>
 
             <div className="category-settings-divider" />
@@ -200,6 +200,7 @@ function CategorySettings() {
                                 label="Icon"
                                 value={category.icon}
                                 onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
+                                color={category.color}
                             />
                         </div>
 
@@ -214,7 +215,7 @@ function CategorySettings() {
                             </label>
 
                             <button
-                                className="settings-btn"
+                                className="settings-btn settings-btn--danger"
                                 type="button"
                                 onClick={() => {
                                     deleteCategory(category.id);

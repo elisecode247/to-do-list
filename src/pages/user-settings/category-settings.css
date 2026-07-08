@@ -39,6 +39,7 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    color: contrast-color(var(--color-background));
 }
 
 .category-settings-card__badge--custom {
@@ -49,6 +50,7 @@
     display: grid;
     gap: 6px;
     font-size: 13px;
+    color: contrast-color(var(--color-background));
 }
 
 .category-settings-row {
@@ -71,6 +73,7 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
+    color: contrast-color(var(--color-background));
 }
 
 .category-settings-toggle > input {
@@ -134,6 +137,7 @@
     padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid var(--category-preview-color);
-    background-color: var(--category-preview-color), color-mix(in srgb, var(--color-surface) 74%, transparent);
+    background-color: var(--color-surface);
+    color: contrast-color(var(--color-surface));
     font-size: 14px;
 }

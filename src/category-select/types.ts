@@ -1,4 +1,4 @@
-import { CATEGORY_ICON_KEYS } from './category-icon-keys';
+import { CATEGORY_ICON_KEYS } from './category-constants';
 import type { LucideIcon } from 'lucide-react';
 
 export type CategoryIconKey = typeof CATEGORY_ICON_KEYS[number];
@@ -9,3 +9,33 @@ export type CategoryIconOption = {
     Icon: LucideIcon;
 };
 
+export type ServerCategoryDefinition = {
+    uuid: string;
+    name: string;
+    color: string;
+    icon: string;
+    isVisible: boolean;
+    isBuiltIn: boolean;
+    builtInKey: string;
+    sortOrder: number;
+    createdAt: string;
+    updatedAt: string;
+}
+export interface CategoryDefinition {
+    id: string;
+    name: string;
+    color: string;
+    icon?: string;
+    isVisible: boolean;
+    isBuiltIn: boolean;
+    isDeleted?: boolean;
+}
+
+export interface CategoryOption {
+    value: string;
+    label: string;
+    color?: string;
+    icon?: string;
+    isHidden?: boolean;
+    isDeleted?: boolean;
+}

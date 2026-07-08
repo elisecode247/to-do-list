@@ -2,40 +2,30 @@ import {
     createElement,
     useCallback,
     useEffect,
-    useState,
     useMemo,
+    useState,
     type ReactNode,
 } from "react";
 import { API_URL } from "src/app/constants";
-import {
-    mergeStoredCategories,
-    type CategoryDefinition,
-} from "src/category-select/category-constants";
+import type {  ServerCategoryDefinition, CategoryDefinition } from "src/category-select/types";
 import { authHeaders } from "src/authentication/authentication-api";
 import { useAuthentication } from "src/authentication/use-authentication";
 import { useToast } from "src/toast/use-toast";
-import {
-    readPersistentSetting,
-    requestPersistentStorage,
-    writePersistentSetting,
-} from "src/utilities/persistent-storage";
 import { UserSettingsContext, type UserSettingsContextValue } from "./user-settings-context";
 
 const USER_SETTINGS_URL = API_URL + "/user-settings";
-const CATEGORY_SETTINGS_KEY = "custom-task-categories";
+const USER_CATEGORIES_URL = API_URL + "/user-categories";
 
-function loadStoredCategories(): CategoryDefinition[] {
-    const stored = readPersistentSetting(CATEGORY_SETTINGS_KEY);
-
-    if (!stored) {
-        return mergeStoredCategories([]);
-    }
-
-    try {
-        return mergeStoredCategories(JSON.parse(stored));
-    } catch {
-        return mergeStoredCategories([]);
-    }
+function normalizeFetchedCategories(payload: ServerCategoryDefinition[]): CategoryDefinition[] {
+    return payload.map(category => ({
+        id: category.uuid,
+        name: category.name ?? '',
+        color: category.color ?? '#ffffff',
+        icon: category.icon ?? '',
+        isVisible: category.isVisible ?? true,
+        isBuiltIn: category.isBuiltIn,
+        isDeleted: false,
+    }));
 }
 
 function normalizeCategoryUpdate(value?: string): string | undefined {
@@ -47,17 +37,36 @@ function normalizeCategoryUpdate(value?: string): string | undefined {
 export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuthentication();
     const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false);
-    const [categories, setCategories] = useState<CategoryDefinition[]>(() => loadStoredCategories());
+    const [categories, setCategories] = useState<CategoryDefinition[]>([]);
     const [isLoadingSettings, setIsLoadingSettings] = useState(true);
     const { showToast } = useToast();
 
-    useEffect(() => {
-        void requestPersistentStorage();
-        writePersistentSetting(CATEGORY_SETTINGS_KEY, JSON.stringify(categories));
-    }, [categories]);
+    const fetchUserCategories = useCallback(async (cancelled = false): Promise<void> => {
+        try {
+            const response = await fetch(USER_CATEGORIES_URL, {
+                method: "GET",
+                headers: await authHeaders(),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to load categories: ${response.status}`);
+            }
+
+            const fetched = await response.json();
+            if (!cancelled) {
+                setCategories(normalizeFetchedCategories(fetched));
+            }
+        } catch (err) {
+            console.error("Loading user categories failed:", err);
+            if (!cancelled) {
+                showToast('Failed to load categories. Please refresh the page.', 'error');
+            }
+        }
+    }, [showToast]);
 
     useEffect(() => {
         if (!isAuthenticated) {
+            setCategories([]);
             setIsLoadingSettings(false);
             return;
         }
@@ -67,16 +76,30 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
         async function loadUserSettings() {
             try {
-                const response = await fetch(USER_SETTINGS_URL, {
-                    method: "GET",
-                    headers: await authHeaders(),
-                });
+                const [settingsResponse, categoriesResponse] = await Promise.all([
+                    fetch(USER_SETTINGS_URL, {
+                        method: "GET",
+                        headers: await authHeaders(),
+                    }),
+                    fetch(USER_CATEGORIES_URL, {
+                        method: "GET",
+                        headers: await authHeaders(),
+                    }),
+                ]);
 
-                if (!response.ok) {
-                    throw new Error(`Failed to load user settings: ${response.status}`);
+                if (!settingsResponse.ok) {
+                    throw new Error(`Failed to load user settings: ${settingsResponse.status}`);
                 }
 
-                const settings = await response.json();
+                if (!categoriesResponse.ok) {
+                    throw new Error(`Failed to load categories: ${categoriesResponse.status}`);
+                }
+
+                const [settings, rawCategories] = await Promise.all([
+                    settingsResponse.json(),
+                    categoriesResponse.json(),
+                ]);
+
                 const nextEnableCalendar = settings?.googleCalendarEnabled ?? settings?.userSettings?.googleCalendarEnabled;
 
                 if (!isCancelled && typeof nextEnableCalendar === "boolean") {
@@ -84,6 +107,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (!isCancelled) {
+                    setCategories(normalizeFetchedCategories(rawCategories));
                     setIsLoadingSettings(false);
                 }
             } catch (err) {
@@ -103,7 +127,6 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     }, [isAuthenticated, showToast]);
 
     const updateEnableCalendar = useCallback(async (nextValue: boolean) => {
-
         try {
             const response = await fetch(USER_SETTINGS_URL, {
                 method: "PUT",
@@ -123,36 +146,89 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     }, [showToast]);
 
     const createCategory = useCallback<UserSettingsContextValue['createCategory']>((input) => {
-        const id = `custom-${crypto.randomUUID()}`;
+        const optimisticId = `custom-${crypto.randomUUID()}`;
+        const optimisticCategory: CategoryDefinition = {
+            id: optimisticId,
+            name: input.name.trim(),
+            color: input.color,
+            icon: normalizeCategoryUpdate(input.icon),
+            isVisible: true,
+            isBuiltIn: false,
+            isDeleted: false,
+        };
 
         setCategories(prev => ([
             ...prev,
-            {
-                id,
-                name: input.name.trim(),
-                color: input.color,
-                icon: normalizeCategoryUpdate(input.icon),
-                isVisible: true,
-                isBuiltIn: false,
-                isDeleted: false,
-            },
+            optimisticCategory,
         ]));
 
-        return id;
-    }, []);
+        void (async () => {
+            try {
+                const response = await fetch(USER_CATEGORIES_URL, {
+                    method: "POST",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({
+                        name: optimisticCategory.name,
+                        color: optimisticCategory.color,
+                        icon: optimisticCategory.icon,
+                        isVisible: true,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to create category: ${response.status}`);
+                }
+
+                await fetchUserCategories();
+            } catch (err) {
+                console.error("Creating category failed:", err);
+                setCategories(prev => prev.filter(category => category.id !== optimisticId));
+                showToast('Failed to create category. Please try again.', 'error');
+            }
+        })();
+
+        return optimisticId;
+    }, [fetchUserCategories, showToast]);
 
     const updateCategory = useCallback<UserSettingsContextValue['updateCategory']>((id, updates) => {
+        console.log("%c Line:199 🍇 id, updates", "color:#b03734", id, updates);
+        const name = normalizeCategoryUpdate(updates.name);
+        const color = normalizeCategoryUpdate(updates.color);
+        const icon = normalizeCategoryUpdate(updates.icon);
+
         setCategories(prev => prev.map(category => {
             if (category.id !== id) return category;
 
             return {
                 ...category,
-                name: normalizeCategoryUpdate(updates.name) ?? category.name,
-                color: normalizeCategoryUpdate(updates.color) ?? category.color,
-                icon: normalizeCategoryUpdate(updates.icon),
+                name: name ?? category.name,
+                color: color ?? category.color,
+                icon,
             };
         }));
-    }, []);
+
+        void (async () => {
+            try {
+                const response = await fetch(`${USER_CATEGORIES_URL}/${encodeURIComponent(id)}`, {
+                    method: "PATCH",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({
+                        ...(name !== undefined ? { name } : {}),
+                        ...(color !== undefined ? { color } : {}),
+                        icon,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to update category: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Updating category failed:", err);
+                showToast('Failed to update category. Reloading categories...', 'error');
+                await fetchUserCategories();
+            }
+        })();
+    }, [fetchUserCategories, showToast]);
 
     const setCategoryVisibility = useCallback<UserSettingsContextValue['setCategoryVisibility']>((id, isVisible) => {
         setCategories(prev => prev.map(category => {
@@ -164,19 +240,54 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                 isDeleted: category.isBuiltIn ? false : category.isDeleted,
             };
         }));
-    }, []);
+
+        void (async () => {
+            try {
+                const response = await fetch(`${USER_CATEGORIES_URL}/${encodeURIComponent(id)}`, {
+                    method: "PATCH",
+                    headers: await authHeaders(),
+                    body: JSON.stringify({ isVisible }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to update category visibility: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Updating category visibility failed:", err);
+                showToast('Failed to update category visibility. Reloading categories...', 'error');
+                await fetchUserCategories();
+            }
+        })();
+    }, [fetchUserCategories, showToast]);
 
     const deleteCategory = useCallback<UserSettingsContextValue['deleteCategory']>((id) => {
-        setCategories(prev => prev.map(category => {
-            if (category.id !== id || category.isBuiltIn) return category;
+        void (async () => {
+            try {
+                const response = await fetch(`${USER_CATEGORIES_URL}/${encodeURIComponent(id)}`, {
+                    method: "DELETE",
+                    headers: await authHeaders(),
+                });
 
-            return {
-                ...category,
-                isVisible: false,
-                isDeleted: true,
-            };
-        }));
-    }, []);
+                if (!response.ok) {
+                    throw new Error(`Failed to delete category: ${response.status}`);
+                }
+
+                setCategories(prev => prev.map(category => {
+                    if (category.id !== id || category.isBuiltIn) return category;
+
+                    return {
+                        ...category,
+                        isVisible: false,
+                        isDeleted: true,
+                    };
+                }));
+            } catch (err) {
+                console.error("Deleting category failed:", err);
+                showToast('Failed to delete category. Reloading categories...', 'error');
+                await fetchUserCategories();
+            }
+        })();
+    }, [fetchUserCategories, showToast]);
 
     const value = useMemo<UserSettingsContextValue>(() => ({
         googleCalendarEnabled,
