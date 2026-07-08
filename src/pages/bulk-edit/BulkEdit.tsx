@@ -20,7 +20,6 @@ function BulkEdit() {
     const { categories } = useUserSettings();
 
     const [localItems, setLocalItems] = useState<ChecklistItem[]>(items);
-    console.log("%c Line:23 🌽 localItems", "color:#fca650", localItems);
     const [showSubtasksFor, setShowSubtasksFor] = useState<Set<string>>(new Set());
     const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
     const [isSaving, setIsSaving] = useState(false);
