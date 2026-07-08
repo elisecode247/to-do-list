@@ -18,7 +18,7 @@ const USER_CATEGORIES_URL = API_URL + "/user-categories";
 
 function normalizeFetchedCategories(payload: ServerCategoryDefinition[]): CategoryDefinition[] {
     return payload.map(category => ({
-        id: category.uuid,
+        id: category.uuid ?? '',
         name: category.name ?? '',
         color: category.color ?? '#ffffff',
         icon: category.icon ?? '',

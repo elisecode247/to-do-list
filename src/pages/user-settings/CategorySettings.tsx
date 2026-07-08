@@ -67,7 +67,6 @@ function CategorySettings() {
 
             <div className="category-settings-container">
                 {builtInCategories.map(category => {
-                    console.log("%c Line:73 🥕 category", "color:#ffdd4d", category);
                     return (
                     <article key={category.id} className="category-settings-card">
                         <div className="category-settings-card__header">

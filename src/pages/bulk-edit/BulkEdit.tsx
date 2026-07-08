@@ -20,6 +20,7 @@ function BulkEdit() {
     const { categories } = useUserSettings();
 
     const [localItems, setLocalItems] = useState<ChecklistItem[]>(items);
+    console.log("%c Line:23 🌽 localItems", "color:#fca650", localItems);
     const [showSubtasksFor, setShowSubtasksFor] = useState<Set<string>>(new Set());
     const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
     const [isSaving, setIsSaving] = useState(false);
@@ -162,6 +163,7 @@ function BulkEdit() {
                                     includeNone: true,
                                     includeId: task.category,
                                 });
+                                const categoryValue = categoryOptions.some(option => option.value === task.category) ? task.category : '';
                                 return (
                                     <tr
                                         key={task.id}
@@ -204,7 +206,7 @@ function BulkEdit() {
                                         <td>
                                             <select
                                                 className="select-input"
-                                                value={task.category}
+                                                value={categoryValue}
                                                 onChange={e => {
                                                     updateLocal(task.id, "category", e.target.value)
                                                 }}
