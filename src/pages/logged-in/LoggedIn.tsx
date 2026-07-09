@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type SetState
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
-import Checklist from 'checklist/Checklist';
 import ErrorState from 'src/error-state/ErrorState';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
@@ -31,6 +30,7 @@ import('src/pages/bulk-edit/BulkEdit');
 import('src/pages/not-found/NotFound');
 import('src/pages/PrivacyPolicy');
 import { AnimatePresence, motion } from 'framer-motion';
+import TaskContextChecklist from './TaskContextChecklist';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -307,7 +307,7 @@ const LoggedIn: React.FC = () => {
                                 </div>
                             </div>
                         ) : (
-                            <Checklist
+                            <TaskContextChecklist
                                 onEditItem={handleEditItem}
                                 onEditEvent={handleEditEvent}
                                 sparkles={sparkles}
@@ -353,21 +353,21 @@ const LoggedIn: React.FC = () => {
                         transition={{ type: 'spring', stiffness: 580, damping: 44 }}
                     />
                     {mobileTabs.map(tab => (
-                            <button
-                                key={tab}
-                                ref={el => {
-                                    mobileTabButtonRefs.current[tab] = el;
-                                }}
-                                className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
-                                onClick={() => handleTabChange(tab)}
-                            >
-                                <span className="mobile-tab-button-content">
-                                    {tab === TABS.journal
-                                        ? <PencilIcon size={16} />
-                                        : TAB_LABELS[tab]}
-                                </span>
-                            </button>
-                        ))}
+                        <button
+                            key={tab}
+                            ref={el => {
+                                mobileTabButtonRefs.current[tab] = el;
+                            }}
+                            className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
+                            onClick={() => handleTabChange(tab)}
+                        >
+                            <span className="mobile-tab-button-content">
+                                {tab === TABS.journal
+                                    ? <PencilIcon size={16} />
+                                    : TAB_LABELS[tab]}
+                            </span>
+                        </button>
+                    ))}
                 </nav>
             )}
             <Footer />

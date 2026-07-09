@@ -6,7 +6,7 @@ import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
 import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
-import { useTask } from 'src/app/use-task';
+import type { ChecklistController } from 'checklist/types';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
 import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
@@ -14,7 +14,6 @@ import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
-import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
@@ -39,18 +38,19 @@ function eventIncludesAfterToday(startDate: Date | string, endDate: Date | strin
 }
 
 interface ChecklistProps {
+    controller: ChecklistController;
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
     hideCompleted: boolean;
     filterCategory: string;
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
-    onEditEvent: (item: GoogleEvent) => void;
-    sparkles: ReactElement;
-    onNotesChange?: (notes: string) => void;
+    onEditEvent?: (item: GoogleEvent) => void;
+    sparkles?: ReactElement;
 }
 
 const Checklist: FC<ChecklistProps> = ({
+    controller,
     activeTab,
     modeFilter,
     hideCompleted,
@@ -72,12 +72,10 @@ const Checklist: FC<ChecklistProps> = ({
         hideForToday,
         unhideForToday,
         loadTasks,
-    } = useTask();
-    const {
         events,
         hideEventForToday,
-        unhideEventForToday,
-    } = useGoogleCalendar();
+        unhideEventForToday
+    } = controller;
 
     const [showSparkles, setShowSparkles] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
@@ -104,7 +102,7 @@ const Checklist: FC<ChecklistProps> = ({
             return a.sortOrder - b.sortOrder;
         });
 
-    const filteredEvents = events.filter(event => {
+    const filteredEvents = events?.filter(event => {
         if (activeTab === TABS.hidden) return event.isHidden;
         if (event.isHidden) return false;
         if (activeTab === TABS.today) {
@@ -114,7 +112,7 @@ const Checklist: FC<ChecklistProps> = ({
             return eventIncludesAfterToday(event.startDate, event.endDate);
         }
         return false;
-    }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()) ?? [];
 
     const getItemDate = (item: ChecklistItem | GoogleEvent) => {
         if ('startDate' in item) {
@@ -203,9 +201,10 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const handleEventEdit = (id: string) => {
+        if (!events) return;
         const selectedEvent = events.find(event => event.id === id);
         if (!selectedEvent) return;
-        onEditEvent({
+        onEditEvent?.({
             ...selectedEvent,
             itemType: 'google-event',
         } as GoogleEvent);
