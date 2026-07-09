@@ -80,6 +80,7 @@ const Checklist: FC<ChecklistProps> = ({
     } = useGoogleCalendar();
 
     const [showSparkles, setShowSparkles] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const listContentRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
@@ -89,7 +90,7 @@ const Checklist: FC<ChecklistProps> = ({
         pullRefreshContainerClassName,
         PullToRefresh,
         pullDistance
-     } = usePullToRefresh(loadTasks);
+      } = usePullToRefresh(loadTasks, !isDragging);
 
     const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
         .sort((a, b) => {
@@ -148,12 +149,20 @@ const Checklist: FC<ChecklistProps> = ({
     function handleDragStart(event: DragStartEvent) {
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
+
+        setIsDragging(true);
     }
     const handleDragEnd = (event: DragEndEvent) => {
+        setIsDragging(false);
+
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
         sortItems(filteredItems, activeTab, active.id as string, over.id as string);
+    };
+
+    const handleDragCancel = () => {
+        setIsDragging(false);
     };
 
     const toggleChecked = async (id: string, checked: boolean) => {
@@ -306,7 +315,12 @@ const Checklist: FC<ChecklistProps> = ({
     return (
         <>
             {showSparkles && sparkles}
-            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
+            <DndContext
+                onDragEnd={handleDragEnd}
+                onDragStart={handleDragStart}
+                onDragCancel={handleDragCancel}
+                sensors={sensors}
+            >
                 <div
                     className={`checklist_list-container ${pullRefreshContainerClassName} ${pullDistance ?
                         "checklist_list-container--pulling" : ""

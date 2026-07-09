@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import PullToRefreshIcon from './PullRefreshIcon';
 import './use-pull-to-refresh.css';
 
-export const usePullToRefresh = (refreshData: () => void) => {
+export const usePullToRefresh = (refreshData: () => void, isEnabled = true) => {
     const [pullDistance, setPullDistance] = useState(0);
     const refreshContainerRef = useRef<HTMLDivElement>(null);
     const startPoint = useRef<number | null>(null);
@@ -26,14 +26,22 @@ export const usePullToRefresh = (refreshData: () => void) => {
     }, [refreshData]);
 
     const pullStart = useCallback((e: TouchEvent) => {
+        if (!isEnabled) {
+            return;
+        }
+
         if (refreshContainerRef.current?.scrollTop !== 0) {
             return;
         }
         const { clientY } = e.targetTouches[0];
         startPoint.current = clientY;
-    }, []);
+    }, [isEnabled]);
 
     const pull = useCallback((e: TouchEvent) => {
+        if (!isEnabled) {
+            return;
+        }
+
         if (startPoint.current === null) return;
 
         if (refreshContainerRef.current?.scrollTop !== 0) {
@@ -49,14 +57,20 @@ export const usePullToRefresh = (refreshData: () => void) => {
         }
 
         setPullDistance(dampedPullDistance(pullLength));
-    }, [dampedPullDistance]);
+    }, [dampedPullDistance, isEnabled]);
 
     const endPull = useCallback(() => {
+        if (!isEnabled) {
+            startPoint.current = null;
+            setPullDistance(0);
+            return;
+        }
+
         const shouldRefresh = pullDistance > 100;
         startPoint.current = null;
         setPullDistance(0);
         if (shouldRefresh) triggerRefresh();
-    }, [pullDistance, triggerRefresh]);
+    }, [isEnabled, pullDistance, triggerRefresh]);
 
     useEffect(() => {
         const refreshContCurrent = refreshContainerRef.current;

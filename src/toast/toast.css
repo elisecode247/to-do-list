@@ -83,7 +83,7 @@
 
 .toast__message {
     margin: 0;
-    font-size: clamp(16px, 1.5vw, 34px);
+    font-size: 16px;
     line-height: 1.2;
     font-weight: 700;
     color: var(--toast-title);
@@ -91,7 +91,7 @@
 
 .toast__subtitle {
     margin: 2px 0 0;
-    font-size: clamp(14px, 1.05vw, 24px);
+    font-size: 14px;
     line-height: 1.2;
     font-weight: 500;
     color: var(--toast-subtitle);
@@ -128,7 +128,7 @@
     cursor: pointer;
     color: var(--toast-action);
     transition: opacity var(--transition-fast), transform var(--transition-fast);
-    font-size: clamp(16px, 1.4vw, 32px);
+    font-size: 16px;
     line-height: 1;
     font-weight: 500;
 }
@@ -160,7 +160,6 @@
         grid-column: 3;
         grid-row: 1;
         justify-self: end;
-        font-size: 18px;
     }
 
     .toast__close {

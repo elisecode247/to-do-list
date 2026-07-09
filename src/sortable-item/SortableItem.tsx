@@ -284,6 +284,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                         aria-label="Hold to move and reorder task"
                         title="Hold to move and reorder task"
                         type="button"
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
                     >
                         <GripVertical size={24} />
                     </button>

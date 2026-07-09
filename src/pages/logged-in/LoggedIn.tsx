@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useRef, useState, type SetStateAction } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type SetStateAction } from 'react';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
@@ -113,7 +113,12 @@ const LoggedIn: React.FC = () => {
     const handleTabChange = (tab: SetStateAction<Tab>) => {
         setActiveTab(tab);
     }
-    const mobileTabs: Tab[] = [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
+    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived;
+    const mobileTabs: Tab[] = useMemo(() => {
+        return isSecondaryTabActive
+            ? [TABS.journal, TABS.priority, TABS.today, activeTab]
+            : [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
+    }, [activeTab, isSecondaryTabActive]);
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0, y: 0, height: 0 });
@@ -137,6 +142,15 @@ const LoggedIn: React.FC = () => {
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, [updateMobileIndicator]);
+
+    useEffect(() => {
+        if (isDesktop || leftOpen || rightOpen) {
+            return;
+        }
+
+        const frameId = window.requestAnimationFrame(updateMobileIndicator);
+        return () => window.cancelAnimationFrame(frameId);
+    }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
 
     function clearFilters() {
         setModeFilter(ALL_MODES);
@@ -348,7 +362,9 @@ const LoggedIn: React.FC = () => {
                                 onClick={() => handleTabChange(tab)}
                             >
                                 <span className="mobile-tab-button-content">
-                                    {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
+                                    {tab === TABS.journal
+                                        ? <PencilIcon size={16} />
+                                        : TAB_LABELS[tab]}
                                 </span>
                             </button>
                         ))}
