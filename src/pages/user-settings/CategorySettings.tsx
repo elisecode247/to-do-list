@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useCallback, useState, type FormEvent } from 'react';
 import './category-settings.css';
 import type { CategoryDefinition } from 'src/category-select/types';
 import { formatCategoryOptionLabel } from 'src/category-select/category-constants';
@@ -6,8 +6,16 @@ import { CategoryIcon } from 'src/category-select/category-icons';
 import IconPicker from 'src/category-select/IconPicker';
 import { useToast } from 'src/toast/use-toast';
 import { useUserSettings } from 'src/user-settings/use-user-settings';
+import { useDebounceCallback } from 'usehooks-ts';
 
 const DEFAULT_NEW_CATEGORY_COLOR = '#14b8a6';
+
+type CategoryDraft = {
+    name?: string;
+    color?: string;
+    icon?: string;
+    isVisible?: boolean;
+};
 
 function CategoryPreview({ category }: { category: CategoryDefinition }) {
     return (
@@ -33,7 +41,7 @@ function CategorySettings() {
     const [name, setName] = useState('');
     const [color, setColor] = useState(DEFAULT_NEW_CATEGORY_COLOR);
     const [icon, setIcon] = useState('');
-
+    const [categoryDrafts, setCategoryDrafts] = useState<Record<string, CategoryDraft>>({});
     const builtInCategories = categories.filter(category => category.isBuiltIn);
     const customCategories = categories.filter(category => !category.isBuiltIn);
 
@@ -56,6 +64,50 @@ function CategorySettings() {
         setIcon('');
         showToast('Category created.', 'success');
     };
+    const debouncedUpdateCategory = useDebounceCallback(updateCategory, 500);
+    const debouncedSetCategoryVisibility = useDebounceCallback(setCategoryVisibility, 500);
+
+    const setDraftForCategory = useCallback((id: string, updates: CategoryDraft) => {
+        setCategoryDrafts(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                ...updates,
+            },
+        }));
+    }, []);
+
+    const getDraftValue = useCallback(<K extends keyof CategoryDraft>(
+        category: CategoryDefinition,
+        key: K,
+    ): CategoryDraft[K] | CategoryDefinition[K & keyof CategoryDefinition] => {
+        const draft = categoryDrafts[category.id];
+        if (draft && draft[key] !== undefined) {
+            return draft[key];
+        }
+
+        return category[key as keyof CategoryDefinition] as CategoryDefinition[K & keyof CategoryDefinition];
+    }, [categoryDrafts]);
+
+    const handleCategoryNameChange = useCallback((id: string, nextName: string) => {
+        setDraftForCategory(id, { name: nextName });
+        debouncedUpdateCategory(id, { name: nextName });
+    }, [debouncedUpdateCategory, setDraftForCategory]);
+
+    const handleCategoryColorChange = useCallback((id: string, nextColor: string) => {
+        setDraftForCategory(id, { color: nextColor });
+        debouncedUpdateCategory(id, { color: nextColor });
+    }, [debouncedUpdateCategory, setDraftForCategory]);
+
+    const handleCategoryIconChange = useCallback((id: string, nextIcon?: string) => {
+        setDraftForCategory(id, { icon: nextIcon ?? '' });
+        debouncedUpdateCategory(id, { icon: nextIcon });
+    }, [debouncedUpdateCategory, setDraftForCategory]);
+
+    const handleCategoryVisibilityChange = useCallback((id: string, isVisible: boolean) => {
+        setDraftForCategory(id, { isVisible });
+        debouncedSetCategoryVisibility(id, isVisible);
+    }, [debouncedSetCategoryVisibility, setDraftForCategory]);
 
     return (
         <section className="settings-section">
@@ -78,8 +130,8 @@ function CategorySettings() {
                             <span>Name</span>
                             <input
                                 className="task-form-input"
-                                value={category.name}
-                                onChange={(event) => updateCategory(category.id, { name: event.target.value })}
+                                value={String(getDraftValue(category, 'name'))}
+                                onChange={(event) => handleCategoryNameChange(category.id, event.target.value)}
                             />
                         </label>
 
@@ -89,25 +141,25 @@ function CategorySettings() {
                                 <input
                                     className="category-settings-color"
                                     type="color"
-                                    value={category.color}
-                                    onChange={(event) => updateCategory(category.id, { color: event.target.value })}
+                                    value={String(getDraftValue(category, 'color'))}
+                                    onChange={(event) => handleCategoryColorChange(category.id, event.target.value)}
                                     aria-label={`Choose a color for ${category.name}`}
                                 />
                             </label>
 
                             <IconPicker
                                 label="Icon"
-                                value={category.icon}
-                                onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
-                                color={category.color}
+                                value={String(getDraftValue(category, 'icon'))}
+                                onChange={(nextIcon) => handleCategoryIconChange(category.id, nextIcon)}
+                                color={String(getDraftValue(category, 'color'))}
                             />
                         </div>
 
                         <label className="category-settings-toggle">
                             <input
                                 type="checkbox"
-                                checked={category.isVisible}
-                                onChange={(event) => setCategoryVisibility(category.id, event.target.checked)}
+                                checked={Boolean(getDraftValue(category, 'isVisible'))}
+                                onChange={(event) => handleCategoryVisibilityChange(category.id, event.target.checked)}
                             />
                             <span>Show in category lists</span>
                         </label>
@@ -178,8 +230,8 @@ function CategorySettings() {
                             <span>Name</span>
                             <input
                                 className="task-form-input"
-                                value={category.name}
-                                onChange={(event) => updateCategory(category.id, { name: event.target.value })}
+                                value={String(getDraftValue(category, 'name'))}
+                                onChange={(event) => handleCategoryNameChange(category.id, event.target.value)}
                             />
                         </label>
 
@@ -189,17 +241,17 @@ function CategorySettings() {
                                 <input
                                     className="category-settings-color"
                                     type="color"
-                                    value={category.color}
-                                    onChange={(event) => updateCategory(category.id, { color: event.target.value })}
+                                    value={String(getDraftValue(category, 'color'))}
+                                    onChange={(event) => handleCategoryColorChange(category.id, event.target.value)}
                                     aria-label={`Choose a color for ${category.name}`}
                                 />
                             </label>
 
                             <IconPicker
                                 label="Icon"
-                                value={category.icon}
-                                onChange={(nextIcon) => updateCategory(category.id, { icon: nextIcon })}
-                                color={category.color}
+                                value={String(getDraftValue(category, 'icon'))}
+                                onChange={(nextIcon) => handleCategoryIconChange(category.id, nextIcon)}
+                                color={String(getDraftValue(category, 'color'))}
                             />
                         </div>
 
@@ -207,8 +259,8 @@ function CategorySettings() {
                             <label className="category-settings-toggle">
                                 <input
                                     type="checkbox"
-                                    checked={category.isVisible}
-                                    onChange={(event) => setCategoryVisibility(category.id, event.target.checked)}
+                                    checked={Boolean(getDraftValue(category, 'isVisible'))}
+                                    onChange={(event) => handleCategoryVisibilityChange(category.id, event.target.checked)}
                                 />
                                 <span>Show in category lists</span>
                             </label>
