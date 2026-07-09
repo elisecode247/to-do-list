@@ -2,20 +2,23 @@
     gap: var(--spacing-xs);
     padding: var(--spacing-sm);
     border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
     transition: all var(--transition-fast);
     border-left: 4px solid var(--color-primary);
     background-color: var(--color-surface--transparent);
     border-left: 4px solid #4285f4;
-    color: inherit;
-    margin: 1px;
+    color: contrast-color(var(--color-surface--transparent));
+    margin: 1px var(--spacing-sm);
+    z-index: 1;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .calendar-event-item:hover {
-        border-color: var(--color-border);
-        box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
-        outline: 1px solid var(--color-primary);
-        z-index: 4;
+    border-color: var(--color-border);
+    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
+    outline: 1px solid var(--color-primary);
+    z-index: 4;
 }
 
 .calendar-event-item h4 {
@@ -35,29 +38,29 @@
 }
 
 .calendar-event-description {
-  padding: 1rem;
+    padding: 1rem;
 }
 
 /* Fix bullet indentation */
 .calendar-event-description ul,
 .calendar-event-description ol {
-  padding-left: 1.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  list-style-position: inside;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    list-style-position: inside;
 }
 
 .calendar-event-description b,
 .calendar-event-description strong {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .calendar-event-description i,
 .calendar-event-description em {
-  font-style: italic;
+    font-style: italic;
 }
 
 .calendar-event-description a {
-  color: blue;
-  text-decoration: underline;
+    color: blue;
+    text-decoration: underline;
 }
