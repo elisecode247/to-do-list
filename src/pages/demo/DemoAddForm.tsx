@@ -88,7 +88,6 @@ const DemoAddForm = () => {
             sortOrder: 0,
             tabSortOrder: {},
             category: data.category,
-            categoryUuid: null,
             mode,
             isPriority: false,
             isArchived: false,

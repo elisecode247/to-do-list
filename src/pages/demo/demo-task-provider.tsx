@@ -236,7 +236,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
                 sortOrder: newItem.sortOrder ?? 0,
                 tabSortOrder: newItem.tabSortOrder ?? {},
                 category: newItem.category,
-                categoryUuid: newItem.categoryUuid ?? null,
                 mode: newItem.mode ?? ONE_TIME_MODE,
                 isArchived: false,
                 parentUuid: newItem.parentUuid ?? null,

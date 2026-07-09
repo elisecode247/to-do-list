@@ -161,7 +161,6 @@ export const SortableItem: FC<SortableItemProps> = ({
             // add subtask at the end of the list, but before any hidden or archived items
             sortOrder: existingSubtasks.length,
             tabSortOrder: {},
-            categoryUuid: null,
             category: category,
             mode: mode,
             isPriority: false,

@@ -51,7 +51,6 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     sortOrder: 0,
     tabSortOrder: {},
     category: 'home',
-    categoryUuid: null,
     mode: ONE_TIME_MODE,
     isPriority: false,
     isArchived: false,

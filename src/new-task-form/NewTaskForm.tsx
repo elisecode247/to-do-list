@@ -87,7 +87,6 @@ const NewTaskForm = ({ setRightOpen }: { setRightOpen: (open: boolean) => void }
             sortOrder: 0,
             tabSortOrder: {},
             category: '',
-            categoryUuid: null,
             mode,
             isPriority: false,
             isArchived: false,

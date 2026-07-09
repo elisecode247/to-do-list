@@ -186,7 +186,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 sortOrder: data.sortOrder ?? 0,
                 tabSortOrder: data.tabSortOrder ?? {},
                 category: data.category,
-                categoryUuid: data.categoryUuid ?? null,
                 mode: data.mode ?? ONE_TIME_MODE,
                 isArchived: false,
                 parentUuid: data.parentUuid,
