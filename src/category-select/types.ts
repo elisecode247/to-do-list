@@ -9,6 +9,8 @@ export type CategoryIconOption = {
     Icon: LucideIcon;
 };
 
+export type BuiltInCategoryKey = 'work' | 'housework' | 'self-care' | 'people' | 'pets' | 'leisure';
+
 export type ServerCategoryDefinition = {
     uuid: string;
     name: string;
@@ -16,7 +18,7 @@ export type ServerCategoryDefinition = {
     icon: string;
     isVisible: boolean;
     isBuiltIn: boolean;
-    builtInKey: string;
+    builtInKey: BuiltInCategoryKey;
     sortOrder: number;
     createdAt: string;
     updatedAt: string;
@@ -29,6 +31,7 @@ export interface CategoryDefinition {
     isVisible: boolean;
     isBuiltIn: boolean;
     isDeleted?: boolean;
+    builtInKey?: BuiltInCategoryKey;
 }
 
 export interface CategoryOption {

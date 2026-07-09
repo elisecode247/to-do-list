@@ -24,6 +24,7 @@ function normalizeFetchedCategories(payload: ServerCategoryDefinition[]): Catego
         icon: category.icon ?? '',
         isVisible: category.isVisible ?? true,
         isBuiltIn: category.isBuiltIn,
+        builtInKey: category.builtInKey ?? undefined,
         isDeleted: false,
     }));
 }
