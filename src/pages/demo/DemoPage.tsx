@@ -13,13 +13,16 @@ import {
     Eye,
     EyeOff,
     ListFilter,
+    PencilIcon,
     Plus,
     RefreshCcw,
 } from "lucide-react";
 
-import type { ChecklistItem, Mode } from "src/app/types";
 import EditTaskForm from "src/edit-task-form/EditTaskForm";
+import type { ChecklistItem, Mode } from "src/app/types";
 import ErrorState from "src/error-state/ErrorState";
+import { useToast } from "src/toast/use-toast";
+import Toast from "src/toast/Toast";
 import SparklesOverlay from "src/app/SparklesOverlay";
 import { useTheme } from "src/themes/use-theme";
 import AppToolBar from "src/app-toolbar/AppToolbar";
@@ -34,13 +37,11 @@ import useIsDesktop from "src/pages/use-is-desktop";
 import IconButton from "src/components/icon-button/IconButton";
 import Footer from "src/footer/Footer";
 import GoogleLoginButton from "src/authentication/google-login-button";
-import Toast from "src/toast/Toast";
-import { useToast } from "src/toast/use-toast";
-
+import { JournalProvider } from "src/journal/journal-provider";
+import Journal from "src/journal/Journal";
 import DemoChecklist from "./DemoChecklist";
-import DemoAddForm from "./DemoAddForm";
+import AddForm from "src/task-form/NewForm";
 import { useDemoTask } from "./use-demo-task";
-
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
 
@@ -62,77 +63,38 @@ const DemoPage: React.FC<DemoPageProps> = ({
     onSuccessfulLogin,
 }) => {
     useTheme();
-
     const now = new Date();
     const dayOfWeekName = `${daysOfWeek[now.getDay()]}, `;
 
     const { toasts, showToast, removeToast } = useToast();
-
-    const {
-        items,
-        clear,
-        reset,
-        isLoading,
-        taskError,
-        loadTasks,
-        updateItem,
-        loadDate,
-    } = useDemoTask();
-
+    const { items, clear, reset, isLoading, taskError, loadTasks, updateItem, loadDate } = useDemoTask();
     const isDesktop = useIsDesktop();
-
-    const [editingItem, setEditingItem] =
-        useState<ChecklistItem | null>(null);
-
+    const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState<Tab>(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
-
-    const [modeFilter, setModeFilter] = useState<
-        Mode | typeof ALL_MODES
-    >(ALL_MODES);
-
-    const [filterCategory, setFilterCategory] =
-        useState<string>(ALL_CATEGORIES);
-
+    const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
+    const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
     const [leftOpen, setLeftOpen] = useState(isDesktop);
     const [rightOpen, setRightOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-
-    const lastUpdatedRaw =
-        loadDate && "current" in loadDate
-            ? loadDate.current
-            : null;
-
-    const lastUpdatedDate = lastUpdatedRaw
-        ? new Date(lastUpdatedRaw)
-        : null;
-
-    /*
-     * Prefer itemLength from useDemoTask if you add it there.
-     * Until then, deriving it here is fine.
-     */
+    const lastUpdatedRaw = loadDate && "current" in loadDate ? loadDate.current : null;
+    const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const itemLength = items?.length ?? 0;
-
     const sparkles = <SparklesOverlay />;
 
     async function handleSave(saveItem: ChecklistItem) {
-        if (!editingItem) {
-            return;
-        }
-
+        if (!editingItem) return;
         setIsSaving(true);
-
         try {
             await updateItem(saveItem);
             setEditingItem(null);
             showToast("Task updated successfully", "success");
         } catch (error) {
-            const message =
-                error instanceof Error && error.message
-                    ? `Failed to update task: ${error.message}`
-                    : "Failed to update task. Please try again.";
-
-            showToast(message, "error");
+            if (error instanceof Error && error.message) {
+                showToast(`Failed to update task: ${error.message}`, "error");
+            } else {
+                showToast("Failed to update task. Please try again.", "error");
+            }
         } finally {
             setIsSaving(false);
             setRightOpen(false);
@@ -142,42 +104,27 @@ const DemoPage: React.FC<DemoPageProps> = ({
     function handleEditItem(item: ChecklistItem) {
         setEditingItem(item);
         setRightOpen(true);
-
-        if (!isDesktop) {
-            setLeftOpen(false);
-        }
+        if (!isDesktop) setLeftOpen(false);
     }
-
     function handleTabChange(tab: SetStateAction<Tab>) {
         setActiveTab(tab);
     }
-
     function clearFilters() {
         setModeFilter(ALL_MODES);
         setFilterCategory(ALL_CATEGORIES);
         setHideCompleted(false);
     }
-
     function toggleLeft() {
         setLeftOpen(current => {
             const next = !current;
-
-            if (!isDesktop && next) {
-                setRightOpen(false);
-            }
-
+            if (!isDesktop && next) setRightOpen(false);
             return next;
         });
     }
-
     function toggleRight() {
         setRightOpen(current => {
             const next = !current;
-
-            if (!isDesktop && next) {
-                setLeftOpen(false);
-            }
-
+            if (!isDesktop && next) setLeftOpen(false);
             return next;
         });
     }
@@ -187,211 +134,143 @@ const DemoPage: React.FC<DemoPageProps> = ({
             setEditingItem(null);
             return;
         }
-
         toggleRight();
     }
-
     function handleCloseEditForm() {
         setEditingItem(null);
         setRightOpen(false);
     }
-
     function handleReset() {
         reset();
         setEditingItem(null);
         setActiveTab(TABS.today);
         setRightOpen(false);
-
         showToast("Demo tasks restored", "success");
     }
-
     function handleClear() {
-        const confirmed = window.confirm(
-            "Clear all demo tasks? This cannot be undone.",
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
+        const confirmed = window.confirm("Clear all demo tasks? This cannot be undone.");
+        if (!confirmed) return;
         clear();
         setEditingItem(null);
         setRightOpen(false);
-
         showToast("Demo tasks cleared", "success");
     }
 
-    /*
-     * The demo has no journal, so only task-related tabs belong in
-     * the mobile navigation.
-     */
-    const isSecondaryTabActive =
-        activeTab === TABS.hidden ||
-        activeTab === TABS.archived;
-
+    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived;
     const mobileTabs = useMemo<Tab[]>(() => {
         return isSecondaryTabActive
-            ? [
-                TABS.priority,
-                TABS.today,
-                TABS.upcoming,
-                activeTab,
-            ]
-            : [
-                TABS.priority,
-                TABS.today,
-                TABS.upcoming,
-            ];
+            ? [TABS.journal, TABS.priority, TABS.today, activeTab]
+            : [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
     }, [activeTab, isSecondaryTabActive]);
-
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
-
-    const mobileTabButtonRefs = useRef<
-        Partial<Record<Tab, HTMLButtonElement | null>>
-    >({});
-
-    const [mobileIndicator, setMobileIndicator] = useState({
-        x: 0,
-        width: 0,
-    });
-
+    const mobileTabButtonRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+    const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0 });
     const updateMobileIndicator = useCallback(() => {
-        const activeButton =
-            mobileTabButtonRefs.current[activeTab];
-
-        if (!mobileTabBarRef.current || !activeButton) {
-            return;
-        }
-
-        setMobileIndicator({
-            x: activeButton.offsetLeft,
-            width: activeButton.offsetWidth,
-        });
+        const barElement = mobileTabBarRef.current;
+        const activeElement = mobileTabButtonRefs.current[activeTab];
+        if (!barElement || !activeElement) return;
+        setMobileIndicator({ x: activeElement.offsetLeft, width: activeElement.offsetWidth });
     }, [activeTab]);
-
     useEffect(() => {
         updateMobileIndicator();
-
-        window.addEventListener(
-            "resize",
-            updateMobileIndicator,
-        );
-
-        return () => {
-            window.removeEventListener(
-                "resize",
-                updateMobileIndicator,
-            );
-        };
+        window.addEventListener("resize", updateMobileIndicator);
+        return () => window.removeEventListener("resize", updateMobileIndicator);
     }, [updateMobileIndicator]);
-
     useEffect(() => {
-        if (isDesktop || leftOpen || rightOpen) {
-            return;
-        }
-
-        const frameId = window.requestAnimationFrame(
-            updateMobileIndicator,
-        );
-
-        return () => {
-            window.cancelAnimationFrame(frameId);
-        };
-    }, [
-        isDesktop,
-        leftOpen,
-        rightOpen,
-        mobileTabs,
-        updateMobileIndicator,
-    ]);
-
-    const pageTransitionKey = isLoading
-        ? "loading"
-        : taskError
-          ? "error"
-          : itemLength === 0
-            ? "empty"
-            : activeTab;
+        if (isDesktop || leftOpen || rightOpen) return;
+        const frameId = window.requestAnimationFrame(updateMobileIndicator);
+        return () => window.cancelAnimationFrame(frameId);
+    }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
+    const pageTransitionKey = isLoading ? "loading" : taskError ? "error" : activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? "empty" : activeTab;
+    const isJournal = activeTab === TABS.journal;
 
     return (
         <>
             {toasts.map(toast => (
-                <Toast
-                    key={toast.id}
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => removeToast(toast.id)}
-                />
+                <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
             ))}
-
-            <div
-                className={[
-                    "app_container",
-                    leftOpen ? "left-open" : "",
-                    rightOpen ? "right-open" : "",
-                ]
-                    .filter(Boolean)
-                    .join(" ")}
-            >
+            <div className={["app_container", leftOpen ? "left-open" : "", rightOpen ? "right-open" : ""].filter(Boolean).join(" ")}>
                 {(leftOpen || rightOpen) && (
-                    <div
-                        className="panel_backdrop"
-                        onClick={() => {
-                            setLeftOpen(false);
-                            setRightOpen(false);
-                        }}
-                    />
+                    <div className="panel_backdrop" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />
                 )}
 
                 <header className="app_header demo-app_header">
-                    <IconButton
-                        className={[
-                            "filter-toggle-button",
-                            (leftOpen || rightOpen) && !isDesktop
-                                ? "hidden"
-                                : "",
-                        ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        onClick={toggleLeft}
-                        label="Filters"
-                        ariaLabel="Toggle filters"
-                        icon={<ListFilter size={24} />}
-                        showLabel={isDesktop}
-                        isPriority={false}
-                    />
-
-                    {!isDesktop && (
+                    {!isJournal && (
                         <IconButton
                             className={[
-                                "show-completed-toggle-button",
-                                (leftOpen || rightOpen)
+                                "filter-toggle-button",
+                                (leftOpen ||
+                                    rightOpen) &&
+                                    !isDesktop
                                     ? "hidden"
                                     : "",
                             ]
                                 .filter(Boolean)
                                 .join(" ")}
-                            onClick={() =>
-                                setHideCompleted(current => !current)
+                            onClick={
+                                toggleLeft
                             }
-                            label={
-                                hideCompleted
-                                    ? "Completed Tasks Hidden"
-                                    : "Completed Tasks Shown"
-                            }
-                            ariaLabel={
-                                hideCompleted
-                                    ? "Show completed tasks"
-                                    : "Hide completed tasks"
-                            }
+                            label="Filters"
+                            ariaLabel="Toggle filters"
                             icon={
-                                hideCompleted
-                                    ? <EyeOff size={24} />
-                                    : <Eye size={24} />
+                                <ListFilter
+                                    size={24}
+                                />
+                            }
+                            showLabel={
+                                isDesktop
                             }
                             isPriority={false}
                         />
                     )}
+
+                    {!isDesktop && !isJournal && (
+                            <IconButton
+                                className={[
+                                    "show-completed-toggle-button",
+                                    leftOpen ||
+                                        rightOpen
+                                        ? "hidden"
+                                        : "",
+                                ]
+                                    .filter(Boolean)
+                                    .join(" ")}
+                                onClick={() =>
+                                    setHideCompleted(
+                                        current =>
+                                            !current,
+                                    )
+                                }
+                                label={
+                                    hideCompleted
+                                        ? "Completed Tasks Hidden"
+                                        : "Completed Tasks Shown"
+                                }
+                                ariaLabel={
+                                    hideCompleted
+                                        ? "Show completed tasks"
+                                        : "Hide completed tasks"
+                                }
+                                icon={
+                                    hideCompleted ? (
+                                        <EyeOff
+                                            size={
+                                                24
+                                            }
+                                        />
+                                    ) : (
+                                        <Eye
+                                            size={
+                                                24
+                                            }
+                                        />
+                                    )
+                                }
+                                isPriority={
+                                    false
+                                }
+                            />
+                        )}
 
                     <div className="app_header_title">
                         <h1 className="app_h1">
@@ -400,11 +279,18 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
                         <p className="app_subtitle">
                             <span>
-                                {dayOfWeekName}
-                                {now.toLocaleDateString(undefined, {
-                                    month: "long",
-                                    day: "numeric",
-                                })}
+                                {
+                                    dayOfWeekName
+                                }
+                                {now.toLocaleDateString(
+                                    undefined,
+                                    {
+                                        month:
+                                            "long",
+                                        day:
+                                            "numeric",
+                                    },
+                                )}
                             </span>
 
                             <span className="app_subtitle_last-updated">
@@ -412,89 +298,143 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     ? `Updated ${lastUpdatedDate.toLocaleTimeString(
                                         [],
                                         {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
+                                            hour:
+                                                "2-digit",
+                                            minute:
+                                                "2-digit",
                                         },
                                     )}`
                                     : ""}
+
                                 {lastUpdatedDate && (
                                     <Check
                                         className="app_subtitle_last-updated_fresh_icon"
                                         size={12}
-                                        strokeWidth={3}
+                                        strokeWidth={
+                                            3
+                                        }
                                     />
                                 )}
                             </span>
                         </p>
                     </div>
 
-                    <IconButton
-                        className={[
-                            "new-task-form-toggle-button",
-                            (leftOpen || rightOpen) && !isDesktop
-                                ? "hidden"
-                                : "",
-                        ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        onClick={toggleAddForm}
-                        label="Add new task"
-                        ariaLabel="Add new task"
-                        icon={<Plus size={24} strokeWidth={3} />}
-                        isPriority
-                    />
+                    {!isJournal && (
+                        <IconButton
+                            className={[
+                                "new-task-form-toggle-button",
+                                (leftOpen ||
+                                    rightOpen) &&
+                                    !isDesktop
+                                    ? "hidden"
+                                    : "",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            onClick={
+                                toggleAddForm
+                            }
+                            label="Add new task"
+                            ariaLabel="Add new task"
+                            icon={
+                                <Plus
+                                    size={24}
+                                    strokeWidth={
+                                        3
+                                    }
+                                />
+                            }
+                            isPriority
+                        />
+                    )}
 
                     <div className="demo-header-actions">
-                        <IconButton
-                            className={[
-                                "header-button",
-                                "demo-reset",
-                                (leftOpen || rightOpen) &&
-                                !isDesktop
-                                    ? "hidden"
-                                    : "",
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
-                            onClick={handleReset}
-                            label="Reset demo"
-                            ariaLabel="Restore demo starter tasks"
-                            icon={
-                                <RefreshCcw
-                                    size={20}
-                                    strokeWidth={2.5}
+                        {!isJournal && (
+                            <>
+                                <IconButton
+                                    className={[
+                                        "header-button",
+                                        "demo-reset",
+                                        (leftOpen ||
+                                            rightOpen) &&
+                                            !isDesktop
+                                            ? "hidden"
+                                            : "",
+                                    ]
+                                        .filter(
+                                            Boolean,
+                                        )
+                                        .join(
+                                            " ",
+                                        )}
+                                    onClick={
+                                        handleReset
+                                    }
+                                    label="Reset demo"
+                                    ariaLabel="Restore demo starter tasks"
+                                    icon={
+                                        <RefreshCcw
+                                            size={
+                                                20
+                                            }
+                                            strokeWidth={
+                                                2.5
+                                            }
+                                        />
+                                    }
+                                    showLabel={
+                                        isDesktop
+                                    }
+                                    isPriority={
+                                        false
+                                    }
                                 />
-                            }
-                            showLabel={isDesktop}
-                            isPriority={false}
-                        />
 
-                        <IconButton
-                            className={[
-                                "header-button",
-                                "demo-clear",
-                                (leftOpen || rightOpen) &&
-                                !isDesktop
-                                    ? "hidden"
-                                    : "",
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
-                            onClick={handleClear}
-                            label="Clear"
-                            ariaLabel="Clear all demo tasks"
-                            icon={
-                                <Eraser
-                                    size={20}
-                                    strokeWidth={2.5}
+                                <IconButton
+                                    className={[
+                                        "header-button",
+                                        "demo-clear",
+                                        (leftOpen ||
+                                            rightOpen) &&
+                                            !isDesktop
+                                            ? "hidden"
+                                            : "",
+                                    ]
+                                        .filter(
+                                            Boolean,
+                                        )
+                                        .join(
+                                            " ",
+                                        )}
+                                    onClick={
+                                        handleClear
+                                    }
+                                    label="Clear"
+                                    ariaLabel="Clear all demo tasks"
+                                    icon={
+                                        <Eraser
+                                            size={
+                                                20
+                                            }
+                                            strokeWidth={
+                                                2.5
+                                            }
+                                        />
+                                    }
+                                    showLabel={
+                                        isDesktop
+                                    }
+                                    isPriority={
+                                        false
+                                    }
                                 />
-                            }
-                            showLabel={isDesktop}
-                            isPriority={false}
-                        />
+                            </>
+                        )}
 
                         <GoogleLoginButton
-                            onSuccess={onSuccessfulLogin}
+                            onSuccess={
+                                onSuccessfulLogin
+                            }
                         />
                     </div>
                 </header>
@@ -502,22 +442,42 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 <aside className="left_panel">
                     <AppToolBar
                         activeTab={activeTab}
-                        handleTabChange={handleTabChange}
-                        modeFilter={modeFilter}
-                        setModeFilter={setModeFilter}
-                        hideCompleted={hideCompleted}
-                        setHideCompleted={setHideCompleted}
-                        filterCategory={filterCategory}
-                        setFilterCategory={setFilterCategory}
-                        setLeftOpen={setLeftOpen}
-                        isDesktop={isDesktop}
+                        handleTabChange={
+                            handleTabChange
+                        }
+                        modeFilter={
+                            modeFilter
+                        }
+                        setModeFilter={
+                            setModeFilter
+                        }
+                        hideCompleted={
+                            hideCompleted
+                        }
+                        setHideCompleted={
+                            setHideCompleted
+                        }
+                        filterCategory={
+                            filterCategory
+                        }
+                        setFilterCategory={
+                            setFilterCategory
+                        }
+                        setLeftOpen={
+                            setLeftOpen
+                        }
+                        isDesktop={
+                            isDesktop
+                        }
                     />
                 </aside>
 
                 <main className="main_content">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
-                            key={pageTransitionKey}
+                            key={
+                                pageTransitionKey
+                            }
                             className="main_content_page"
                             initial={{
                                 opacity: 0,
@@ -532,8 +492,10 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 y: -8,
                             }}
                             transition={{
-                                duration: 0.22,
-                                ease: "easeOut",
+                                duration:
+                                    0.22,
+                                ease:
+                                    "easeOut",
                             }}
                         >
                             {isLoading ? (
@@ -546,33 +508,37 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 </div>
                             ) : taskError ? (
                                 <ErrorState
-                                    message={taskError}
-                                    onRetry={loadTasks}
+                                    message={
+                                        taskError
+                                    }
+                                    onRetry={
+                                        loadTasks
+                                    }
                                 />
-                            ) : itemLength === 0 ? (
+                            ) : isJournal ? (
+                                <JournalProvider>
+                                    <Journal />
+                                </JournalProvider>
+                            ) : itemLength ===
+                                0 ? (
                                 <div className="empty-state">
-                                    <h2>
-                                        Welcome to Daily Reset List!
-                                    </h2>
-
+                                    <h2>Welcome to Daily Reset List!</h2>
                                     <div>
-                                        <p>
-                                            Add a task yourself or
-                                            restore the demo starter
-                                            tasks.
-                                        </p>
-
+                                        <p>Add a task or restore the demo starter tasks.</p>
                                         <div className="demo-empty-actions">
                                             <button
                                                 className="empty-state-create-button"
-                                                onClick={toggleAddForm}
+                                                onClick={
+                                                    toggleAddForm
+                                                }
                                             >
                                                 Add your first task
                                             </button>
-
                                             <button
                                                 className="empty-state-secondary-button"
-                                                onClick={handleReset}
+                                                onClick={
+                                                    handleReset
+                                                }
                                             >
                                                 Restore demo tasks
                                             </button>
@@ -581,82 +547,54 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 </div>
                             ) : (
                                 <DemoChecklist
-                                    onEditItem={handleEditItem}
-                                    sparkles={sparkles}
-                                    activeTab={activeTab}
-                                    modeFilter={modeFilter}
-                                    hideCompleted={hideCompleted}
-                                    filterCategory={filterCategory}
-                                    clearFilters={clearFilters}
+                                    onEditItem={
+                                        handleEditItem
+                                    }
+                                    sparkles={
+                                        sparkles
+                                    }
+                                    activeTab={
+                                        activeTab
+                                    }
+                                    modeFilter={
+                                        modeFilter
+                                    }
+                                    hideCompleted={
+                                        hideCompleted
+                                    }
+                                    filterCategory={
+                                        filterCategory
+                                    }
+                                    clearFilters={
+                                        clearFilters
+                                    }
                                 />
                             )}
                         </motion.div>
                     </AnimatePresence>
                 </main>
-
                 <aside className="right_panel">
                     {rightOpen && editingItem ? (
-                        <EditTaskForm
-                            key={editingItem.id}
-                            isSaving={isSaving}
-                            formData={editingItem}
-                            onSave={handleSave}
-                            onClose={handleCloseEditForm}
-                        />
+                        <EditTaskForm key={editingItem.id} isSaving={isSaving} formData={editingItem} onSave={handleSave} onClose={handleCloseEditForm} />
                     ) : rightOpen ? (
-                        <DemoAddForm />
+                        <AddForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
                     ) : null}
                 </aside>
-
                 {!isDesktop && !leftOpen && !rightOpen && (
-                    <nav
-                        className="mobile-tab-bar"
-                        ref={mobileTabBarRef}
-                    >
-                        <motion.span
-                            className="mobile-tab-motion"
-                            animate={{
-                                x: mobileIndicator.x,
-                                width: mobileIndicator.width,
-                            }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 580,
-                                damping: 44,
-                            }}
-                        />
-
+                    <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
+                        <motion.span className="mobile-tab-motion" animate={{ x: mobileIndicator.x, width: mobileIndicator.width }} transition={{ type: "spring", stiffness: 580, damping: 44 }} />
                         {mobileTabs.map(tab => (
-                            <button
-                                key={tab}
-                                ref={element => {
-                                    mobileTabButtonRefs.current[tab] =
-                                        element;
-                                }}
-                                className={[
-                                    "mobile-tab-button",
-                                    activeTab === tab
-                                        ? "mobile-tab-button--active"
-                                        : "",
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ")}
-                                onClick={() =>
-                                    handleTabChange(tab)
-                                }
-                            >
+                            <button key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
                                 <span className="mobile-tab-button-content">
-                                    {TAB_LABELS[tab]}
+                                    {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
                                 </span>
                             </button>
                         ))}
                     </nav>
                 )}
-
                 <Footer />
             </div>
         </>
     );
 };
-
 export default DemoPage;
