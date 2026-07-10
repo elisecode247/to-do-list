@@ -7,8 +7,10 @@ import React, {
     type SetStateAction,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
     Check,
+    ChevronDown,
     Eraser,
     Eye,
     EyeOff,
@@ -349,93 +351,29 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     )}
 
                     <div className="demo-header-actions">
+                        <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                         {!isJournal && (
-                            <>
-                                <IconButton
-                                    className={[
-                                        "header-button",
-                                        "demo-reset",
-                                        (leftOpen ||
-                                            rightOpen) &&
-                                            !isDesktop
-                                            ? "hidden"
-                                            : "",
-                                    ]
-                                        .filter(
-                                            Boolean,
-                                        )
-                                        .join(
-                                            " ",
-                                        )}
-                                    onClick={
-                                        handleReset
-                                    }
-                                    label="Reset demo"
-                                    ariaLabel="Restore demo starter tasks"
-                                    icon={
-                                        <RefreshCcw
-                                            size={
-                                                20
-                                            }
-                                            strokeWidth={
-                                                2.5
-                                            }
-                                        />
-                                    }
-                                    showLabel={
-                                        isDesktop
-                                    }
-                                    isPriority={
-                                        false
-                                    }
-                                />
-
-                                <IconButton
-                                    className={[
-                                        "header-button",
-                                        "demo-clear",
-                                        (leftOpen ||
-                                            rightOpen) &&
-                                            !isDesktop
-                                            ? "hidden"
-                                            : "",
-                                    ]
-                                        .filter(
-                                            Boolean,
-                                        )
-                                        .join(
-                                            " ",
-                                        )}
-                                    onClick={
-                                        handleClear
-                                    }
-                                    label="Clear"
-                                    ariaLabel="Clear all demo tasks"
-                                    icon={
-                                        <Eraser
-                                            size={
-                                                20
-                                            }
-                                            strokeWidth={
-                                                2.5
-                                            }
-                                        />
-                                    }
-                                    showLabel={
-                                        isDesktop
-                                    }
-                                    isPriority={
-                                        false
-                                    }
-                                />
-                            </>
+                            <Menu>
+                                <MenuButton className="icon-button">
+                                    Demo
+                                    <ChevronDown size={14} strokeWidth={2.5} />
+                                </MenuButton>
+                                <MenuItems anchor="bottom end" transition className="demo-actions-menu-items">
+                                    <MenuItem>
+                                        <button className="demo-actions-menu-item" onClick={handleReset}>
+                                            <RefreshCcw size={15} strokeWidth={2} />
+                                            Reset demo tasks
+                                        </button>
+                                    </MenuItem>
+                                    <MenuItem>
+                                        <button className="demo-actions-menu-item demo-actions-menu-item--danger" onClick={handleClear}>
+                                            <Eraser size={15} strokeWidth={2} />
+                                            Clear all tasks
+                                        </button>
+                                    </MenuItem>
+                                </MenuItems>
+                            </Menu>
                         )}
-
-                        <GoogleLoginButton
-                            onSuccess={
-                                onSuccessfulLogin
-                            }
-                        />
                     </div>
                 </header>
 

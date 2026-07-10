@@ -79,9 +79,55 @@
     text-decoration: none;
 }
 
-.note-editor-container {
-    position: relative;
+.demo-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
+.demo-actions-menu-items {
+    min-width: 180px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    transform-origin: top right;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.demo-actions-menu-items[data-closed] {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+}
+
+.demo-actions-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: calc(var(--radius-md) - 4px);
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.1s ease;
+}
+
+.demo-actions-menu-item[data-focus] {
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    color: var(--color-text);
+    outline: none;
+}
+
+.demo-actions-menu-item--danger[data-focus] {
+    background: color-mix(in srgb, #ef4444 12%, transparent);
+}
+
 
 .demo-placeholder {
     height: 250px;
