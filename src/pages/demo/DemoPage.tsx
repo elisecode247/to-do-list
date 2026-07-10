@@ -31,7 +31,7 @@ import {
     TAB_LABELS,
     type Tab,
 } from "src/app-toolbar/tabs/types";
-import { ALL_CATEGORIES } from "src/category-select/category-constants";
+import { ALL_CATEGORIES, DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { ALL_MODES } from "src/checklist/constants";
 import useIsDesktop from "src/pages/use-is-desktop";
 import IconButton from "src/components/icon-button/IconButton";
@@ -441,43 +441,24 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
                 <aside className="left_panel">
                     <AppToolBar
+                        categories={DEFAULT_CATEGORIES}
                         activeTab={activeTab}
-                        handleTabChange={
-                            handleTabChange
-                        }
-                        modeFilter={
-                            modeFilter
-                        }
-                        setModeFilter={
-                            setModeFilter
-                        }
-                        hideCompleted={
-                            hideCompleted
-                        }
-                        setHideCompleted={
-                            setHideCompleted
-                        }
-                        filterCategory={
-                            filterCategory
-                        }
-                        setFilterCategory={
-                            setFilterCategory
-                        }
-                        setLeftOpen={
-                            setLeftOpen
-                        }
-                        isDesktop={
-                            isDesktop
-                        }
+                        handleTabChange={handleTabChange}
+                        modeFilter={modeFilter}
+                        setModeFilter={setModeFilter}
+                        hideCompleted={hideCompleted}
+                        setHideCompleted={setHideCompleted}
+                        filterCategory={filterCategory}
+                        setFilterCategory={setFilterCategory}
+                        setLeftOpen={setLeftOpen}
+                        isDesktop={isDesktop}
                     />
                 </aside>
 
                 <main className="main_content">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
-                            key={
-                                pageTransitionKey
-                            }
+                            key={pageTransitionKey}
                             className="main_content_page"
                             initial={{
                                 opacity: 0,
@@ -492,10 +473,8 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 y: -8,
                             }}
                             transition={{
-                                duration:
-                                    0.22,
-                                ease:
-                                    "easeOut",
+                                duration: 0.22,
+                                ease: "easeOut",
                             }}
                         >
                             {isLoading ? (
@@ -547,27 +526,13 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 </div>
                             ) : (
                                 <DemoChecklist
-                                    onEditItem={
-                                        handleEditItem
-                                    }
-                                    sparkles={
-                                        sparkles
-                                    }
-                                    activeTab={
-                                        activeTab
-                                    }
-                                    modeFilter={
-                                        modeFilter
-                                    }
-                                    hideCompleted={
-                                        hideCompleted
-                                    }
-                                    filterCategory={
-                                        filterCategory
-                                    }
-                                    clearFilters={
-                                        clearFilters
-                                    }
+                                    onEditItem={handleEditItem}
+                                    sparkles={sparkles}
+                                    activeTab={activeTab}
+                                    modeFilter={modeFilter}
+                                    hideCompleted={hideCompleted}
+                                    filterCategory={filterCategory}
+                                    clearFilters={clearFilters}
                                 />
                             )}
                         </motion.div>

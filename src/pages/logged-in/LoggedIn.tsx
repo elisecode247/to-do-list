@@ -24,6 +24,7 @@ import Journal from 'src/journal/Journal';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import EditEventForm from 'src/google-authorization/EditEventForm';
 import Footer from 'src/footer/Footer';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -48,6 +49,7 @@ const LoggedIn: React.FC = () => {
         itemLength,
         isUpdatedDate
     } = useTask();
+    const { categories } = useUserSettings();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
@@ -270,6 +272,7 @@ const LoggedIn: React.FC = () => {
                     setFilterCategory={setFilterCategory}
                     setLeftOpen={setLeftOpen}
                     isDesktop={isDesktop}
+                    categories={categories}
                 />
             </aside>
             <main className="main_content">

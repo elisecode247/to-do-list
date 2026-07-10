@@ -311,7 +311,6 @@ const Checklist: FC<ChecklistProps> = ({
         contentElement.style.transform = pullDistance ? `translateY(${pullDistance}px)` : 'translateY(0px)';
         contentElement.style.transition = pullDistance ? 'none' : 'transform 220ms ease-out';
     }, [pullDistance]);
-        console.log("%c Line:316 🍇 isLoading", "color:#465975", isLoading);
 
     if (isLoading) {
         return (

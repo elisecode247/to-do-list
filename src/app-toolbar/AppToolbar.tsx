@@ -7,9 +7,10 @@ import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
 import CloseButton from 'components/close-button/CloseButton';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
+import type { CategoryDefinition } from 'src/category-select/types';
 
 interface AppToolbarProps {
+    categories: CategoryDefinition[];
     activeTab: Tab;
     handleTabChange: (tab: Tab) => void;
     modeFilter: Mode | typeof ALL_MODES;
@@ -30,9 +31,10 @@ const AppToolbar = ({
     setHideCompleted,
     filterCategory,
     setFilterCategory,
-    setLeftOpen
+    setLeftOpen,
+    categories
 }: AppToolbarProps) => {
-    const { categories } = useUserSettings();
+
     const activeFilterCount =
         (hideCompleted ? 1 : 0) +
         (modeFilter === ALL_MODES ? 0 : 1) +
