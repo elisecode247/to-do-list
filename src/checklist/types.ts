@@ -19,6 +19,7 @@ export interface ChecklistProps {
 }
 
 export interface ChecklistController {
+    isLoading: boolean;
     items: ChecklistItem[];
     events?: GoogleEvent[];
     partialUpdateItem: (item: Partial<ChecklistItem>) => Promise<void> | void;

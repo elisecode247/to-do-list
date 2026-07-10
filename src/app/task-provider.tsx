@@ -30,7 +30,7 @@ import { getLocalTodayAtMidnight } from './utilities/filter-tasks';
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
     const [items, setItems] = useState<ChecklistItem[]>([]);
-    const [isLoading, setIsLoading] = useState(enabled);
+    const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
     const [isUpdatedDate, setIsUpdatedDate] = useState(false);
@@ -411,10 +411,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             throw err;
         }
     };
-
-    useEffect(() => {
-        setIsLoading(enabled);
-    }, [enabled]);
 
     useEffect(() => {
         if (!enabled) return;

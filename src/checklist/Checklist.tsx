@@ -74,7 +74,8 @@ const Checklist: FC<ChecklistProps> = ({
         loadTasks,
         events,
         hideEventForToday,
-        unhideEventForToday
+        unhideEventForToday,
+        isLoading
     } = controller;
 
     const [showSparkles, setShowSparkles] = useState(false);
@@ -310,6 +311,16 @@ const Checklist: FC<ChecklistProps> = ({
         contentElement.style.transform = pullDistance ? `translateY(${pullDistance}px)` : 'translateY(0px)';
         contentElement.style.transition = pullDistance ? 'none' : 'transform 220ms ease-out';
     }, [pullDistance]);
+        console.log("%c Line:316 🍇 isLoading", "color:#465975", isLoading);
+
+    if (isLoading) {
+        return (
+            <div className="app_loading-container">
+                <div aria-busy="true" className="app_loading-spinner"></div>
+                <p>Loading your tasks...</p>
+            </div>
+        );
+    }
 
     return (
         <>

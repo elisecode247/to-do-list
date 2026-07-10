@@ -9,6 +9,7 @@ function TaskContextChecklist(props: Omit<ChecklistProps, "controller">) {
     const task = useTask();
 
     const controller: ChecklistController = {
+        isLoading: task.isLoading,
         items: task.items,
         partialUpdateItem: task.partialUpdateItem,
         deleteItem: task.deleteItem,
