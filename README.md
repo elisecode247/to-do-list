@@ -12,6 +12,5 @@ Live: https://dailyresetlist.com
 
 
 ### To do
-- feature: export journal
 - feature: improve ux for newly logged in user
 - feature: add templates for new users
