@@ -246,6 +246,7 @@ function BulkEdit() {
 
             {selectedItem && (
                 <EditTaskForm
+                    categories={categories}
                     formData={selectedItem}
                     onSave={(item) => {
                         updateItem(item);

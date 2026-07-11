@@ -12,7 +12,7 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     note: '',
     sortOrder: 0,
     tabSortOrder: {},
-    category: 'home',
+    category: 'housework',
     mode: 'one-time',
     isPriority: false,
     isArchived: false,

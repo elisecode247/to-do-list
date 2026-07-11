@@ -5,15 +5,17 @@ import CloseButton from 'components/close-button/CloseButton';
 import 'src/task-form/new-form.css';
 import 'src/task-form/task-form-shared.css';
 import { ListTodo, CalendarCheck } from 'lucide-react';
+import type { CategoryDefinition } from 'src/category-select/types';
 
 type NewFormProps = {
     isDesktop: boolean;
     setRightOpen: (open: boolean) => void;
+    categories: CategoryDefinition[];
 };
 
 type FormType = 'task' | 'event';
 
-const NewForm = ({ isDesktop, setRightOpen }: NewFormProps) => {
+const NewForm = ({ isDesktop, setRightOpen, categories }: NewFormProps) => {
     const [formType, setFormType] = useState<FormType>('task');
 
     return (
@@ -55,7 +57,7 @@ const NewForm = ({ isDesktop, setRightOpen }: NewFormProps) => {
             </div>
 
             {formType === 'task' ? (
-                <NewTaskForm setRightOpen={setRightOpen} />
+                <NewTaskForm setRightOpen={setRightOpen} categories={categories} />
             ) : (
                 <NewEventForm setRightOpen={setRightOpen} />
             )}

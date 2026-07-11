@@ -128,10 +128,9 @@ const App: FC = () => {
                     <ThemePlaygroundLazy />
                 </Route>
                 <Route path={ROUTES.templates}>
-                    {isLoading ? <LoadingSpinner /> :
-                        isAuthenticated ? (
+                    {isLoading ? <LoadingSpinner /> :(
                             <TemplatesLazy />
-                        ) : <NotFoundLazy />}
+                    )}
                 </Route>
                 <Route>
                     <NotFoundLazy />

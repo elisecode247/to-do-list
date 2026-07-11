@@ -88,7 +88,7 @@ export const usePullToRefresh = (refreshData: () => void, isEnabled = true) => {
             refreshContCurrent?.removeEventListener("touchend", endPull);
             refreshContCurrent?.removeEventListener("touchcancel", endPull);
         };
-    }, [endPull, pull, pullStart]);
+    }, [endPull, pull, pullStart, isEnabled]);
 
     return {
         refreshContainerRef,

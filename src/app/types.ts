@@ -50,7 +50,7 @@ export type IntervalRecurrence = {
 }
 
 export interface ChecklistItem {
-    itemType: string;
+    itemType: 'checklist-item' | 'google-event';
     isHidden: boolean;
     id: string;
     text: string;

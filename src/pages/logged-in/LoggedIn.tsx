@@ -349,6 +349,7 @@ const LoggedIn: React.FC = () => {
             <aside className="right_panel">
                 {rightOpen && editingItem && editingItem.itemType === 'checklist-item' ? (
                     <EditTaskForm
+                        categories={categories}
                         key={editingItem.id} // force remount when editing a different item
                         isSaving={isSaving}
                         formData={editingItem as ChecklistItem}
@@ -364,7 +365,7 @@ const LoggedIn: React.FC = () => {
                         onClose={handleCloseEditModal}
                     />
                 ) : rightOpen ? (
-                    <NewForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
+                    <NewForm categories={categories} isDesktop={isDesktop} setRightOpen={setRightOpen} />
                 ) : null}
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (

@@ -47,7 +47,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(true);
         fetchTasks().then((data) => {
             if (cancelled) return;
-            const formattedItems = data.map((item: ChecklistItem) => {
+            const formattedItems = data.map((item: ChecklistItem): ChecklistItem => {
                 return {
                     ...item,
                     done: isDateToday(item.lastCompleted),

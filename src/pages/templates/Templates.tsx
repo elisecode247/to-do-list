@@ -6,9 +6,14 @@ import type { ChecklistItem, Mode } from "src/app/types";
 import { TABS, type Tab } from "src/app-toolbar/tabs/types";
 import Checklist from "src/checklist/Checklist";
 import EditTaskForm from "src/edit-task-form/EditTaskForm";
+import { useAuthentication } from "src/authentication/use-authentication";
+import type { CategoryDefinition } from "src/category-select/types";
+import { useUserSettings } from "src/user-settings/use-user-settings";
+import { DAILY_CLEANING_TEMPLATE } from './templates-housework';
+import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import "./templates-page.css";
 
-type TemplateCategoryKey = "home" | "self-care" | "pets" | "work" | "people" | "money" | "hobbies";
+type TemplateCategoryKey = "housework" | "self-care" | "pets" | "work" | "people" | "leisure";
 
 interface TaskTemplate {
     id: string;
@@ -17,10 +22,12 @@ interface TaskTemplate {
     categoryKey: TemplateCategoryKey;
     mode: Mode;
     subtasks: string[];
+    items?: ChecklistItem[];
 }
 
 const TASK_TEMPLATES: TaskTemplate[] = [
-    { id: "clean-bathroom", title: "Clean bathroom", description: "A full reset for sink, toilet, mirror, shower, and floor.", categoryKey: "home", mode: "one-time", subtasks: ["Clear counters", "Spray sink and counters", "Clean mirror", "Scrub toilet", "Clean shower or tub", "Take out trash", "Sweep and mop floor"] },
+    { id: "daily-cleaning", title: "Daily Cleaning", description: "A checklist for daily cleaning tasks.", categoryKey: "housework", mode: "daily", subtasks: [], items: DAILY_CLEANING_TEMPLATE },
+    { id: "clean-bathroom", title: "Clean bathroom", description: "A full reset for sink, toilet, mirror, shower, and floor.", categoryKey: "housework", mode: "one-time", subtasks: ["Clear counters", "Spray sink and counters", "Clean mirror", "Scrub toilet", "Clean shower or tub", "Take out trash", "Sweep and mop floor"] },
     { id: "morning-reset", title: "Morning reset", description: "A gentle checklist to start the day with less friction.", categoryKey: "self-care", mode: "daily", subtasks: ["Drink water", "Take medication or vitamins", "Get dressed", "Check calendar", "Pick top 3 tasks"] },
     { id: "pet-care-reset", title: "Pet care reset", description: "Food, water, walk, cleanup, and small pet-care checks.", categoryKey: "pets", mode: "daily", subtasks: ["Refresh water bowl", "Feed pets", "Quick walk or playtime", "Check poop bags", "Clean food area"] },
 ];
@@ -28,23 +35,55 @@ const TASK_TEMPLATES: TaskTemplate[] = [
 function makeItem(overrides: Partial<ChecklistItem>): ChecklistItem {
     return {
         itemType: "checklist-item", id: crypto.randomUUID(), text: "", done: false,
-        lastCompleted: "", note: "", sortOrder: 0, tabSortOrder: {}, category: "home",
+        lastCompleted: "", note: "", sortOrder: 0, tabSortOrder: {}, category: "housework",
         mode: "one-time", isPriority: false, isArchived: false, isHidden: false,
         hasSubChores: false, parentUuid: null, recurrence: null, nextDue: null, ...overrides,
     };
 }
 
-function buildPreview(template: TaskTemplate): ChecklistItem[] {
-    const parent = makeItem({ text: template.title, note: template.description, category: template.categoryKey, mode: template.mode, hasSubChores: template.subtasks.length > 0 });
-    return [parent, ...template.subtasks.map((text, index) => makeItem({ text, sortOrder: index, category: template.categoryKey, mode: template.mode, parentUuid: parent.id }))];
+function resolveCategoryId(
+    categoryKey: TemplateCategoryKey,
+    categories: CategoryDefinition[],
+    isAuthenticated: boolean,
+): string {
+    if (!isAuthenticated) return categoryKey;
+
+    return categories.find(category =>
+        category.isBuiltIn && (category.builtInKey === categoryKey || category.id === categoryKey)
+    )?.id ?? categoryKey;
+}
+
+function buildPreview(template: TaskTemplate, categoryId: string = template.categoryKey): ChecklistItem[] {
+    if (template.items) {
+        const idMap = new Map(template.items.map(item => [item.id, crypto.randomUUID()]));
+        return template.items.map(item => ({
+            ...item,
+            id: idMap.get(item.id)!,
+            category: categoryId,
+            parentUuid: item.parentUuid ? idMap.get(item.parentUuid) ?? null : null,
+        }));
+    }
+
+    const parent = makeItem({ text: template.title, note: template.description, category: categoryId, mode: template.mode, hasSubChores: template.subtasks.length > 0 });
+    return [parent, ...template.subtasks.map((text, index) => makeItem({ text, sortOrder: index, category: categoryId, mode: template.mode, parentUuid: parent.id }))];
+}
+
+function getSubtaskCount(template: TaskTemplate): number {
+    return template.items?.filter(item => item.parentUuid !== null).length ?? template.subtasks.length;
 }
 
 export default function TemplatesPage() {
     const task = useTask();
     const { showToast } = useToast();
+    const { isAuthenticated } = useAuthentication();
+    const { categories: userCategories } = useUserSettings();
+    const categories = !isAuthenticated ? DEFAULT_CATEGORIES : userCategories;
     const [selectedCategory, setSelectedCategory] = useState<TemplateCategoryKey | "all">("all");
     const [selectedTemplateId, setSelectedTemplateId] = useState(TASK_TEMPLATES[0].id);
-    const [previewItems, setPreviewItems] = useState<ChecklistItem[]>(() => buildPreview(TASK_TEMPLATES[0]));
+    const [previewItems, setPreviewItems] = useState<ChecklistItem[]>(() => buildPreview(
+        TASK_TEMPLATES[0],
+        resolveCategoryId(TASK_TEMPLATES[0].categoryKey, categories, isAuthenticated),
+    ));
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const templates = useMemo(() => selectedCategory === "all" ? TASK_TEMPLATES : TASK_TEMPLATES.filter(t => t.categoryKey === selectedCategory), [selectedCategory]);
@@ -52,7 +91,10 @@ export default function TemplatesPage() {
 
     function selectTemplate(template: TaskTemplate) {
         setSelectedTemplateId(template.id);
-        setPreviewItems(buildPreview(template));
+        setPreviewItems(buildPreview(
+            template,
+            resolveCategoryId(template.categoryKey, categories, isAuthenticated),
+        ));
         setEditingItem(null);
     }
 
@@ -93,7 +135,10 @@ export default function TemplatesPage() {
         try {
             const idMap = new Map(previewItems.map(item => [item.id, crypto.randomUUID()]));
             for (const item of previewItems) {
-                await task.addItem({ ...item, id: idMap.get(item.id)!, parentUuid: item.parentUuid ? idMap.get(item.parentUuid) ?? null : null, done: false, lastCompleted: "", isArchived: false, isHidden: false });
+                const category = isAuthenticated
+                    ? resolveCategoryId(item.category as TemplateCategoryKey, categories, true)
+                    : item.category;
+                await task.addItem({ ...item, id: idMap.get(item.id)!, category, parentUuid: item.parentUuid ? idMap.get(item.parentUuid) ?? null : null, done: false, lastCompleted: "", isArchived: false, isHidden: false });
             }
             showToast(`Added "${previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}" to your checklist`, "success");
         } catch (error) {
@@ -128,14 +173,14 @@ export default function TemplatesPage() {
                 <aside className="templates-sidebar" aria-label="Task templates">
                     <h2>Templates</h2>
                     <div className="templates-page_filters">
-                        {["all", "home", "self-care", "pets", "work", "people", "money", "hobbies"].map(category => (
+                        {["all", "housework", "self-care", "pets", "work", "people", "leisure"].map(category => (
                             <button key={category} className={`template-filter ${selectedCategory === category ? "template-filter--active" : ""}`} onClick={() => setSelectedCategory(category as TemplateCategoryKey | "all")} type="button">{category === "all" ? "All" : category}</button>
                         ))}
                     </div>
                     <div className="template-list">
                         {templates.map(template => (
                             <button key={template.id} type="button" className={`template-list_item ${selectedTemplateId === template.id ? "template-list_item--active" : ""}`} onClick={() => selectTemplate(template)}>
-                                <strong>{template.title}</strong><span>{template.subtasks.length} subtasks · {template.categoryKey}</span>
+                                <strong>{template.title}</strong><span>{getSubtaskCount(template)} subtasks · {template.categoryKey}</span>
                             </button>
                         ))}
                     </div>
@@ -157,7 +202,17 @@ export default function TemplatesPage() {
                         enablePullToRefresh
                     />
                 </main>
-                {editingItem && <div className="template-edit-overlay"><EditTaskForm formData={editingItem} onSave={item => updateItem(item)} onClose={() => setEditingItem(null)} /></div>}
+                {editingItem && (
+                    <div className="template-edit-overlay">
+                    <EditTaskForm
+                        categories={categories}
+                        formData={editingItem}
+                        onSave={item => updateItem(item)}
+                        onClose={() => setEditingItem(null)}
+                    />
+
+                    </div>
+                )}
             </div>
         </Page>
     );

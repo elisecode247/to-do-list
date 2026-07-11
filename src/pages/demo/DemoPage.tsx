@@ -495,9 +495,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 </main>
                 <aside className="right_panel">
                     {rightOpen && editingItem ? (
-                        <EditTaskForm key={editingItem.id} isSaving={isSaving} formData={editingItem} onSave={handleSave} onClose={handleCloseEditForm} />
+                        <EditTaskForm categories={DEFAULT_CATEGORIES} key={editingItem.id} isSaving={isSaving} formData={editingItem} onSave={handleSave} onClose={handleCloseEditForm} />
                     ) : rightOpen ? (
-                        <AddForm isDesktop={isDesktop} setRightOpen={setRightOpen} />
+                        <AddForm categories={DEFAULT_CATEGORIES} isDesktop={isDesktop} setRightOpen={setRightOpen} />
                     ) : null}
                 </aside>
                 {!isDesktop && !leftOpen && !rightOpen && (

@@ -76,7 +76,7 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
     },
     {
         id: "housework",
-        name: "Home",
+        name: "Housework",
         color: "#fbbf24",
         icon: "house",
         isVisible: true,

@@ -99,7 +99,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(false);
-    const [collapsed, setCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [alignLeft, setAlignLeft] = useState(false);
     const [animate, setAnimate] = useState(true);

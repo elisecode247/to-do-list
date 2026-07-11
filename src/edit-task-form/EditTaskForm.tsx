@@ -19,13 +19,14 @@ import {
 import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 'react-hook-form';
 import { getDaysAgo } from 'src/utilities/days-ago';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
+import type { CategoryDefinition } from 'src/category-select/types';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
     formData: ChecklistItem;
     onSave: (item: ChecklistItem) => void;
     onClose: () => void;
+    categories: CategoryDefinition[];
 };
 
 type RecurrenceFormValues = {
@@ -48,6 +49,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     formData,
     onSave,
     onClose,
+    categories,
 }) => {
     const [mode, setMode] = useState<Mode>(formData.mode);
     const [isPriority, setIsPriority] = useState(formData.isPriority);
@@ -55,10 +57,13 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const recurrence = formData.recurrence;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
     const isOneTimeRecurrence = recurrence?.type === ONE_TIME_RECURRENCE;
-    const { categories } = useUserSettings();
+    const categoryId = categories.find(category =>
+        category.id === formData.category || category.builtInKey === formData.category
+    )?.id ?? formData.category;
+
     const defaultValues: EditTaskFormValues = {
         taskName: formData.text,
-        category: formData.category,
+        category: categoryId,
         lastCompleted: formData.lastCompleted ? formatDate(new Date(formData.lastCompleted)) : '',
         note: formData.note ?? '',
         startDate: recurrence?.startDate ? formatDate(new Date(recurrence.startDate)) : formatDate(new Date()),
@@ -75,6 +80,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const methods = useForm<EditTaskFormValues>({ defaultValues });
     const { register, handleSubmit, control, formState: { errors } } = methods;
     const watchNote = useWatch({ control, name: 'note' });
+    const watchCategory = useWatch({ control, name: 'category' });
     const handleSaveItem: SubmitHandler<EditTaskFormValues> = async (data) => {
         let recurrence: OneTimeRecurrence | IntervalRecurrence | null = null;
         if (mode === ONE_TIME_MODE) {
@@ -142,7 +148,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     <div className="task-form-field">
                         <label className="task-form-field__label">Category</label>
                         <div className="task-form-category-wrap">
-                            <CategorySelect id={formData.id} categories={categories} />
+                            <CategorySelect
+                                id={formData.id}
+                                categories={categories}
+                                selectedCategory={watchCategory}
+                                onChange={(value) => methods.setValue('category', value)}
+                            />
                         </div>
                     </div>
 

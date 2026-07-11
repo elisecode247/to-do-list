@@ -20,7 +20,7 @@ import { ListTodo, CalendarCheck } from 'lucide-react';
 import 'src/new-task-form/new-task-form.css';
 import 'src/task-form/new-form.css';
 import 'src/task-form/task-form-shared.css';
-import { DEFAULT_CATEGORIES } from 'src/category-select/category-constants';
+import type { CategoryDefinition } from 'src/category-select/types';
 
 type RecurrenceFormValues = {
     startDate: string;
@@ -38,11 +38,12 @@ type DemoAddFormValues = {
 type DemoAddFormProps = {
     isDesktop: boolean;
     setRightOpen: (open: boolean) => void;
+    categories: CategoryDefinition[];
 };
 
 type FormType = 'task' | 'event';
 
-const DemoTaskForm = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRightOpen'>) => {
+const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setRightOpen' | 'categories'>) => {
     const { addItem } = useDemoTask();
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
@@ -143,7 +144,10 @@ const DemoTaskForm = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRightOpen'>) 
                     <div className="task-form-field">
                         <label className="task-form-field__label">Category</label>
                         <div className="task-form-category-wrap">
-                            <CategorySelect id="new-task-form" categories={DEFAULT_CATEGORIES} />
+                            <CategorySelect
+                                id="new-task-form"
+                                categories={categories}
+                            />
                         </div>
                     </div>
 
@@ -259,7 +263,7 @@ const DemoEventUnavailable = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRight
     );
 };
 
-const DemoAddForm = ({ isDesktop, setRightOpen }: DemoAddFormProps) => {
+const DemoAddForm = ({ isDesktop, setRightOpen, categories }: DemoAddFormProps) => {
     const [formType, setFormType] = useState<FormType>('task');
 
     return (
@@ -301,7 +305,7 @@ const DemoAddForm = ({ isDesktop, setRightOpen }: DemoAddFormProps) => {
             </div>
 
             {formType === 'task' ? (
-                <DemoTaskForm setRightOpen={setRightOpen} />
+                <DemoTaskForm setRightOpen={setRightOpen} categories={categories} />
             ) : (
                 <DemoEventUnavailable setRightOpen={setRightOpen} />
             )}

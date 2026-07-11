@@ -50,7 +50,7 @@ const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     note: '',
     sortOrder: 0,
     tabSortOrder: {},
-    category: 'home',
+    category: 'housework',
     mode: ONE_TIME_MODE,
     isPriority: false,
     isArchived: false,
@@ -400,7 +400,7 @@ describe('filterTasks – common filters', () => {
         const result = filterTasks(
             makeParams({
                 items: [task],
-                filterCategory: 'home',
+                filterCategory: 'housework',
             })
         );
 

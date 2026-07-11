@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import './new-task-form.css';
@@ -18,6 +17,7 @@ import {
     type Mode,
     type IntervalRecurrence
 } from 'app/types';
+import type { CategoryDefinition } from 'src/category-select/types';
 
 type Inputs = {
     taskName: string;
@@ -36,12 +36,11 @@ type RecurrenceFormValues = {
 
 type NewTaskFormValues = Inputs & RecurrenceFormValues;
 
-const NewTaskForm = ({ setRightOpen }: { setRightOpen: (open: boolean) => void }) => {
+const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolean) => void, categories: CategoryDefinition[] }) => {
     const { addItem } = useTask();
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const panelRef = useRef<HTMLDivElement | null>(null);
-    const { categories } = useUserSettings();
 
     const defaultValues = {
         taskName: '',
