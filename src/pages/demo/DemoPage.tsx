@@ -136,6 +136,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
             setEditingItem(null);
             return;
         }
+        if (leftOpen && isDesktop && window.innerWidth > 900 && window.innerWidth < 1200) {
+            setLeftOpen(false);
+        }
         toggleRight();
     }
     function handleCloseEditForm() {
@@ -183,6 +186,18 @@ const DemoPage: React.FC<DemoPageProps> = ({
         const frameId = window.requestAnimationFrame(updateMobileIndicator);
         return () => window.cancelAnimationFrame(frameId);
     }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
+    useEffect(() => {
+        const maybeCloseLeftPanel = () => {
+            const width = window.innerWidth;
+            if (leftOpen && rightOpen && width > 900 && width < 1200) {
+                setLeftOpen(false);
+            }
+        };
+
+        maybeCloseLeftPanel();
+        window.addEventListener('resize', maybeCloseLeftPanel);
+        return () => window.removeEventListener('resize', maybeCloseLeftPanel);
+    }, [leftOpen, rightOpen]);
     const pageTransitionKey = isLoading ? "loading" : taskError ? "error" : activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? "empty" : activeTab;
     const isJournal = activeTab === TABS.journal;
 

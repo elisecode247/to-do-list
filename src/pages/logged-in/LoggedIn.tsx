@@ -154,6 +154,19 @@ const LoggedIn: React.FC = () => {
         return () => window.cancelAnimationFrame(frameId);
     }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
 
+    useEffect(() => {
+        const maybeCloseLeftPanel = () => {
+            const width = window.innerWidth;
+            if (leftOpen && rightOpen && width > 900 && width < 1200) {
+                setLeftOpen(false);
+            }
+        };
+
+        maybeCloseLeftPanel();
+        window.addEventListener('resize', maybeCloseLeftPanel);
+        return () => window.removeEventListener('resize', maybeCloseLeftPanel);
+    }, [leftOpen, rightOpen]);
+
     function clearFilters() {
         setModeFilter(ALL_MODES);
         setFilterCategory(ALL_CATEGORIES);
@@ -177,8 +190,16 @@ const LoggedIn: React.FC = () => {
         });
     };
 
+    const shouldAutoCloseLeftPanel = () => {
+        const width = window.innerWidth;
+        return width > 900 && width < 1200;
+    };
+
     const toggleAddForm = () => {
         if (!editingItem) {
+            if (leftOpen && isDesktop && shouldAutoCloseLeftPanel()) {
+                setLeftOpen(false);
+            }
             toggleRight();
         } else {
             setEditingItem(null);

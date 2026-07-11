@@ -242,7 +242,7 @@ const DemoEventUnavailable = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRight
     return (
         <div className="task-form-drawer__body">
             <div className="task-form-field">
-                <h3 className="task-form-drawer__title">Events are disabled in demo mode</h3>
+                <p>Events are disabled in demo mode.</p>
                 <p>Use the main app after signing in to create Google Calendar events.</p>
             </div>
             <div className="task-form-drawer__footer">
