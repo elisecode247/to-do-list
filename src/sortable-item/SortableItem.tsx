@@ -112,7 +112,6 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     const toggleNotes = () => {
         setShowNotes(!showNotes);
-        setCollapsed(true);
         setOpenNewTaskForm(false);
     }
 

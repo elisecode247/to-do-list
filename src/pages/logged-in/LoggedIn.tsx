@@ -340,6 +340,7 @@ const LoggedIn: React.FC = () => {
                                 hideCompleted={hideCompleted}
                                 filterCategory={filterCategory}
                                 clearFilters={clearFilters}
+                                enablePullToRefresh={true}
                             />
                         )}
                     </motion.div>

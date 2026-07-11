@@ -73,6 +73,10 @@ export const usePullToRefresh = (refreshData: () => void, isEnabled = true) => {
     }, [isEnabled, pullDistance, triggerRefresh]);
 
     useEffect(() => {
+        if (!isEnabled) {
+            return;
+        }
+
         const refreshContCurrent = refreshContainerRef.current;
         refreshContCurrent?.addEventListener("touchstart", pullStart);
         refreshContCurrent?.addEventListener("touchmove", pull, { passive: false });
@@ -88,8 +92,8 @@ export const usePullToRefresh = (refreshData: () => void, isEnabled = true) => {
 
     return {
         refreshContainerRef,
-        pullRefreshContainerClassName: "pull-to-refresh-container",
-        PullToRefresh: () => <PullToRefreshIcon pullDistance={pullDistance} />,
+        pullRefreshContainerClassName: isEnabled ? "pull-to-refresh-container" : "",
+        PullToRefresh: () => isEnabled ? <PullToRefreshIcon pullDistance={pullDistance} /> : null,
         pullDistance
     }
 }

@@ -27,7 +27,7 @@ function TaskContextChecklist(props: Omit<ChecklistProps, "controller">) {
         unhideEventForToday: google.unhideEventForToday
     };
 
-    return <Checklist {...props} controller={controller} />;
+    return <Checklist {...props} controller={controller} enablePullToRefresh={props.enablePullToRefresh ?? false} />;
 }
 
 export default TaskContextChecklist;

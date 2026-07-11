@@ -39,6 +39,7 @@ function eventIncludesAfterToday(startDate: Date | string, endDate: Date | strin
 
 interface ChecklistProps {
     checklistType?: 'task' | 'template';
+    enablePullToRefresh: boolean;
     controller: ChecklistController;
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
@@ -52,6 +53,7 @@ interface ChecklistProps {
 
 const Checklist: FC<ChecklistProps> = ({
     checklistType = 'task',
+    enablePullToRefresh,
     controller,
     activeTab,
     modeFilter,
@@ -92,7 +94,10 @@ const Checklist: FC<ChecklistProps> = ({
         pullRefreshContainerClassName,
         PullToRefresh,
         pullDistance
-      } = usePullToRefresh(loadTasks, !isDragging);
+      } = usePullToRefresh(
+        loadTasks,
+        (enablePullToRefresh ?? checklistType !== 'template') && !isDragging
+      );
 
     const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
         .sort((a, b) => {

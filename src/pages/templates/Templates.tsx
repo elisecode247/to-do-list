@@ -145,7 +145,17 @@ export default function TemplatesPage() {
                         <div><p className="template-preview_eyebrow">Preview and customize</p><h2>{previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}</h2><p>Use the task menu to edit, delete, or add subtasks before saving.</p></div>
                         <button className="template-card_button" type="button" disabled={isAdding || previewItems.length === 0} onClick={addToList}>{isAdding ? "Adding…" : "Add to my to-do list"}</button>
                     </div>
-                    <Checklist checklistType="template" controller={controller} activeTab={TABS.today} modeFilter="all" hideCompleted={false} filterCategory="all" clearFilters={() => undefined} onEditItem={setEditingItem} />
+                    <Checklist
+                        checklistType="template"
+                        controller={controller}
+                        activeTab={TABS.today}
+                        modeFilter="all"
+                        hideCompleted={false}
+                        filterCategory="all"
+                        clearFilters={() => undefined}
+                        onEditItem={setEditingItem}
+                        enablePullToRefresh
+                    />
                 </main>
                 {editingItem && <div className="template-edit-overlay"><EditTaskForm formData={editingItem} onSave={item => updateItem(item)} onClose={() => setEditingItem(null)} /></div>}
             </div>

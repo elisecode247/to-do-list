@@ -11,6 +11,22 @@
     width: 100%;
 }
 
+/* Embedded template previews should use the page's scroll container. */
+.checklist_list-container--template {
+    overflow-y: visible;
+    min-height: 0;
+    height: auto;
+    flex: none;
+}
+
+.checklist_list-container--template .checklist_list-content {
+    min-height: 0;
+}
+
+.checklist_list-container--template .placeholder {
+    display: none;
+}
+
 .checklist_list-content {
     display: flex;
     flex-direction: column;
