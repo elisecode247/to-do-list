@@ -91,6 +91,14 @@ function AccountMenu({
                                         User Settings
                                     </Link>
                                 )}
+                                {location !== ROUTES.templates && (
+                                    <Link href={ROUTES.templates}
+                                        id="templates-link"
+                                        className="settings-btn"
+                                    >
+                                        Templates
+                                    </Link>
+                                )}
                                 {location !== ROUTES.bulkEdit && (
                                     <Link href={ROUTES.bulkEdit}
                                         id="bulk-edit-link"

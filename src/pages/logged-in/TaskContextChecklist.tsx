@@ -11,6 +11,7 @@ function TaskContextChecklist(props: Omit<ChecklistProps, "controller">) {
     const controller: ChecklistController = {
         isLoading: task.isLoading,
         items: task.items,
+        addItem: task.addItem,
         partialUpdateItem: task.partialUpdateItem,
         deleteItem: task.deleteItem,
         toggleItem: task.toggleItem,

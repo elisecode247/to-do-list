@@ -7,6 +7,7 @@ export const ROUTES = {
     bulkEdit: '/bulk-edit',
     privacyPolicy: '/privacy-policy',
     themePlayground: '/theme-playground',
+    templates: '/templates',
 } as const;
 
 

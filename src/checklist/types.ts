@@ -6,6 +6,7 @@ import type { ALL_MODES } from './constants';
 import type { ReactElement } from 'react';
 
 export interface ChecklistProps {
+    checklistType?: 'task' | 'template';
     controller: ChecklistController;
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
@@ -21,6 +22,7 @@ export interface ChecklistProps {
 export interface ChecklistController {
     isLoading: boolean;
     items: ChecklistItem[];
+    addItem?: (item: ChecklistItem) => Promise<void> | void;
     events?: GoogleEvent[];
     partialUpdateItem: (item: Partial<ChecklistItem>) => Promise<void> | void;
     deleteItem: (id: string) => Promise<void> | void;

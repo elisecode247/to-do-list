@@ -38,6 +38,7 @@ function eventIncludesAfterToday(startDate: Date | string, endDate: Date | strin
 }
 
 interface ChecklistProps {
+    checklistType?: 'task' | 'template';
     controller: ChecklistController;
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
@@ -50,6 +51,7 @@ interface ChecklistProps {
 }
 
 const Checklist: FC<ChecklistProps> = ({
+    checklistType = 'task',
     controller,
     activeTab,
     modeFilter,
@@ -62,6 +64,7 @@ const Checklist: FC<ChecklistProps> = ({
 }) => {
     const {
         items,
+        addItem, // for template page
         partialUpdateItem,
         deleteItem,
         toggleItem,
@@ -134,6 +137,7 @@ const Checklist: FC<ChecklistProps> = ({
 
         return 1;
     });
+
     const completedDay = items.some(item => item.done) || items.some(item => item.isHidden) &&
         filteredItems.length === 0 && activeTab === TABS.today;
 
@@ -331,9 +335,12 @@ const Checklist: FC<ChecklistProps> = ({
                 sensors={sensors}
             >
                 <div
-                    className={`checklist_list-container ${pullRefreshContainerClassName} ${pullDistance ?
-                        "checklist_list-container--pulling" : ""
-                    }`}
+                    className={
+                        `checklist_list-container
+                        checklist_list-container--${checklistType}
+                        ${pullRefreshContainerClassName} ${pullDistance ?
+                        "checklist_list-container--pulling" : ""}`
+                    }
                     ref={refreshContainerRef}
                 >
                     <PullToRefresh />
@@ -364,6 +371,7 @@ const Checklist: FC<ChecklistProps> = ({
                                     const checklistItem = item as ChecklistItem;
                                     return (
                                         <SortableItem
+                                            checklistType={checklistType}
                                             activeTab={activeTab}
                                             hasSubChores={checklistItem.hasSubChores}
                                             isSubChore={!!checklistItem.parentUuid}
@@ -387,6 +395,9 @@ const Checklist: FC<ChecklistProps> = ({
                                             onMoveItem={handleMoveItem}
                                             onSuccess={displaySparkles}
                                             nextDue={checklistItem.nextDue}
+                                            addItem={addItem}
+                                            partialUpdateItem={partialUpdateItem}
+                                            getSubtasks={getSubtasks}
                                         />
                                     );
                                 }

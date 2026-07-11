@@ -34,6 +34,9 @@ const PrivacyPolicyLazy = lazy(async () => {
 const ThemePlaygroundLazy = lazy(async () => {
     return { default: (await import('src/themes/ThemePlayground')).default };
 });
+const TemplatesLazy = lazy(async () => {
+    return { default: (await import('src/pages/templates/Templates')).default };
+});
 
 const LoadingSpinner = () => {
     return (
@@ -123,6 +126,12 @@ const App: FC = () => {
                 </Route>
                 <Route path={ROUTES.themePlayground}>
                     <ThemePlaygroundLazy />
+                </Route>
+                <Route path={ROUTES.templates}>
+                    {isLoading ? <LoadingSpinner /> :
+                        isAuthenticated ? (
+                            <TemplatesLazy />
+                        ) : <NotFoundLazy />}
                 </Route>
                 <Route>
                     <NotFoundLazy />

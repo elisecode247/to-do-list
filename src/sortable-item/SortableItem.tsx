@@ -6,7 +6,6 @@ import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { getDaysAgo, getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem, Mode } from 'src/app/types';
-import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import {
     Ban,
@@ -36,6 +35,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 import IconButton from 'src/components/icon-button/IconButton';
 
 interface SortableItemProps {
+    checklistType?: 'task' | 'template';
     id: string;
     activeTab: string;
     hasSubChores?: boolean;
@@ -58,10 +58,14 @@ interface SortableItemProps {
     isPriority: boolean;
     subtasks: ChecklistItem[];
     nextDue: string | null;
+    addItem?: (item: ChecklistItem) => Promise<void> | void;
+    partialUpdateItem?: (item: Partial<ChecklistItem>) => Promise<void> | void;
+    getSubtasks?: (parentId: string) => ChecklistItem[];
     isUpcomingSubtask?: boolean;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
+    checklistType = 'task',
     id,
     activeTab,
     hasSubChores = false,
@@ -85,8 +89,10 @@ export const SortableItem: FC<SortableItemProps> = ({
     subtasks,
     nextDue,
     isUpcomingSubtask = false,
+    addItem,
+    partialUpdateItem,
+    getSubtasks = () => [],
 }) => {
-    const { getSubtasks, addItem, partialUpdateItem } = useTask();
     const { showToast } = useToast();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
         useSortable({ id });
@@ -148,8 +154,6 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Task details cannot be empty.', 'error');
             return;
         }
-        // get count of parent task's existing subtasks to determine new subtask's sort order
-        const existingSubtasks = getSubtasks(id);
         // inherit parent task's category and mode, but not priority or hidden status
         const newChecklistItem: ChecklistItem = {
             itemType: 'checklist-item',
@@ -159,7 +163,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             lastCompleted: '',
             note: '',
             // add subtask at the end of the list, but before any hidden or archived items
-            sortOrder: existingSubtasks.length,
+            sortOrder: subtasks.length,
             tabSortOrder: {},
             category: category,
             mode: mode,
@@ -172,6 +176,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             nextDue: null
         };
         try {
+            if (!addItem) throw new Error('Adding checklist items is not supported');
             await addItem(newChecklistItem);
             setInputText('');
             showToast('Task added successfully', 'success');
@@ -352,7 +357,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <span className="sortable-item_button-text-span">Notes</span>
                             </button>
                         )}
-                        {activeTab === TABS.archived ? null : (
+                        {activeTab === TABS.archived || checklistType === 'template' ? null : (
                             <button
                                 className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={delayHide}
@@ -429,7 +434,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     <span className="sortable-item_button-text-span">Edit</span>
                                 </button>
 
-                                {activeTab !== TAB_ARCHIVED ? (
+                                {checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
                                     <button
                                         className="sortable-item_archive-button"
                                         onClick={() => onMoveItem(id, false)}
@@ -486,7 +491,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     className="sortable-item_save-note-button"
                                     onClick={() => {
                                         try {
-                                            partialUpdateItem({ id, note: noteRef.current?.getMarkdown() ?? '' });
+                                            partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
                                             showToast('Notes saved successfully', 'success');
                                         } catch (error) {
                                             console.error('Failed to save note:', error);
@@ -546,6 +551,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     >
                                         {filteredTasks?.map((subtask) => (
                                             <SortableItem
+                                                checklistType={checklistType}
                                                 key={subtask.id}
                                                 id={subtask.id}
                                                 activeTab={activeTab}
@@ -568,6 +574,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 onSuccess={onSuccess}
                                                 subtasks={getSubtasks(subtask.id)}
                                                 nextDue={subtask.nextDue}
+                                                addItem={addItem}
+                                                partialUpdateItem={partialUpdateItem}
+                                                getSubtasks={getSubtasks}
                                             />
                                         ))}
                                     </motion.div>
@@ -602,6 +611,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 >
                                                     {upcomingTasks.map((subtask) => (
                                                         <SortableItem
+                                                            checklistType={checklistType}
                                                             key={subtask.id}
                                                             id={subtask.id}
                                                             activeTab={activeTab}
@@ -625,6 +635,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             subtasks={getSubtasks(subtask.id)}
                                                             nextDue={subtask.nextDue}
                                                             isUpcomingSubtask={true}
+                                                            addItem={addItem}
+                                                            partialUpdateItem={partialUpdateItem}
+                                                            getSubtasks={getSubtasks}
                                                         />
                                                     ))}
                                                 </motion.div>
