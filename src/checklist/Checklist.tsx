@@ -134,7 +134,7 @@ const Checklist: FC<ChecklistProps> = ({
 
         return 1;
     });
-    const completedDay = items.some(item => item.done) &&
+    const completedDay = items.some(item => item.done) || items.some(item => item.isHidden) &&
         filteredItems.length === 0 && activeTab === TABS.today;
 
     const sensors = useSensors(
