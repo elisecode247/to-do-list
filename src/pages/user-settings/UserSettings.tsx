@@ -6,6 +6,7 @@ import DeleteAccountDialog from "./DeleteAccountDialog";
 import Page from "../Page";
 import { Skull } from 'lucide-react';
 import EncryptionSettings from "src/user-settings/EncryptionSettings";
+import JournalExportSettings from "src/user-settings/JournalExportSettings";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import CategorySettings from "src/pages/user-settings/CategorySettings";
 
@@ -47,6 +48,7 @@ function UserSettings() {
                     </div>
                 </div>
                 <EncryptionSettings />
+                <JournalExportSettings />
                 <AppearanceSettings />
                 <CategorySettings />
                 <div className="settings-section settings-section--danger">

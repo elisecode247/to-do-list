@@ -8,6 +8,7 @@ type IconButtonProps = {
     icon: React.ReactNode;
     showLabel?: boolean;
     isPriority?: boolean;
+    disabled?: boolean;
     ariaLabel?: string;
     children?: React.ReactNode;
     longPressLabel?: string; // tooltip text shown on long press, defaults to `label`
@@ -25,6 +26,7 @@ const IconButton = ({
     children,
     longPressLabel,
     longPressDuration = 500,
+    disabled = false,
 }: IconButtonProps) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -73,6 +75,7 @@ const IconButton = ({
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerLeave}
             aria-label={ariaLabel ?? label}
+            disabled={disabled}
         >
             {icon}
             {showLabel && <span>{label}</span>}
