@@ -1,6 +1,6 @@
 .empty-state {
     background: transparent;
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     padding: 10vh var(--spacing-md);
     min-height: 420px;
     display: flex;
@@ -13,26 +13,26 @@
 .empty-state__icon {
     width: 56px;
     height: 56px;
-    border-radius: 50%;
-    background: rgba(216, 90, 163, 0.15);
-    border: 1px solid rgba(216, 90, 163, 0.35);
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    color: #e8a4c9;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-accent);
 }
 
 .empty-state-title {
     font-size: 20px;
     font-weight: 500;
-    color: #f5f3ff;
-    margin: 0 0 8px;
+    color: contrast-color(var(--color-background));
+    margin: 0 0 var(--spacing-xs);
 }
 
 .empty-state-subtitle {
     font-size: 14px;
-    color: #b8b2d9;
+    color: color-mix(in srgb, contrast-color(var(--color-background)) 75%, transparent);
     margin: 0 0 28px;
     max-width: 340px;
     line-height: 1.6;
@@ -41,18 +41,18 @@
 .filters-applied {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--spacing-xs);
     justify-content: center;
     margin-bottom: 28px;
 }
 
 .filters-applied__chip {
     font-size: 12px;
-    color: #d4cdf0;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 5px 12px;
-    border-radius: 999px;
+    color: contrast-color(var(--color-surface--transparent));
+    background: var(--color-surface--transparent);
+    border: 1px solid var(--color-border);
+    padding: 5px var(--spacing-sm);
+    border-radius: var(--radius-rounded);
 }
 
 .clear-filters-btn {
@@ -61,19 +61,19 @@
     gap: 6px;
     font-size: 13px;
     font-weight: 500;
-    color: #1a1440;
-    background: #e8a4c9;
+    color: contrast-color(var(--color-accent));
+    background: var(--color-accent);
     border: none;
     padding: 9px 18px;
-    border-radius: 999px;
+    border-radius: var(--radius-rounded);
     cursor: pointer;
 }
 
 .clear-filters-btn:hover {
-    background: #edb5d2;
+    background: var(--color-accent-bg);
 }
 
 .empty-state__no-filters {
     font-size: 14px;
-    color: #9d96c4;
+    color: color-mix(in srgb, contrast-color(var(--color-background)) 65%, transparent);
 }

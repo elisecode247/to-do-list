@@ -1,9 +1,12 @@
 import React from 'react';
 import './EmptyStateFilters.css';
-import { Moon, FilterX } from 'lucide-react';
+import { FilterX, Leaf, Moon, Heart, Snowflake, ListChecks, Fish } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { ALL_CATEGORIES, getCategoryLabel, NO_CATEGORY_ID } from 'src/category-select/category-constants';
 import type { Mode } from 'src/app/types';
 import { ALL_MODES } from 'src/checklist/constants';
+import type { ThemeStyle } from 'src/themes/types';
+import { useTheme } from 'src/themes/use-theme';
 import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 interface EmptyStateFiltersProps {
@@ -18,6 +21,15 @@ const completedDayTitle = 'That’s everything for today';
 const completedDaySubtitle = 'You can view completed tasks by unchecking "Hide Completed" in the filters above.';
 const noTasksTitle = 'No tasks match your filters';
 
+const themeIcons: Record<ThemeStyle, LucideIcon> = {
+    calm: ListChecks,
+    space: Moon,
+    nature: Leaf,
+    ocean: Fish,
+    winter: Snowflake,
+    custom: Heart,
+};
+
 const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     modeFilter,
     filterCategory,
@@ -26,6 +38,8 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     type = 'noTasks',
 }) => {
     const { categories } = useUserSettings();
+    const { style } = useTheme();
+    const ThemeIcon = themeIcons[style];
     const filterCategoryLabel = filterCategory === NO_CATEGORY_ID
         ? 'No category'
         : getCategoryLabel(categories, filterCategory);
@@ -35,7 +49,7 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     return (
         <div className="empty-state">
             <div className="empty-state__icon">
-                <Moon size={26} strokeWidth={1.75} />
+                <ThemeIcon size={26} strokeWidth={1.75} />
             </div>
 
             <h3 className="empty-state-title">
