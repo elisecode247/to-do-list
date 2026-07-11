@@ -57,7 +57,6 @@
     background: var(--color-surface);
     font-size: 16px;
     color: contrast-color(var(--color-surface));
-    font-family: inherit;
     box-sizing: border-box;
 }
 
@@ -141,7 +140,6 @@
     font-size: 13px;
     cursor: pointer;
     transition: all 0.15s ease;
-    font-family: inherit;
 }
 
 .task-form-action-button--cancel {

@@ -48,7 +48,7 @@
 }
 
 .category-settings-icon__chevron {
-    color: color-mix(in srgb, var(--color-text) 55%, transparent);
+    color: color-mix(in srgb, contrast-color(var(--color-background)) 55%, transparent);
     font-size: 11px;
     line-height: 1;
     flex-shrink: 0;

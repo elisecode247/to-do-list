@@ -9,7 +9,6 @@
     border: 1px solid var(--color-border, #e5e7eb);
     border-radius: 12px;
     overflow: auto;
-    font-family: var(--font-sans, system-ui, sans-serif);
     display: flex;
     flex-direction: column;
     height: 534px;
@@ -251,7 +250,6 @@
     font-size: 13px;
     background-color: var(--color-white-black);
     color: contrast-color(var(--color-white-black));
-    font-family: var(--font-mono, monospace);
     width: 100%;
     padding: 0;
     cursor: text;
@@ -290,7 +288,6 @@
     resize: both;
     font-size: 14px;
     color: contrast-color(var(--color-surface));
-    font-family: var(--font-sans), system-ui, sans-serif;
     line-height: 1.65;
     overflow: hidden;
     padding: 4px;
@@ -314,7 +311,6 @@
     border: 1px solid transparent;
     line-height: 1.6;
     transition: all 0.15s;
-    font-family: inherit;
     color: contrast-color(var(--color-background), 0.5);
 }
 
@@ -355,7 +351,6 @@
     cursor: pointer;
     text-align: left;
     transition: background 0.15s, color 0.15s;
-    font-family: inherit;
 }
 
 .add-row-btn:hover {

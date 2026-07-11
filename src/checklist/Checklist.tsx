@@ -89,6 +89,7 @@ const Checklist: FC<ChecklistProps> = ({
     const listContentRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
+    const hasInitializedCompletedDayRef = useRef(false);
     const {
         refreshContainerRef,
         pullRefreshContainerClassName,
@@ -143,9 +144,8 @@ const Checklist: FC<ChecklistProps> = ({
         return 1;
     });
 
-    const completedDay = items.some(item => item.done) || items.some(item => item.isHidden) &&
+    const completedDay = (items.some(item => item.done) || items.some(item => item.isHidden)) &&
         filteredItems.length === 0 && activeTab === TABS.today;
-
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -305,12 +305,21 @@ const Checklist: FC<ChecklistProps> = ({
 
     useEffect(() => {
         const noOtherFilters = modeFilter === ALL_MODES && filterCategory === 'all';
+
+        // Prevent sparkle animation on initial page load.
+        if (!hasInitializedCompletedDayRef.current) {
+            completedDayRef.current = completedDay;
+            hasInitializedCompletedDayRef.current = true;
+            return;
+        }
+
         if (!completedDayRef.current && completedDay && noOtherFilters && activeTab === TABS.today) {
             setTimeout(() => {
-                displaySparkles()
-                completedDayRef.current = !!completedDay;
+                displaySparkles();
             }, 0);
         }
+
+        completedDayRef.current = completedDay;
     }, [completedDay, activeTab, modeFilter, filterCategory]);
 
     useEffect(() => {

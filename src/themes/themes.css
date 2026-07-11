@@ -72,6 +72,11 @@
     --spacing-lg: 20px;
     --spacing-xl: 24px;
 
+    /* Type scale */
+    --font-size-sm: 12px;
+    --font-size-md: 16px;
+    --font-size-lg: 20px;
+
     /* Radius */
     --radius-sm: 6px;
     --radius-md: 8px;
@@ -101,7 +106,6 @@ body {
 }
 
 .app_h1 {
-    font-family: "Outfit", Arial, sans-serif;
     letter-spacing: 1px;
     font-size: 28px;
     font-weight: 400;
@@ -215,7 +219,6 @@ textarea:focus {
 
 textarea {
     resize: vertical;
-    font-family: inherit;
 }
 
 /** Canvas Styles */

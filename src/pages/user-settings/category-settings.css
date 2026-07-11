@@ -2,7 +2,7 @@
     margin: 0;
     font-size: 14px;
     line-height: 1.5;
-    color: color-mix(in srgb, var(--color-text) 78%, transparent);
+    color: color-mix(in srgb, contrast-color(var(--color-background)) 78%, transparent);
 }
 
 .category-settings-container {
@@ -100,7 +100,7 @@
 .category-settings-help {
     margin: 0;
     font-size: 13px;
-    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+    color: color-mix(in srgb, contrast-color(var(--color-background)) 74%, transparent);
 }
 
 .category-settings-create {

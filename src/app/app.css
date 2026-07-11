@@ -58,7 +58,6 @@
     background-color: transparent;
     border: 0;
     padding: 0;
-    z-index: 10;
     margin-block: auto;
     margin-inline-start: auto;
     margin-inline-end: 0;
@@ -66,7 +65,7 @@
     display: flex;
     font-size: 16px;
     align-items: center;
-    z-index: 499;
+    z-index: 29;
 }
 
 .app_header_settings {

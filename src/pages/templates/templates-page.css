@@ -1,30 +1,32 @@
 .templates-page {
     display: grid;
-    grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
     max-width: 1100px;
+    width: 100%;
     margin: 0 auto;
     align-items: start;
 }
 
 .templates-sidebar {
-    position: sticky;
-    top: 1rem;
-    padding: 1rem;
+    position: static;
+    padding: var(--spacing-md);
     border: 1px solid var(--color-border);
     border-radius: 16px;
     background: var(--color-surface--transparent);
+    margin: 0 14px 14px 14px;
 }
 
 .templates-sidebar h2 {
-    margin: 0 0 .8rem;
+    margin: 0 0 var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
 }
 
 .templates-page_filters {
     display: flex;
-    gap: .4rem;
+    gap: var(--spacing-xs);
     flex-wrap: wrap;
-    padding-bottom: 1rem;
+    padding-bottom: var(--spacing-md);
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -32,10 +34,9 @@
     border: 1px solid var(--color-border);
     background: transparent;
     color: var(--color-text-secondary);
-    border-radius: 999px;
-    padding: .3rem .6rem;
-    font: inherit;
-    font-size: .78rem;
+    border-radius: var(--radius-rounded);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
     cursor: pointer;
     text-transform: capitalize;
 }
@@ -47,20 +48,21 @@
 }
 
 .template-list {
-    display: grid;
-    gap: .45rem;
-    margin-top: 1rem;
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
 }
 
 .template-list_item {
     width: 100%;
-    padding: .75rem;
+    min-width: 180px;
+    padding: var(--spacing-sm);
     border: 1px solid transparent;
     border-radius: 10px;
     background: transparent;
     color: var(--color-text-primary);
     text-align: left;
-    font: inherit;
     cursor: pointer;
 }
 
@@ -76,9 +78,9 @@
 }
 
 .template-list_item span {
-    margin-top: .2rem;
+    margin-top: calc(var(--spacing-xs) / 2);
     color: var(--color-text-secondary);
-    font-size: .78rem;
+    font-size: var(--font-size-sm);
 }
 
 .template-preview {
@@ -87,18 +89,21 @@
 
 .template-preview_header {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: end;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 1rem 1.2rem;
+    align-items: stretch;
+    gap: var(--spacing-md);
+    margin: 0 14px 14px 14px;
+    padding: var(--spacing-md) var(--spacing-lg);
     border: 1px solid var(--color-border);
     border-radius: 16px;
     background: var(--color-surface--transparent);
 }
 
 .template-preview_header h2 {
-    margin: .15rem 0;
+    margin: calc(var(--spacing-xs) / 4) 0;
+    font-size: var(--font-size-lg);
+    font-weight: 500;
 }
 
 .template-preview_header p {
@@ -107,19 +112,19 @@
 }
 
 .template-preview_eyebrow {
-    font-size: .78rem;
+    font-size: var(--font-size-sm);
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
 }
 
 .template-card_button {
+    width: 100%;
     border: 1px solid var(--color-primary);
     border-radius: 999px;
-    padding: .55rem .9rem;
+    padding: var(--spacing-xs) var(--spacing-md);
     background: var(--color-primary);
     color: color-contrast(var(--color-primary));
-    font: inherit;
     font-weight: 650;
     cursor: pointer;
     white-space: nowrap;
@@ -139,30 +144,31 @@
     justify-content: flex-end;
 }
 
-@media (max-width: 750px) {
+@media (min-width: 900px) {
     .templates-page {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
     }
 
     .templates-sidebar {
-        position: static;
+        position: sticky;
+        margin: 0 auto;
     }
 
     .template-list {
-        display: flex;
-        overflow-x: auto;
+        display: grid;
+        overflow-x: visible;
     }
 
     .template-list_item {
-        min-width: 180px;
+        min-width: 0;
     }
 
     .template-preview_header {
-        align-items: stretch;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: end;
     }
 
     .template-card_button {
-        width: 100%;
+        width: auto;
     }
 }

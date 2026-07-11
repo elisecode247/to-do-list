@@ -188,7 +188,7 @@ export default function TemplatesPage() {
                 <main className="template-preview">
                     <div className="template-preview_header">
                         <div><p className="template-preview_eyebrow">Preview and customize</p><h2>{previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}</h2><p>Use the task menu to edit, delete, or add subtasks before saving.</p></div>
-                        <button className="template-card_button" type="button" disabled={isAdding || previewItems.length === 0} onClick={addToList}>{isAdding ? "Adding…" : "Add to my to-do list"}</button>
+                        <button className="template-card_button" type="button" disabled={isAdding || previewItems.length === 0} onClick={addToList}>{isAdding ? "Adding…" : "Add to my Daily Reset List"}</button>
                     </div>
                     <Checklist
                         checklistType="template"
