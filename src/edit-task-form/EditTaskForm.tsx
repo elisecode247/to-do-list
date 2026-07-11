@@ -19,6 +19,7 @@ import {
 import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 'react-hook-form';
 import { getDaysAgo } from 'src/utilities/days-ago';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -54,7 +55,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const recurrence = formData.recurrence;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
     const isOneTimeRecurrence = recurrence?.type === ONE_TIME_RECURRENCE;
-
+    const { categories } = useUserSettings();
     const defaultValues: EditTaskFormValues = {
         taskName: formData.text,
         category: formData.category,
@@ -141,7 +142,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     <div className="task-form-field">
                         <label className="task-form-field__label">Category</label>
                         <div className="task-form-category-wrap">
-                            <CategorySelect id={formData.id} />
+                            <CategorySelect id={formData.id} categories={categories} />
                         </div>
                     </div>
 

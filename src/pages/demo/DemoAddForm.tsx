@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { useToast } from 'src/toast/use-toast';
 import { IntervalOptions, type Mode, type OneTimeRecurrence } from 'app/types';
-import 'src/new-task-form/new-task-form.css';
 import { OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'src/checklist/constants';
 import {
     type ChecklistItem,
@@ -16,6 +15,12 @@ import {
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
+import CloseButton from 'components/close-button/CloseButton';
+import { ListTodo, CalendarCheck } from 'lucide-react';
+import 'src/new-task-form/new-task-form.css';
+import 'src/task-form/new-form.css';
+import 'src/task-form/task-form-shared.css';
+import { DEFAULT_CATEGORIES } from 'src/category-select/category-constants';
 
 type RecurrenceFormValues = {
     startDate: string;
@@ -30,11 +35,17 @@ type DemoAddFormValues = {
     category: string;
 } & RecurrenceFormValues;
 
-const DemoAddForm = () => {
+type DemoAddFormProps = {
+    isDesktop: boolean;
+    setRightOpen: (open: boolean) => void;
+};
+
+type FormType = 'task' | 'event';
+
+const DemoTaskForm = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRightOpen'>) => {
     const { addItem } = useDemoTask();
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
-    const panelRef = useRef<HTMLDivElement | null>(null);
 
     const defaultValues: DemoAddFormValues = {
         taskName: '',
@@ -42,15 +53,12 @@ const DemoAddForm = () => {
         startDate: formatDate(new Date()),
         isRepeating: false,
         numberOfRepetitions: 1,
-        frequency: FrequencyType.Weekly,
+        frequency: FrequencyType.Daily,
         endDate: formatDate(new Date()),
     };
 
     const methods = useForm<DemoAddFormValues>({ defaultValues });
-    const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitSuccessful } } = methods;
-
-    const taskName = watch('taskName');
-    const isAddButtonDisabled = !taskName?.trim().length;
+    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = methods;
 
     const handleAddItem: SubmitHandler<DemoAddFormValues> = async (data): Promise<void> => {
         let recurrence: OneTimeRecurrence | IntervalRecurrence;
@@ -97,9 +105,11 @@ const DemoAddForm = () => {
             recurrence,
             nextDue: null,
         };
+
         try {
             await addItem(newItem);
             showToast('Task added ✨', 'success');
+            setRightOpen(false);
         } catch (err) {
             console.error('Error adding task:', err);
             showToast('Failed to add task. Please try again.', 'error');
@@ -119,64 +129,63 @@ const DemoAddForm = () => {
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleAddItem)}>
-                <div ref={panelRef} className="new-task-form-item-container">
-                    <div className="new-task-form-item-header">
-                        <span className="new-task-form-title">New Task</span>
-                    </div>
-                    <div className="new-task-form-input-row">
+                <div className="task-form-drawer__body">
+                    <div className="task-form-field">
+                        <label className="task-form-field__label" htmlFor="new-task-form-text-input">Task name</label>
                         <input
                             {...register('taskName', { required: true })}
                             id="new-task-form-text-input"
-                            className="new-task-form-text-input"
-                            onKeyDown={(e) => {
-                                e.stopPropagation();
-                                if (e.key === 'Enter') {
-                                    handleSubmit(handleAddItem)();
-                                }
-                            }}
+                            className="task-form-input"
                             placeholder="New item..."
                         />
-                        <button
-                            type="submit"
-                            disabled={isAddButtonDisabled}
-                            className={`new-task-form-add-button${isAddButtonDisabled ? ' new-task-form-add-button--disabled' : ''}`}
-                        >
-                            Add
-                        </button>
                     </div>
-                    <FrequencyButtonGroup
-                        mode={mode}
-                        onClick={(val: Mode) => setMode(val)}
-                    />
-                    <div className="item-recurrence-container item-recurrence-container--new-task">
+
+                    <div className="task-form-field">
+                        <label className="task-form-field__label">Category</label>
+                        <div className="task-form-category-wrap">
+                            <CategorySelect id="new-task-form" categories={DEFAULT_CATEGORIES} />
+                        </div>
+                    </div>
+
+                    <div className="task-form-field">
+                        <div className="task-form-section-divider">Schedule</div>
+                        <FrequencyButtonGroup
+                            mode={mode}
+                            onClick={(val: Mode) => setMode(val)}
+                        />
+                    </div>
+
                         {mode === OCCASIONAL_MODE && (
-                            <div className="form-group">
+                            <div className="task-form-field">
                                 <label
-                                    className="new-task-form_recurrence-label"
+                                    className="task-form-field__label"
                                     htmlFor="new-task-form_recurrence-count"
                                 >
-                                    Repeat Every
+                                    Repeat every
                                 </label>
-                                <input
-                                    {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
-                                    id="new-task-form_recurrence-count"
-                                    className="new-task-form_recurrence-count"
-                                    type="number"
-                                    min={1}
-                                />
-                                <select
-                                    {...register('frequency')}
-                                    className="select-input"
-                                >
-                                    {IntervalOptions.map(option => (
-                                        <option key={option.key} value={option.key}>{option.title}(s)</option>
-                                    ))}
-                                </select>
+                                <div className="task-form-inline-row">
+                                    <input
+                                        min={1}
+                                        {...register('numberOfRepetitions', { valueAsNumber: true, min: 1 })}
+                                        id="new-task-form_recurrence-count"
+                                        className="task-form-input task-form-recurrence-count"
+                                        type="number"
+                                    />
+                                    <select
+                                        {...register('frequency')}
+                                        className="task-form-input task-form-select task-form-recurrence-frequency"
+                                    >
+                                        {IntervalOptions.map(option => (
+                                            <option key={option.key} value={option.key}>{option.title}(s)</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         )}
-                        <div className="form-group">
+
+                        <div className="task-form-field">
                             <label
-                                className="new-task-form_recurrence-label"
+                                className="task-form-field__label"
                                 htmlFor="new-task-form_recurrence-start-date"
                             >
                                 Starting
@@ -184,26 +193,120 @@ const DemoAddForm = () => {
                             <input
                                 {...register('startDate')}
                                 id="new-task-form_recurrence-start-date"
-                                className="new-task-form_recurrence-start-date"
+                                className="task-form-input task-form-recurrence-start-date"
                                 type="date"
                                 onFocus={(e) => e.currentTarget.showPicker?.()}
                                 onClick={(e) => e.currentTarget.showPicker?.()}
                             />
                         </div>
-                    </div>
-                    <CategorySelect
-                        id="new-task-form"
-                        selectedCategory={watch('category')}
-                        onChange={(category: string) => setValue('category', category)}
-                    />
+                </div>
+
+                <div className="task-form-drawer__footer">
                     {errors.taskName && (
                         <div className="task-form-drawer__error">
-                            {errors.taskName.message || 'Task name is required'}
+                            Error: {errors.taskName.message || 'task name is required'}
                         </div>
                     )}
+                    {errors.category && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.category.message || 'category is required'}
+                        </div>
+                    )}
+                    {errors.startDate && (
+                        <div className="task-form-drawer__error">
+                            Error: {errors.startDate.message || 'start date is required'}
+                        </div>
+                    )}
+                    <button
+                        className="task-form-action-button task-form-action-button--cancel"
+                        onClick={() => setRightOpen(false)}
+                        type="button"
+                        aria-label="Close form"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="task-form-action-button task-form-action-button--save"
+                        type="submit"
+                        aria-label="Add task"
+                    >
+                        Add
+                    </button>
                 </div>
             </form>
         </FormProvider>
     );
 };
+
+const DemoEventUnavailable = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRightOpen'>) => {
+    return (
+        <div className="task-form-drawer__body">
+            <div className="task-form-field">
+                <h3 className="task-form-drawer__title">Events are disabled in demo mode</h3>
+                <p>Use the main app after signing in to create Google Calendar events.</p>
+            </div>
+            <div className="task-form-drawer__footer">
+                <button
+                    className="task-form-action-button task-form-action-button--cancel"
+                    onClick={() => setRightOpen(false)}
+                    type="button"
+                    aria-label="Close form"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    );
+};
+
+const DemoAddForm = ({ isDesktop, setRightOpen }: DemoAddFormProps) => {
+    const [formType, setFormType] = useState<FormType>('task');
+
+    return (
+        <div className="task-form-drawer">
+            <div className="task-form-drawer__header">
+                <div
+                    className="form-type-toggle"
+                    role="tablist"
+                    aria-label="Create type"
+                >
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={formType === 'task'}
+                        className={`form-type-toggle__btn${formType === 'task' ? ' form-type-toggle__btn--active' : ''}`}
+                        onClick={() => setFormType('task')}
+                    >
+                        <ListTodo className="form-type-toggle__icon" />
+                        Task
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={formType === 'event'}
+                        className={`form-type-toggle__btn${formType === 'event' ? ' form-type-toggle__btn--active' : ''}`}
+                        onClick={() => setFormType('event')}
+                    >
+                        <CalendarCheck className="form-type-toggle__icon" />
+                        Event
+                    </button>
+                </div>
+
+                {isDesktop && (
+                    <CloseButton
+                        onClick={() => setRightOpen(false)}
+                        label="Close new task form"
+                    />
+                )}
+            </div>
+
+            {formType === 'task' ? (
+                <DemoTaskForm setRightOpen={setRightOpen} />
+            ) : (
+                <DemoEventUnavailable setRightOpen={setRightOpen} />
+            )}
+        </div>
+    );
+};
+
 export default DemoAddForm;

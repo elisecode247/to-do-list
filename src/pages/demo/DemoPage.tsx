@@ -42,7 +42,7 @@ import GoogleLoginButton from "src/authentication/google-login-button";
 import { JournalProvider } from "src/journal/journal-provider";
 import Journal from "src/journal/Journal";
 import DemoChecklist from "./DemoChecklist";
-import AddForm from "src/task-form/NewForm";
+import AddForm from "./DemoAddForm";
 import { useDemoTask } from "./use-demo-task";
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
@@ -188,9 +188,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
     return (
         <>
+            <div className="toast-container">
             {toasts.map(toast => (
                 <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
             ))}
+            </div>
             <div className={["app_container", leftOpen ? "left-open" : "", rightOpen ? "right-open" : ""].filter(Boolean).join(" ")}>
                 {(leftOpen || rightOpen) && (
                     <div className="panel_backdrop" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />

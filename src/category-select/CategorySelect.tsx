@@ -1,13 +1,13 @@
 import './category-select.css';
 import { getCategoryOptions } from './category-constants';
 import { useFormContext } from 'react-hook-form';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
-
+import type { CategoryDefinition } from './types';
 interface CategorySelectProps {
     id: string;
     isFilter?: boolean;
     selectedCategory?: string;
     onChange?: (value: string) => void;
+    categories: CategoryDefinition[];
 }
 
 const CategorySelect = ({
@@ -15,9 +15,9 @@ const CategorySelect = ({
     isFilter = false,
     selectedCategory,
     onChange,
+    categories,
 }: CategorySelectProps) => {
     const methods = useFormContext();
-    const { categories } = useUserSettings();
     const registration = methods?.register
         ? methods.register('category', { required: true })
         : undefined;

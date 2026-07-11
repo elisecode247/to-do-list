@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import './new-task-form.css';
@@ -40,6 +41,8 @@ const NewTaskForm = ({ setRightOpen }: { setRightOpen: (open: boolean) => void }
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const panelRef = useRef<HTMLDivElement | null>(null);
+    const { categories } = useUserSettings();
+
     const defaultValues = {
         taskName: '',
         category: '',
@@ -142,7 +145,7 @@ const NewTaskForm = ({ setRightOpen }: { setRightOpen: (open: boolean) => void }
                     <div className="task-form-field">
                         <label className="task-form-field__label">Category</label>
                         <div className="task-form-category-wrap">
-                            <CategorySelect id="new-task-form" />
+                            <CategorySelect id="new-task-form" categories={categories} />
                         </div>
                     </div>
 
