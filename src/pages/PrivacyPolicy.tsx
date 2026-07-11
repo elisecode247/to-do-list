@@ -12,9 +12,10 @@ const PrivacyPolicyPage: React.FC = () => {
                 <h1>Privacy Policy</h1>
                 <p><strong>Last Updated:</strong> June 19, 2026</p>
                 <p>
-                    Daily Reset List ("Daily Reset List", "the App", "we", "our", or "us") is operated by Elise Straub.
-                    This Privacy Policy explains what information we collect, how we use it, and the choices available
-                    to you when using Daily Reset List.
+                    Daily Reset List ("Daily Reset List," "the App," "we," "our," or "us")
+                    values your privacy. This Privacy Policy explains what information
+                    we collect, how we use it, and the choices available to you
+                    when using Daily Reset List.
                 </p>
 
                 <div className="privacy-policy-layout">
@@ -215,7 +216,7 @@ const PrivacyPolicyPage: React.FC = () => {
                         <p>Any changes will be posted on this page with an updated Last Updated date. Continued use of Daily Reset List after changes become effective constitutes acceptance of the revised Privacy Policy.</p>
 
                         <h2 id="contact">Contact</h2>
-                        <p>If you have questions about this Privacy Policy or wish to exercise your privacy rights, please contact:</p>
+                        <p>Daily Reset List is operated by Elise Straub. If you have questions about this Privacy Policy or wish to exercise your privacy rights, please contact:</p>
                         <p>
                             <a href="mailto:elise.straub.dev+dailyreset@gmail.com">
                                 elise.straub.dev+dailyreset@gmail.com
