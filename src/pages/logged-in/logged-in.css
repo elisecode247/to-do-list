@@ -259,7 +259,7 @@
 
     .app_container {
         grid-template-columns: 255px minmax(0, 1fr) 420px;
-        grid-template-rows: 100px 1fr;
+        grid-template-rows: 140px 1fr;
         grid-template-areas:
             "left header header"
             "left main   right";
@@ -370,4 +370,10 @@
         gap: 3px;
     }
 
+}
+
+@media (min-width: 1100px) {
+    .app_container {
+        grid-template-rows: 100px 1fr;
+    }
 }

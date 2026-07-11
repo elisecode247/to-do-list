@@ -39,11 +39,11 @@ import useIsDesktop from "src/pages/use-is-desktop";
 import IconButton from "src/components/icon-button/IconButton";
 import Footer from "src/footer/Footer";
 import GoogleLoginButton from "src/authentication/google-login-button";
-import { JournalProvider } from "src/journal/journal-provider";
 import Journal from "src/journal/Journal";
 import DemoChecklist from "./DemoChecklist";
 import AddForm from "./DemoAddForm";
 import { useDemoTask } from "./use-demo-task";
+import { DemoJournalProvider } from "./demo-journal-provider";
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
 
@@ -435,9 +435,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     }
                                 />
                             ) : isJournal ? (
-                                <JournalProvider>
+                                <DemoJournalProvider>
                                     <Journal />
-                                </JournalProvider>
+                                </DemoJournalProvider>
                             ) : itemLength ===
                                 0 ? (
                                 <div className="empty-state">
