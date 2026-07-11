@@ -25,7 +25,17 @@ export default function JournalExportSettings() {
 
             if (!response.ok) {
                 const text = await response.text();
-                throw new Error(`HTTP ${response.status}: ${text}`);
+                let parsed: { error?: string } | null = null;
+                try {
+                    parsed = JSON.parse(text);
+                } catch {
+                    // Non-JSON error body; fall back to raw response text below.
+                }
+                if (parsed?.error) {
+                    throw new Error(parsed.error);
+                } else {
+                    throw new Error(text);
+                }
             }
 
             const blob = await response.blob();
@@ -45,7 +55,7 @@ export default function JournalExportSettings() {
             showToast('Journal exported successfully.', 'success');
         } catch (error) {
             console.error('Failed to export journal:', error);
-            showToast('Failed to export journal. Please try again.', 'error');
+            showToast((error as Error).message, 'error');
         } finally {
             setIsExporting(false);
         }
