@@ -33,7 +33,11 @@ import NoteEditor from 'src/editor/NoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useOnClickOutside } from 'usehooks-ts';
 import IconButton from 'src/components/icon-button/IconButton';
-
+import type { IntervalRecurrence, OneTimeRecurrence } from 'src/app/types';
+import { getRecurrenceText } from 'src/sortable-item/utilities/get-recurrence-text';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
+import { getCategoryById } from 'src/category-select/category-constants';
+import { CategoryIcon } from 'src/category-select/category-icons';
 interface SortableItemProps {
     checklistType?: 'task' | 'template';
     id: string;
@@ -62,6 +66,7 @@ interface SortableItemProps {
     partialUpdateItem?: (item: Partial<ChecklistItem>) => Promise<void> | void;
     getSubtasks?: (parentId: string) => ChecklistItem[];
     isUpcomingSubtask?: boolean;
+    recurrence: IntervalRecurrence | OneTimeRecurrence | null;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -92,8 +97,10 @@ export const SortableItem: FC<SortableItemProps> = ({
     addItem,
     partialUpdateItem,
     getSubtasks = () => [],
+    recurrence,
 }) => {
     const { showToast } = useToast();
+    const { categories } = useUserSettings();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
         useSortable({ id });
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
@@ -136,6 +143,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const showLastCompleted = !!lastCompleted;
     const lastCompletedDate = getDaysAgo(new Date(lastCompleted));
     const nextDueDate = nextDue ? getDaysFromNow(new Date(nextDue)) : null;
+    const categoryDefinition = getCategoryById(categories, category);
 
     const filteredTasks = subtasks?.filter((t) => {
         if (t.isHidden || t.isArchived) return false;
@@ -308,7 +316,21 @@ export const SortableItem: FC<SortableItemProps> = ({
                         <div className="sortable-item_text-container">
                             <span className="sortable-item_text">
                                 {isSubChore && <span className="sortable-item_subtask-indicator">Subtask: </span>}
+                                {categoryDefinition ? (
+                                    <span
+                                        className="sortable-item_category-icon"
+                                        title={categoryDefinition.name}
+                                        aria-hidden="true"
+                                    >
+                                        <CategoryIcon iconKey={categoryDefinition.icon} size={14} color={categoryDefinition.color} />
+                                    </span>
+                                ) : null}
                                 {text}
+                                {(activeTab === TABS.today) && (
+                                    <span className="sortable-item_next-due-text">
+                                        {getRecurrenceText(mode, recurrence)}
+                                    </span>
+                                )}
                                 {showLastCompleted && (
                                     <span className="sortable-item_last-completed-text">
                                         {lastCompletedDate}
@@ -576,6 +598,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 addItem={addItem}
                                                 partialUpdateItem={partialUpdateItem}
                                                 getSubtasks={getSubtasks}
+                                                recurrence={subtask.recurrence}
                                             />
                                         ))}
                                     </motion.div>
@@ -637,6 +660,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             addItem={addItem}
                                                             partialUpdateItem={partialUpdateItem}
                                                             getSubtasks={getSubtasks}
+                                                            recurrence={subtask.recurrence}
                                                         />
                                                     ))}
                                                 </motion.div>

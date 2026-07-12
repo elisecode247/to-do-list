@@ -412,6 +412,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             addItem={addItem}
                                             partialUpdateItem={partialUpdateItem}
                                             getSubtasks={getSubtasks}
+                                            recurrence={checklistItem.recurrence}
                                         />
                                     );
                                 }
