@@ -284,6 +284,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         onMoveItem={handleMoveItem}
                                         onSuccess={displaySparkles}
                                         nextDue={checklistItem.nextDue}
+                                        recurrence={checklistItem.recurrence}
                                     />
                                 );
                             }
