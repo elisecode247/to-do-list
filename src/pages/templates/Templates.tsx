@@ -150,7 +150,6 @@ export default function TemplatesPage() {
                     ...chore,
                     category,
                     done: false,
-                    lastCompleted: "",
                     isArchived: false,
                     isHidden: false,
                 };
