@@ -222,7 +222,7 @@ export default function TemplatesPage() {
                         filterCategory="all"
                         clearFilters={() => undefined}
                         onEditItem={setEditingItem}
-                        enablePullToRefresh
+                        enablePullToRefresh={false}
                     />
                 </main>
                 {editingItem && (
