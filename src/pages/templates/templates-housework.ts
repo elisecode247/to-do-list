@@ -2,11 +2,11 @@ import { FrequencyType, INTERVAL_RECURRENCE, type ChecklistItem } from "src/app/
 
 const DAILY_CLEANING_ID = "e52f0220-aff1-4344-b944-a08a4c29a04d";
 
-function dailyCleaningTask(
+function templateTaskDefaults(
     id: string,
     text: string,
     sortOrder: number,
-    parentUuid: string | null = DAILY_CLEANING_ID,
+    parentUuid: string | null,
 ): ChecklistItem {
     return {
         itemType: "checklist-item",
@@ -29,6 +29,22 @@ function dailyCleaningTask(
     };
 }
 
+function dailyCleaningTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    parentUuid: string | null = DAILY_CLEANING_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+
+    return {
+        ...task,
+        mode: "daily",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+    };
+}
+
 export const DAILY_CLEANING_TEMPLATE: ChecklistItem[] = [
     dailyCleaningTask(DAILY_CLEANING_ID, "Daily Cleaning", 0, null),
     dailyCleaningTask("c218ba2d-5661-4e7d-af6d-efad18a9102a", "Make beds", 0),
@@ -48,46 +64,47 @@ function bathroomTask(
     text: string,
     sortOrder: number,
     numberOfRepetitions: number,
-    frequency: typeof FrequencyType.Weekly | typeof FrequencyType.Monthly,
+    frequency: FrequencyType,
+    note: string = "",
     parentUuid: string | null = CLEAN_BATHROOMS_ID,
 ): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
     return {
-        itemType: "checklist-item",
-        isHidden: false,
-        id,
-        text,
-        done: false,
-        lastCompleted: "",
-        note: "Gather supplies: an all-purpose bathroom cleaner, " +
-            "toilet bowl cleaner, glass cleaner, a toilet brush, rags and/or " +
-            "paper towels, vacuum or broom, mop, and rubber gloves.",
-        sortOrder,
-        tabSortOrder: { today: 0 },
-        category: "housework",
+        ...task,
+        note,
         mode: "occasional",
-        isPriority: false,
-        isArchived: false,
+        tabSortOrder: { today: 0 },
         hasSubChores: parentUuid === null,
-        parentUuid,
-        recurrence: {
-            type: INTERVAL_RECURRENCE,
-            numberOfRepetitions,
-            frequency,
-            startDate: "",
-        },
-        nextDue: null,
+        recurrence,
     };
 }
 
 export const CLEAN_BATHROOMS_TEMPLATE: ChecklistItem[] = [
-    bathroomTask(CLEAN_BATHROOMS_ID, "Clean bathrooms", 0, 1, FrequencyType.Weekly, null),
-    bathroomTask("108d1b81-acb9-4b5a-89e8-52eea373ab9c", "Clean mirror", 0, 2, FrequencyType.Weekly),
-    bathroomTask("8f951692-af77-45bb-9142-e551d71b810c", "Clean counters", 1, 1, FrequencyType.Weekly),
-    bathroomTask("71ff36dd-8666-4bab-97f2-9feeba2a268e", "Clean sink", 2, 1, FrequencyType.Weekly),
-    bathroomTask("4e16cb16-8ed0-47e8-bc83-fdedade55109", "Clean toilet and toilet bowl", 3, 1, FrequencyType.Weekly),
-    bathroomTask("620c10fb-7cf5-474c-bac7-7ef603291fb3", "Clean showers and bathtubs", 4, 1, FrequencyType.Monthly),
-    bathroomTask("b85c102c-472f-4058-8c72-245019fe3421", "Wash bath rugs", 5, 2, FrequencyType.Weekly),
-    bathroomTask("2f808c89-bd76-45ed-ab5a-dcbbb9e243cc", "Replace towels", 6, 1, FrequencyType.Weekly),
-    bathroomTask("89cda339-e3ce-4a17-bac7-bb282d73c258", "Sweep floor", 7, 1, FrequencyType.Weekly),
-    bathroomTask("7e21bace-4049-42d3-b878-f6bfa77716c2", "Mop floor", 8, 1, FrequencyType.Monthly),
+    bathroomTask(CLEAN_BATHROOMS_ID, "Clean bathrooms", 0, 1, FrequencyType.Weekly, "", null),
+    bathroomTask("gather-supplies", "Gather supplies (see notes)", 0, 1, FrequencyType.Weekly,
+        "Gather supplies:\n1\\) an all-purpose bathroom cleaner " +
+        "\n2\\) toilet bowl cleaner \n3\\) glass cleaner \n4\\) a toilet brush \n5\\) rags and/or " +
+        "paper towels \n6\\) no-scratch scrub sponge \n7\\) vacuum or broom" +
+        "\n8\\) mop \n9\\) bucket \n10\\) fan \n11\\) rubber gloves \n12\\) trash bags \n13\\) " +
+        "music or podcast to listen to while cleaning"
+    ),
+    bathroomTask("108d1b81-acb9-4b5a-89e8-52eea373ab9c", "Clean mirror", 1, 2, FrequencyType.Weekly),
+    bathroomTask("8f951692-af77-45bb-9142-e551d71b810c", "Clean counters", 2, 1, FrequencyType.Weekly),
+    bathroomTask("71ff36dd-8666-4bab-97f2-9feeba2a268e", "Clean sink", 3, 1, FrequencyType.Weekly),
+    bathroomTask("4e16cb16-8ed0-47e8-bc83-fdedade55109", "Clean toilet and toilet bowl", 4, 1, FrequencyType.Weekly),
+    bathroomTask("620c10fb-7cf5-474c-bac7-7ef603291fb3", "Clean showers and bathtubs", 5, 3, FrequencyType.Weekly),
+    bathroomTask("b85c102c-472f-4058-8c72-245019fe3421", "Wash bath rugs", 6, 2, FrequencyType.Weekly),
+    bathroomTask("2f808c89-bd76-45ed-ab5a-dcbbb9e243cc", "Replace towels", 7, 1, FrequencyType.Weekly),
+    bathroomTask("89cda339-e3ce-4a17-bac7-bb282d73c258", "Sweep or vacuum floor", 8, 1, FrequencyType.Weekly),
+    bathroomTask("7e21bace-4049-42d3-b878-f6bfa77716c2", "Mop floor", 9, 2, FrequencyType.Weekly),
+    bathroomTask("e4f4f4a4-1f4a-4b4a-8f4a-1f4a4b4a8f4a", "Empty Trash", 10, 1, FrequencyType.Weekly),
+    bathroomTask("c1f4f4a4-1f4a-4b4a-8f4a-1f4a4b4a8f4a", "Clean bathroom cabinets", 11, 1, FrequencyType.Monthly),
+    bathroomTask("d4f4f4a4-1f4a-4b4a-8f4a-1f4a4b4a8f4a", "Clean bathroom vents", 12, 1, FrequencyType.Annually),
 ];
