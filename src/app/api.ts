@@ -8,6 +8,16 @@ export type ApiErrorResponse = {
 
 export type AddTaskResponse = ChecklistItem | ApiErrorResponse;
 
+export type AddTasksFromTemplateRequest = {
+    parent: Omit<ChecklistItem, "id" | "parentUuid">;
+    subChores: Omit<ChecklistItem, "id" | "parentUuid">[];
+};
+
+export type AddTasksFromTemplateResponse = {
+    parent: ChecklistItem;
+    subChores: ChecklistItem[];
+};
+
 export async function fetchTasks(): Promise<ChecklistItem[]> {
     try {
         const response = await fetch(API_CHORES_URL, {
@@ -42,6 +52,28 @@ export async function addTask(task: ChecklistItem): Promise<AddTaskResponse> {
         return await response.json();
     } catch (err) {
         console.error("Failed to add task:", err);
+        throw err;
+    }
+}
+
+export async function addTasksFromTemplate(
+    template: AddTasksFromTemplateRequest,
+): Promise<AddTasksFromTemplateResponse> {
+    try {
+        const response = await fetch(`${API_CHORES_URL}/new/from-template`, {
+            method: "POST",
+            headers: await authHeaders(),
+            body: JSON.stringify(template),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        return await response.json();
+    } catch (err) {
+        console.error("Failed to add tasks from template:", err);
         throw err;
     }
 }

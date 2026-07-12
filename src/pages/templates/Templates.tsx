@@ -11,6 +11,7 @@ import type { CategoryDefinition } from "src/category-select/types";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import { DAILY_CLEANING_TEMPLATE } from './templates-housework';
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
+import { addTasksFromTemplate, type AddTasksFromTemplateRequest } from "src/app/api";
 import "./templates-page.css";
 
 type TemplateCategoryKey = "housework" | "self-care" | "pets" | "work" | "people" | "leisure";
@@ -133,14 +134,37 @@ export default function TemplatesPage() {
     async function addToList() {
         setIsAdding(true);
         try {
-            const idMap = new Map(previewItems.map(item => [item.id, crypto.randomUUID()]));
-            for (const item of previewItems) {
+            const parentItem = previewItems.find(item => item.parentUuid === null);
+            if (!parentItem) {
+                throw new Error("Template must include a parent chore");
+            }
+
+            const toTemplateChore = (item: ChecklistItem): AddTasksFromTemplateRequest["parent"] => {
                 const category = isAuthenticated
                     ? resolveCategoryId(item.category as TemplateCategoryKey, categories, true)
                     : item.category;
-                await task.addItem({ ...item, id: idMap.get(item.id)!, category, parentUuid: item.parentUuid ? idMap.get(item.parentUuid) ?? null : null, done: false, lastCompleted: "", isArchived: false, isHidden: false });
-            }
-            showToast(`Added "${previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}" to your checklist`, "success");
+                const { id: _id, parentUuid: _parentUuid, ...chore } = item;
+                void _id;
+                void _parentUuid;
+                return {
+                    ...chore,
+                    category,
+                    done: false,
+                    lastCompleted: "",
+                    isArchived: false,
+                    isHidden: false,
+                };
+            };
+
+            await addTasksFromTemplate({
+                parent: toTemplateChore(parentItem),
+                subChores: previewItems
+                    .filter(item => item.parentUuid === parentItem.id)
+                    .sort((a, b) => a.sortOrder - b.sortOrder)
+                    .map(toTemplateChore),
+            });
+            task.loadTasks();
+            showToast(`Added "${parentItem.text}" to your checklist`, "success");
         } catch (error) {
             console.error(error);
             showToast("Failed to add template. Please try again.", "error");
