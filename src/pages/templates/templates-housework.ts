@@ -38,7 +38,7 @@ export const DAILY_CLEANING_TEMPLATE: ChecklistItem[] = [
     dailyCleaningTask("a3efcf04-220b-441f-8a00-c84444e2a8e4", "Wash dishes and clear kitchen sink", 4),
     dailyCleaningTask("4493325e-3c4f-413f-86aa-b85d04859e7d", "Take out trash", 5),
     dailyCleaningTask("ed2843eb-14da-4748-affd-eb14dd5b2eb5", "Tidy living room", 6),
-    dailyCleaningTask("ed2843eb-14da-4748-affd-eb14dd5b2eb5", "Sweep kitchen floor in the evening", 7),
+    dailyCleaningTask("5073850f-f890-4cef-905b-737815fddab2", "Sweep kitchen floor in the evening", 7),
 ];
 
 const CLEAN_BATHROOMS_ID = "860f2094-b66e-49db-bc97-05bf1bcddeab";
