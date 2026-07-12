@@ -58,7 +58,9 @@ function bathroomTask(
         text,
         done: false,
         lastCompleted: "",
-        note: "",
+        note: "Gather supplies: an all-purpose bathroom cleaner, " +
+            "toilet bowl cleaner, glass cleaner, a toilet brush, rags and/or " +
+            "paper towels, vacuum or broom, mop, and rubber gloves.",
         sortOrder,
         tabSortOrder: { today: 0 },
         category: "housework",
@@ -79,10 +81,10 @@ function bathroomTask(
 
 export const CLEAN_BATHROOMS_TEMPLATE: ChecklistItem[] = [
     bathroomTask(CLEAN_BATHROOMS_ID, "Clean bathrooms", 0, 1, FrequencyType.Weekly, null),
-    bathroomTask("8f951692-af77-45bb-9142-e551d71b810c", "Clean counters", 0, 1, FrequencyType.Weekly),
-    bathroomTask("4e16cb16-8ed0-47e8-bc83-fdedade55109", "Clean toilets", 1, 1, FrequencyType.Weekly),
-    bathroomTask("108d1b81-acb9-4b5a-89e8-52eea373ab9c", "Clean mirror", 2, 2, FrequencyType.Weekly),
-    bathroomTask("71ff36dd-8666-4bab-97f2-9feeba2a268e", "Clean sink", 3, 1, FrequencyType.Weekly),
+    bathroomTask("108d1b81-acb9-4b5a-89e8-52eea373ab9c", "Clean mirror", 0, 2, FrequencyType.Weekly),
+    bathroomTask("8f951692-af77-45bb-9142-e551d71b810c", "Clean counters", 1, 1, FrequencyType.Weekly),
+    bathroomTask("71ff36dd-8666-4bab-97f2-9feeba2a268e", "Clean sink", 2, 1, FrequencyType.Weekly),
+    bathroomTask("4e16cb16-8ed0-47e8-bc83-fdedade55109", "Clean toilet and toilet bowl", 3, 1, FrequencyType.Weekly),
     bathroomTask("620c10fb-7cf5-474c-bac7-7ef603291fb3", "Clean showers and bathtubs", 4, 1, FrequencyType.Monthly),
     bathroomTask("b85c102c-472f-4058-8c72-245019fe3421", "Wash bath rugs", 5, 2, FrequencyType.Weekly),
     bathroomTask("2f808c89-bd76-45ed-ab5a-dcbbb9e243cc", "Replace towels", 6, 1, FrequencyType.Weekly),
