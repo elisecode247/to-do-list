@@ -291,3 +291,182 @@ You do not need to organize every cabinet today.`
 Do not climb on an unstable chair.`
     ),
 ];
+
+const CLEAN_LIVING_ROOM_ID = "447e850d-d2bb-4d44-b32c-11fb60098c51";
+
+function livingRoomTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    numberOfRepetitions: number,
+    frequency: FrequencyType,
+    note: string,
+    parentUuid: string | null = CLEAN_LIVING_ROOM_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
+    return {
+        ...task,
+        note,
+        mode: "occasional",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+        recurrence,
+    };
+}
+
+export const CLEAN_LIVING_ROOM_TEMPLATE: ChecklistItem[] = [
+    livingRoomTask(CLEAN_LIVING_ROOM_ID, "Clean living room", 0, 1, FrequencyType.Weekly,
+        `**Good enough counts.** You do not have to complete every subtask in one session.
+
+Choose what would make the room easier or more comfortable to use. Start with the quickest win and stop when you have done enough.
+
+You can **skip any task** to hide it from Today.`,
+        null
+    ),
+    livingRoomTask("5b722ab8-cb66-4052-8541-26eaec3e6707", "Gather supplies", 0, 1, FrequencyType.Weekly,
+        `Gather only what you plan to use:
+
+* [ ] trash bag
+* [ ] basket or box for items from other rooms
+* [ ] laundry hamper
+* [ ] microfiber cloth or duster
+* [ ] all-purpose cleaner
+* [ ] electronics-safe cloth
+* [ ] broom, vacuum, or mop for your floor type
+* [ ] stable step stool, if needed
+* [ ] music, podcast, or other pleasant background sound
+
+**Minimum version:** Grab a trash bag and one cleaning cloth.`
+    ),
+    livingRoomTask("bf72a066-061f-4329-aad1-b4280d473c27", "Throw away trash", 1, 1, FrequencyType.Weekly,
+        `Focus only on obvious trash:
+
+* [ ] Pick up wrappers, tissues, and empty containers
+* [ ] Check beside and underneath seating
+* [ ] Put dishes near the sink
+* [ ] Take out the bag if it is full
+
+**Minimum version:** Fill your hands once, throw those items away, and stop.`
+    ),
+    livingRoomTask("18a62a57-0745-4b03-a51d-82cfa305f37d", "Declutter and reset the room", 2, 1, FrequencyType.Weekly,
+        `Work by **type**, not by the whole room:
+
+* [ ] Put clothes in the hamper
+* [ ] Stack or shelve books and magazines
+* [ ] Fold or drape blankets
+* [ ] Put living-room items back in their homes
+* [ ] Place items from other rooms into one basket
+* [ ] Clear a comfortable place to sit and a safe path to walk
+
+**Minimum version:** Choose one category or clear one seat.
+
+The basket can wait. Returning everything to other rooms can be a separate task.`
+    ),
+    livingRoomTask("96d5d76f-aa36-4903-8b96-63a865c55d97", "Launder throw blankets and pillow covers", 3, 1, FrequencyType.Weekly,
+        `* [ ] Choose one washable load
+* [ ] Check the care labels
+* [ ] Remove pillow covers, if applicable
+* [ ] Start the washer
+* [ ] Set a reminder to move the load
+* [ ] Dry as directed
+* [ ] Return clean items to the living room
+
+**Minimum version:** Wash the item that needs it most.
+
+Wash pillow inserts only when their care labels say they are machine washable.`
+    ),
+    livingRoomTask("3808f908-f4dd-4404-8e6a-756408f2be37", "Dust from top to bottom", 4, 1, FrequencyType.Weekly,
+        `Choose one level or area at a time:
+
+* [ ] Ceiling corners and reachable vents
+* [ ] Ceiling fan blades
+* [ ] Shelves and picture frames
+* [ ] Electronics
+* [ ] Baseboards
+
+Work from high surfaces to low ones so fallen dust can be cleaned last.
+
+**Minimum version:** Dust the most visible surface or one shelf.
+
+> Turn off ceiling fans before cleaning. Use a stable step stool, and spray cleaner onto a cloth—not directly onto electronics.`
+    ),
+    livingRoomTask("c5aa20d0-6590-430f-b11b-e8d49959f977", "Wipe the coffee table and lamps", 5, 1, FrequencyType.Weekly,
+        `* [ ] Move loose items into one spot
+* [ ] Wipe the coffee table
+* [ ] Wipe lamp bases and shades as appropriate
+* [ ] Put back only what belongs there
+
+**Minimum version:** Wipe the sticky or most visible spots.
+
+Spray cleaner onto the cloth, not onto lamps or electrical parts.`
+    ),
+    livingRoomTask("b4240df1-4b24-4db8-865e-d6138fbd85b8", "Clean the floors", 6, 1, FrequencyType.Weekly,
+        `Choose what matches your floor:
+
+* [ ] Move only items blocking the floor
+* [ ] Sweep hard floors or edges
+* [ ] Vacuum rugs, carpet, or hard floors
+* [ ] Mop hard floors if needed
+* [ ] Empty the dustpan or vacuum bin
+
+**Minimum version:** Clean the main walking path or the messiest section.
+
+You do not need to sweep, vacuum, **and** mop every floor.`
+    ),
+    livingRoomTask("c276e9d3-a6c7-484d-82aa-b62e7726cc20", "Vacuum the couch", 7, 1, FrequencyType.Weekly,
+        `* [ ] Remove blankets and loose items
+* [ ] Vacuum the seat and back cushions
+* [ ] Vacuum visible crumbs in the creases
+* [ ] Check underneath the cushions if you have capacity
+* [ ] Put the cushions and blankets back
+
+**Minimum version:** Vacuum the seat and the most noticeable crumbs.`
+    ),
+    livingRoomTask("da5bb99b-bdf1-4fe7-bbc9-e4e677bde72e", "Water plants", 8, 1, FrequencyType.Weekly,
+        `Check each plant before watering:
+
+* [ ] Touch the soil to see whether it is dry
+* [ ] Water only the plants that need it
+* [ ] Let extra water drain
+* [ ] Empty standing water from saucers or decorative pots
+* [ ] Return the watering can to its home
+
+**Minimum version:** Check the thirstiest-looking plant.
+
+It is okay to skip plants with damp soil. Different plants need water at different times.`
+    ),
+    livingRoomTask("43955e19-0e7d-4758-a3d1-d7a4625470e9", "Wash the windows", 9, 2, FrequencyType.Monthly,
+        `Choose **one window** to start:
+
+* [ ] Move items away from the window
+* [ ] Dust the sill and frame
+* [ ] Spray cleaner onto a cloth
+* [ ] Wipe the glass
+* [ ] Dry visible streaks
+* [ ] Wipe the sill
+
+**Minimum version:** Clean the inside of the most noticeable window.
+
+Only clean exterior glass when it is safely reachable from the ground.`
+    ),
+    livingRoomTask("229cae43-bc39-430b-8b4e-b06191f0f18a", "Wash the blinds", 10, 3, FrequencyType.Monthly,
+        `Start with **one window**:
+
+* [ ] Close the blinds
+* [ ] Dust or vacuum them gently
+* [ ] Wipe slats with a damp cloth if the material allows
+* [ ] Turn the slats and clean the other side
+* [ ] Let them dry
+
+**Minimum version:** Dust one side of the most visible blinds.
+
+Check the care instructions before using water on wood, fabric, or specialty blinds.`
+    ),
+];

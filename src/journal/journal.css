@@ -250,7 +250,7 @@
 }
 
 .time-input {
-    self-align: stretch;
+    align-self: stretch;
     border: none;
     outline: none;
     font-size: 13px;
