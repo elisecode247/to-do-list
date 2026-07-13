@@ -3,7 +3,7 @@ import "./logged-out.css";
 import GoogleLoginButton from "src/authentication/google-login-button";
 import DemoButton from 'src/pages/demo/DemoButton';
 import { useTheme } from "src/themes/use-theme";
-import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY } from "src/themes/constants";
+import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
 import Footer from 'src/footer/Footer';
 
 // preload pages
@@ -15,7 +15,7 @@ export default function LoggedOut({
 }: {
     onSuccessfulLogin: (token: string) => Promise<void>;
 }) {
-    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY);
+    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
     return (
         <div className="logged-out-root">
             <div className="stars" />
