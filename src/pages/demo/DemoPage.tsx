@@ -491,7 +491,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                                 Add your first task
                                             </button>
                                             <button
-                                                className="empty-state-secondary-button"
+                                                className="settings-btn empty-state-secondary-button"
                                                 onClick={
                                                     handleReset
                                                 }
