@@ -29,4 +29,5 @@ input,
 select,
 textarea {
     font-family: inherit;
+    font-size: var(--font-size-md);
 }

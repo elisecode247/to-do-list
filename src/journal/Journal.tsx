@@ -4,7 +4,7 @@ import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
 import { useDebounceCallback } from 'usehooks-ts';
-import { ArrowBigLeft, ArrowBigRight, HelpCircle, Unlock, Lock } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, HelpCircle, Unlock, Lock, X } from "lucide-react";
 import Guide from "./Guide";
 import JournalLockScreen from 'src/journal/JournalLockScreen';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
@@ -75,9 +75,11 @@ function AutoTextarea({ value, onChange, placeholder, id }: { value: string; onC
     );
 }
 
-function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: JournalEntry; onChange: (id: string, field: keyof JournalEntry, value: string) => void; onToggleDistraction: (id: string) => void; onDelete: (id: string) => void }) {
+function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: JournalEntry; onChange: (id: string, field: keyof JournalEntry, value: string) => void; onToggleDistraction: (id: string, distraction: boolean) => void; onDelete: (id: string) => void }) {
     const [text, setText] = useState(entry.text);
     const [time, setTime] = useState(toTimeInputValue(entry.entryTime));
+    const [isDistraction, setIsDistraction] = useState(entry.distraction);
+
     const handleTextChange = (value: string) => {
         setText(value);
         onChange(entry.id, 'text', value);
@@ -86,15 +88,21 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
         setTime(value);
         onChange(entry.id, 'entryTime', toEntryTimeIso(value, entry.day, entry.entryTime));
     }
+    const handleToggleDistraction = () => {
+        const nextDistraction = !isDistraction;
+        setIsDistraction(nextDistraction);
+        onToggleDistraction(entry.id, nextDistraction);
+    }
     return (
-        <div className={`entry-row ${entry.distraction ? " entry-row--distraction" : ""}`}>
+        <div className={`entry-row ${isDistraction ? " entry-row--distraction" : ""}`}>
             <div className="time-cell">
                 <button
-                    className="delete-btn"
+                    className="delete-entry-btn"
                     onClick={() => onDelete(entry.id)}
                     aria-label="Delete journal entry"
+                    type="button"
                 >
-                    ×
+                    <X aria-hidden="true" size={18} />
                 </button>
                 <input
                     className="time-input"
@@ -118,12 +126,13 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
                     {entry.ciphertext && entry.iv && !entry.encryptionVersion ? (
                         <span className="encryption-status" title="Not encrypted"><Unlock size={16} /></span>) : null}
                     <button
-                        className={`distraction-tag ${entry.distraction ? " distraction-tag--active" : ""}`}
-                        onClick={() => onToggleDistraction(entry.id)}
-                        aria-label={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
-                        title={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
+                        type="button"
+                        className={`distraction-tag ${isDistraction ? " distraction-tag--active" : ""}`}
+                        onClick={handleToggleDistraction}
+                        aria-label={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
+                        title={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
                     >
-                        {entry.distraction ? "distraction" : "+"}
+                        {isDistraction ? "distraction" : "+"}
                     </button>
                 </div>
             </div>
@@ -157,12 +166,12 @@ export default function Journal() {
         deleteJournalEntry(id);
     }, [deleteJournalEntry]);
 
-    const handleToggleDistraction = useCallback((id: string) => {
+    const handleToggleDistraction = useCallback((id: string, distraction: boolean) => {
         const entry = entries.find((e) => e.id === id);
         if (entry) {
-            debouncedUpdate({ ...entry, distraction: !entry.distraction });
+            void updateJournalEntry({ ...entry, distraction });
         }
-    }, [entries, debouncedUpdate]);
+    }, [entries, updateJournalEntry]);
 
     const addEntry = () => {
 

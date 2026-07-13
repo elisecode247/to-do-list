@@ -5,8 +5,9 @@
 }
 
 .journal-wrap {
-    background: var(--color-background, #ffffff);
-    border: 1px solid var(--color-border, #e5e7eb);
+    --journal-time-column-width: 120px;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     overflow: auto;
     display: flex;
@@ -171,7 +172,7 @@
 
 .col-headers {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: var(--journal-time-column-width) 1fr;
     border-bottom: 1px solid var(--color-border, #e5e7eb);
     background: var(--color-surface, #f9fafb);
 }
@@ -222,35 +223,42 @@
 .time-cell {
     display: flex;
     align-items: center;
+    flex: 0 0 var(--journal-time-column-width);
+    min-width: 0;
 }
 
-.delete-btn {
-    opacity: 0;
-    background: none;
+.delete-entry-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 20px;
+    padding: 0;
+    margin: 0;
+    background: var(--color-background);
     border: none;
     cursor: pointer;
-    color: contrast-color(var(--color-surface));
+    color: contrast-color(var(--color-background));
     font-size: 16px;
-    padding: 0 4px 0 0;
+    line-height: 1;
     flex-shrink: 0;
     transition: opacity 0.15s, color 0.15s;
 }
 
-.entry-row:hover .delete-btn {
-    opacity: 1;
-}
-
-.delete-btn:hover {
+.delete-entry-btn:hover {
     color: #e24b4a;
 }
 
 .time-input {
+    self-align: stretch;
     border: none;
     outline: none;
     font-size: 13px;
     background-color: var(--color-white-black);
     color: contrast-color(var(--color-white-black));
-    width: 100%;
+    width: auto;
+    min-width: 0;
+    flex: 1 1 auto;
     padding: 0;
     cursor: text;
     text-indent: 4px;
@@ -268,6 +276,7 @@
     min-width: 225px;
     width: 100%;
     box-sizing: border-box;
+    background-color: var(--color-white-black);
 }
 
 .action-buttons-cell {
