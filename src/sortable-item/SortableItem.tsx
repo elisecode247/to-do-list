@@ -353,7 +353,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <button
                                 className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={toggleCollapsed}
-                                aria-label={collapsed ? "Expand task" : "Collapse task"}
+                                aria-label={collapsed ? "Show subtasks" : "Collapse task"}
+                                title={collapsed ? "Show subtasks" : "Collapse task"}
+                                type="button"
                             >
                                 {collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
                                 <span className="sortable-item_button-text-span">Subtasks</span>
