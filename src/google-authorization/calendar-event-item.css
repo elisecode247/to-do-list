@@ -21,8 +21,14 @@
     z-index: 4;
 }
 
-.calendar-event-item h4 {
+.calendar-event-title {
     margin: 0 0 5px 0;
+    font-size: var(--font-size-lg);
+}
+
+.calendar-event-subtitle {
+    margin: 0 0 5px 0;
+    font-size: var(--font-size-sm);
 }
 
 .calendar-event-header {

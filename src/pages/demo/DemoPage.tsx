@@ -504,7 +504,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
                         <motion.span className="mobile-tab-motion" animate={{ x: mobileIndicator.x, width: mobileIndicator.width }} transition={{ type: "spring", stiffness: 580, damping: 44 }} />
                         {mobileTabs.map(tab => (
-                            <button key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
+                            <button aria-label={TAB_LABELS[tab]} key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
                                 <span className="mobile-tab-button-content">
                                     {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
                                 </span>

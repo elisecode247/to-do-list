@@ -380,6 +380,7 @@ const LoggedIn: React.FC = () => {
                     />
                     {mobileTabs.map(tab => (
                         <button
+                            aria-label={tab}
                             key={tab}
                             ref={el => {
                                 mobileTabButtonRefs.current[tab] = el;

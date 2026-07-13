@@ -15,7 +15,11 @@ function CopyButton({ text, className }: { text: string; className?: string }) {
   };
 
   return (
-    <button className={className} onClick={handleCopy}>
+    <button
+      className={className}
+      onClick={handleCopy}
+      aria-label={copied ? 'Copied to clipboard' : 'Copy to clipboard'}
+    >
       {copied ? 'Copied!' : <Copy />}
     </button>
   );

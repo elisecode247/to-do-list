@@ -89,7 +89,13 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
     return (
         <div className={`entry-row ${entry.distraction ? " entry-row--distraction" : ""}`}>
             <div className="time-cell">
-                <button className="delete-btn" onClick={() => onDelete(entry.id)}>×</button>
+                <button
+                    className="delete-btn"
+                    onClick={() => onDelete(entry.id)}
+                    aria-label="Delete journal entry"
+                >
+                    ×
+                </button>
                 <input
                     className="time-input"
                     value={time}
@@ -114,6 +120,7 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
                     <button
                         className={`distraction-tag ${entry.distraction ? " distraction-tag--active" : ""}`}
                         onClick={() => onToggleDistraction(entry.id)}
+                        aria-label={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
                         title={entry.distraction ? "Remove distraction tag" : "Mark as distraction"}
                     >
                         {entry.distraction ? "distraction" : "+"}

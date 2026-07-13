@@ -25,7 +25,7 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
             <div className="calendar-event-header">
                 <div>
                     <p className="calendar-event-subtitle">Google Calendar Event</p>
-                    <h4>{event.title}</h4>
+                    <h3 className="calendar-event-title">{event.title}</h3>
                     <p className="sortable-item_next-due-text calendar-event-time">
                         {dateString}
                     </p>
