@@ -9,6 +9,7 @@ import type { ChecklistItem, Mode } from 'src/app/types';
 import { useToast } from 'src/toast/use-toast';
 import {
     Ban,
+    Calendar1,
     CalendarPlus2,
     GripVertical,
     Trash,
@@ -24,6 +25,7 @@ import {
     Star,
     ListChevronsDownUp,
     ListChevronsUpDown,
+    RefreshCw
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
@@ -328,7 +330,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <div className="sortable-item_metadata">
                                 {(activeTab === TABS.today) && (
                                     <span className="sortable-item_metadata-text sortable-item_recurrence-text">
-                                        <span aria-hidden="true">↻</span>
+                                        {mode === 'one-time' ?
+                                            (<Calendar1 aria-hidden="true" size={12} />) :
+                                            (<RefreshCw aria-hidden="true" size={12} />)
+                                        }
                                         {getRecurrenceText(mode, recurrence)}
                                     </span>
                                 )}
