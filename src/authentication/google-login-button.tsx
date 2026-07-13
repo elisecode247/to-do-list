@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { API_AUTH_URL } from "src/app/constants";
 import { useAuthentication } from "src/authentication/use-authentication";
+import {
+    initializeGoogleIdentity,
+    setDefaultGoogleCredentialHandler,
+} from "src/authentication/google-identity";
 import './google-login-button.css';
 
 interface GoogleCredentialResponse {
@@ -45,15 +49,11 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
     // Initialize Google Sign-In button
     useEffect(() => {
-        if (!window.google || !buttonRef.current || !clientId) return;
+        if (!buttonRef.current || !clientId) return;
         if (initializedRef.current) return; // prevent multiple initializations
         initializedRef.current = true;
 
-        try {
-            window.google.accounts.id.initialize({
-                client_id: clientId,
-                use_fedcm_for_button: true,
-                callback: (response: GoogleCredentialResponse) => {
+        const credentialHandler = (response: GoogleCredentialResponse) => {
                     if (!response.credential) {
                         onError?.("No credential returned from Google");
                         setGoogleButtonState('failure');
@@ -62,25 +62,38 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
                     onSuccess?.(response.credential);
                     setGoogleButtonState('success');
 
-                },
-            });
+        };
 
-            // Disable auto-select so user is always prompted
-            window.google.accounts.id.disableAutoSelect();
+        const initializeButton = async () => {
+            try {
+                const google = await initializeGoogleIdentity(clientId);
+                if (!buttonRef.current) return;
+                setDefaultGoogleCredentialHandler(credentialHandler);
 
-            // Render the button
-            window.google.accounts.id.renderButton(buttonRef.current, {
-                theme: "filled_black",
-                text: "continue_with",
-                size: "large",
-                shape: "pill",
-                logo_alignment: "left",
-            });
-        } catch (err) {
-            console.error("GoogleLoginButton initialization error:", err);
-            onError?.(err);
-            setGoogleButtonState('failure')
-        }
+                // Disable auto-select so user is always prompted
+                google.accounts.id.disableAutoSelect();
+
+                // Render the button
+                google.accounts.id.renderButton(buttonRef.current, {
+                    theme: "filled_black",
+                    text: "continue_with",
+                    size: "large",
+                    shape: "pill",
+                    logo_alignment: "left",
+                });
+            } catch (err) {
+                initializedRef.current = false;
+                console.error("GoogleLoginButton initialization error:", err);
+                onError?.(err);
+                setGoogleButtonState('failure');
+            }
+        };
+
+        initializeButton();
+
+        return () => {
+            setDefaultGoogleCredentialHandler(null);
+        };
     }, [clientId, onSuccess, onError, setGoogleButtonState]);
 
     return <div ref={buttonRef} className="google-login-button" />;
