@@ -3,3 +3,64 @@
     color: contrast-color(var(--color-white-black));
     font-size: 16px;
 }
+
+.note-editor-content ul,
+.note-editor-content ol {
+    margin-block: 0.75rem;
+    padding-inline-start: 1.75rem;
+}
+
+.note-editor-content ul {
+    list-style-type: disc;
+}
+
+.note-editor-content ol {
+    list-style-type: decimal;
+}
+
+.note-editor-content li {
+    padding-inline-start: 0.25rem;
+}
+
+.note-editor-content li[role="checkbox"] {
+    margin-inline-start: -1rem;
+    padding-inline: 1.5rem 0.25rem;
+}
+
+.note-editor-content li[role="checkbox"]::before {
+    top: 0.1875rem;
+}
+
+.note-editor-content li[role="checkbox"]::after {
+    top: calc(var(--spacing-0_5) + 0.1875rem);
+}
+
+.note-editor-content li + li {
+    margin-block-start: 0.25rem;
+}
+
+.note-editor-content li > ul,
+.note-editor-content li > ol {
+    margin-block: 0.25rem 0;
+}
+
+.note-editor-content hr {
+    margin-block: 1.25rem;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.note-editor-content code {
+    padding: 0.125rem 0.375rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+    border-radius: var(--radius-sm, 0.25rem);
+    background: color-mix(in srgb, var(--color-surface) 80%, var(--color-accent) 20%);
+    color: contrast-color(color-mix(in srgb, var(--color-surface) 80%, var(--color-accent) 20%));
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.875em;
+}
+
+.mdxeditor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+}

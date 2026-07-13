@@ -1,10 +1,21 @@
 import {
+    type MDXEditorMethods,
+    BoldItalicUnderlineToggles,
     MDXEditor,
+    UndoRedo,
+    InsertThematicBreak,
+    CodeToggle,
+    CreateLink,
+    DiffSourceToggleWrapper,
+    diffSourcePlugin,
     headingsPlugin,
+    linkDialogPlugin,
+    linkPlugin,
     listsPlugin,
     quotePlugin,
     thematicBreakPlugin,
-    type MDXEditorMethods
+    toolbarPlugin,
+    ListsToggle,
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css';
 import './note-editor.css';
@@ -22,7 +33,32 @@ const NoteEditor = ({ initialMarkdown, ref, readOnly = false, className, onChang
         <MDXEditor
             ref={ref}
             markdown={initialMarkdown}
-            plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin()]}
+            plugins={[
+                headingsPlugin(),
+                listsPlugin(),
+                quotePlugin(),
+                thematicBreakPlugin(),
+                diffSourcePlugin(),
+                linkPlugin(),
+                linkDialogPlugin(),
+                toolbarPlugin({
+                    toolbarClassName: "flex-wrap",
+                    toolbarContents: () => (
+                        <DiffSourceToggleWrapper
+                            children={(
+                                <>
+                                    <UndoRedo />
+                                    <BoldItalicUnderlineToggles />
+                                    <ListsToggle />
+                                    <InsertThematicBreak />
+                                    <CreateLink />
+                                    <CodeToggle />
+                                </>
+                            )}
+                        />
+                    )
+                })
+            ]}
             readOnly={readOnly}
             contentEditableClassName="note-editor-content"
             className={className}
