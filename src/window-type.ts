@@ -10,6 +10,7 @@ declare global {
                 id: {
                     initialize(options: {
                         client_id: string;
+                        use_fedcm_for_button?: boolean;
                         callback: (response: GoogleCredentialResponse) => void;
                     }): void;
                     prompt: () => void;

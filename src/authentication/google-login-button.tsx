@@ -52,6 +52,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         try {
             window.google.accounts.id.initialize({
                 client_id: clientId,
+                use_fedcm_for_button: true,
                 callback: (response: GoogleCredentialResponse) => {
                     if (!response.credential) {
                         onError?.("No credential returned from Google");
