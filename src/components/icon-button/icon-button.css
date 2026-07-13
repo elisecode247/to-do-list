@@ -13,7 +13,6 @@
         padding: var(--spacing-xs) var(--spacing-sm);
         gap: var(--spacing-xs);
         width: fit-content;
-        z-index: 9999;
         backdrop-filter: blur(10px);
     }
 }

@@ -232,25 +232,33 @@ const LoggedIn: React.FC = () => {
             )}
             <header className="app_header">
                 {activeTab !== TABS.journal && (
-                    <IconButton
-                        className={`filter-toggle-button
-                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                        onClick={toggleLeft}
-                        label="Filters"
-                        icon={<ListFilter size={24} />}
-                        showLabel={isDesktop}
-                        isPriority={false}
-                    />
+                    <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
+                        <IconButton
+                            className="filter-toggle-button"
+                            onClick={toggleLeft}
+                            label="Filters"
+                            icon={<ListFilter size={24} />}
+                            showLabel={isDesktop}
+                            isPriority={false}
+                        />
+                        {!isDesktop && (
+                            <IconButton
+                                className="show-completed-toggle-button"
+                                onClick={() => setHideCompleted(prev => !prev)}
+                                label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
+                                icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                isPriority={false}
+                            />
+                        )}
+                        <IconButton
+                            className="new-task-form-toggle-button"
+                            onClick={toggleAddForm}
+                            label="Add new task"
+                            icon={<Plus size={24} strokeWidth={3} />}
+                            isPriority={true}
+                        />
+                    </div>
                 )}
-                {(!isDesktop && activeTab !== TABS.journal) && (
-                    <IconButton
-                        className={`show-completed-toggle-button
-                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                        onClick={() => setHideCompleted(prev => !prev)}
-                        label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                        icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                        isPriority={false}
-                    />)}
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset List</h1>
                     <p className="app_subtitle">
@@ -264,16 +272,6 @@ const LoggedIn: React.FC = () => {
                         </span>
                     </p>
                 </div>
-                {activeTab !== TABS.journal && (
-                    <IconButton
-                        className={`new-task-form-toggle-button
-                        ${(leftOpen || rightOpen) && !isDesktop ? " hidden " : ""}`}
-                        onClick={toggleAddForm}
-                        label="Add new task"
-                        icon={<Plus size={24} strokeWidth={3} />}
-                        isPriority={true}
-                    />
-                )}
                 <AccountMenu
                     isDesktop={isDesktop}
                     isMenuOpen={menuOpen}
