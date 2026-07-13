@@ -4,6 +4,25 @@ export const formatDate = (date: Date) => {
         String(date.getDate()).padStart(2, '0');
 }
 
+export const formatLongDate = (date: string | Date): string => {
+    let parsedDate: Date;
+
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [year, month, day] = date.split('-').map(Number);
+        parsedDate = new Date(year, month - 1, day);
+    } else {
+        parsedDate = new Date(date);
+    }
+
+    if (Number.isNaN(parsedDate.getTime())) return '';
+
+    return parsedDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    });
+}
+
 export const formatDateForInput = (date: string | Date | undefined): string => {
     if (!date) return '';
     if (typeof date === 'string') {

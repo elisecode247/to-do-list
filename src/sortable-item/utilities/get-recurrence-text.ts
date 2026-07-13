@@ -1,9 +1,9 @@
 import type { Mode, IntervalRecurrence, OneTimeRecurrence } from 'src/app/types';
-import { formatDate } from 'src/app/utilities/format-date';
+import { formatLongDate } from 'src/app/utilities/format-date';
 
 export function getRecurrenceText(mode: Mode, recurrence: IntervalRecurrence | OneTimeRecurrence | null) {
     if (recurrence?.type === 'one-time') {
-        return `Once on ${formatDate(new Date(recurrence.startDate))}`;
+        return `Start ${formatLongDate(recurrence.startDate)}`;
     }
     if (mode === 'one-time') return 'Once';
     if (mode === 'daily') return 'Daily';
