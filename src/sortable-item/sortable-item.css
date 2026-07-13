@@ -4,6 +4,12 @@
     contain-intrinsic-block-size: auto 96px;
 }
 
+.sortable-item_drag-wrapper:has(> .sortable-item_container.mode-priority) {
+    content-visibility: visible;
+    position: relative;
+    z-index: 2;
+}
+
 .sortable-item_drag-wrapper--menu-open {
     content-visibility: visible;
     position: relative;
