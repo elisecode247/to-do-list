@@ -276,7 +276,9 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     return (
         <div
-            className={`sortable-item_drag-wrapper ${isOver ? 'sortable-item_drag-over' : ''}`}
+            className={`sortable-item_drag-wrapper
+                ${isOver ? 'sortable-item_drag-over' : ''}
+                ${isMenuOpen ? 'sortable-item_drag-wrapper--menu-open' : ''}`}
             ref={setDragWrapperRef}
             {...attributes}
         >
