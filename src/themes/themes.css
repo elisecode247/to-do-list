@@ -112,6 +112,7 @@ body {
     color: color-mix(in srgb,
             contrast-color(var(--color-background)) 92%,
             var(--color-primary));
+    font-family: "Outfit", Arial, sans-serif;
 }
 
 .app_subtitle_last-updated--fresh {

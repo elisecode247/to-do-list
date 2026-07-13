@@ -41,6 +41,7 @@ const TemplatesLazy = lazy(async () => {
 const LoadingSpinner = () => {
     return (
         <div className="app_loading-container">
+            <h1 className="app_h1">Daily Reset List</h1>
             <div aria-busy="true" className="app_loading-spinner"></div>
         </div>
     );
