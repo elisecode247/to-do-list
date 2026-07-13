@@ -20,13 +20,20 @@ describe("housework templates", () => {
         }
     });
 
-    it.each([
-        ["daily cleaning", DAILY_CLEANING_TEMPLATE],
-        ["clean bathrooms", CLEAN_BATHROOMS_TEMPLATE],
-    ])("does not copy the %s parent note to its subtasks", (_name, items) => {
-        const subtasks = items.filter(item => item.parentUuid !== null);
+    it("gives every daily cleaning subtask its own note", () => {
+        const parent = DAILY_CLEANING_TEMPLATE.find(item => item.parentUuid === null);
+        const subtasks = DAILY_CLEANING_TEMPLATE.filter(item => item.parentUuid !== null);
 
-        expect(subtasks.every(item => item.note === "")).toBe(true);
+        expect(parent?.note).not.toBe("");
+        expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
+    });
+
+    it("gives every clean bathrooms subtask its own note", () => {
+        const parent = CLEAN_BATHROOMS_TEMPLATE.find(item => item.parentUuid === null);
+        const subtasks = CLEAN_BATHROOMS_TEMPLATE.filter(item => item.parentUuid !== null);
+
+        expect(parent?.note).not.toBe("");
+        expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
     });
 
     it("keeps scheduling properties on daily-cleaning subtasks", () => {
