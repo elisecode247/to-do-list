@@ -131,6 +131,14 @@
         gap: 4px;
     }
 
+    .sortable-item_metadata {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 12px;
+        min-height: 16px;
+    }
+
     .sortable-item_category-icon {
         display: inline-flex;
         margin-inline-end: 6px;
@@ -147,11 +155,26 @@
 
 .sortable-item_text-heading {
     min-width: 0px;
-    margin: 0 8px 0 0;
-    line-height: 1;
+    margin: 0;
+    line-height: 1.2;
     overflow-wrap: anywhere;
     font-size: var(--font-size-md);
     font-weight: 400;
+}
+
+.sortable-item_metadata-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+    opacity: 0.62;
+}
+
+.sortable-item_recurrence-text {
+    opacity: 0.72;
 }
 
 .sortable-item_last-completed-text,

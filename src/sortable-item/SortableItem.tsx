@@ -324,18 +324,21 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     ) : null}
                                     {text}
                                 </h2>
+                            </div>
+                            <div className="sortable-item_metadata">
                                 {(activeTab === TABS.today) && (
-                                    <span className="sortable-item_next-due-text">
+                                    <span className="sortable-item_metadata-text sortable-item_recurrence-text">
+                                        <span aria-hidden="true">↻</span>
                                         {getRecurrenceText(mode, recurrence)}
                                     </span>
                                 )}
                                 {showLastCompleted && (
-                                    <span className="sortable-item_last-completed-text">
+                                    <span className="sortable-item_metadata-text">
                                         {lastCompletedDate}
                                     </span>
                                 )}
                                 {(activeTab === TABS.upcoming && nextDue) || (isUpcomingSubtask && nextDue) ? (
-                                    <span className="sortable-item_next-due-text">
+                                    <span className="sortable-item_metadata-text">
                                         {nextDueDate}
                                     </span>
                                 ) : null}

@@ -6,10 +6,8 @@ export function getRecurrenceText(mode: Mode, recurrence: IntervalRecurrence | O
         return `Start ${formatLongDate(recurrence.startDate)}`;
     }
     if (mode === 'one-time') return 'Once';
-    if (mode === 'daily') return 'Daily';
-    if (!recurrence) return 'Daily';
 
-    if (recurrence.type === 'interval') {
+    if (recurrence?.type === 'interval') {
         if (recurrence.numberOfRepetitions === 1) {
             return `${recurrence.frequency}`;
         }
@@ -32,5 +30,6 @@ export function getRecurrenceText(mode: Mode, recurrence: IntervalRecurrence | O
         }
         return `Every ${recurrence.numberOfRepetitions} ${recurrence.frequency}`;
     }
+    if (mode === 'daily' || !recurrence) return 'Daily';
     return 'Unknown recurrence';
 }
