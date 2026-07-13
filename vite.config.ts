@@ -41,14 +41,6 @@ export default defineConfig({
                     }
 
                     if (
-                        id.includes('/node_modules/@mdxeditor/editor/') ||
-                        id.includes('/node_modules/lexical/') ||
-                        id.includes('/node_modules/@lexical/')
-                    ) {
-                        return 'editor-vendor';
-                    }
-
-                    if (
                         id.includes('/node_modules/@dnd-kit/') ||
                         id.includes('/node_modules/wouter/') ||
                         id.includes('/node_modules/usehooks-ts/')
@@ -56,9 +48,9 @@ export default defineConfig({
                         return 'ui-vendor';
                     }
 
-                    if (id.includes('/node_modules/')) {
-                        return 'vendor';
-                    }
+                    // Leave feature dependencies to Rollup. Explicitly
+                    // grouping the editor or every unmatched package can pull
+                    // lazy-only code into the initial modulepreload graph.
                 }
             },
         },
