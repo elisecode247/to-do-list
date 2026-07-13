@@ -3,7 +3,7 @@ import { useForm, FormProvider, type SubmitHandler, useWatch, Controller } from 
 import { API_AUTH_URL } from 'src/app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
 import { formatDate } from 'src/app/utilities/format-date';
-import NoteEditor from 'src/editor/NoteEditor';
+import NoteEditor from 'src/editor/LazyNoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import { formatGoogleEventDateTime } from 'src/google-authorization/utilities/format-google-event-date-time';

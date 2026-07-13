@@ -20,7 +20,7 @@ import {
 import '@mdxeditor/editor/style.css';
 import './note-editor.css';
 
-interface NoteEditorProps {
+export interface NoteEditorProps {
     initialMarkdown: string;
     ref?: React.Ref<MDXEditorMethods>;
     readOnly: boolean;

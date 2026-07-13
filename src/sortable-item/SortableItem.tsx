@@ -29,7 +29,7 @@ import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
 import { TAB_ARCHIVED, TABS } from 'src/app-toolbar/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
-import NoteEditor from 'src/editor/NoteEditor';
+import NoteEditor from 'src/editor/LazyNoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useOnClickOutside } from 'usehooks-ts';
 import IconButton from 'src/components/icon-button/IconButton';

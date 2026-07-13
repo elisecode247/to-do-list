@@ -6,7 +6,7 @@ import { MODES, OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/con
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
 import CategorySelect from 'category-select/CategorySelect';
-import NoteEditor from 'src/editor/NoteEditor';
+import NoteEditor from 'src/editor/LazyNoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import {
     FrequencyType,

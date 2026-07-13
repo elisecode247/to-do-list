@@ -4,7 +4,7 @@ import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler, useWatch, Controller } from 'react-hook-form';
 import type { GoogleEvent } from './types';
 import { type FC, useRef } from 'react';
-import NoteEditor from 'src/editor/NoteEditor';
+import NoteEditor from 'src/editor/LazyNoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { formatGoogleEventDateTime } from 'src/google-authorization/utilities/format-google-event-date-time';
 import { addOneDay } from 'src/google-authorization/utilities/add-one-day';

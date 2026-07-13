@@ -36,26 +36,30 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks(id) {
-                    // React core (must load first)
-                    if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/scheduler')) {
+                    if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) {
                         return 'react-core-vendor';
                     }
-                    if (id.includes('node_modules/react')) {
-                        return 'react-vendor';
-                    }
-                    // MDX Editor (huge, lazy-loaded)
-                    if (id.includes('@mdxeditor/editor') || id.includes('lexical')) {
+
+                    if (
+                        id.includes('/node_modules/@mdxeditor/editor/') ||
+                        id.includes('/node_modules/lexical/') ||
+                        id.includes('/node_modules/@lexical/')
+                    ) {
                         return 'editor-vendor';
                     }
-                    // UI utilities
-                    if (id.includes('@dnd-kit') || id.includes('wouter') || id.includes('usehooks-ts')) {
+
+                    if (
+                        id.includes('/node_modules/@dnd-kit/') ||
+                        id.includes('/node_modules/wouter/') ||
+                        id.includes('/node_modules/usehooks-ts/')
+                    ) {
                         return 'ui-vendor';
                     }
-                    // rest of node_modules
-                    if (id.includes('node_modules')) {
+
+                    if (id.includes('/node_modules/')) {
                         return 'vendor';
                     }
-                },
+                }
             },
         },
     },
