@@ -14,7 +14,7 @@
     .sortable-item_container {
         display: grid;
         grid-template-rows: minmax(55px, auto) auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
-        grid-template-columns: 44px auto;
+        grid-template-columns: 44px minmax(0, 1fr);
         grid-template-areas:
             "drag text"
             "drag button-group"
@@ -110,6 +110,7 @@
     /* Text Container */
     .sortable-item_text-container {
         flex: 1;
+        min-width: 0;
         display: flex;
         flex-direction: column;
         gap: 4px;
@@ -118,19 +119,22 @@
     }
 
     .sortable-item_text {
+        width: 100%;
+        min-width: 0;
         font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         align-items: center;
+        gap: 4px;
     }
 
     .sortable-item_category-icon {
         display: inline-flex;
-        align-items: center;
-        justify-content: center;
         margin-inline-end: 6px;
-        vertical-align: middle;
+        vertical-align: bottom;
     }
 
     .sortable-item_subtask-indicator {
@@ -142,7 +146,10 @@
 }
 
 .sortable-item_text-heading {
-    display: inline;
+    min-width: 0px;
+    margin: 0 8px 0 0;
+    line-height: 1;
+    overflow-wrap: anywhere;
     font-size: var(--font-size-md);
     font-weight: 400;
 }
@@ -157,7 +164,7 @@
     opacity: 0.8;
     background-color: var(--color-secondary);
     padding: 2px 8px;
-    margin-inline-start: var(--spacing-xs);
+    margin-inline-end: 4px;
     border-radius: var(--radius-md);
     text-transform: capitalize;
 }
@@ -169,8 +176,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 /* menu wrapper stays inline with the row */
@@ -363,7 +371,7 @@
         padding-inline: var(--spacing-sm);
         display: grid;
         grid-template-rows: auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
-        grid-template-columns: 44px auto auto;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
         grid-template-areas:
             "drag text button-group"
             "blank notes notes"
@@ -392,12 +400,6 @@
 
     .sortable-item_button-group-container {
         margin-inline-start: auto;
-    }
-
-    .sortable-item_last-completed-text,
-    .sortable-item_next-due-text {
-        font-size: 12px;
-        margin-inline-start: var(--spacing-md);
     }
 
     .sortable-item_archive-button,
@@ -432,6 +434,11 @@
     align-items: stretch;
     margin-block-start: var(--spacing-xs);
     margin-block-end: var(--spacing-xs);
+}
+
+.sortable-item_subtasks-container--collapsed {
+    margin-block-start: 0;
+    margin-block-end: 0;
 }
 
 .sortable-item_show-upcoming-button {

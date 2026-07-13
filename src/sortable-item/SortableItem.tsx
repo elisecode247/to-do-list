@@ -310,18 +310,20 @@ export const SortableItem: FC<SortableItemProps> = ({
                         />
 
                         <div className="sortable-item_text-container">
-                            <span className="sortable-item_text">
-                                {isSubChore && <span className="sortable-item_subtask-indicator">Subtask: </span>}
-                                {categoryDefinition ? (
-                                    <span
-                                        className="sortable-item_category-icon"
-                                        title={categoryDefinition.name}
-                                        aria-hidden="true"
-                                    >
-                                        <CategoryIcon iconKey={categoryDefinition.icon} size={16} color={categoryDefinition.color} />
-                                    </span>
-                                ) : null}
-                                <h2 className="sortable-item_text-heading">{text}</h2>
+                            <div className="sortable-item_text">
+                                <h2 className="sortable-item_text-heading">
+                                    {isSubChore && <span className="sortable-item_subtask-indicator">Subtask: </span>}
+                                    {categoryDefinition ? (
+                                        <span
+                                            className="sortable-item_category-icon"
+                                            title={categoryDefinition.name}
+                                            aria-hidden="true"
+                                        >
+                                            <CategoryIcon iconKey={categoryDefinition.icon} size={16} color={categoryDefinition.color} />
+                                        </span>
+                                    ) : null}
+                                    {text}
+                                </h2>
                                 {(activeTab === TABS.today) && (
                                     <span className="sortable-item_next-due-text">
                                         {getRecurrenceText(mode, recurrence)}
@@ -337,7 +339,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {nextDueDate}
                                     </span>
                                 ) : null}
-                            </span>
+                            </div>
                         </div>
                     </div>
                     <div className="sortable-item_button-group-container">
@@ -526,7 +528,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                     </AnimatePresence>
                     {/* RECURSIVE SUBTASKS */}
-                    <div className="sortable-item_subtasks-container">
+                    <div className={`sortable-item_subtasks-container ${collapsed ? 'sortable-item_subtasks-container--collapsed' : ''}`}>
 
                         <SortableContext items={filteredTasks?.map(i => i.id) || []}>
                             <AnimatePresence initial={false}>
