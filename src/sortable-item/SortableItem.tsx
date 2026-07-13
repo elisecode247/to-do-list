@@ -280,13 +280,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             ref={setDragWrapperRef}
             {...attributes}
         >
-            <AnimatePresence>
-                {animate && <motion.div
-                    key={`modal-${id}`}
-                    initial={{ opacity: 0, scale: 1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    transition={{ duration: 0.4 }}
+            {animate && <div
                     className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 >
                     <button
@@ -707,8 +701,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </div>
                         </div>
                     ) : null}
-                </motion.div>}
-            </AnimatePresence>
+                </div>}
         </div>
     );
 };

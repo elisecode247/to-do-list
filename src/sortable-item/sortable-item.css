@@ -1,4 +1,9 @@
 /* Item Container */
+.sortable-item_drag-wrapper {
+    content-visibility: auto;
+    contain-intrinsic-block-size: auto 96px;
+}
+
 @layer base {
     .sortable-item_container {
         display: grid;
