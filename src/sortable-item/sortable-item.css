@@ -108,12 +108,15 @@
         flex-direction: column;
         gap: 4px;
         align-items: flex-start;
+        padding: var(--spacing-xs);
     }
 
     .sortable-item_text {
-        font-size: 14px;
+        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        display: flex;
+        align-items: center;
     }
 
     .sortable-item_category-icon {
@@ -130,6 +133,12 @@
         color: inherit;
         margin-inline-start: 4px;
     }
+}
+
+.sortable-item_text-heading {
+    display: inline;
+    font-size: var(--font-size-md);
+    font-weight: 400;
 }
 
 .sortable-item_last-completed-text,
@@ -544,11 +553,6 @@
             var(--color-primary),
             var(--color-accent));
     border-radius: 16px 0 0 16px;
-}
-
-/* reduce full neon effect */
-.mode-priority .sortable-item_text {
-    padding-left: 14px;
 }
 
 /* make star the main priority cue */

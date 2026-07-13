@@ -316,10 +316,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         title={categoryDefinition.name}
                                         aria-hidden="true"
                                     >
-                                        <CategoryIcon iconKey={categoryDefinition.icon} size={14} color={categoryDefinition.color} />
+                                        <CategoryIcon iconKey={categoryDefinition.icon} size={16} color={categoryDefinition.color} />
                                     </span>
                                 ) : null}
-                                {text}
+                                <h2 className="sortable-item_text-heading">{text}</h2>
                                 {(activeTab === TABS.today) && (
                                     <span className="sortable-item_next-due-text">
                                         {getRecurrenceText(mode, recurrence)}
