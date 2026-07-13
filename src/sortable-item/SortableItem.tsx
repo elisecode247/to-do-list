@@ -604,7 +604,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     </motion.div>
                                 )}
 
-                                {!collapsed && upcomingTasks && upcomingTasks?.length > 0 && (
+                                {!collapsed && activeTab === TABS.today && upcomingTasks && upcomingTasks?.length > 0 && (
                                     <motion.div
                                         key={`upcoming-subtasks-${id}`}
                                         className="sortable-item_upcoming-subtasks"
