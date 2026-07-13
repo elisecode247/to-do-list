@@ -7,7 +7,16 @@ import React, {
     type SetStateAction,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import {
+    Dialog,
+    DialogBackdrop,
+    DialogPanel,
+    DialogTitle,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+} from "@headlessui/react";
 import {
     Check,
     ChevronDown,
@@ -16,8 +25,10 @@ import {
     EyeOff,
     ListFilter,
     PencilIcon,
+    Palette,
     Plus,
     RefreshCcw,
+    X
 } from "lucide-react";
 
 import EditTaskForm from "src/edit-task-form/EditTaskForm";
@@ -44,8 +55,11 @@ import DemoChecklist from "./DemoChecklist";
 import AddForm from "./DemoAddForm";
 import { useDemoTask } from "./use-demo-task";
 import { DemoJournalProvider } from "./demo-journal-provider";
+import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
+import "src/pages/user-settings/user-settings.css";
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
+import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
 
 const daysOfWeek = [
     "Sunday",
@@ -64,7 +78,7 @@ interface DemoPageProps {
 const DemoPage: React.FC<DemoPageProps> = ({
     onSuccessfulLogin,
 }) => {
-    useTheme();
+    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
     const now = new Date();
     const dayOfWeekName = `${daysOfWeek[now.getDay()]}, `;
 
@@ -79,6 +93,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const [leftOpen, setLeftOpen] = useState(isDesktop);
     const [rightOpen, setRightOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [appearanceOpen, setAppearanceOpen] = useState(false);
     const lastUpdatedRaw = loadDate && "current" in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const itemLength = items?.length ?? 0;
@@ -204,9 +219,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
     return (
         <>
             <div className="toast-container">
-            {toasts.map(toast => (
-                <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
-            ))}
+                {toasts.map(toast => (
+                    <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
+                ))}
             </div>
             <div className={["app_container", leftOpen ? "left-open" : "", rightOpen ? "right-open" : ""].filter(Boolean).join(" ")}>
                 {(leftOpen || rightOpen) && (
@@ -244,52 +259,52 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     )}
 
                     {!isDesktop && !isJournal && (
-                            <IconButton
-                                className={[
-                                    "show-completed-toggle-button",
-                                    leftOpen ||
-                                        rightOpen
-                                        ? "hidden"
-                                        : "",
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ")}
-                                onClick={() =>
-                                    setHideCompleted(
-                                        current =>
-                                            !current,
-                                    )
-                                }
-                                label={
-                                    hideCompleted
-                                        ? "Completed Tasks Hidden"
-                                        : "Completed Tasks Shown"
-                                }
-                                ariaLabel={
-                                    hideCompleted
-                                        ? "Show completed tasks"
-                                        : "Hide completed tasks"
-                                }
-                                icon={
-                                    hideCompleted ? (
-                                        <EyeOff
-                                            size={
-                                                24
-                                            }
-                                        />
-                                    ) : (
-                                        <Eye
-                                            size={
-                                                24
-                                            }
-                                        />
-                                    )
-                                }
-                                isPriority={
-                                    false
-                                }
-                            />
-                        )}
+                        <IconButton
+                            className={[
+                                "show-completed-toggle-button",
+                                leftOpen ||
+                                    rightOpen
+                                    ? "hidden"
+                                    : "",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            onClick={() =>
+                                setHideCompleted(
+                                    current =>
+                                        !current,
+                                )
+                            }
+                            label={
+                                hideCompleted
+                                    ? "Completed Tasks Hidden"
+                                    : "Completed Tasks Shown"
+                            }
+                            ariaLabel={
+                                hideCompleted
+                                    ? "Show completed tasks"
+                                    : "Hide completed tasks"
+                            }
+                            icon={
+                                hideCompleted ? (
+                                    <EyeOff
+                                        size={
+                                            24
+                                        }
+                                    />
+                                ) : (
+                                    <Eye
+                                        size={
+                                            24
+                                        }
+                                    />
+                                )
+                            }
+                            isPriority={
+                                false
+                            }
+                        />
+                    )}
 
                     <div className="app_header_title">
                         <h1 className="app_h1">
@@ -376,6 +391,13 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     <ChevronDown size={14} strokeWidth={2.5} />
                                 </MenuButton>
                                 <MenuItems anchor="bottom end" transition className="demo-actions-menu-items">
+                                    <MenuItem>
+                                        <button className="demo-actions-menu-item" onClick={() => setAppearanceOpen(true)}>
+                                            <Palette size={15} strokeWidth={2} />
+                                            Appearance
+                                        </button>
+                                    </MenuItem>
+                                    <div className="demo-actions-menu-divider" role="separator" />
                                     <MenuItem>
                                         <button className="demo-actions-menu-item" onClick={handleReset}>
                                             <RefreshCcw size={15} strokeWidth={2} />
@@ -513,6 +535,31 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     </nav>
                 )}
                 <Footer />
+                <Dialog
+                    open={appearanceOpen}
+                    onClose={() => setAppearanceOpen(false)}
+                    className="demo-appearance-dialog"
+                >
+                    <DialogBackdrop transition className="demo-appearance-dialog-backdrop" />
+                    <div className="demo-appearance-dialog-positioner">
+                        <DialogPanel transition className="demo-appearance-dialog-panel">
+                            <div className="demo-appearance-dialog-header">
+                                <DialogTitle className="demo-appearance-dialog-title">
+                                    Appearance settings
+                                </DialogTitle>
+                                <button
+                                    className="demo-appearance-dialog-close"
+                                    type="button"
+                                    onClick={() => setAppearanceOpen(false)}
+                                    aria-label="Close appearance settings"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <AppearanceSettings />
+                        </DialogPanel>
+                    </div>
+                </Dialog>
             </div>
         </>
     );

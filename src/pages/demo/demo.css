@@ -129,10 +129,120 @@
     background: color-mix(in srgb, #ef4444 12%, transparent);
 }
 
+.demo-actions-menu-divider {
+    height: 1px;
+    margin: 4px 8px;
+    background: var(--color-border);
+}
+
+.demo-appearance-dialog {
+    position: relative;
+    z-index: 1000;
+}
+
+.demo-appearance-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 0.52);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.18s ease;
+}
+
+.demo-appearance-dialog-backdrop[data-closed] {
+    opacity: 0;
+}
+
+.demo-appearance-dialog-positioner {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+}
+
+.demo-appearance-dialog-panel {
+    width: min(760px, 100%);
+    max-height: calc(100dvh - (2 * var(--spacing-md)));
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-background);
+    color: contrast-color(var(--color-background));
+    box-shadow: 0 24px 70px rgb(0 0 0 / 0.35);
+    padding: var(--spacing-md);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.demo-appearance-dialog-panel[data-closed] {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+}
+
+.demo-appearance-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.demo-appearance-dialog-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+}
+
+.demo-appearance-dialog-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.demo-appearance-dialog-close:hover {
+    background: var(--color-hover);
+}
+
+.demo-appearance-dialog-close:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.demo-appearance-dialog-panel .settings-section {
+    margin-bottom: 0;
+}
+
+.demo-appearance-dialog-panel .settings-section-title {
+    display: none;
+}
+
 
 .demo-placeholder {
     height: 250px;
     flex-shrink: 0;
+}
+
+@media (max-width: 599px) {
+    .demo-appearance-dialog-positioner {
+        place-items: end center;
+        padding: 0;
+    }
+
+    .demo-appearance-dialog-panel {
+        width: 100%;
+        max-height: min(88dvh, 760px);
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        border-bottom: 0;
+        padding: var(--spacing-sm);
+    }
 }
 
 @media (min-width: 900px) {
