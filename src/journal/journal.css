@@ -5,7 +5,7 @@
 }
 
 .journal-wrap {
-    --journal-time-column-width: 120px;
+    --journal-time-column-width: 150px;
     background: var(--color-background);
     border: 1px solid var(--color-border);
     border-radius: 12px;
@@ -253,7 +253,7 @@
     align-self: stretch;
     border: none;
     outline: none;
-    font-size: 13px;
+    font-size: var(--font-size-md);
     background-color: var(--color-white-black);
     color: contrast-color(var(--color-white-black));
     width: auto;
@@ -295,7 +295,7 @@
     border: none;
     outline: none;
     resize: both;
-    font-size: 14px;
+    font-size: var(--font-size-md);
     color: contrast-color(var(--color-surface));
     line-height: 1.65;
     overflow: hidden;
