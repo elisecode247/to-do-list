@@ -13,8 +13,9 @@
 }
 
 .toast {
-    --toast-bg: color-mix(in srgb, var(--color-surface) 88%, var(--color-background) 12%);
-    --toast-border: color-mix(in srgb, var(--color-border) 84%, var(--color-surface) 16%);
+    --toast-accent: var(--color-info);
+    --toast-bg: color-mix(in srgb, var(--color-surface) 90%, var(--toast-accent) 10%);
+    --toast-border: color-mix(in srgb, var(--toast-accent) 58%, var(--color-border));
     --toast-title: contrast-color(var(--toast-bg));
     --toast-subtitle: color-mix(in srgb, var(--toast-title) 52%, var(--toast-bg));
     --toast-action: light-dark(#0f4e98, #86b8ff);
@@ -24,9 +25,12 @@
     max-width: 500px;
     padding: 14px 18px;
     border: 1px solid var(--toast-border);
+    border-inline-start: 5px solid var(--toast-accent);
     border-radius: 20px;
     background: var(--toast-bg);
-    box-shadow: 0 8px 22px color-mix(in srgb, var(--color-shadow) 42%, transparent);
+    box-shadow:
+        0 14px 36px color-mix(in srgb, var(--color-shadow) 68%, transparent),
+        0 3px 10px color-mix(in srgb, var(--toast-accent) 22%, transparent);
 
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto auto;
@@ -50,16 +54,19 @@
 }
 
 .toast--error {
+    --toast-accent: var(--color-danger);
     --toast-icon-bg: color-mix(in srgb, var(--color-danger) 24%, var(--toast-bg));
     --toast-icon-color: color-mix(in srgb, var(--color-danger) 78%, var(--toast-title));
 }
 
 .toast--success {
+    --toast-accent: var(--color-success);
     --toast-icon-bg: color-mix(in srgb, var(--color-success) 28%, var(--toast-bg));
     --toast-icon-color: color-mix(in srgb, var(--color-success) 88%, var(--toast-title));
 }
 
 .toast--info {
+    --toast-accent: var(--color-info);
     --toast-icon-bg: color-mix(in srgb, var(--color-info) 24%, var(--toast-bg));
     --toast-icon-color: color-mix(in srgb, var(--color-info) 78%, var(--toast-title));
 }
