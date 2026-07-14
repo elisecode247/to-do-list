@@ -420,7 +420,23 @@ Spray cleaner onto the cloth, not onto lamps or electrical parts.`
 
 You do not need to sweep, vacuum, **and** mop every floor.`
     ),
-    livingRoomTask("c276e9d3-a6c7-484d-82aa-b62e7726cc20", "Vacuum the couch", 7, 1, FrequencyType.Weekly,
+    livingRoomTask("8880e213-3415-4911-a20d-4a81f12447f1", "Deep-clean rugs and carpets", 7, 1, FrequencyType.Annually,
+        `Choose **one rug or carpeted area**:
+
+* [ ] Check the care label or flooring guidance
+* [ ] Pick up loose items and move light furniture
+* [ ] Vacuum slowly in more than one direction
+* [ ] Test the cleaning method in a hidden spot
+* [ ] Deep-clean or wet-vacuum one section at a time
+* [ ] Keep people and pets off the damp area
+* [ ] Ventilate the room and let it dry completely
+* [ ] Return furniture when the area is dry
+
+**Minimum version:** Vacuum thoroughly and spot-clean the most noticeable stain.
+
+Do not wet-clean rugs or carpets that require professional or dry cleaning. Avoid soaking the flooring underneath.`
+    ),
+    livingRoomTask("c276e9d3-a6c7-484d-82aa-b62e7726cc20", "Vacuum the couch", 8, 1, FrequencyType.Weekly,
         `* [ ] Remove blankets and loose items
 * [ ] Vacuum the seat and back cushions
 * [ ] Vacuum visible crumbs in the creases
@@ -429,7 +445,7 @@ You do not need to sweep, vacuum, **and** mop every floor.`
 
 **Minimum version:** Vacuum the seat and the most noticeable crumbs.`
     ),
-    livingRoomTask("da5bb99b-bdf1-4fe7-bbc9-e4e677bde72e", "Water plants", 8, 1, FrequencyType.Weekly,
+    livingRoomTask("da5bb99b-bdf1-4fe7-bbc9-e4e677bde72e", "Water plants", 9, 1, FrequencyType.Weekly,
         `Check each plant before watering:
 
 * [ ] Touch the soil to see whether it is dry
@@ -442,7 +458,7 @@ You do not need to sweep, vacuum, **and** mop every floor.`
 
 It is okay to skip plants with damp soil. Different plants need water at different times.`
     ),
-    livingRoomTask("43955e19-0e7d-4758-a3d1-d7a4625470e9", "Wash the windows", 9, 2, FrequencyType.Monthly,
+    livingRoomTask("43955e19-0e7d-4758-a3d1-d7a4625470e9", "Wash the windows", 10, 2, FrequencyType.Monthly,
         `Choose **one window** to start:
 
 * [ ] Move items away from the window
@@ -456,7 +472,7 @@ It is okay to skip plants with damp soil. Different plants need water at differe
 
 Only clean exterior glass when it is safely reachable from the ground.`
     ),
-    livingRoomTask("229cae43-bc39-430b-8b4e-b06191f0f18a", "Wash the blinds", 10, 3, FrequencyType.Monthly,
+    livingRoomTask("229cae43-bc39-430b-8b4e-b06191f0f18a", "Wash the blinds", 11, 3, FrequencyType.Monthly,
         `Start with **one window**:
 
 * [ ] Close the blinds
