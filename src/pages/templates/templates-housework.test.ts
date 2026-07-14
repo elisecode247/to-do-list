@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
     CLEAN_BATHROOMS_TEMPLATE,
+    CLEAN_KITCHEN_TEMPLATE,
     CLEAN_LIVING_ROOM_TEMPLATE,
     DAILY_CLEANING_TEMPLATE,
 } from "./templates-housework";
@@ -9,6 +10,7 @@ const HOUSEWORK_TEMPLATES = [
     ["daily cleaning", DAILY_CLEANING_TEMPLATE],
     ["clean bathrooms", CLEAN_BATHROOMS_TEMPLATE],
     ["clean living room", CLEAN_LIVING_ROOM_TEMPLATE],
+    ["clean kitchen", CLEAN_KITCHEN_TEMPLATE],
 ] as const;
 
 describe("housework templates", () => {
@@ -25,6 +27,12 @@ describe("housework templates", () => {
         for (const item of items) {
             if (item.parentUuid) expect(ids.has(item.parentUuid)).toBe(true);
         }
+    });
+
+    it.each(HOUSEWORK_TEMPLATES)("keeps %s subtask order numbers sequential", (_name, items) => {
+        const subtasks = items.filter(item => item.parentUuid !== null);
+
+        expect(subtasks.map(item => item.sortOrder)).toEqual(subtasks.map((_, index) => index));
     });
 
     it("gives every daily cleaning subtask its own note", () => {
@@ -46,6 +54,14 @@ describe("housework templates", () => {
     it("gives every clean living room subtask its own note", () => {
         const parent = CLEAN_LIVING_ROOM_TEMPLATE.find(item => item.parentUuid === null);
         const subtasks = CLEAN_LIVING_ROOM_TEMPLATE.filter(item => item.parentUuid !== null);
+
+        expect(parent?.note).not.toBe("");
+        expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
+    });
+
+    it("gives every clean kitchen subtask its own note", () => {
+        const parent = CLEAN_KITCHEN_TEMPLATE.find(item => item.parentUuid === null);
+        const subtasks = CLEAN_KITCHEN_TEMPLATE.filter(item => item.parentUuid !== null);
 
         expect(parent?.note).not.toBe("");
         expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);

@@ -9,7 +9,7 @@ import EditTaskForm from "src/edit-task-form/EditTaskForm";
 import { useAuthentication } from "src/authentication/use-authentication";
 import type { CategoryDefinition } from "src/category-select/types";
 import { useUserSettings } from "src/user-settings/use-user-settings";
-import { CLEAN_BATHROOMS_TEMPLATE, CLEAN_LIVING_ROOM_TEMPLATE, DAILY_CLEANING_TEMPLATE } from './templates-housework';
+import { CLEAN_BATHROOMS_TEMPLATE, CLEAN_KITCHEN_TEMPLATE, CLEAN_LIVING_ROOM_TEMPLATE, DAILY_CLEANING_TEMPLATE } from './templates-housework';
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { addTasksFromTemplate, type AddTasksFromTemplateRequest } from "src/app/api";
 import "./templates-page.css";
@@ -30,6 +30,7 @@ const TASK_TEMPLATES: TaskTemplate[] = [
     { id: "daily-cleaning", title: "Daily Cleaning", description: "A checklist for daily cleaning tasks.", categoryKey: "housework", mode: "daily", subtasks: [], items: DAILY_CLEANING_TEMPLATE },
     { id: "clean-bathrooms", title: "Clean bathrooms", description: "Recurring bathroom cleaning tasks with realistic individual schedules.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_BATHROOMS_TEMPLATE },
     { id: "clean-living-room", title: "Clean living room", description: "A flexible living-room reset with weekly and seasonal cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_LIVING_ROOM_TEMPLATE },
+    { id: "clean-kitchen", title: "Clean kitchen", description: "A flexible kitchen reset with weekly upkeep and periodic deep-cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_KITCHEN_TEMPLATE },
     { id: "morning-reset", title: "Morning reset", description: "A gentle checklist to start the day with less friction.", categoryKey: "self-care", mode: "daily", subtasks: ["Drink water", "Take medication or vitamins", "Get dressed", "Check calendar", "Pick top 3 tasks"] },
     { id: "pet-care-reset", title: "Pet care reset", description: "Food, water, walk, cleanup, and small pet-care checks.", categoryKey: "pets", mode: "daily", subtasks: ["Refresh water bowl", "Feed pets", "Quick walk or playtime", "Check poop bags", "Clean food area"] },
 ];

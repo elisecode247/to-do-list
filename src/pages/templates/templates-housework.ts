@@ -470,3 +470,329 @@ Only clean exterior glass when it is safely reachable from the ground.`
 Check the care instructions before using water on wood, fabric, or specialty blinds.`
     ),
 ];
+
+const CLEAN_KITCHEN_ID = "2fe9ad2e-bb2a-4d77-a132-115bc665265c";
+
+function kitchenTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    numberOfRepetitions: number,
+    frequency: FrequencyType,
+    note: string,
+    parentUuid: string | null = CLEAN_KITCHEN_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
+    return {
+        ...task,
+        note,
+        mode: "occasional",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+        recurrence,
+    };
+}
+
+export const CLEAN_KITCHEN_TEMPLATE: ChecklistItem[] = [
+    kitchenTask(CLEAN_KITCHEN_ID, "Clean kitchen", 0, 1, FrequencyType.Weekly,
+        `**Good enough counts.** You do not have to complete every subtask in one session.
+
+Choose what would make the kitchen safer or easier to use. Start with the quickest win and stop when you have done enough.
+
+You can **skip any task** to hide it from Today.`,
+        null
+    ),
+    kitchenTask("095aecfc-c1c2-4411-8211-0d7056b5eece", "Gather supplies", 0, 1, FrequencyType.Weekly,
+        `Gather only what you plan to use:
+
+* [ ] trash bag
+* [ ] donation box or bag
+* [ ] gloves
+* [ ] cleaning cloths or paper towels
+* [ ] all-purpose kitchen cleaner
+* [ ] dish soap
+* [ ] floor cleaner and mop
+* [ ] broom or vacuum
+* [ ] music, podcast, or other pleasant background sound
+
+**Minimum version:** Grab a trash bag and one cleaning cloth.
+
+> Never mix cleaning products. Check labels before using a product on food-contact surfaces or a new material.`
+    ),
+    kitchenTask("7d6831d9-05b9-4ff8-afb7-cd13ce803e87", "Throw away trash", 1, 1, FrequencyType.Weekly,
+        `Focus only on obvious trash:
+
+* [ ] Throw away wrappers and empty containers
+* [ ] Check counters, the table, and the floor
+* [ ] Tie or close the full bag
+* [ ] Put in a new liner
+* [ ] Take the bag to the main bin
+
+**Minimum version:** Fill your hands once and throw those items away.`
+    ),
+    kitchenTask("8b78546d-d629-4dbc-8f4c-ab5f4dd98e2e", "Wash kitchen towels", 2, 1, FrequencyType.Weekly,
+        `* [ ] Collect towels, dishcloths, and washable drying mats
+* [ ] Check care labels if needed
+* [ ] Start the washer
+* [ ] Set a reminder to move the load
+* [ ] Dry as directed
+* [ ] Return clean towels to the kitchen
+
+**Minimum version:** Put used towels in the hamper and set out one clean towel.`
+    ),
+    kitchenTask("6a0ea2ac-979a-4e06-a036-370e59ffc5cf", "Do the dishes", 3, 1, FrequencyType.Weekly,
+        `Pick the starting point that feels easiest:
+
+* [ ] Throw away food scraps
+* [ ] Put away clean dishes if you need the space
+* [ ] Load the dishwasher or fill the sink
+* [ ] Wash what fits in one batch
+* [ ] Start the dishwasher, if using it
+* [ ] Set a reminder to unload it later
+
+**Minimum version:** Wash the dishes you need for your next meal or fill one dishwasher rack.
+
+You can stop after one batch. The sink does not have to be completely empty.`
+    ),
+    kitchenTask("6a1351af-e123-4031-96e0-a65006b05fb6", "Wipe knobs, switches, and outlet covers", 4, 1, FrequencyType.Weekly,
+        `* [ ] Turn off or unplug nearby appliances if needed
+* [ ] Spray cleaner onto a cloth—not onto electrical fixtures
+* [ ] Wipe cabinet and appliance knobs
+* [ ] Wipe light switches
+* [ ] Carefully wipe outlet covers
+* [ ] Dry any damp areas
+
+**Minimum version:** Wipe the most frequently touched knobs and switches.
+
+> Keep liquid out of outlets and switches. Do not clean damaged or loose electrical covers.`
+    ),
+    kitchenTask("4cc44285-ff7e-49ef-a743-7f861218dbfa", "Wipe the table, chairs, and stools", 5, 1, FrequencyType.Weekly,
+        `* [ ] Move loose items into one spot
+* [ ] Wipe the tabletop
+* [ ] Wipe chair and stool seats
+* [ ] Wipe visibly dirty backs, legs, or rungs
+* [ ] Put back only what belongs there
+
+**Minimum version:** Clear and wipe one place to sit and eat.`
+    ),
+    kitchenTask("8de007db-4858-46db-b249-c281293bb1ad", "Discard expired pantry food and wipe shelves", 6, 6, FrequencyType.Monthly,
+        `Work on **one shelf or category** at a time:
+
+* [ ] Remove the items
+* [ ] Check dates and condition
+* [ ] Discard spoiled, unsafe, or unwanted food
+* [ ] Set aside unopened food you can donate
+* [ ] Wipe and dry the shelf
+* [ ] Return the food you are keeping
+
+**Minimum version:** Check one shelf or five items.
+
+Package dates can mean different things. When appropriate, check the food and storage guidance instead of relying only on the printed date.`
+    ),
+    kitchenTask("5718f426-dd01-4449-b225-6e7cb288a990", "Organize the pantry", 7, 6, FrequencyType.Monthly,
+        `Choose **one shelf, bin, or food category**:
+
+* [ ] Group similar foods together
+* [ ] Put frequently used items within easy reach
+* [ ] Move older items toward the front
+* [ ] Combine duplicates when safe
+* [ ] Add missing staples to the shopping list
+
+**Minimum version:** Make one category easier to find.
+
+The goal is visibility, not a picture-perfect pantry.`
+    ),
+    kitchenTask("a8bff54f-13dd-433d-bc5f-13905eefc542", "Check the refrigerator for expired food", 8, 1, FrequencyType.Weekly,
+        `* [ ] Check leftovers first
+* [ ] Look for spoiled produce and leaking containers
+* [ ] Discard food that is no longer safe or wanted
+* [ ] Put food to use soon near the front
+* [ ] Wipe obvious spills
+
+**Minimum version:** Check leftovers and the produce drawer.
+
+When you are unsure whether food is safe, follow reliable food-storage guidance rather than tasting it.`
+    ),
+    kitchenTask("a122ce5e-6e52-4c74-8149-b49f9d534ac4", "Donate unused kitchen supplies", 9, 6, FrequencyType.Monthly,
+        `Choose **one drawer, cabinet, or item type**:
+
+* [ ] Find duplicates or items you no longer use
+* [ ] Put usable items in a donation box
+* [ ] Discard broken or unsafe items
+* [ ] Put the donation box near the door
+* [ ] Add the drop-off to your errands
+
+**Minimum version:** Choose one item to donate.
+
+You do not have to reorganize the space after removing items.`
+    ),
+    kitchenTask("9420cb3c-f1cb-4e1d-b1e7-4fef5936b2f7", "Degrease the range, burner grates, and oven racks", 10, 4, FrequencyType.Monthly,
+        `Check the appliance manual before removing or soaking parts.
+
+* [ ] Make sure every surface is cool
+* [ ] Remove grates and racks that are safe to remove
+* [ ] Apply a compatible degreaser
+* [ ] Let it sit for the label's recommended time
+* [ ] Scrub one section at a time
+* [ ] Rinse and dry removable parts
+* [ ] Wipe the range and return the parts
+
+**Minimum version:** Degrease the range around the most-used burner.
+
+> Never mix cleaning products. Avoid getting liquid into burners, igniters, or electrical parts.`
+    ),
+    kitchenTask("ff532210-e9a8-4db6-955f-65c254fb2544", "Dust from top to bottom", 11, 1, FrequencyType.Monthly,
+        `Choose one level or area at a time:
+
+* [ ] Ceiling corners
+* [ ] Light fixtures and ceiling fans
+* [ ] Top of the refrigerator and cabinets
+* [ ] Shelves and decor
+* [ ] Baseboards
+
+Work from high surfaces to low ones so fallen dust can be cleaned last.
+
+**Minimum version:** Dust one visible surface.
+
+> Turn off fans and lights before cleaning. Use a stable step stool and skip anything you cannot reach safely.`
+    ),
+    kitchenTask("f32e4495-631e-4357-8896-2426976213e7", "Clean cabinet fronts and knobs", 12, 1, FrequencyType.Monthly,
+        `Choose **one section of cabinets**:
+
+* [ ] Spray a material-safe cleaner onto a cloth
+* [ ] Wipe cabinet fronts
+* [ ] Wipe knobs and handles
+* [ ] Dry the surfaces
+
+**Minimum version:** Wipe the handles and the area around them.
+
+Test a new cleaner in a hidden spot first.`
+    ),
+    kitchenTask("2f0b4246-41e2-4763-8949-0d549afc6727", "Degrease cabinets and backsplash", 13, 3, FrequencyType.Monthly,
+        `Choose the greasiest section near the stove:
+
+* [ ] Apply a compatible degreaser to a cloth or small area
+* [ ] Let it sit as directed
+* [ ] Wipe the backsplash
+* [ ] Wipe nearby cabinet fronts
+* [ ] Repeat only where needed
+* [ ] Rinse or dry as the product directs
+
+**Minimum version:** Clean one greasy patch.
+
+Test the product first, especially on painted, wood, stone, or specialty surfaces.`
+    ),
+    kitchenTask("a8342c24-c960-4152-b7f8-866a665b398f", "Deep-clean the oven", 14, 6, FrequencyType.Monthly,
+        `Check the appliance manual before choosing a cleaning method.
+
+* [ ] Make sure the oven is off and cool
+* [ ] Remove loose crumbs
+* [ ] Remove racks if the manual recommends it
+* [ ] Apply an oven-safe cleaner or start the approved cleaning cycle
+* [ ] Set a reminder for the waiting or cooling time
+* [ ] Wipe out residue
+* [ ] Return dry racks
+
+**Minimum version:** Remove loose crumbs and wipe the oven door.
+
+> Ventilate the room and never mix oven cleaner with other products.`
+    ),
+    kitchenTask("ac0fcaaa-2577-47de-8890-5b14c29a5044", "Deep-clean the refrigerator and freezer", 15, 4, FrequencyType.Monthly,
+        `Do **one compartment at a time** so food stays cold:
+
+* [ ] Prepare a cooler or temporary cold space if needed
+* [ ] Remove food from one shelf, drawer, or freezer section
+* [ ] Discard unsafe or unwanted food
+* [ ] Wash and dry the shelf or drawer
+* [ ] Wipe spills and crumbs
+* [ ] Return food and group similar items
+* [ ] Repeat only if you have capacity
+
+**Minimum version:** Clean one shelf or drawer.
+
+Follow food-safety guidance for anything left at room temperature.`
+    ),
+    kitchenTask("a226c66b-17e2-4e1f-9852-fb2a72c441b9", "Deep-clean the microwave", 16, 1, FrequencyType.Monthly,
+        `* [ ] Unplug the microwave if the manual recommends it
+* [ ] Remove and wash the turntable
+* [ ] Loosen stuck-on food with steam or a damp cloth
+* [ ] Wipe the ceiling, walls, floor, and door
+* [ ] Wipe the outside and controls
+* [ ] Dry and replace the turntable
+
+**Minimum version:** Wipe the biggest spill and the handle.
+
+Do not spray cleaner into vents or electrical openings.`
+    ),
+    kitchenTask("196ec1a9-ff86-4ab8-b6d6-685ebd7bcbb3", "Deep-clean the dishwasher and clean its filter", 17, 3, FrequencyType.Monthly,
+        `Check the appliance manual for the filter location and approved cleaner.
+
+* [ ] Empty the dishwasher
+* [ ] Remove visible debris
+* [ ] Remove and rinse the filter if it is user-serviceable
+* [ ] Wipe the door seal and edges
+* [ ] Return the filter securely
+* [ ] Run an approved cleaning cycle
+* [ ] Replace the filter only if the manual says it is disposable or damaged
+
+**Minimum version:** Remove visible debris and wipe the door seal.`
+    ),
+    kitchenTask("05b10aeb-4c19-4acf-a9f8-82cd770e927a", "Wipe the counters", 18, 1, FrequencyType.Weekly,
+        `* [ ] Put food away
+* [ ] Move loose items into one spot
+* [ ] Wipe crumbs, spills, and sticky areas
+* [ ] Clean around frequently used appliances
+* [ ] Clear one space for preparing food
+
+**Minimum version:** Wipe the area you need next.
+
+Follow the product directions for food-contact surfaces.`
+    ),
+    kitchenTask("d83bab21-f4d0-4f36-a060-1cd393e3a063", "Scrub the sink", 19, 1, FrequencyType.Weekly,
+        `* [ ] Move dishes and sink items aside
+* [ ] Rinse away loose debris
+* [ ] Apply a sink-safe cleaner
+* [ ] Scrub the basin, drain, faucet, and handles
+* [ ] Rinse and dry
+
+**Minimum version:** Scrub the basin and rinse it.
+
+Do not mix cleaning products, and use a cleaner that is safe for the sink material.`
+    ),
+    kitchenTask("4c1e6072-a432-43e3-950c-4bc0863f0f77", "Freshen the garbage disposal", 20, 1, FrequencyType.Weekly,
+        `* [ ] Turn off the disposal
+* [ ] Remove debris from the sink without reaching into the disposal
+* [ ] Flush and freshen it using the manufacturer's recommended method
+* [ ] Wipe the splash guard if it can be handled safely
+* [ ] Rinse the sink
+
+**Minimum version:** Rinse the disposal using the recommended method.
+
+> Never put your hand into the disposal. Disconnect power before servicing it, and avoid drain chemicals unless the manufacturer allows them.`
+    ),
+    kitchenTask("ef033291-e6d4-4cd8-8fc3-69e3ee3eb521", "Sweep the floor", 21, 1, FrequencyType.Weekly,
+        `* [ ] Move only what blocks the floor
+* [ ] Sweep under the table and along cabinet edges
+* [ ] Focus on cooking and eating areas
+* [ ] Empty the dustpan
+
+**Minimum version:** Sweep the messiest section or main walking path.`
+    ),
+    kitchenTask("9fd5c8f1-a321-42f2-92e9-26ba354b58c7", "Mop the floor", 22, 1, FrequencyType.Weekly,
+        `* [ ] Sweep or vacuum loose debris
+* [ ] Prepare a floor-safe cleaner
+* [ ] Spot-clean sticky areas
+* [ ] Mop from the far corner toward the exit
+* [ ] Let the floor dry
+* [ ] Put the supplies away
+
+**Minimum version:** Mop the sticky spots or the area in front of the sink and stove.`
+    ),
+];
