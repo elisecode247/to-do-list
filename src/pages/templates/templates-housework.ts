@@ -785,7 +785,8 @@ Do not mix cleaning products, and use a cleaner that is safe for the sink materi
     kitchenTask("4c1e6072-a432-43e3-950c-4bc0863f0f77", "Freshen the garbage disposal", 20, 1, FrequencyType.Weekly,
         `* [ ] Turn off the disposal
 * [ ] Remove debris from the sink without reaching into the disposal
-* [ ] Flush and freshen it using the manufacturer's recommended method
+* [ ] Freshen it using the manufacturer's recommended method
+* [ ] If the manual allows it, grind a few ice cubes while running cold water
 * [ ] Wipe the splash guard if it can be handled safely
 * [ ] Rinse the sink
 
