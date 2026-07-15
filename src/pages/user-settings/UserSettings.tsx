@@ -24,6 +24,13 @@ function UserSettings() {
 
     return (
         <Page title="User Settings">
+            <section className="settings-category" aria-labelledby="personalization-settings-title">
+                <h2 id="personalization-settings-title" className="settings-category-title">Personalization</h2>
+                <AppearanceSettings />
+                <CategorySettings />
+            </section>
+            <section className="settings-category" aria-labelledby="integration-settings-title">
+                <h2 id="integration-settings-title" className="settings-category-title">Integrations</h2>
                 <div className="settings-section">
                     <h3 className="settings-section-title">Enable Google Calendar</h3>
                     <div className="radio-group" role="radiogroup">
@@ -47,10 +54,14 @@ function UserSettings() {
                         </label>
                     </div>
                 </div>
+            </section>
+            <section className="settings-category" aria-labelledby="data-privacy-settings-title">
+                <h2 id="data-privacy-settings-title" className="settings-category-title">Data &amp; Privacy</h2>
                 <EncryptionSettings />
                 <JournalExportSettings />
-                <AppearanceSettings />
-                <CategorySettings />
+            </section>
+            <section className="settings-category" aria-labelledby="account-settings-title">
+                <h2 id="account-settings-title" className="settings-category-title">Account</h2>
                 <div className="settings-section settings-section--danger">
                     <h3 className="settings-section-title settings-section-title--danger">
                         <Skull size={20} className="settings-section-icon--danger" />
@@ -62,10 +73,10 @@ function UserSettings() {
                         Delete Account
                     </button>
                 </div>
-                {isDeleteAccountDialogOpen ? (
-                    <DeleteAccountDialog isOpen={isDeleteAccountDialogOpen} onClose={() => setIsDeleteAccountDialogOpen(false)} />
-                ) : null}
-                {isDeleteAccountDialogOpen && "open"}
+            </section>
+            {isDeleteAccountDialogOpen ? (
+                <DeleteAccountDialog isOpen={isDeleteAccountDialogOpen} onClose={() => setIsDeleteAccountDialogOpen(false)} />
+            ) : null}
         </Page>
     );
 }
