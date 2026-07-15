@@ -8,6 +8,7 @@ import type { Mode } from 'src/app/types';
 import type { Tab } from './tabs/types';
 import CloseButton from 'components/close-button/CloseButton';
 import type { CategoryDefinition } from 'src/category-select/types';
+import { Select } from '@headlessui/react'
 
 interface AppToolbarProps {
     categories: CategoryDefinition[];
@@ -73,33 +74,24 @@ const AppToolbar = ({
 
             <div className="drawer-section">
                 <div className="drawer-section-label">Mode</div>
-                <div className="mode-filter-button-group">
-                    <button
-                        onClick={() => {
-                            setModeFilter(ALL_MODES);
-                        }}
-                        className={`filter-button ${modeFilter === ALL_MODES
-                            ? 'filter-button-all-active'
-                            : 'filter-button-all'
-                            }`}
-                    >
+                <Select
+                    className="mode-filter-button-group"
+                    name="mode-filter"
+                    aria-label="Mode filter"
+                    value={modeFilter}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        setModeFilter(e.target.value as Mode);
+                    }}
+                >
+                    <option value={ALL_MODES}>
                         All
-                    </button>
-                    {MODES.map((mode: Mode): React.ReactNode => {
-                        const isActive = modeFilter === mode;
-                        return (
-                            <button
-                                key={mode}
-                                onClick={() => {
-                                    setModeFilter(mode);
-                                }}
-                                className={`filter-button ${isActive ? 'filter-button-active' : ''}`}
-                            >
-                                {mode}
-                            </button>
-                        )
-                    })}
-                </div>
+                    </option>
+                    {MODES.map((mode: Mode): React.ReactNode => (
+                        <option key={mode} value={mode}>
+                            {mode}
+                        </option>
+                    ))}
+                </Select>
             </div>
 
             <div className="drawer-divider" />

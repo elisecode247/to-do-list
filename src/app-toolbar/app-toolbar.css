@@ -103,53 +103,38 @@
 
 /* Mode buttons */
 .mode-filter-button-group {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
+    display: block;
     width: 100%;
+    min-height: 42px;
+    padding: 9px 36px 9px 12px;
+    border: 1px solid color-mix(in srgb, var(--color-border) 72%, var(--color-accent-border) 28%);
+    border-radius: 9px;
+    background-color: color-mix(in srgb, var(--color-surface) 48%, transparent);
+    color: inherit;
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--color-shadow) 55%, transparent);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.mode-filter-button-group > .filter-button {
-    text-align: center;
-    justify-content: center;
+.mode-filter-button-group:hover {
+    border-color: var(--color-accent-border);
+    background-color: color-mix(in srgb, var(--color-accent-bg) 28%, var(--color-surface) 72%);
 }
 
-@layer base {
-    .filter-button {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 9px 12px;
-        border-radius: 9px;
-        border: none;
-        background: transparent;
-        font-size: 13px;
-        font-weight: 400;
-        text-align: left;
-        text-transform: capitalize;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        color: inherit;
-    }
+.mode-filter-button-group:focus-visible {
+    outline: 2px solid var(--color-accent-border);
+    outline-offset: 2px;
+    border-color: var(--color-accent-border);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
+}
 
-    .filter-button:hover {
-        background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-        color: contrast-color(color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%));
-    }
-
-    .filter-button-all,
-    .filter-button-all-active,
-    .filter-button-active {
-        border-radius: 9px;
-    }
-
-    .filter-button-all-active,
-    .filter-button-active {
-        background: color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
-        color: inherit;
-        border: 1px solid color-mix(in srgb, var(--color-accent-border) 45%, transparent);
-        font-weight: 500;
-    }
+.mode-filter-button-group > option {
+    background-color: var(--color-surface);
+    color: contrast-color(var(--color-surface));
+    text-transform: capitalize;
 }
 
 /* Category pills */
@@ -243,11 +228,4 @@
         flex-direction: column;
     }
 
-    .mode-filter-button-group {
-        flex-direction: column;
-    }
-    .mode-filter-button-group .filter-button {
-        text-align: left;
-        justify-content: flex-start;
-    }
 }
