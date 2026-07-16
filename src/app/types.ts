@@ -107,7 +107,7 @@ export interface TaskContextType {
     isUpdatedDate?: boolean;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
-    getSearchResults: () => ChecklistItem[];
+    getSearchResults: ({ hideSubtasks }: { hideSubtasks?: boolean }) => ChecklistItem[];
 }
 
 export type ApiRecurrence =

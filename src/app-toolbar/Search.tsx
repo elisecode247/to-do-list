@@ -1,6 +1,6 @@
-import { Input } from '@headlessui/react';
+import { Input, Checkbox, Field, Label } from '@headlessui/react';
 import { SearchIcon, X } from 'lucide-react';
-import { useEffect, useRef, type ReactElement } from 'react';
+import { useEffect, useRef, useState, type ReactElement } from 'react';
 import type { ChecklistItem } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
@@ -15,10 +15,11 @@ interface SearchProps {
 }
 
 const Search = ({ onEditItem, sparkles }: SearchProps) => {
+    const [hideSubtasks, setHideSubtasks] = useState(false);
     const { searchQuery, setSearchQuery, getSearchResults } = useTask();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const normalizedQuery = searchQuery.trim();
-    const searchResults = getSearchResults();
+    const searchResults = getSearchResults({ hideSubtasks });
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -52,7 +53,20 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                     </span>
                 )}
             </header>
-
+            <div className="search-filters">
+                <Field className="search-filter-field">
+                    <Checkbox
+                        checked={hideSubtasks}
+                        onChange={setHideSubtasks}
+                        className={`hide-subtasks-checkbox ${hideSubtasks ? 'hide-subtasks-checkbox--checked' : ''}`}
+                    >
+                        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className="checkbox-icon">
+                            <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </Checkbox>
+                    <Label className="search-filter-label">Hide subtasks</Label>
+                </Field>
+            </div>
             <div className="search-input-wrapper">
                 <SearchIcon className="search-input-icon" size={18} aria-hidden="true" />
                 <Input

@@ -413,10 +413,13 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const getSearchResults = function() {
+    const getSearchResults = function({ hideSubtasks = false }: { hideSubtasks?: boolean } = {}): ChecklistItem[]    {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
         if (!normalizedQuery) return [];
-        return items.filter(item => item.text.toLocaleLowerCase().includes(normalizedQuery));
+        return items.filter(item => {
+            if (hideSubtasks && item.parentUuid) return false;
+            return item.text.toLocaleLowerCase().includes(normalizedQuery) && (!hideSubtasks || !item.parentUuid);
+        });
     };
 
     useEffect(() => {

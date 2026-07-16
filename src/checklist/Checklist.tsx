@@ -15,6 +15,7 @@ import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
+import { motion, useReducedMotion } from 'framer-motion';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -85,6 +86,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const [showSparkles, setShowSparkles] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const shouldReduceMotion = useReducedMotion();
     const sparkleTimeoutRef = useRef<number | null>(null);
     const listContentRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
@@ -383,7 +385,7 @@ const Checklist: FC<ChecklistProps> = ({
                                     />);
                                 } else if (item.itemType === 'checklist-item') {
                                     const checklistItem = item as ChecklistItem;
-                                    return (
+                                    const checklistItemElement = (
                                         <SortableItem
                                             checklistType={checklistType}
                                             activeTab={activeTab}
@@ -415,6 +417,22 @@ const Checklist: FC<ChecklistProps> = ({
                                             recurrence={checklistItem.recurrence}
                                         />
                                     );
+
+                                    if (checklistType === 'search-results') {
+                                        return (
+                                            <motion.div
+                                                className="search-result-item"
+                                                key={checklistItem.id}
+                                                initial={shouldReduceMotion ? false : { opacity: 0, y: 4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: shouldReduceMotion ? 0 : 0.14, ease: 'easeOut' }}
+                                            >
+                                                {checklistItemElement}
+                                            </motion.div>
+                                        );
+                                    }
+
+                                    return checklistItemElement;
                                 }
                                 return null;
                             })}
