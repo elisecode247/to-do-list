@@ -18,7 +18,6 @@ import {
     type ApiRecurrence,
     type IntervalRecurrence,
     type OneTimeRecurrence,
-    type SearchOptions,
     FrequencyType,
     INTERVAL_RECURRENCE,
     ONE_TIME_RECURRENCE,
@@ -35,7 +34,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
     const [isUpdatedDate, setIsUpdatedDate] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
     const itemLength = items.length;
 
     const reset = () => {
@@ -414,20 +412,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const getSearchResults = function({ hideSubtasks = false, searchScope = 'all' }: SearchOptions = {}): ChecklistItem[] {
-        const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-        if (!normalizedQuery) return [];
-        return items.filter(item => {
-            if (hideSubtasks && item.parentUuid) return false;
-            const matchesText = item.text ? item.text.toLocaleLowerCase().includes(normalizedQuery) : false;
-            const matchesNotes = item.note ? item.note.toLocaleLowerCase().includes(normalizedQuery) : false;
-
-            if (searchScope === 'text') return matchesText;
-            if (searchScope === 'notes') return matchesNotes;
-            return matchesText || matchesNotes;
-        });
-    };
-
     useEffect(() => {
         if (!enabled) return;
 
@@ -464,9 +448,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             unhideForToday,
             loadDate: loadDateRef,
             isUpdatedDate,
-            searchQuery,
-            setSearchQuery,
-            getSearchResults,
         }}>
             {children}
         </TaskContext.Provider>

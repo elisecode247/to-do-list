@@ -22,6 +22,7 @@ interface AppToolbarProps {
     setFilterCategory: (category: string) => void;
     setLeftOpen: (open: boolean) => void;
     isDesktop?: boolean;
+    showSearch?: boolean;
 }
 const AppToolbar = ({
     activeTab,
@@ -33,7 +34,8 @@ const AppToolbar = ({
     filterCategory,
     setFilterCategory,
     setLeftOpen,
-    categories
+    categories,
+    showSearch = true
 }: AppToolbarProps) => {
 
     const activeFilterCount =
@@ -67,6 +69,7 @@ const AppToolbar = ({
                 <Tabs
                     value={activeTab}
                     onChange={handleTabChange}
+                    showSearch={showSearch}
                 />
             </div>
             {activeTab !== 'search' ? (

@@ -5,11 +5,6 @@ import { ALL_MODES } from "src/checklist/constants";
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'calendar';
 export type SearchScope = 'all' | 'text' | 'notes';
 
-export interface SearchOptions {
-    hideSubtasks?: boolean;
-    searchScope?: SearchScope;
-}
-
 export const FrequencyType = {
     None: 'none',
     Daily: 'daily',
@@ -111,9 +106,6 @@ export interface TaskContextType {
     unhideForToday: (id: string) => void;
     loadDate: Ref<Date | null>;
     isUpdatedDate?: boolean;
-    searchQuery: string;
-    setSearchQuery: (query: string) => void;
-    getSearchResults: (options?: SearchOptions) => ChecklistItem[];
 }
 
 export type ApiRecurrence =

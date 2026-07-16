@@ -1,4 +1,4 @@
-import { INTERVAL_RECURRENCE, ONE_TIME_RECURRENCE, type ApiRecurrence, type ChecklistItem, type SearchOptions } from 'app/types';
+import { INTERVAL_RECURRENCE, ONE_TIME_RECURRENCE, type ApiRecurrence, type ChecklistItem } from 'app/types';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from 'src/app/utilities/get-reorder-items';
@@ -92,7 +92,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const loadDateRef = useRef(new Date());
     const itemLength = items.length;
     const clear = () => {
@@ -464,20 +463,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const getSearchResults = ({ hideSubtasks = false, searchScope = 'all' }: SearchOptions = {}) => {
-        const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-        if (!normalizedQuery) return [];
-        return items.filter(item => {
-            if (hideSubtasks && item.parentUuid) return false;
-            const matchesText = item.text.toLocaleLowerCase().includes(normalizedQuery);
-            const matchesNotes = item.note.toLocaleLowerCase().includes(normalizedQuery);
-
-            if (searchScope === 'text') return matchesText;
-            if (searchScope === 'notes') return matchesNotes;
-            return matchesText || matchesNotes;
-        });
-    };
-
     useEffect(() => {
         loadTasks();
         const now = new Date();
@@ -520,9 +505,6 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             hideForToday,
             unhideForToday,
             loadDate: loadDateRef,
-            searchQuery,
-            setSearchQuery,
-            getSearchResults,
         }}>
             {children}
         </DemoTaskContext.Provider>

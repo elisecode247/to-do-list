@@ -4,6 +4,7 @@ import Checklist from 'src/checklist/Checklist';
 import { useTask } from 'src/app/use-task';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import type { ChecklistItem } from 'src/app/types';
+import { memo } from 'react';
 
 type TaskContextChecklistProps = Omit<ChecklistProps, "controller"> & {
     items?: ChecklistItem[];
@@ -35,4 +36,4 @@ function TaskContextChecklist({ items, ...props }: TaskContextChecklistProps) {
     return <Checklist {...props} controller={controller} enablePullToRefresh={props.enablePullToRefresh ?? false} />;
 }
 
-export default TaskContextChecklist;
+export default memo(TaskContextChecklist);

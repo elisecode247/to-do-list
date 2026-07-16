@@ -1,6 +1,6 @@
 import { Input, Checkbox, Field, Label } from '@headlessui/react';
 import { SearchIcon, X } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactElement } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import type { ChecklistItem, SearchScope } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
@@ -17,18 +17,36 @@ interface SearchProps {
 const Search = ({ onEditItem, sparkles }: SearchProps) => {
     const [hideSubtasks, setHideSubtasks] = useState(false);
     const [searchScope, setSearchScope] = useState<SearchScope>('all');
-    const { searchQuery, setSearchQuery, getSearchResults } = useTask();
+    const [searchQuery, setSearchQuery] = useState('');
+    const { items } = useTask();
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const normalizedQuery = searchQuery.trim();
-    const searchResults = getSearchResults({ hideSubtasks, searchScope });
+    const deferredSearchQuery = useDeferredValue(searchQuery);
+    const normalizedQuery = deferredSearchQuery.trim();
     const normalizedQueryLowerCase = normalizedQuery.toLocaleLowerCase();
-    const expandedNoteItemIds = new Set(
+    const searchResults = useMemo(() => {
+        if (!normalizedQueryLowerCase) return [];
+
+        return items.filter(item => {
+            if (hideSubtasks && item.parentUuid) return false;
+
+            const matchesText = item.text?.toLocaleLowerCase().includes(normalizedQueryLowerCase) ?? false;
+
+            if (searchScope === 'text') return matchesText;
+
+            const matchesNotes = item.note?.toLocaleLowerCase().includes(normalizedQueryLowerCase) ?? false;
+
+            if (searchScope === 'notes') return matchesNotes;
+            return matchesText || matchesNotes;
+        });
+    }, [hideSubtasks, items, normalizedQueryLowerCase, searchScope]);
+    const expandedNoteItemIds = useMemo(() => new Set(
         searchResults
             .filter(item => searchScope !== 'text' &&
                 item.note &&
                 item.note.toLocaleLowerCase().includes(normalizedQueryLowerCase))
             .map(item => item.id)
-    );
+    ), [normalizedQueryLowerCase, searchResults, searchScope]);
+    const clearFilters = useCallback(() => undefined, []);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -140,7 +158,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                         modeFilter={ALL_MODES}
                         hideCompleted={false}
                         filterCategory={ALL_CATEGORIES}
-                        clearFilters={() => undefined}
+                        clearFilters={clearFilters}
                         onEditItem={onEditItem}
                         expandedNoteItemIds={expandedNoteItemIds}
                         sparkles={sparkles}

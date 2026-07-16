@@ -498,6 +498,11 @@
     border-radius: var(--radius-sm);
 }
 
+.sortable-item_note-preview {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
 /** New Item Section */
 .sortable-item_new-item-form {
     position: relative;

@@ -520,28 +520,40 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 exit={{ height: 0, opacity: 0, y: -4 }}
                                 transition={{ duration: 0.22, ease: 'easeOut' }}
                             >
-                                <NoteEditor
-                                    key={note} // force remount to reset internal state when note changes
-                                    initialMarkdown={note ?? ''}
-                                    ref={noteRef}
-                                    readOnly={false}
-                                />
-                                <button
-                                    className="sortable-item_save-note-button"
-                                    onClick={() => {
-                                        try {
-                                            partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
-                                            showToast('Notes saved successfully', 'success');
-                                        } catch (error) {
-                                            console.error('Failed to save note:', error);
-                                            showToast('Failed to save note. Please try again.', 'error');
-                                        }
-                                    }}
-                                    aria-label="Save notes"
-                                    title="Save notes"
-                                >
-                                    Save Notes
-                                </button>
+                                {checklistType === 'search-results' ? (
+                                    <div
+                                        className="sortable-item_note-preview"
+                                        role="note"
+                                        aria-label={`Note for ${text}`}
+                                    >
+                                        {note}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <NoteEditor
+                                            key={note} // force remount to reset internal state when note changes
+                                            initialMarkdown={note ?? ''}
+                                            ref={noteRef}
+                                            readOnly={false}
+                                        />
+                                        <button
+                                            className="sortable-item_save-note-button"
+                                            onClick={() => {
+                                                try {
+                                                    partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
+                                                    showToast('Notes saved successfully', 'success');
+                                                } catch (error) {
+                                                    console.error('Failed to save note:', error);
+                                                    showToast('Failed to save note. Please try again.', 'error');
+                                                }
+                                            }}
+                                            aria-label="Save notes"
+                                            title="Save notes"
+                                        >
+                                            Save Notes
+                                        </button>
+                                    </>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>

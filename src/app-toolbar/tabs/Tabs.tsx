@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useRef, useState, useEffect, useMemo, type ReactNode } from "react";
 import './tabs.css';
 import { PencilIcon } from "lucide-react";
 import { TABS } from "./types";
@@ -31,15 +31,21 @@ const tabOptions: TabOption[] = [
 type TabsProps<T extends string> = {
     value: T;
     onChange: (value: T) => void;
+    showSearch?: boolean;
 };
 
 function Tabs<T extends string>({
     value,
     onChange,
+    showSearch = true,
 }: TabsProps<T>) {
     const tabListRef = useRef<HTMLDivElement | null>(null);
     const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [isWrapped, setIsWrapped] = useState(false);
+    const visibleTabOptions = useMemo(
+        () => showSearch ? tabOptions : tabOptions.filter(tab => tab.id !== TABS.search),
+        [showSearch]
+    );
 
     useEffect(() => {
         function checkWrap() {
@@ -61,7 +67,7 @@ function Tabs<T extends string>({
         }
 
         return () => resizeObserver.disconnect();
-    }, []);
+    }, [visibleTabOptions]);
 
 
     function onKeyDown(e: React.KeyboardEvent, index: number) {
@@ -69,20 +75,20 @@ function Tabs<T extends string>({
 
         switch (e.key) {
             case "ArrowRight":
-                nextIndex = (index + 1) % tabOptions.length;
+                nextIndex = (index + 1) % visibleTabOptions.length;
                 break;
             case "ArrowLeft":
-                nextIndex = (index - 1 + tabOptions.length) % tabOptions.length;
+                nextIndex = (index - 1 + visibleTabOptions.length) % visibleTabOptions.length;
                 break;
             case "Home":
                 nextIndex = 0;
                 break;
             case "End":
-                nextIndex = tabOptions.length - 1;
+                nextIndex = visibleTabOptions.length - 1;
                 break;
             case "Enter":
             case " ":
-                onChange(tabOptions[index].id as T);
+                onChange(visibleTabOptions[index].id as T);
                 return;
             default:
                 return;
@@ -100,7 +106,7 @@ function Tabs<T extends string>({
                 role="tablist"
                 aria-label="Task filters"
             >
-                {tabOptions.map((tab, index) => (
+                {visibleTabOptions.map((tab, index) => (
                     <button
                         key={tab.id}
                         ref={(el) => { tabRefs.current[index] = el; }}

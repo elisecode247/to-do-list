@@ -355,6 +355,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                         setFilterCategory={setFilterCategory}
                         setLeftOpen={setLeftOpen}
                         isDesktop={isDesktop}
+                        showSearch={false}
                     />
                 </aside>
 
