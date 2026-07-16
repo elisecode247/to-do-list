@@ -38,7 +38,7 @@ function eventIncludesAfterToday(startDate: Date | string, endDate: Date | strin
 }
 
 interface ChecklistProps {
-    checklistType?: 'task' | 'template';
+    checklistType?: 'task' | 'template' | 'search-results';
     enablePullToRefresh: boolean;
     controller: ChecklistController;
     activeTab: Tab;

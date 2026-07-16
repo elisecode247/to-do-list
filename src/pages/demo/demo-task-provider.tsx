@@ -92,6 +92,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const loadDateRef = useRef(new Date());
     const itemLength = items.length;
     const clear = () => {
@@ -463,6 +464,12 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const getSearchResults = () => {
+        const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+        if (!normalizedQuery) return [];
+        return items.filter(item => item.text.toLocaleLowerCase().includes(normalizedQuery));
+    };
+
     useEffect(() => {
         loadTasks();
         const now = new Date();
@@ -505,6 +512,9 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             hideForToday,
             unhideForToday,
             loadDate: loadDateRef,
+            searchQuery,
+            setSearchQuery,
+            getSearchResults,
         }}>
             {children}
         </DemoTaskContext.Provider>

@@ -105,6 +105,9 @@ export interface TaskContextType {
     unhideForToday: (id: string) => void;
     loadDate: Ref<Date | null>;
     isUpdatedDate?: boolean;
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+    getSearchResults: () => ChecklistItem[];
 }
 
 export type ApiRecurrence =

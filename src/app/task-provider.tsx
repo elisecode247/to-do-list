@@ -34,6 +34,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());
     const [isUpdatedDate, setIsUpdatedDate] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const itemLength = items.length;
 
     const reset = () => {
@@ -412,6 +413,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const getSearchResults = function() {
+        const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+        if (!normalizedQuery) return [];
+        return items.filter(item => item.text.toLocaleLowerCase().includes(normalizedQuery));
+    };
+
     useEffect(() => {
         if (!enabled) return;
 
@@ -447,7 +454,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             hideForToday,
             unhideForToday,
             loadDate: loadDateRef,
-            isUpdatedDate
+            isUpdatedDate,
+            searchQuery,
+            setSearchQuery,
+            getSearchResults,
         }}>
             {children}
         </TaskContext.Provider>

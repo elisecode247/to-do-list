@@ -25,6 +25,8 @@ import type { GoogleEvent } from 'src/google-authorization/types';
 import EditEventForm from 'src/google-authorization/EditEventForm';
 import Footer from 'src/footer/Footer';
 import { useUserSettings } from 'src/user-settings/use-user-settings';
+import Search from 'src/app-toolbar/Search';
+
 // preload pages
 import('src/pages/user-settings/UserSettings');
 import('src/pages/bulk-edit/BulkEdit');
@@ -318,6 +320,8 @@ const LoggedIn: React.FC = () => {
                             <JournalProvider>
                                 <Journal />
                             </JournalProvider>
+                        ) : activeTab === TABS.search ? (
+                            <Search onEditItem={handleEditItem} sparkles={sparkles} />
                         ) : itemLength === 0 ? (
                             <div className="empty-state">
                                 <h2>Welcome to Daily Reset List!</h2>

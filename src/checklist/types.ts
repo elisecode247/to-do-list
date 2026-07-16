@@ -6,7 +6,7 @@ import type { ALL_MODES } from './constants';
 import type { ReactElement } from 'react';
 
 export interface ChecklistProps {
-    checklistType?: 'task' | 'template';
+    checklistType?: 'task' | 'template' | 'search-results';
     controller: ChecklistController;
     activeTab: Tab;
     modeFilter: Mode | typeof ALL_MODES;
@@ -14,7 +14,7 @@ export interface ChecklistProps {
     filterCategory: string;
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
-    onEditEvent: (item: GoogleEvent) => void;
+    onEditEvent?: (item: GoogleEvent) => void;
     sparkles?: ReactElement;
     enablePullToRefresh?: boolean;
 }

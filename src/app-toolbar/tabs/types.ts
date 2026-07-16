@@ -4,9 +4,10 @@ export const TAB_UPCOMING = 'upcoming';
 export const TAB_HIDDEN = 'hidden';
 export const TAB_ARCHIVED = 'archived';
 export const TAB_JOURNAL = 'journal';
+export const TAB_SEARCH = 'search';
 
 export type Tab = typeof TAB_PRIORITY | typeof TAB_TODAY | typeof TAB_UPCOMING |
- typeof TAB_HIDDEN | typeof TAB_ARCHIVED | typeof TAB_JOURNAL;
+ typeof TAB_HIDDEN | typeof TAB_ARCHIVED | typeof TAB_JOURNAL | typeof TAB_SEARCH;
 
 export const TABS = {
     priority: TAB_PRIORITY as Tab,
@@ -15,6 +16,7 @@ export const TABS = {
     hidden: TAB_HIDDEN as Tab,
     archived: TAB_ARCHIVED as Tab,
     journal: TAB_JOURNAL as Tab,
+    search: TAB_SEARCH as Tab,
 }
 
 export const TAB_LABELS: Record<Tab, string> = {
@@ -23,5 +25,6 @@ export const TAB_LABELS: Record<Tab, string> = {
     [TAB_UPCOMING]: 'Upcoming',
     [TAB_HIDDEN]: 'Hidden',
     [TAB_ARCHIVED]: 'Archived',
-    [TAB_JOURNAL]: 'Journal'
+    [TAB_JOURNAL]: 'Journal',
+    [TAB_SEARCH]: 'Search'
 }

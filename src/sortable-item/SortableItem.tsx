@@ -41,7 +41,7 @@ import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { getCategoryById } from 'src/category-select/category-constants';
 import { CategoryIcon } from 'src/category-select/category-icons';
 interface SortableItemProps {
-    checklistType?: 'task' | 'template';
+    checklistType?: 'task' | 'template' | 'search-results';
     id: string;
     activeTab: string;
     hasSubChores?: boolean;

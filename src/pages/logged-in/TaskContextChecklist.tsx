@@ -3,14 +3,19 @@ import type { ChecklistProps } from 'src/checklist/types';
 import Checklist from 'src/checklist/Checklist';
 import { useTask } from 'src/app/use-task';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
+import type { ChecklistItem } from 'src/app/types';
 
-function TaskContextChecklist(props: Omit<ChecklistProps, "controller">) {
+type TaskContextChecklistProps = Omit<ChecklistProps, "controller"> & {
+    items?: ChecklistItem[];
+};
+
+function TaskContextChecklist({ items, ...props }: TaskContextChecklistProps) {
     const google = useGoogleCalendar();
     const task = useTask();
 
     const controller: ChecklistController = {
         isLoading: task.isLoading,
-        items: task.items,
+        items: items ?? task.items,
         addItem: task.addItem,
         partialUpdateItem: task.partialUpdateItem,
         deleteItem: task.deleteItem,
