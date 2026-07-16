@@ -15,6 +15,7 @@ export interface ChecklistProps {
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;
+    expandedNoteItemIds?: ReadonlySet<string>;
     sparkles?: ReactElement;
     enablePullToRefresh?: boolean;
 }
@@ -41,4 +42,5 @@ export interface ChecklistController {
     loadTasks: (cancelled?: boolean) => void;
     hideEventForToday: (id: string) => Promise<void> | void;
     unhideEventForToday: (id: string) => Promise<void> | void;
+    expandedNoteItemIds?: ReadonlySet<string>;
 }

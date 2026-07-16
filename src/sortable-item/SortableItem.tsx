@@ -69,6 +69,7 @@ interface SortableItemProps {
     getSubtasks?: (parentId: string) => ChecklistItem[];
     isUpcomingSubtask?: boolean;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
+    expandedNoteItemIds?: ReadonlySet<string>;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -100,6 +101,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     partialUpdateItem,
     getSubtasks = () => [],
     recurrence,
+    expandedNoteItemIds,
 }) => {
     const { showToast } = useToast();
     const { categories } = useUserSettings();
@@ -107,7 +109,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         useSortable({ id });
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
-    const [showNotes, setShowNotes] = useState(false);
+    const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ?? false);
     const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [alignLeft, setAlignLeft] = useState(false);
@@ -123,6 +125,14 @@ export const SortableItem: FC<SortableItemProps> = ({
         setShowNotes(!showNotes);
         setOpenNewTaskForm(false);
     }
+
+    useEffect(() => {
+        if (!expandedNoteItemIds) return;
+
+        const shouldExpandNotes = expandedNoteItemIds.has(id);
+        setShowNotes(shouldExpandNotes);
+        if (shouldExpandNotes) setOpenNewTaskForm(false);
+    }, [expandedNoteItemIds, id]);
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
@@ -607,6 +617,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 partialUpdateItem={partialUpdateItem}
                                                 getSubtasks={getSubtasks}
                                                 recurrence={subtask.recurrence}
+                                                expandedNoteItemIds={expandedNoteItemIds}
                                             />
                                         ))}
                                     </motion.div>
@@ -669,6 +680,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             partialUpdateItem={partialUpdateItem}
                                                             getSubtasks={getSubtasks}
                                                             recurrence={subtask.recurrence}
+                                                            expandedNoteItemIds={expandedNoteItemIds}
                                                         />
                                                     ))}
                                                 </motion.div>

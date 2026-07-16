@@ -1,7 +1,7 @@
 import { Input, Checkbox, Field, Label } from '@headlessui/react';
 import { SearchIcon, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactElement } from 'react';
-import type { ChecklistItem } from 'src/app/types';
+import type { ChecklistItem, SearchScope } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
@@ -16,10 +16,19 @@ interface SearchProps {
 
 const Search = ({ onEditItem, sparkles }: SearchProps) => {
     const [hideSubtasks, setHideSubtasks] = useState(false);
+    const [searchScope, setSearchScope] = useState<SearchScope>('all');
     const { searchQuery, setSearchQuery, getSearchResults } = useTask();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const normalizedQuery = searchQuery.trim();
-    const searchResults = getSearchResults({ hideSubtasks });
+    const searchResults = getSearchResults({ hideSubtasks, searchScope });
+    const normalizedQueryLowerCase = normalizedQuery.toLocaleLowerCase();
+    const expandedNoteItemIds = new Set(
+        searchResults
+            .filter(item => searchScope !== 'text' &&
+                item.note &&
+                item.note.toLocaleLowerCase().includes(normalizedQueryLowerCase))
+            .map(item => item.id)
+    );
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -45,7 +54,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
             <header className="search-header">
                 <div>
                     <h2 id="search-title" className="search-title">Search tasks</h2>
-                    <p className="search-description">Find a task by name.</p>
+                    <p className="search-description">Find a task by name or note.</p>
                 </div>
                 {normalizedQuery && (
                     <span className="search-result-count" aria-live="polite">
@@ -54,6 +63,18 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                 )}
             </header>
             <div className="search-filters">
+                <label className="search-scope-field">
+                    <span className="search-scope-label">Search in</span>
+                    <select
+                        className="search-scope-select"
+                        value={searchScope}
+                        onChange={(event) => setSearchScope(event.target.value as SearchScope)}
+                    >
+                        <option value="all">Titles and notes</option>
+                        <option value="text">Titles only</option>
+                        <option value="notes">Notes only</option>
+                    </select>
+                </label>
                 <Field className="search-filter-field">
                     <Checkbox
                         checked={hideSubtasks}
@@ -121,6 +142,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                         filterCategory={ALL_CATEGORIES}
                         clearFilters={() => undefined}
                         onEditItem={onEditItem}
+                        expandedNoteItemIds={expandedNoteItemIds}
                         sparkles={sparkles}
                         enablePullToRefresh={false}
                     />

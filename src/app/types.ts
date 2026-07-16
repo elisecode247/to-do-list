@@ -3,6 +3,12 @@ import { type Tab } from "src/app-toolbar/tabs/types";
 import { ALL_MODES } from "src/checklist/constants";
 
 export type Mode = 'one-time' | 'daily' | 'occasional' | 'calendar';
+export type SearchScope = 'all' | 'text' | 'notes';
+
+export interface SearchOptions {
+    hideSubtasks?: boolean;
+    searchScope?: SearchScope;
+}
 
 export const FrequencyType = {
     None: 'none',
@@ -107,7 +113,7 @@ export interface TaskContextType {
     isUpdatedDate?: boolean;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
-    getSearchResults: ({ hideSubtasks }: { hideSubtasks?: boolean }) => ChecklistItem[];
+    getSearchResults: (options?: SearchOptions) => ChecklistItem[];
 }
 
 export type ApiRecurrence =

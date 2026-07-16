@@ -18,6 +18,7 @@ import {
     type ApiRecurrence,
     type IntervalRecurrence,
     type OneTimeRecurrence,
+    type SearchOptions,
     FrequencyType,
     INTERVAL_RECURRENCE,
     ONE_TIME_RECURRENCE,
@@ -413,12 +414,17 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const getSearchResults = function({ hideSubtasks = false }: { hideSubtasks?: boolean } = {}): ChecklistItem[]    {
+    const getSearchResults = function({ hideSubtasks = false, searchScope = 'all' }: SearchOptions = {}): ChecklistItem[] {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
         if (!normalizedQuery) return [];
         return items.filter(item => {
             if (hideSubtasks && item.parentUuid) return false;
-            return item.text.toLocaleLowerCase().includes(normalizedQuery) && (!hideSubtasks || !item.parentUuid);
+            const matchesText = item.text ? item.text.toLocaleLowerCase().includes(normalizedQuery) : false;
+            const matchesNotes = item.note ? item.note.toLocaleLowerCase().includes(normalizedQuery) : false;
+
+            if (searchScope === 'text') return matchesText;
+            if (searchScope === 'notes') return matchesNotes;
+            return matchesText || matchesNotes;
         });
     };
 

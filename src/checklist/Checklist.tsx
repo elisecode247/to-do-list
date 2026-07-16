@@ -49,6 +49,7 @@ interface ChecklistProps {
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;
+    expandedNoteItemIds?: ReadonlySet<string>;
     sparkles?: ReactElement;
 }
 
@@ -63,6 +64,7 @@ const Checklist: FC<ChecklistProps> = ({
     clearFilters,
     onEditItem,
     onEditEvent,
+    expandedNoteItemIds,
     sparkles,
 }) => {
     const {
@@ -415,6 +417,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             partialUpdateItem={partialUpdateItem}
                                             getSubtasks={getSubtasks}
                                             recurrence={checklistItem.recurrence}
+                                            expandedNoteItemIds={expandedNoteItemIds}
                                         />
                                     );
 
