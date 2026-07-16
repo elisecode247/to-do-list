@@ -813,3 +813,239 @@ Do not mix cleaning products, and use a cleaner that is safe for the sink materi
 **Minimum version:** Mop the sticky spots or the area in front of the sink and stove.`
     ),
 ];
+
+const CLEAN_BEDROOM_ID = "8db540aa-e7b2-4382-91d3-9ab9c82185f4";
+
+function bedroomTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    numberOfRepetitions: number,
+    frequency: FrequencyType,
+    note: string,
+    parentUuid: string | null = CLEAN_BEDROOM_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
+    return {
+        ...task,
+        note,
+        mode: "occasional",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+        recurrence,
+    };
+}
+
+export const CLEAN_BEDROOM_TEMPLATE: ChecklistItem[] = [
+    bedroomTask(CLEAN_BEDROOM_ID, "Clean bedroom", 0, 1, FrequencyType.Weekly,
+        `**Good enough counts.** You do not have to complete every subtask in one session.
+
+Choose what would make the bedroom more restful or easier to use. Start with the quickest win and stop when you have done enough.
+
+You can **skip any task** to hide it from Today.`,
+        null
+    ),
+    bedroomTask("423426f0-d13f-4d95-8a69-7e150c4447f9", "Gather supplies", 0, 1, FrequencyType.Weekly,
+        `Gather only what you plan to use:
+
+* [ ] trash bag
+* [ ] basket for items from other rooms
+* [ ] laundry hamper
+* [ ] clean sheets or pillowcases
+* [ ] microfiber cloth or duster
+* [ ] material-safe cleaner
+* [ ] vacuum or broom
+* [ ] stable step stool, if needed
+* [ ] music, podcast, or other pleasant background sound
+
+**Minimum version:** Grab a trash bag and laundry hamper.`
+    ),
+    bedroomTask("931c6a0c-b9d2-47b6-b60c-944035b3e82b", "Remove trash and return dishes", 1, 1, FrequencyType.Weekly,
+        `Focus only on obvious trash and dishes:
+
+* [ ] Throw away wrappers, tissues, and empty containers
+* [ ] Check the nightstand, floor, and under the bed edge
+* [ ] Take cups and dishes to the kitchen
+* [ ] Tie the trash bag if it is full
+
+**Minimum version:** Fill your hands once and remove those items.`
+    ),
+    bedroomTask("220a1b3f-a1c1-4937-a035-ae4424e9db86", "Organize and declutter", 2, 1, FrequencyType.Weekly,
+        `Choose **one visible area** or work by item type:
+
+* [ ] Put dirty clothes in the hamper
+* [ ] Put clean clothes in one designated spot
+* [ ] Return books, products, and accessories to their homes
+* [ ] Put items from other rooms into one basket
+* [ ] Clear a safe path and one restful surface
+
+**Minimum version:** Put away five items or clear one bedside surface.
+
+The basket can wait. Returning everything to other rooms can be a separate task.`
+    ),
+    bedroomTask("7f7f962b-99b1-4ba0-8464-9d0360f3acec", "Do laundry", 3, 1, FrequencyType.Weekly,
+        `* [ ] Choose the load you need most
+* [ ] Put it in the washer
+* [ ] Add detergent and start the wash
+* [ ] Set a reminder to move it
+* [ ] Dry or hang the clothes
+* [ ] Put clean clothes where you can find them
+
+**Minimum version:** Start one load. Folding and putting away can be separate tasks.`
+    ),
+    bedroomTask("de03229f-a7b0-4342-ae94-e28830fe7686", "Change the bedsheets", 4, 2, FrequencyType.Weekly,
+        `Put the clean bedding within reach before stripping the bed:
+
+* [ ] Remove pillowcases and sheets
+* [ ] Put used bedding in the hamper
+* [ ] Check whether the mattress protector needs washing
+* [ ] Put on the fitted sheet
+* [ ] Add the top sheet or duvet
+* [ ] Put on clean pillowcases
+
+**Minimum version:** Change the pillowcases and the sheet you sleep directly on.
+
+The bed does not need to look perfect. Clean and usable is enough.`
+    ),
+    bedroomTask("16522612-5b5b-4d33-bc83-c7a10a39dc80", "Dust surfaces and vacuum the floor", 5, 1, FrequencyType.Weekly,
+        `Work from high surfaces to low ones:
+
+* [ ] Dust reachable corners, fixtures, and fan blades
+* [ ] Dust shelves, frames, and decor
+* [ ] Wipe nightstands and other flat surfaces
+* [ ] Vacuum the main floor and rug
+* [ ] Empty the vacuum bin if needed
+
+**Minimum version:** Dust one visible surface and vacuum the main walking path.
+
+> Turn off fans and lights before cleaning. Use a stable step stool and skip anything you cannot reach safely.`
+    ),
+    bedroomTask("10b54d58-11ea-4778-9773-e0ee065bf807", "Wipe furniture and door handles", 6, 1, FrequencyType.Monthly,
+        `Choose **one section of the room**:
+
+* [ ] Move loose items into one spot
+* [ ] Spray a material-safe cleaner onto a cloth
+* [ ] Wipe furniture tops, fronts, and handles
+* [ ] Wipe door and closet handles
+* [ ] Dry the surfaces and return needed items
+
+**Minimum version:** Wipe the most frequently touched handles and one surface.
+
+Test a new cleaner in a hidden spot first.`
+    ),
+    bedroomTask("d144a037-858d-4f94-966b-5b2f4c81ad0d", "Vacuum under the bed and furniture", 7, 1, FrequencyType.Monthly,
+        `Choose **one reachable area**:
+
+* [ ] Move only lightweight items that block access
+* [ ] Use a vacuum attachment or long-handled duster
+* [ ] Clean under the bed from each reachable side
+* [ ] Clean under one other piece of furniture
+* [ ] Return moved items
+
+**Minimum version:** Vacuum around the bed edges and as far underneath as the tool reaches.
+
+Do not move heavy furniture by yourself.`
+    ),
+    bedroomTask("4b2c492d-f6d7-46f7-8bb9-da2a2dc851cf", "Vacuum the mattress", 8, 3, FrequencyType.Monthly,
+        `* [ ] Remove the bedding
+* [ ] Check the mattress care instructions
+* [ ] Vacuum the top using an upholstery attachment
+* [ ] Vacuum seams and edges
+* [ ] Spot-clean only if the manufacturer allows it
+* [ ] Let the mattress dry before remaking the bed
+
+**Minimum version:** Vacuum the area where your upper body rests.
+
+Avoid soaking the mattress or applying unapproved powders or cleaners.`
+    ),
+    bedroomTask("e27bfcab-bc14-4699-a58a-49166f756c12", "Wash pillows and the mattress protector", 9, 6, FrequencyType.Monthly,
+        `Check every care label before washing:
+
+* [ ] Remove pillowcases and the mattress protector
+* [ ] Choose only items that can be washed together
+* [ ] Start the washer using the recommended settings
+* [ ] Set a reminder to move the load
+* [ ] Dry everything completely as directed
+* [ ] Return the protector and pillows to the bed
+
+**Minimum version:** Wash the mattress protector or one washable pillow.
+
+Foam and specialty pillows may require spot cleaning instead of machine washing.`
+    ),
+    bedroomTask("11737483-e84d-46de-a9bc-af8980ac58a1", "Rotate the mattress", 10, 6, FrequencyType.Monthly,
+        `First check whether the mattress manufacturer recommends rotation:
+
+* [ ] Remove bedding and nearby obstacles
+* [ ] Ask for help if the mattress is heavy or awkward
+* [ ] Rotate it so the head moves to the foot
+* [ ] Check that the mattress is centered and supported
+* [ ] Remake the bed
+
+**Minimum version:** Check the manufacturer's guidance and arrange help for another day.
+
+Do not flip a one-sided mattress or lift a heavy mattress alone.`
+    ),
+    bedroomTask("9621e533-45a5-41ab-a829-cf1ac45b33a0", "Straighten closets and drawers", 11, 2, FrequencyType.Monthly,
+        `Choose **one drawer, shelf, or clothing category**:
+
+* [ ] Remove obvious trash and empty packaging
+* [ ] Put dirty clothes in the hamper
+* [ ] Group similar items together
+* [ ] Put frequently used items within easy reach
+* [ ] Set aside anything that belongs elsewhere
+
+**Minimum version:** Make one drawer or shelf easier to use.
+
+You do not need to fold everything or create a perfect system.`
+    ),
+    bedroomTask("c1f7c6fa-3355-43f5-8148-855dcbb466af", "Deep-clean the closet", 12, 1, FrequencyType.Annually,
+        `Work on **one section at a time**:
+
+* [ ] Prepare bags for donations, trash, and items to relocate
+* [ ] Remove items from one shelf, rail section, or floor area
+* [ ] Decide what to keep, donate, repair, or discard
+* [ ] Dust or wipe the empty area
+* [ ] Vacuum or sweep the closet floor
+* [ ] Return the items you are keeping
+* [ ] Put donation bags near the door
+
+**Minimum version:** Fill one donation bag or deep-clean one shelf.
+
+Stop before emptying another section. A usable closet is the goal—not finishing it all at once.`
+    ),
+    bedroomTask("769345ad-1492-43bf-a1bb-7b75dbc542a4", "Clean the windows", 13, 2, FrequencyType.Monthly,
+        `Choose **one window** to start:
+
+* [ ] Move nearby items
+* [ ] Dust the sill and frame
+* [ ] Spray cleaner onto a cloth
+* [ ] Wipe the inside glass
+* [ ] Dry visible streaks
+* [ ] Wipe the sill
+
+**Minimum version:** Clean the most noticeable section of glass.
+
+Only clean exterior glass when it is safely reachable from the ground.`
+    ),
+    bedroomTask("30e426c2-8788-471a-885d-c8965523616a", "Clean curtains and blinds", 14, 1, FrequencyType.Annually,
+        `Choose **one window treatment** and check its care instructions:
+
+* [ ] Vacuum or dust curtains, blinds, and hardware
+* [ ] Spot-clean marks if the material allows
+* [ ] Launder or steam curtains only as directed
+* [ ] Wipe blind slats if the material allows
+* [ ] Let everything dry completely
+* [ ] Rehang or reset the window treatment
+
+**Minimum version:** Dust one set of blinds or vacuum one curtain panel.
+
+Wood, fabric, blackout, and specialty materials may require different cleaning methods.`
+    ),
+];

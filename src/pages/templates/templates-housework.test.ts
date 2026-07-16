@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
     CLEAN_BATHROOMS_TEMPLATE,
+    CLEAN_BEDROOM_TEMPLATE,
     CLEAN_KITCHEN_TEMPLATE,
     CLEAN_LIVING_ROOM_TEMPLATE,
     DAILY_CLEANING_TEMPLATE,
@@ -11,6 +12,7 @@ const HOUSEWORK_TEMPLATES = [
     ["clean bathrooms", CLEAN_BATHROOMS_TEMPLATE],
     ["clean living room", CLEAN_LIVING_ROOM_TEMPLATE],
     ["clean kitchen", CLEAN_KITCHEN_TEMPLATE],
+    ["clean bedroom", CLEAN_BEDROOM_TEMPLATE],
 ] as const;
 
 describe("housework templates", () => {
@@ -62,6 +64,14 @@ describe("housework templates", () => {
     it("gives every clean kitchen subtask its own note", () => {
         const parent = CLEAN_KITCHEN_TEMPLATE.find(item => item.parentUuid === null);
         const subtasks = CLEAN_KITCHEN_TEMPLATE.filter(item => item.parentUuid !== null);
+
+        expect(parent?.note).not.toBe("");
+        expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
+    });
+
+    it("gives every clean bedroom subtask its own note", () => {
+        const parent = CLEAN_BEDROOM_TEMPLATE.find(item => item.parentUuid === null);
+        const subtasks = CLEAN_BEDROOM_TEMPLATE.filter(item => item.parentUuid !== null);
 
         expect(parent?.note).not.toBe("");
         expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
