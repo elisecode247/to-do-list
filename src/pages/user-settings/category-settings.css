@@ -11,18 +11,31 @@
     flex-wrap: wrap;
     gap: var(--spacing-xs);
     width: 100%;
-    max-width: 1012px;
+    container: category-settings / inline-size;
 }
 
 .category-settings-card {
     display: grid;
-    min-width: 285px;
-    width: fit-content;
+    flex: 1 1 100%;
+    min-width: min(285px, 100%);
+    width: 100%;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     background: color-mix(in srgb, var(--color-background) 88%, var(--color-surface) 12%);
+}
+
+@container category-settings (min-width: 586px) {
+    .category-settings-card {
+        flex-basis: calc(50% - var(--spacing-xs));
+    }
+}
+
+@container category-settings (min-width: 879px) {
+    .category-settings-card {
+        flex-basis: calc(33.333% - var(--spacing-xs));
+    }
 }
 
 .category-settings-card__header {
