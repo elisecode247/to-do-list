@@ -50,6 +50,7 @@ interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;
     expandedNoteItemIds?: ReadonlySet<string>;
+    itemLookup?: ReadonlyMap<string, ChecklistItem>;
     sparkles?: ReactElement;
 }
 
@@ -65,6 +66,7 @@ const Checklist: FC<ChecklistProps> = ({
     onEditItem,
     onEditEvent,
     expandedNoteItemIds,
+    itemLookup,
     sparkles,
 }) => {
     const {
@@ -393,6 +395,8 @@ const Checklist: FC<ChecklistProps> = ({
                                             activeTab={activeTab}
                                             hasSubChores={checklistItem.hasSubChores}
                                             isSubChore={!!checklistItem.parentUuid}
+                                            parentUuid={checklistItem.parentUuid}
+                                            isArchived={checklistItem.isArchived}
                                             isPriority={checklistItem.isPriority}
                                             checked={checklistItem.done}
                                             key={checklistItem.id}
@@ -418,6 +422,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             getSubtasks={getSubtasks}
                                             recurrence={checklistItem.recurrence}
                                             expandedNoteItemIds={expandedNoteItemIds}
+                                            itemLookup={itemLookup}
                                         />
                                     );
 

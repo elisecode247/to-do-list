@@ -70,7 +70,8 @@
     gap: var(--spacing-xs);
 }
 
-.hide-subtasks-checkbox {
+.hide-subtasks-checkbox,
+.hide-archived-checkbox {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
@@ -88,7 +89,8 @@
         box-shadow 0.15s ease, color 0.15s ease;
 }
 
-.hide-subtasks-checkbox svg {
+.hide-subtasks-checkbox svg,
+.hide-archived-checkbox svg {
     width: 12px;
     height: 12px;
     stroke: currentColor;
@@ -97,22 +99,26 @@
     transition: opacity 0.12s ease, transform 0.12s ease;
 }
 
-.hide-subtasks-checkbox--checked {
+.hide-subtasks-checkbox--checked,
+.hide-archived-checkbox--checked {
     color: contrast-color(var(--color-accent-bg));
     border-color: var(--color-accent-border);
     background: var(--color-accent-bg);
 }
 
-.hide-subtasks-checkbox--checked svg {
+.hide-subtasks-checkbox--checked svg,
+.hide-archived-checkbox--checked svg {
     opacity: 1;
     transform: scale(1);
 }
 
-.hide-subtasks-checkbox:hover {
+.hide-subtasks-checkbox:hover,
+.hide-archived-checkbox:hover {
     border-color: var(--color-accent-border);
 }
 
-.hide-subtasks-checkbox:focus-visible {
+.hide-subtasks-checkbox:focus-visible,
+.hide-archived-checkbox:focus-visible {
     outline: 2px solid var(--color-accent-border);
     outline-offset: 2px;
 }

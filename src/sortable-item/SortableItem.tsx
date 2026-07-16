@@ -25,7 +25,8 @@ import {
     Star,
     ListChevronsDownUp,
     ListChevronsUpDown,
-    RefreshCw
+    RefreshCw,
+    ChevronRight
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
@@ -46,6 +47,8 @@ interface SortableItemProps {
     activeTab: string;
     hasSubChores?: boolean;
     isSubChore?: boolean;
+    parentUuid?: string | null;
+    isArchived?: boolean;
     isHidden: boolean;
     isHideCompleted: boolean;
     checked: boolean;
@@ -70,6 +73,7 @@ interface SortableItemProps {
     isUpcomingSubtask?: boolean;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     expandedNoteItemIds?: ReadonlySet<string>;
+    itemLookup?: ReadonlyMap<string, ChecklistItem>;
 }
 
 export const SortableItem: FC<SortableItemProps> = ({
@@ -78,6 +82,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     activeTab,
     hasSubChores = false,
     isSubChore = false,
+    parentUuid,
+    isArchived = false,
     isHidden,
     isHideCompleted,
     checked,
@@ -102,6 +108,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     getSubtasks = () => [],
     recurrence,
     expandedNoteItemIds,
+    itemLookup,
 }) => {
     const { showToast } = useToast();
     const { categories } = useUserSettings();
@@ -156,6 +163,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const lastCompletedDate = getDaysAgo(new Date(lastCompleted));
     const nextDueDate = nextDue ? getDaysFromNow(new Date(nextDue)) : null;
     const categoryDefinition = getCategoryById(categories, category);
+    const parentTask = parentUuid ? itemLookup?.get(parentUuid) : undefined;
 
     const filteredTasks = subtasks?.filter((t) => {
         if (t.isHidden || t.isArchived) return false;
@@ -322,9 +330,29 @@ export const SortableItem: FC<SortableItemProps> = ({
                         />
 
                         <div className="sortable-item_text-container">
+                            {checklistType === 'search-results' && (
+                                <div
+                                    className="sortable-item_parent-breadcrumb"
+                                    aria-label={`Parent task: ${parentTask?.text ?? 'Unknown task'}`}
+                                >
+                                    <span className="sortable-item_parent-label">Parent</span>
+                                    <ChevronRight size={12} aria-hidden="true" />
+                                    <span className="sortable-item_parent-name">
+                                        {parentTask?.text ?? 'Unknown task'}
+                                    </span>
+                                    {(parentTask?.isArchived || isArchived) && (
+                                        <span className="sortable-item_parent-status">Archived</span>
+                                    )}
+                                    {(parentTask?.isHidden || isHidden) && (
+                                        <span className="sortable-item_parent-status">Not today</span>
+                                    )}
+                                </div>
+                            )}
                             <div className="sortable-item_text">
                                 <h2 className="sortable-item_text-heading">
-                                    {isSubChore && <span className="sortable-item_subtask-indicator">Subtask: </span>}
+                                    {isSubChore && checklistType !== 'search-results' && (
+                                        <span className="sortable-item_subtask-indicator">Subtask: </span>
+                                    )}
                                     {categoryDefinition ? (
                                         <span
                                             className="sortable-item_category-icon"
@@ -607,6 +635,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 id={subtask.id}
                                                 activeTab={activeTab}
                                                 hasSubChores={subtask.hasSubChores}
+                                                parentUuid={subtask.parentUuid}
+                                                isArchived={subtask.isArchived}
                                                 isHidden={subtask.isHidden}
                                                 isHideCompleted={isHideCompleted}
                                                 checked={subtask.done}
@@ -630,6 +660,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 getSubtasks={getSubtasks}
                                                 recurrence={subtask.recurrence}
                                                 expandedNoteItemIds={expandedNoteItemIds}
+                                                itemLookup={itemLookup}
                                             />
                                         ))}
                                     </motion.div>
@@ -667,8 +698,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             checklistType={checklistType}
                                                             key={subtask.id}
                                                             id={subtask.id}
+                                                            isArchived={subtask.isArchived}
                                                             activeTab={activeTab}
                                                             hasSubChores={subtask.hasSubChores}
+                                                            parentUuid={subtask.parentUuid}
                                                             isHidden={subtask.isHidden}
                                                             isHideCompleted={isHideCompleted}
                                                             checked={subtask.done}
@@ -693,6 +726,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             getSubtasks={getSubtasks}
                                                             recurrence={subtask.recurrence}
                                                             expandedNoteItemIds={expandedNoteItemIds}
+                                                            itemLookup={itemLookup}
                                                         />
                                                     ))}
                                                 </motion.div>

@@ -16,6 +16,7 @@ interface SearchProps {
 
 const Search = ({ onEditItem, sparkles }: SearchProps) => {
     const [hideSubtasks, setHideSubtasks] = useState(false);
+    const [hideArchived, setHideArchived] = useState(false);
     const [searchScope, setSearchScope] = useState<SearchScope>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const { items } = useTask();
@@ -28,6 +29,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
 
         return items.filter(item => {
             if (hideSubtasks && item.parentUuid) return false;
+            if (hideArchived && item.isArchived) return false;
 
             const matchesText = item.text?.toLocaleLowerCase().includes(normalizedQueryLowerCase) ?? false;
 
@@ -38,7 +40,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
             if (searchScope === 'notes') return matchesNotes;
             return matchesText || matchesNotes;
         });
-    }, [hideSubtasks, items, normalizedQueryLowerCase, searchScope]);
+    }, [hideSubtasks, hideArchived, items, normalizedQueryLowerCase, searchScope]);
     const expandedNoteItemIds = useMemo(() => new Set(
         searchResults
             .filter(item => searchScope !== 'text' &&
@@ -46,6 +48,10 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                 item.note.toLocaleLowerCase().includes(normalizedQueryLowerCase))
             .map(item => item.id)
     ), [normalizedQueryLowerCase, searchResults, searchScope]);
+    const itemLookup = useMemo(
+        () => new Map(items.map(item => [item.id, item])),
+        [items]
+    );
     const clearFilters = useCallback(() => undefined, []);
 
     useEffect(() => {
@@ -105,6 +111,18 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                     </Checkbox>
                     <Label className="search-filter-label">Hide subtasks</Label>
                 </Field>
+                <Field className="search-filter-field">
+                    <Checkbox
+                        checked={hideArchived}
+                        onChange={setHideArchived}
+                        className={`hide-archived-checkbox ${hideArchived ? 'hide-archived-checkbox--checked' : ''}`}
+                    >
+                        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" className="checkbox-icon">
+                            <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </Checkbox>
+                    <Label className="search-filter-label">Hide archived</Label>
+                </Field>
             </div>
             <div className="search-input-wrapper">
                 <SearchIcon className="search-input-icon" size={18} aria-hidden="true" />
@@ -161,6 +179,7 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                         clearFilters={clearFilters}
                         onEditItem={onEditItem}
                         expandedNoteItemIds={expandedNoteItemIds}
+                        itemLookup={itemLookup}
                         sparkles={sparkles}
                         enablePullToRefresh={false}
                     />

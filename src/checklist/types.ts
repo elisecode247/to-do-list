@@ -16,6 +16,7 @@ export interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;
     expandedNoteItemIds?: ReadonlySet<string>;
+    itemLookup?: ReadonlyMap<string, ChecklistItem>;
     sparkles?: ReactElement;
     enablePullToRefresh?: boolean;
 }

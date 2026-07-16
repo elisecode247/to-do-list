@@ -169,6 +169,39 @@
     font-weight: 400;
 }
 
+.sortable-item_parent-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    color: inherit;
+    font-size: 11px;
+    line-height: 1.2;
+    opacity: 0.68;
+}
+
+.sortable-item_parent-label {
+    flex-shrink: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.sortable-item_parent-name {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sortable-item_parent-status {
+    flex-shrink: 0;
+    padding: 1px 5px;
+    border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+    border-radius: var(--radius-rounded);
+    font-size: 10px;
+}
+
 .sortable-item_metadata-text {
     display: inline-flex;
     align-items: center;
