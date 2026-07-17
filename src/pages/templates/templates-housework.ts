@@ -914,20 +914,29 @@ The basket can wait. Returning everything to other rooms can be a separate task.
 
 The bed does not need to look perfect. Clean and usable is enough.`
     ),
-    bedroomTask("16522612-5b5b-4d33-bc83-c7a10a39dc80", "Dust surfaces and vacuum the floor", 5, 1, FrequencyType.Weekly,
+    bedroomTask("16522612-5b5b-4d33-bc83-c7a10a39dc80", "Dust", 5, 1, FrequencyType.Weekly,
         `Work from high surfaces to low ones:
 
 * [ ] Dust reachable corners, fixtures, and fan blades
 * [ ] Dust shelves, frames, and decor
 * [ ] Wipe nightstands and other flat surfaces
-* [ ] Vacuum the main floor and rug
-* [ ] Empty the vacuum bin if needed
 
-**Minimum version:** Dust one visible surface and vacuum the main walking path.
+**Minimum version:** Dust one visible surface.
 
 > Turn off fans and lights before cleaning. Use a stable step stool and skip anything you cannot reach safely.`
     ),
-    bedroomTask("10b54d58-11ea-4778-9773-e0ee065bf807", "Wipe furniture and door handles", 6, 1, FrequencyType.Monthly,
+    bedroomTask("b304b68f-a376-44b0-9364-bb491c408812", "Vacuum", 6, 1, FrequencyType.Weekly,
+        `* [ ] Pick up only the items blocking the floor
+* [ ] Vacuum the main walking path
+* [ ] Vacuum rugs and visible floor areas
+* [ ] Use an edge tool where dust collects, if you have capacity
+* [ ] Empty the vacuum bin if needed
+
+**Minimum version:** Vacuum the main walking path or the messiest section.
+
+You do not need to move furniture or reach every corner.`
+    ),
+    bedroomTask("10b54d58-11ea-4778-9773-e0ee065bf807", "Wipe furniture and door handles", 7, 1, FrequencyType.Monthly,
         `Choose **one section of the room**:
 
 * [ ] Move loose items into one spot
@@ -940,7 +949,7 @@ The bed does not need to look perfect. Clean and usable is enough.`
 
 Test a new cleaner in a hidden spot first.`
     ),
-    bedroomTask("d144a037-858d-4f94-966b-5b2f4c81ad0d", "Vacuum under the bed and furniture", 7, 1, FrequencyType.Monthly,
+    bedroomTask("d144a037-858d-4f94-966b-5b2f4c81ad0d", "Vacuum under the bed and furniture", 8, 1, FrequencyType.Monthly,
         `Choose **one reachable area**:
 
 * [ ] Move only lightweight items that block access
@@ -953,7 +962,7 @@ Test a new cleaner in a hidden spot first.`
 
 Do not move heavy furniture by yourself.`
     ),
-    bedroomTask("4b2c492d-f6d7-46f7-8bb9-da2a2dc851cf", "Vacuum the mattress", 8, 3, FrequencyType.Monthly,
+    bedroomTask("4b2c492d-f6d7-46f7-8bb9-da2a2dc851cf", "Vacuum the mattress", 9, 3, FrequencyType.Monthly,
         `* [ ] Remove the bedding
 * [ ] Check the mattress care instructions
 * [ ] Vacuum the top using an upholstery attachment
@@ -965,7 +974,7 @@ Do not move heavy furniture by yourself.`
 
 Avoid soaking the mattress or applying unapproved powders or cleaners.`
     ),
-    bedroomTask("e27bfcab-bc14-4699-a58a-49166f756c12", "Wash pillows and the mattress protector", 9, 6, FrequencyType.Monthly,
+    bedroomTask("e27bfcab-bc14-4699-a58a-49166f756c12", "Wash pillows and the mattress protector", 10, 6, FrequencyType.Monthly,
         `Check every care label before washing:
 
 * [ ] Remove pillowcases and the mattress protector
@@ -979,7 +988,7 @@ Avoid soaking the mattress or applying unapproved powders or cleaners.`
 
 Foam and specialty pillows may require spot cleaning instead of machine washing.`
     ),
-    bedroomTask("11737483-e84d-46de-a9bc-af8980ac58a1", "Rotate the mattress", 10, 6, FrequencyType.Monthly,
+    bedroomTask("11737483-e84d-46de-a9bc-af8980ac58a1", "Rotate the mattress", 11, 6, FrequencyType.Monthly,
         `First check whether the mattress manufacturer recommends rotation:
 
 * [ ] Remove bedding and nearby obstacles
@@ -992,7 +1001,7 @@ Foam and specialty pillows may require spot cleaning instead of machine washing.
 
 Do not flip a one-sided mattress or lift a heavy mattress alone.`
     ),
-    bedroomTask("9621e533-45a5-41ab-a829-cf1ac45b33a0", "Straighten closets and drawers", 11, 2, FrequencyType.Monthly,
+    bedroomTask("9621e533-45a5-41ab-a829-cf1ac45b33a0", "Straighten closets and drawers", 12, 2, FrequencyType.Monthly,
         `Choose **one drawer, shelf, or clothing category**:
 
 * [ ] Remove obvious trash and empty packaging
@@ -1005,7 +1014,7 @@ Do not flip a one-sided mattress or lift a heavy mattress alone.`
 
 You do not need to fold everything or create a perfect system.`
     ),
-    bedroomTask("c1f7c6fa-3355-43f5-8148-855dcbb466af", "Deep-clean the closet", 12, 1, FrequencyType.Annually,
+    bedroomTask("c1f7c6fa-3355-43f5-8148-855dcbb466af", "Deep-clean the closet", 13, 1, FrequencyType.Annually,
         `Work on **one section at a time**:
 
 * [ ] Prepare bags for donations, trash, and items to relocate
@@ -1020,7 +1029,7 @@ You do not need to fold everything or create a perfect system.`
 
 Stop before emptying another section. A usable closet is the goal—not finishing it all at once.`
     ),
-    bedroomTask("769345ad-1492-43bf-a1bb-7b75dbc542a4", "Clean the windows", 13, 2, FrequencyType.Monthly,
+    bedroomTask("769345ad-1492-43bf-a1bb-7b75dbc542a4", "Clean the windows", 14, 2, FrequencyType.Monthly,
         `Choose **one window** to start:
 
 * [ ] Move nearby items
@@ -1034,7 +1043,7 @@ Stop before emptying another section. A usable closet is the goal—not finishin
 
 Only clean exterior glass when it is safely reachable from the ground.`
     ),
-    bedroomTask("30e426c2-8788-471a-885d-c8965523616a", "Clean curtains and blinds", 14, 1, FrequencyType.Annually,
+    bedroomTask("30e426c2-8788-471a-885d-c8965523616a", "Clean curtains and blinds", 15, 1, FrequencyType.Annually,
         `Choose **one window treatment** and check its care instructions:
 
 * [ ] Vacuum or dust curtains, blinds, and hardware
