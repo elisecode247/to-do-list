@@ -12,6 +12,7 @@ import { useUserSettings } from "src/user-settings/use-user-settings";
 import {
     CLEAN_BATHROOMS_TEMPLATE,
     CLEAN_BEDROOM_TEMPLATE,
+    CLEAN_HALLS_AND_STAIRS_TEMPLATE,
     CLEAN_KITCHEN_TEMPLATE,
     CLEAN_LIVING_ROOM_TEMPLATE,
     DAILY_CLEANING_TEMPLATE,
@@ -38,6 +39,7 @@ const TASK_TEMPLATES: TaskTemplate[] = [
     { id: "clean-living-room", title: "Clean living room", description: "A flexible living-room reset with weekly and seasonal cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_LIVING_ROOM_TEMPLATE },
     { id: "clean-kitchen", title: "Clean kitchen", description: "A flexible kitchen reset with weekly upkeep and periodic deep-cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_KITCHEN_TEMPLATE },
     { id: "clean-bedroom", title: "Clean bedroom", description: "A flexible bedroom reset with weekly upkeep and periodic deep-cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_BEDROOM_TEMPLATE },
+    { id: "clean-halls-and-stairs", title: "Clean halls and stairs", description: "A safety-first reset for halls, stairs, storage, and high-touch surfaces.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_HALLS_AND_STAIRS_TEMPLATE },
     { id: "morning-reset", title: "Morning reset", description: "A gentle checklist to start the day with less friction.", categoryKey: "self-care", mode: "daily", subtasks: ["Drink water", "Take medication or vitamins", "Get dressed", "Check calendar", "Pick top 3 tasks"] },
     { id: "pet-care-reset", title: "Pet care reset", description: "Food, water, walk, cleanup, and small pet-care checks.", categoryKey: "pets", mode: "daily", subtasks: ["Refresh water bowl", "Feed pets", "Quick walk or playtime", "Check poop bags", "Clean food area"] },
 ];

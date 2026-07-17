@@ -1058,3 +1058,200 @@ Only clean exterior glass when it is safely reachable from the ground.`
 Wood, fabric, blackout, and specialty materials may require different cleaning methods.`
     ),
 ];
+
+const CLEAN_HALLS_AND_STAIRS_ID = "9bf978f6-9943-424b-afeb-ac4032ded4d3";
+
+function hallsAndStairsTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    numberOfRepetitions: number,
+    frequency: FrequencyType,
+    note: string,
+    parentUuid: string | null = CLEAN_HALLS_AND_STAIRS_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
+    return {
+        ...task,
+        note,
+        mode: "occasional",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+        recurrence,
+    };
+}
+
+export const CLEAN_HALLS_AND_STAIRS_TEMPLATE: ChecklistItem[] = [
+    hallsAndStairsTask(CLEAN_HALLS_AND_STAIRS_ID, "Clean halls and stairs", 0, 1, FrequencyType.Weekly,
+        `**Good enough counts.** You do not have to complete every subtask in one session.
+
+Clear anything that could cause a trip first. Then choose what would make the space safer or easier to use, and stop when you have done enough.
+
+You can **skip any task** to hide it from Today.`,
+        null
+    ),
+    hallsAndStairsTask("f495021b-bc92-4f87-b27f-f87db8dc1903", "Gather supplies", 0, 1, FrequencyType.Weekly,
+        `Gather only what you plan to use:
+
+* [ ] basket for items from other rooms
+* [ ] trash bag
+* [ ] microfiber cloth or duster
+* [ ] material-safe cleaner
+* [ ] broom or vacuum with attachments
+* [ ] floor-safe cleaner and mop, if needed
+* [ ] stable step stool for level floors only
+* [ ] music, podcast, or other pleasant background sound
+
+**Minimum version:** Grab a basket, trash bag, and cleaning cloth.
+
+Keep supplies together on a level landing—never on the stairs.`
+    ),
+    hallsAndStairsTask("d8ad45c8-e8ae-41bb-8308-5bedddfc00e2", "Clear trip hazards", 1, 1, FrequencyType.Weekly,
+        `Walk through the area before cleaning:
+
+* [ ] Remove items from the stairs
+* [ ] Clear the main walking path
+* [ ] Secure or move loose cords
+* [ ] Check for loose rugs or mats
+* [ ] Move shoes and bags away from landings
+
+**Minimum version:** Clear the stairs and one safe walking path.
+
+If a tread, railing, rug, or light is unsafe, make a separate repair task.`
+    ),
+    hallsAndStairsTask("3e17caa2-9883-4557-bb40-9116d52029d4", "Remove trash and return misplaced items", 2, 1, FrequencyType.Weekly,
+        `Work by item type:
+
+* [ ] Throw away obvious trash
+* [ ] Put laundry in the hamper
+* [ ] Put items from other rooms into one basket
+* [ ] Return hallway items to their homes
+* [ ] Leave the basket near its next destination
+
+**Minimum version:** Remove five items or clear one stair.
+
+The basket can wait. Returning everything at once is not required.`
+    ),
+    hallsAndStairsTask("cc2dbed9-a59a-41bb-893d-ab1e81d5da9e", "Straighten drawers, desks, and shelves", 3, 1, FrequencyType.Weekly,
+        `Choose **one drawer, desk, shelf, or console table**:
+
+* [ ] Remove obvious trash
+* [ ] Group similar items together
+* [ ] Put frequently used items within easy reach
+* [ ] Place items from elsewhere into the return basket
+* [ ] Clear one usable surface
+
+**Minimum version:** Make one small area easier to use.
+
+You do not need to empty a drawer or create a perfect organization system.`
+    ),
+    hallsAndStairsTask("7d6ee55e-fb7b-4df7-a540-b902df650151", "Straighten and declutter closets", 4, 1, FrequencyType.Annually,
+        `Work on **one closet section at a time**:
+
+* [ ] Prepare bags for donations, trash, and items to relocate
+* [ ] Remove items from one shelf, hook area, or floor section
+* [ ] Decide what to keep, donate, repair, or discard
+* [ ] Wipe the empty area
+* [ ] Return the items you are keeping
+* [ ] Put donation bags near the door
+
+**Minimum version:** Fill one donation bag or straighten one shelf.
+
+Stop before emptying another section. A usable closet is the goal.`
+    ),
+    hallsAndStairsTask("dd87d9ed-1c6c-4691-abca-9ab95d780a2a", "Dust ceiling fans and light fixtures", 5, 1, FrequencyType.Annually,
+        `Clean high areas before lower surfaces and floors:
+
+* [ ] Turn off fans and lights
+* [ ] Let bulbs cool completely
+* [ ] Dust reachable fan blades
+* [ ] Dust shades, covers, and fixture exteriors
+* [ ] Wipe removable parts only if the manufacturer allows it
+* [ ] Put parts back when completely dry
+
+**Minimum version:** Dust one safely reachable fixture.
+
+> Use a stable step stool only on a level floor. Never place it on stairs, and skip fixtures you cannot reach safely.`
+    ),
+    hallsAndStairsTask("1528fa7f-91c9-4385-8d40-e78701c55c1c", "Dust", 6, 1, FrequencyType.Weekly,
+        `Work from high surfaces to low ones:
+
+* [ ] Dust picture frames and wall decor
+* [ ] Dust shelves, ledges, and furniture
+* [ ] Dust the top and sides of the handrail
+* [ ] Dust stair edges and reachable corners
+
+**Minimum version:** Dust the most visible ledge or surface.
+
+Leave fallen dust for the vacuuming task.`
+    ),
+    hallsAndStairsTask("bc6b88e9-8c8a-48b5-9610-3bd30930ef09", "Wipe handrails, doorknobs, and light switches", 7, 1, FrequencyType.Weekly,
+        `* [ ] Spray a material-safe cleaner onto a cloth
+* [ ] Wipe handrails and banisters
+* [ ] Wipe doorknobs and handles
+* [ ] Carefully wipe light switches
+* [ ] Dry the handrail before using the stairs
+
+**Minimum version:** Wipe the handrail and the most-used doorknob.
+
+Do not spray liquid directly onto switches or electrical fixtures.`
+    ),
+    hallsAndStairsTask("35e964b3-9ad7-4c6d-93c4-f1229b2d9a91", "Spot-clean walls, doors, and trim", 8, 1, FrequencyType.Monthly,
+        `Choose **one marked or scuffed area**:
+
+* [ ] Dust the area first
+* [ ] Test a material-safe cleaner in a hidden spot
+* [ ] Wipe fingerprints and scuffs gently
+* [ ] Wipe door edges and trim if needed
+* [ ] Dry the surface
+
+**Minimum version:** Clean the most noticeable mark.
+
+Avoid hard scrubbing that could remove paint or damage the finish.`
+    ),
+    hallsAndStairsTask("c6d672b1-bd1b-427e-b5d4-2987b8ea39b5", "Clean baseboards", 9, 3, FrequencyType.Monthly,
+        `Choose **one hallway or one flight of stairs**:
+
+* [ ] Vacuum or dust loose debris
+* [ ] Wipe the top edge
+* [ ] Wipe visible marks on the front
+* [ ] Dry the surface
+
+**Minimum version:** Clean one short section or the most visible baseboard.
+
+Sitting on the floor is fine. Reposition instead of stretching or leaning across stairs.`
+    ),
+    hallsAndStairsTask("2bad939a-1e0a-4e09-8d86-056b043eeb29", "Vacuum", 10, 1, FrequencyType.Weekly,
+        `Keep one hand available for balance on stairs:
+
+* [ ] Pick up only the items blocking the floor
+* [ ] Vacuum hallway walking paths
+* [ ] Use an appropriate attachment on stair treads and edges
+* [ ] Keep the cord and vacuum behind you, away from your feet
+* [ ] Empty the vacuum bin if needed
+
+**Minimum version:** Vacuum the main hallway path or one flight of stairs.
+
+Do not balance a heavy vacuum on the stairs. Use a handheld tool or ask for help if needed.`
+    ),
+    hallsAndStairsTask("532e8767-c70f-4ac6-b833-30dc99c6d14c", "Mop hard-surface floors and stairs", 11, 1, FrequencyType.Weekly,
+        `* [ ] Sweep or vacuum loose debris first
+* [ ] Prepare a floor-safe cleaner
+* [ ] Spot-clean sticky areas
+* [ ] Mop the hallway toward an exit
+* [ ] Clean stair treads one at a time without blocking your safe path
+* [ ] Keep people and pets away until the floor is dry
+* [ ] Put the supplies away
+
+**Minimum version:** Mop the sticky spots or one small landing.
+
+Skip carpeted areas. Avoid leaving an entire staircase wet at the same time.`
+    ),
+];
