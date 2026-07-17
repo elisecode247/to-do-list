@@ -5,6 +5,7 @@ import {
     CLEAN_HALLS_AND_STAIRS_TEMPLATE,
     CLEAN_KITCHEN_TEMPLATE,
     CLEAN_LIVING_ROOM_TEMPLATE,
+    CLEAN_OUTSIDE_TEMPLATE,
     DAILY_CLEANING_TEMPLATE,
 } from "./templates-housework";
 
@@ -15,6 +16,7 @@ const HOUSEWORK_TEMPLATES = [
     ["clean kitchen", CLEAN_KITCHEN_TEMPLATE],
     ["clean bedroom", CLEAN_BEDROOM_TEMPLATE],
     ["clean halls and stairs", CLEAN_HALLS_AND_STAIRS_TEMPLATE],
+    ["clean outside", CLEAN_OUTSIDE_TEMPLATE],
 ] as const;
 
 describe("housework templates", () => {
@@ -82,6 +84,14 @@ describe("housework templates", () => {
     it("gives every clean halls and stairs subtask its own note", () => {
         const parent = CLEAN_HALLS_AND_STAIRS_TEMPLATE.find(item => item.parentUuid === null);
         const subtasks = CLEAN_HALLS_AND_STAIRS_TEMPLATE.filter(item => item.parentUuid !== null);
+
+        expect(parent?.note).not.toBe("");
+        expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);
+    });
+
+    it("gives every clean outside subtask its own note", () => {
+        const parent = CLEAN_OUTSIDE_TEMPLATE.find(item => item.parentUuid === null);
+        const subtasks = CLEAN_OUTSIDE_TEMPLATE.filter(item => item.parentUuid !== null);
 
         expect(parent?.note).not.toBe("");
         expect(subtasks.every(item => item.note !== "" && item.note !== parent?.note)).toBe(true);

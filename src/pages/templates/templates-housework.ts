@@ -1255,3 +1255,238 @@ Do not balance a heavy vacuum on the stairs. Use a handheld tool or ask for help
 Skip carpeted areas. Avoid leaving an entire staircase wet at the same time.`
     ),
 ];
+
+const CLEAN_OUTSIDE_ID = "07ecb1e7-87f3-47d8-a274-3febdb1ac390";
+
+function outsideTask(
+    id: string,
+    text: string,
+    sortOrder: number,
+    numberOfRepetitions: number,
+    frequency: FrequencyType,
+    note: string,
+    parentUuid: string | null = CLEAN_OUTSIDE_ID,
+): ChecklistItem {
+    const task = templateTaskDefaults(id, text, sortOrder, parentUuid);
+    const recurrence = {
+        type: INTERVAL_RECURRENCE,
+        numberOfRepetitions,
+        frequency,
+        startDate: "",
+    } as const;
+
+    return {
+        ...task,
+        note,
+        mode: "occasional",
+        tabSortOrder: { today: 0 },
+        hasSubChores: parentUuid === null,
+        recurrence,
+    };
+}
+
+export const CLEAN_OUTSIDE_TEMPLATE: ChecklistItem[] = [
+    outsideTask(CLEAN_OUTSIDE_ID, "Clean outside", 0, 1, FrequencyType.Weekly,
+        `**Good enough counts.** You do not have to complete every subtask in one session.
+
+Check the weather, choose one area that would make the property safer or easier to use, and stop when you have done enough.
+
+You can **skip any task** to hide it from Today.`,
+        null
+    ),
+    outsideTask("9dc48d97-dd6b-42aa-a7ab-8cb9328c7fcd", "Gather outdoor supplies", 0, 1, FrequencyType.Weekly,
+        `Gather only what you plan to use:
+
+* [ ] work gloves
+* [ ] trash and yard-waste bags
+* [ ] basket for items that belong elsewhere
+* [ ] broom, rake, or leaf blower
+* [ ] garden tools
+* [ ] sun protection and drinking water
+* [ ] closed-toe shoes
+* [ ] music, podcast, or other pleasant background sound
+
+**Minimum version:** Put on safe shoes and grab gloves and a trash bag.
+
+Check the weather before starting. Skip outdoor work during unsafe heat, storms, smoke, or poor air quality.`
+    ),
+    outsideTask("711cb9b3-c52b-4861-9003-b13f55bd74e7", "Check walkways, steps, and railings for hazards", 1, 1, FrequencyType.Monthly,
+        `Walk the areas people use most:
+
+* [ ] Check for loose steps, boards, pavers, or railings
+* [ ] Look for slippery growth, standing water, or ice
+* [ ] Move cords, hoses, and objects out of walking paths
+* [ ] Check that gates and outdoor lights work
+* [ ] Create a separate repair task for anything unsafe
+
+**Minimum version:** Check the main entrance and its walking path.
+
+Block access to anything dangerous until it can be repaired.`
+    ),
+    outsideTask("f4f3354a-6e58-41ef-bd40-ea4076dd5e79", "Pick up trash, branches, and debris", 2, 1, FrequencyType.Weekly,
+        `Choose **one outdoor area**:
+
+* [ ] Pick up obvious trash
+* [ ] Collect fallen branches and loose debris
+* [ ] Put misplaced items into one basket
+* [ ] Sort trash, recycling, and yard waste
+* [ ] Move full bags to the appropriate bins
+
+**Minimum version:** Fill your hands once or clear the main entrance.
+
+Wear gloves and do not handle sharp, hazardous, or unknown items with bare hands.`
+    ),
+    outsideTask("1c412e45-9fad-49d2-af7f-12099e5b3984", "Sweep the porch, patio, and driveway", 3, 3, FrequencyType.Weekly,
+        `Choose **one surface**—you do not need to sweep all three:
+
+* [ ] Move only lightweight items that block the area
+* [ ] Sweep debris away from the house and doors
+* [ ] Focus on walking paths, corners, and steps
+* [ ] Collect debris instead of sweeping it into the street or drains
+* [ ] Return moved items
+
+**Minimum version:** Sweep the main entrance or the messiest section.
+
+Stay aware of vehicles when working near the driveway or street.`
+    ),
+    outsideTask("e700bbf3-b8fd-4c33-bc1d-12841c80d23d", "Mow the lawn", 4, 2, FrequencyType.Weekly,
+        `* [ ] Check the weather and lawn conditions
+* [ ] Clear rocks, toys, branches, and pet waste
+* [ ] Check the mower according to its manual
+* [ ] Wear closed-toe shoes, eye protection, and hearing protection if needed
+* [ ] Mow one section at a time
+* [ ] Put the mower away safely
+
+**Minimum version:** Mow the most visible or frequently used section.
+
+> Keep people and pets away. Turn the mower off completely before clearing a blockage, adjusting it, or crossing gravel.`
+    ),
+    outsideTask("de84991c-c693-47f9-9b1d-ff2ff30e1166", "Pull weeds", 5, 1, FrequencyType.Weekly,
+        `Choose **one small patch, bed, or plant type**:
+
+* [ ] Put on gloves
+* [ ] Confirm which plants are weeds
+* [ ] Loosen dry soil if needed
+* [ ] Pull from the base and remove as much root as possible
+* [ ] Collect weeds in the appropriate waste bag
+* [ ] Stop after one patch
+
+**Minimum version:** Pull five weeds or work for five comfortable minutes.
+
+Avoid unknown, irritating, or poisonous plants until they can be identified safely.`
+    ),
+    outsideTask("8137ce5c-0bd9-468a-815b-91a90d0ec064", "Trim shrubs and overgrown plants", 6, 1, FrequencyType.Monthly,
+        `During the growing season, choose **one plant or small area**:
+
+* [ ] Check the plant's pruning needs and timing
+* [ ] Look for nests, wildlife, and hidden wires
+* [ ] Remove dead or damaged growth first
+* [ ] Trim growth blocking paths, doors, or windows
+* [ ] Collect the clippings
+* [ ] Clean and put away tools
+
+**Minimum version:** Trim one branch that blocks a walkway.
+
+Skip this task outside the growing season or when pruning could harm the plant. Do not work near utility lines.`
+    ),
+    outsideTask("bb3ee407-b6a6-4b4e-a318-aa6bd86cc5e6", "Clean outdoor furniture", 7, 3, FrequencyType.Monthly,
+        `Choose **one piece or furniture set**:
+
+* [ ] Check the material and care instructions
+* [ ] Remove cushions and loose items
+* [ ] Brush or vacuum loose debris
+* [ ] Wipe or wash with a material-safe cleaner
+* [ ] Rinse only if appropriate
+* [ ] Let everything dry completely
+* [ ] Return cushions and items
+
+**Minimum version:** Wipe the seat and arms of the chair you use most.`
+    ),
+    outsideTask("34d547fd-27fb-4134-be3c-ec812ecb580b", "Clean outdoor trash and recycling bins", 8, 3, FrequencyType.Monthly,
+        `Clean the bins after collection day when they are mostly empty:
+
+* [ ] Remove loose debris while wearing gloves
+* [ ] Apply a bin-safe cleaner
+* [ ] Scrub the lid, handles, and visibly dirty areas
+* [ ] Rinse without sending waste into storm drains
+* [ ] Let the bins dry with the lids open
+* [ ] Return them to their storage area
+
+**Minimum version:** Wipe the handles and lid.
+
+Never mix cleaning products. Follow local rules for wastewater and storm drains.`
+    ),
+    outsideTask("472dc5c9-6ac2-40f9-b0da-29d79accd650", "Clean out the cars", 9, 6, FrequencyType.Monthly,
+        `Choose **one car or one section**:
+
+* [ ] Remove trash and recycling
+* [ ] Take dishes and household items inside
+* [ ] Put important papers in one safe place
+* [ ] Remove clothes, bags, and items that do not belong
+* [ ] Check under seats and in door pockets
+* [ ] Vacuum the most-used area if you have capacity
+
+**Minimum version:** Remove the trash from the driver's area.
+
+Keep registration and emergency supplies in the car, and dispose of batteries or hazardous items appropriately.`
+    ),
+    outsideTask("3fb0f681-e9b3-4255-bcaf-1054d567f7e2", "Clean and organize the garage", 10, 6, FrequencyType.Monthly,
+        `Work on **one zone, shelf, or category**:
+
+* [ ] Open the garage for light and ventilation
+* [ ] Prepare areas for trash, donations, and items to relocate
+* [ ] Clear one safe walking path
+* [ ] Group similar items together
+* [ ] Keep frequently used items within easy reach
+* [ ] Sweep the cleared section
+* [ ] Put donation items near the exit
+
+**Minimum version:** Clear one square of floor or one shelf.
+
+Do not lift heavy items alone. Follow local rules for paint, chemicals, batteries, fuel, and other hazardous waste.`
+    ),
+    outsideTask("21bef4cc-99e1-4ae3-94b2-e45f0638b3c5", "Check exterior lights and replace bulbs", 11, 3, FrequencyType.Monthly,
+        `* [ ] Turn on exterior lights and note any that are out
+* [ ] Turn the fixture off
+* [ ] Let the bulb cool completely
+* [ ] Check the fixture instructions and bulb type
+* [ ] Replace safely reachable bulbs
+* [ ] Clean the fixture exterior with a dry cloth
+* [ ] Test the light
+
+**Minimum version:** Test the lights and add needed bulbs or repairs to your list.
+
+Use a stable step stool only on level ground. Hire help for fixtures that are high, damaged, or near electrical hazards.`
+    ),
+    outsideTask("025f0603-7a6c-43a7-908b-55c14ba1d48f", "Clean gutters and downspouts", 12, 1, FrequencyType.Annually,
+        `**Choose the safe option first:** schedule a professional if the gutters are not reachable from the ground.
+
+For safely reachable areas:
+
+* [ ] Check the weather and make sure the ground is dry
+* [ ] Put on gloves and eye protection
+* [ ] Remove visible debris using a ground-level gutter tool
+* [ ] Check downspout openings for blockages
+* [ ] Confirm that water drains away from the foundation
+* [ ] Create repair tasks for loose or leaking sections
+
+**Minimum version:** Inspect gutters and downspouts from the ground and schedule help if needed.
+
+Do not work from the roof or overreach from a ladder.`
+    ),
+    outsideTask("a86b0c98-3de6-49db-9aee-17fedc3a3ce1", "Clean the exterior of the house", 13, 1, FrequencyType.Annually,
+        `Choose **one safely reachable section**:
+
+* [ ] Check the siding or surface manufacturer's guidance
+* [ ] Cover or move delicate plants and outdoor items
+* [ ] Brush away cobwebs and loose debris
+* [ ] Wash with a surface-safe method from the ground
+* [ ] Spot-clean doors, trim, and reachable marks
+* [ ] Rinse only where appropriate
+* [ ] Note damage that needs repair
+
+**Minimum version:** Remove cobwebs and clean around the main entrance.
+
+Avoid forcing water into vents, outlets, windows, or siding seams. Hire a professional for high areas or surfaces requiring pressure washing.`
+    ),
+];
