@@ -18,6 +18,31 @@ import {
     CLEAN_OUTSIDE_TEMPLATE,
     DAILY_CLEANING_TEMPLATE,
 } from './templates-housework';
+import {
+    BEDTIME_ROUTINE_TEMPLATE,
+    GO_FOR_A_WALK_TEMPLATE,
+    MORNING_RESET_TEMPLATE,
+} from './templates-self-care';
+import { CAT_CARE_TEMPLATE, DOG_CARE_TEMPLATE } from './templates-pets';
+import {
+    END_WORKDAY_TEMPLATE,
+    FOCUS_SESSION_TEMPLATE,
+    START_WORKDAY_TEMPLATE,
+    WEEKLY_WORK_RESET_TEMPLATE,
+} from './templates-work';
+import {
+    COORDINATE_HOUSEHOLD_TEMPLATE,
+    PREPARE_APPOINTMENT_TEMPLATE,
+    RSVP_AND_PREPARE_EVENT_TEMPLATE,
+    RETURN_BORROWED_ITEM_TEMPLATE,
+    SCHEDULE_APPOINTMENT_TEMPLATE,
+} from './templates-people';
+import {
+    HOBBY_SESSION_TEMPLATE,
+    PLAN_DAY_TRIP_TEMPLATE,
+    PLAN_LEISURE_OUTING_TEMPLATE,
+} from './templates-leisure';
+
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { addTasksFromTemplate, type AddTasksFromTemplateRequest } from "src/app/api";
 import "./templates-page.css";
@@ -42,8 +67,23 @@ const TASK_TEMPLATES: TaskTemplate[] = [
     { id: "clean-bedroom", title: "Clean bedroom", description: "A flexible bedroom reset with weekly upkeep and periodic deep-cleaning tasks.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_BEDROOM_TEMPLATE },
     { id: "clean-halls-and-stairs", title: "Clean halls and stairs", description: "A safety-first reset for halls, stairs, storage, and high-touch surfaces.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_HALLS_AND_STAIRS_TEMPLATE },
     { id: "clean-outside", title: "Clean outside", description: "A flexible outdoor reset for entrances, yard care, vehicles, storage, and annual maintenance.", categoryKey: "housework", mode: "occasional", subtasks: [], items: CLEAN_OUTSIDE_TEMPLATE },
-    { id: "morning-reset", title: "Morning reset", description: "A gentle checklist to start the day with less friction.", categoryKey: "self-care", mode: "daily", subtasks: ["Drink water", "Take medication or vitamins", "Get dressed", "Check calendar", "Pick top 3 tasks"] },
-    { id: "pet-care-reset", title: "Pet care reset", description: "Food, water, walk, cleanup, and small pet-care checks.", categoryKey: "pets", mode: "daily", subtasks: ["Refresh water bowl", "Feed pets", "Quick walk or playtime", "Check poop bags", "Clean food area"] },
+    { id: "morning-reset", title: "Morning reset", description: "A gentle routine for meeting your needs and getting ready with less friction.", categoryKey: "self-care", mode: "daily", subtasks: [], items: MORNING_RESET_TEMPLATE },
+    { id: "bedtime-routine", title: "Bedtime routine", description: "A gentle routine for closing open loops and transitioning into sleep.", categoryKey: "self-care", mode: "daily", subtasks: [], items: BEDTIME_ROUTINE_TEMPLATE },
+    { id: "go-for-a-walk", title: "Go for a walk", description: "A flexible, activation-focused routine for preparing, walking, and returning home.", categoryKey: "self-care", mode: "daily", subtasks: [], items: GO_FOR_A_WALK_TEMPLATE },
+    { id: "dog-care", title: "Dog care", description: "Daily care, walks, grooming, cleaning, and preventive health reminders for dogs.", categoryKey: "pets", mode: "daily", subtasks: [], items: DOG_CARE_TEMPLATE },
+    { id: "cat-care", title: "Cat care", description: "Daily feeding, litter, enrichment, grooming, cleaning, and preventive health reminders for cats.", categoryKey: "pets", mode: "daily", subtasks: [], items: CAT_CARE_TEMPLATE },
+    { id: "start-workday", title: "Start the workday", description: "A gentle daily routine for finding one useful starting point and beginning work.", categoryKey: "work", mode: "daily", subtasks: [], items: START_WORKDAY_TEMPLATE },
+    { id: "end-workday", title: "End the workday", description: "A daily shutdown routine that leaves a clear handoff for tomorrow.", categoryKey: "work", mode: "daily", subtasks: [], items: END_WORKDAY_TEMPLATE },
+    { id: "weekly-work-reset", title: "Weekly work reset", description: "A realistic weekly review for deadlines, projects, blockers, and capacity.", categoryKey: "work", mode: "occasional", subtasks: [], items: WEEKLY_WORK_RESET_TEMPLATE },
+    { id: "focus-session", title: "Focus session", description: "A bounded, on-demand session for starting, focusing, and leaving a clear next action.", categoryKey: "work", mode: "one-time", subtasks: [], items: FOCUS_SESSION_TEMPLATE },
+    { id: "coordinate-household", title: "Coordinate household or family logistics", description: "A weekly reset for shared schedules, responsibilities, transportation, and care.", categoryKey: "people", mode: "occasional", subtasks: [], items: COORDINATE_HOUSEHOLD_TEMPLATE },
+    { id: "schedule-appointment", title: "Schedule an appointment", description: "An on-demand workflow for booking, recording, and following up on an appointment.", categoryKey: "people", mode: "one-time", subtasks: [], items: SCHEDULE_APPOINTMENT_TEMPLATE },
+    { id: "prepare-appointment", title: "Prepare for an appointment", description: "An on-demand checklist for instructions, documents, questions, access, and arrival.", categoryKey: "people", mode: "one-time", subtasks: [], items: PREPARE_APPOINTMENT_TEMPLATE },
+    { id: "rsvp-prepare-event", title: "RSVP and prepare for an event", description: "An on-demand workflow for deciding, responding, and preparing to attend comfortably.", categoryKey: "people", mode: "one-time", subtasks: [], items: RSVP_AND_PREPARE_EVENT_TEMPLATE },
+    { id: "return-borrowed-item", title: "Return a borrowed item", description: "A practical workflow for locating, preparing, and returning something to its owner.", categoryKey: "people", mode: "one-time", subtasks: [], items: RETURN_BORROWED_ITEM_TEMPLATE },
+    { id: "hobby-session", title: "Hobby session", description: "An on-demand session with gentle start, during, and end phases.", categoryKey: "leisure", mode: "one-time", subtasks: [], items: HOBBY_SESSION_TEMPLATE },
+    { id: "plan-day-trip", title: "Plan a day trip", description: "A practical planning workflow for a safe, enjoyable same-day trip.", categoryKey: "leisure", mode: "one-time", subtasks: [], items: PLAN_DAY_TRIP_TEMPLATE },
+    { id: "plan-leisure-outing", title: "Plan a leisure outing", description: "A lighter planning workflow for local activities and enjoyable time away.", categoryKey: "leisure", mode: "one-time", subtasks: [], items: PLAN_LEISURE_OUTING_TEMPLATE },
 ];
 
 function makeItem(overrides: Partial<ChecklistItem>): ChecklistItem {
