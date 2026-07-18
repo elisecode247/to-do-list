@@ -359,6 +359,12 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                             Appearance
                                         </button>
                                     </MenuItem>
+                                    <MenuItem>
+                                        <button className="demo-actions-menu-item" onClick={() => setLocation(`${ROUTES.templates}?demo=1`)}>
+                                            <PencilIcon size={15} strokeWidth={2} />
+                                            Templates
+                                        </button>
+                                    </MenuItem>
                                     <div className="demo-actions-menu-divider" role="separator" />
                                     <MenuItem>
                                         <button className="demo-actions-menu-item" onClick={handleReset}>

@@ -1,6 +1,6 @@
 import AccountMenu from "src/app/AccountMenu";
-import { Link, useLocation } from "wouter";
-import { Home } from "lucide-react";
+import { Link, useLocation, useSearch } from "wouter";
+import { ArrowLeft, Home } from "lucide-react";
 import { ROUTES } from "src/router";
 import './page.css';
 import { useTheme } from "src/themes/use-theme";
@@ -24,6 +24,8 @@ function Page({ title, children, privacyLink = true }: PageProps) {
         isPublicPage ? GRAPHICS_TRUE : undefined,
     );
     const [location] = useLocation();
+    const search = useSearch();
+    const isDemoFlow = new URLSearchParams(search).get('demo') === '1';
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     function toggleMenu() {
@@ -32,7 +34,12 @@ function Page({ title, children, privacyLink = true }: PageProps) {
     return (
         <div className="page_container">
             <header className="page_header">
-                {location !== ROUTES.home && (
+                {isDemoFlow ? (
+                    <Link href={ROUTES.demo} className="page-btn page-btn--primary page-demo-back-link">
+                        <ArrowLeft size={18} aria-hidden="true" />
+                        Back to demo
+                    </Link>
+                ) : location !== ROUTES.home && (
                     <Link href={ROUTES.home} className="page-btn page-btn--primary page-home-btn">
                         <Home size={24} />
                     </Link>

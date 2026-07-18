@@ -102,6 +102,10 @@
     background: var(--color-primary-hover);
 }
 
+.page-demo-back-link {
+    white-space: nowrap;
+}
+
 
 @media (min-width: 900px) {
 
