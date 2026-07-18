@@ -76,6 +76,7 @@ export default function LoggedOut({
         isCheckingSession ? undefined : SPACE_STYLE,
         isCheckingSession ? undefined : COMFORTABLE_DENSITY,
         isCheckingSession ? undefined : GRAPHICS_TRUE,
+        isCheckingSession,
     );
 
     return (

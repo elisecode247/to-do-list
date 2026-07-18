@@ -6,8 +6,15 @@ import {
     requestPersistentStorage,
     writePersistentSetting,
 } from 'src/utilities/persistent-storage';
+import { CALM_STYLE, COMFORTABLE_DENSITY, DARK_MODE, GRAPHICS_FALSE } from './constants';
 
 const THEME_CUSTOM_COLORS_KEY = 'theme-custom-colors';
+const LOADING_THEME: ThemeState = {
+    mode: DARK_MODE,
+    style: CALM_STYLE,
+    density: COMFORTABLE_DENSITY,
+    graphics: GRAPHICS_FALSE,
+};
 
 const readStoredCustomColors = (): Record<string, string> => {
     const stored = readPersistentSetting(THEME_CUSTOM_COLORS_KEY);
@@ -46,6 +53,7 @@ export function useTheme(
     overrideStyle?: ThemeStyle,
     overrideDensity?: Density,
     overrideGraphics?: ThemeGraphic,
+    isLoading?: boolean,
 ) {
     const hasOverride =
         overrideMode !== undefined &&
@@ -100,12 +108,14 @@ export function useTheme(
 
     // Apply theme whenever stored theme or override changes
     useLayoutEffect(() => {
-        const nextTheme = hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: 'true' as ThemeGraphic }
+        const nextTheme = isLoading
+            ? LOADING_THEME
+            : hasOverride
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics! }
             : theme;
 
         applyTheme(nextTheme);
-    }, [theme, hasOverride, overrideMode, overrideStyle, overrideDensity, overrideGraphics]);
+    }, [theme, isLoading, hasOverride, overrideMode, overrideStyle, overrideDensity, overrideGraphics]);
 
 
     useEffect(() => {
@@ -113,7 +123,7 @@ export function useTheme(
     }, []);
 
     useEffect(() => {
-        if (hasOverride) return;
+        if (isLoading || hasOverride) return;
 
         // Persist
         writePersistentSetting('theme-mode', theme.mode);
@@ -155,13 +165,13 @@ export function useTheme(
             mediaQuery.removeEventListener('change', handleSystemChange);
             window.removeEventListener('storage', handleStorage);
         };
-    }, [theme, hasOverride]);
+    }, [theme, isLoading, hasOverride]);
 
 
     const updateTheme = (updates: Partial<ThemeState>) => {
-        if (hasOverride) return;
+        if (isLoading || hasOverride) return;
         setTheme(prev => ({ ...prev, ...updates }));
     };
 
-    return { ...theme, updateTheme };
+    return { ...(isLoading ? LOADING_THEME : theme), updateTheme };
 }
