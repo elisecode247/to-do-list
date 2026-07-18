@@ -12,8 +12,9 @@ const routes = [
     {
         path: "/",
         output: "dist/index.html",
-        title: "Daily Reset List",
-        description: "A gentle daily task list for remembering what matters without goals, streaks, or emotional penalty.",
+        title: "Daily Reset List | Gentle Daily Task List",
+        description: "A calm daily task list for recurring responsibilities and one-time reminders—without streaks, scores, or overdue guilt.",
+        social: true,
     },
     {
         path: "/privacy-policy",
@@ -33,12 +34,44 @@ for (const route of routes) {
     const appHtml = render(route.path);
     const canonicalUrl = `https://dailyresetlist.com${route.path}`;
     const outputPath = resolve(root, route.output);
+    const socialTags = route.social
+        ? [
+            `    <meta property="og:type" content="website">`,
+            `    <meta property="og:site_name" content="Daily Reset List">`,
+            `    <meta property="og:title" content="${route.title}">`,
+            `    <meta property="og:description" content="${route.description}">`,
+            `    <meta property="og:url" content="${canonicalUrl}">`,
+            `    <meta property="og:image" content="https://dailyresetlist.com/og.png">`,
+            `    <meta property="og:image:width" content="1200">`,
+            `    <meta property="og:image:height" content="630">`,
+            `    <meta property="og:image:alt" content="Daily Reset List — A gentler way to remember what matters today.">`,
+            `    <meta name="twitter:card" content="summary_large_image">`,
+            `    <meta name="twitter:title" content="${route.title}">`,
+            `    <meta name="twitter:description" content="${route.description}">`,
+            `    <meta name="twitter:image" content="https://dailyresetlist.com/og.png">`,
+            `    <script type="application/ld+json">${JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                name: "Daily Reset List",
+                url: "https://dailyresetlist.com/",
+                description: route.description,
+                applicationCategory: "LifestyleApplication",
+                operatingSystem: "Any",
+                offers: {
+                    "@type": "Offer",
+                    price: 0,
+                    priceCurrency: "USD",
+                },
+            })}</script>`,
+        ].join("\n")
+        : "";
     const html = template
         .replace(/<title>.*?<\/title>/, `<title>${route.title}</title>`)
         .replace(
             "</head>",
             `    <meta name="description" content="${route.description}">\n` +
             `    <link rel="canonical" href="${canonicalUrl}">\n` +
+            (socialTags ? `${socialTags}\n` : "") +
             "</head>",
         )
         .replace('<div id="app-root"></div>', `<div id="app-root">${appHtml}</div>`);

@@ -1,6 +1,8 @@
 import { API_AUTH_URL, API_REFRESH_URL } from "app/constants";
+import { removePersistentSetting, writePersistentSetting } from "src/utilities/persistent-storage";
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
+export const AUTH_SESSION_HINT_KEY = "auth-session-present";
 const API_SESSION_URL = `${API_AUTH_URL}/session`;
 const API_REAUTH_URL = `${API_AUTH_URL}/reauth/google`;
 const API_DELETE_ACCOUNT_URL = `${API_AUTH_URL}/account`;
@@ -12,6 +14,7 @@ function clearAuthState(): void {
     accessToken = null;
     expiresAtMs = null;
     emailAddress = null;
+    removePersistentSetting(AUTH_SESSION_HINT_KEY);
 }
 
 export async function loginWithGoogle(token: string): Promise<{email?: string}> {
@@ -103,6 +106,7 @@ export async function getValidAuthToken(): Promise<string | null> {
 function persistTokens(access: string, expiresIn: number): void {
     accessToken = access;
     expiresAtMs = Date.now() + expiresIn * 1000;
+    writePersistentSetting(AUTH_SESSION_HINT_KEY, "true");
 }
 
 export async function getSessionUser(): Promise<{ email?: string } | null> {

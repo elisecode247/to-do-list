@@ -1,4 +1,4 @@
-import { lazy, useEffect, type FC } from 'react';
+import { lazy, useEffect, useLayoutEffect, type FC } from 'react';
 import './app.css';
 import './settings.css';
 import { useTask } from 'src/app/use-task';
@@ -92,6 +92,12 @@ const App: FC = () => {
         };
     }, [isAuthenticated, googleCalendarEnabled, loadDate, loadTasks, loadCalendarEvents]);
 
+    useLayoutEffect(() => {
+        if (!isLoading) {
+            document.documentElement.removeAttribute('data-auth-session-hint');
+        }
+    }, [isLoading]);
+
     return (
 
         <>
@@ -99,7 +105,10 @@ const App: FC = () => {
             <Switch>
                 <Route path={ROUTES.home}>
                     {!isAuthenticated ? (
-                            <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
+                            <LoggedOut
+                                isCheckingSession={isLoading}
+                                onSuccessfulLogin={handleLoginSuccess}
+                            />
                         ) : (
                             <LoggedIn />
                         )
