@@ -104,8 +104,7 @@ const App: FC = () => {
             <ThemeCanvas />
             <Switch>
                 <Route path={ROUTES.home}>
-                    {isLoading ? <LoadingSpinner /> :
-                    !isAuthenticated ? (
+                    {!isAuthenticated ? (
                             <LoggedOut
                                 isCheckingSession={isLoading}
                                 onSuccessfulLogin={handleLoginSuccess}
