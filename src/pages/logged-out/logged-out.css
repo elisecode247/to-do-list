@@ -547,6 +547,7 @@ html[data-auth-session-hint="true"] .returning-user-loading {
     justify-content: center;
     gap: 14px;
     margin-top: 36px;
+    align-items: center;
 }
 
 .landing-secondary-action {

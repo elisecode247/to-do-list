@@ -236,7 +236,7 @@ export default function LoggedOut({
                     <h2 id="final-cta-title">You do not need a better streak.<br />You need a kinder place to begin.</h2>
                     <div className="landing-final-actions">
                         <Link className="landing-primary-action" href={ROUTES.demo}>Explore the demo <span aria-hidden="true">→</span></Link>
-                        <a href="#landing-sign-in" className="landing-secondary-action">Sign in with Google</a>
+                        <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                     </div>
                 </section>
             </main>
