@@ -55,11 +55,13 @@ const LoggedIn: React.FC = () => {
         updateItem,
         loadDate,
         itemLength,
-        isUpdatedDate
+        isUpdatedDate,
     } = useTask();
+    const { isAuthenticated } = useAuthentication();
+    const { categories, googleCalendarEnabled } = useUserSettings();
+    const { loadCalendarEvents, updateEvent } = useGoogleCalendar();
     const { email } = useAuthentication();
     const [, setLocation] = useLocation();
-    const { categories } = useUserSettings();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
     const [hideCompleted, setHideCompleted] = useState(true);
@@ -73,7 +75,6 @@ const LoggedIn: React.FC = () => {
     const [showGettingStarted, setShowGettingStarted] = useState(false);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
-    const { updateEvent } = useGoogleCalendar();
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
 
     useEffect(() => {
@@ -172,6 +173,36 @@ const LoggedIn: React.FC = () => {
             height: activeEl.offsetHeight
         });
     }, [activeTab]);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
+        const handleVisibility = () => {
+            if (document.visibilityState !== 'visible') {
+                return;
+            }
+
+            const staleAfter = 5 * 60 * 1000;
+            const lastLoad = loadDate && 'current' in loadDate ? loadDate.current : null;
+            const isStale = !lastLoad || Date.now() - lastLoad.getTime() > staleAfter;
+
+            if (!isStale) {
+                return;
+            }
+
+            loadTasks();
+            if (googleCalendarEnabled) {
+                loadCalendarEvents();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibility);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibility);
+        };
+    }, [isAuthenticated, googleCalendarEnabled, loadDate, loadTasks, loadCalendarEvents]);
+
 
     useEffect(() => {
         updateMobileIndicator();

@@ -1,10 +1,7 @@
-import { lazy, useEffect, useLayoutEffect, type FC } from 'react';
+import { lazy, useLayoutEffect, type FC } from 'react';
 import './app.css';
 import './settings.css';
-import { useTask } from 'src/app/use-task';
-import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { useAuthentication } from 'src/authentication/use-authentication';
-import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
 import { Route, Switch, useLocation } from "wouter";
@@ -48,9 +45,6 @@ const LoadingSpinner = () => {
 
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
-    const { googleCalendarEnabled, isLoadingSettings } = useUserSettings();
-    const { loadTasks, loadDate } = useTask();
-    const { loadCalendarEvents } = useGoogleCalendar();
     const [, setLocation] = useLocation();
 
     const handleLoginSuccess = async (token: string) => {
@@ -62,35 +56,6 @@ const App: FC = () => {
             console.error(err);
         }
     };
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        const handleVisibility = () => {
-            if (document.visibilityState !== 'visible') {
-                return;
-            }
-
-            const staleAfter = 5 * 60 * 1000;
-            const lastLoad = loadDate && 'current' in loadDate ? loadDate.current : null;
-            const isStale = !lastLoad || Date.now() - lastLoad.getTime() > staleAfter;
-
-            if (!isStale) {
-                return;
-            }
-
-            loadTasks();
-            if (googleCalendarEnabled) {
-                loadCalendarEvents();
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibility);
-
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibility);
-        };
-    }, [isAuthenticated, googleCalendarEnabled, loadDate, loadTasks, loadCalendarEvents]);
 
     useLayoutEffect(() => {
         if (!isLoading) {
@@ -119,7 +84,7 @@ const App: FC = () => {
                     <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
                 </Route>
                 <Route path={ROUTES.userSettings}>
-                    {isLoading || isLoadingSettings ? <LoadingSpinner /> :
+                    {isLoading ? <LoadingSpinner /> :
                         isAuthenticated ? (
                             <UserSettingsLazy />
                         ) : <NotFoundLazy />}
