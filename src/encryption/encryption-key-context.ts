@@ -11,6 +11,7 @@ import {
     type EncryptionStatus,
     type ServerEncryptionConfig
 } from "src/encryption/types";
+import { useAuthentication } from 'src/authentication/use-authentication';
 
 type EncryptionKeyContextValue = {
     encryptionStatus: EncryptionStatus;
@@ -32,58 +33,109 @@ type EncryptionKeyContextValue = {
 const EncryptionKeyContext = createContext<EncryptionKeyContextValue | null>(null);
 
 export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => {
-    const [encryptionConfig, setEncryptionConfig] = useState<EncryptionConfig | null>(null);
+    const { isAuthenticated, isLoading } = useAuthentication();
+
+    const [encryptionConfig, setEncryptionConfig] =
+        useState<EncryptionConfig | null>(null);
     const [masterKey, setMasterKey] = useState<CryptoKey | null>(null);
     const [isEncryptionEnabled, setIsEncryptionEnabled] = useState(false);
-    const [encryptionStatus, setEncryptionStatus] = useState<EncryptionStatus>(ENCRYPTION_STATUS.NOT_ENCRYPTED);
+    const [encryptionStatus, setEncryptionStatus] =
+        useState<EncryptionStatus>(ENCRYPTION_STATUS.NOT_ENCRYPTED);
+
     useEffect(() => {
-        const fetchEncryptionConfig = async () => {
+        if (isLoading) return;
+
+        if (!isAuthenticated) {
+            setEncryptionConfig(null);
+            setMasterKey(null);
+            setIsEncryptionEnabled(false);
+            setEncryptionStatus(ENCRYPTION_STATUS.NOT_ENCRYPTED);
+            return;
+        }
+
+        const controller = new AbortController();
+
+        async function fetchEncryptionConfig() {
             try {
-                const response = await fetch(ENCRYPTION_URL + '/status', {
-                    method: "GET",
+                const response = await fetch(`${ENCRYPTION_URL}/status`, {
+                    method: 'GET',
                     headers: await authHeaders(),
+                    signal: controller.signal,
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Failed to load encryption settings: ${response.status}`);
+                    throw new Error(
+                        `Failed to load encryption settings: ${response.status}`,
+                    );
                 }
 
                 const settings = await response.json();
-                const nextEncryptionEnabled = settings?.encryptionEnabled ?? settings?.userSettings?.encryptionEnabled;
-                const nextEncryptionConfig = settings?.encryptionConfig ?? settings?.userSettings?.encryptionConfig;
-                const nextEncryptionStatus = settings?.encryptionStatus ?? settings?.userSettings?.encryptionStatus;
 
-                if (typeof nextEncryptionEnabled === "boolean") {
-                    setIsEncryptionEnabled(nextEncryptionEnabled);
-                }
+                const nextEncryptionEnabled =
+                    settings?.encryptionEnabled ??
+                    settings?.userSettings?.encryptionEnabled;
+
+                const nextEncryptionConfig =
+                    settings?.encryptionConfig ??
+                    settings?.userSettings?.encryptionConfig;
+
+                const nextEncryptionStatus =
+                    settings?.encryptionStatus ??
+                    settings?.userSettings?.encryptionStatus;
+
+                setIsEncryptionEnabled(Boolean(nextEncryptionEnabled));
 
                 if (nextEncryptionConfig) {
-                    // Convert base64-encoded strings to ArrayBuffer and Uint8Array
-                    const convertProtector = (protector: ServerEncryptionConfig["passwordProtector"]) => ({
-                        wrappedKey: Uint8Array.from(atob(protector.wrappedKey), c => c.charCodeAt(0)).buffer,
-                        iv: Uint8Array.from(atob(protector.iv), c => c.charCodeAt(0)),
-                        salt: Uint8Array.from(atob(protector.salt), c => c.charCodeAt(0)),
+                    const convertProtector = (
+                        protector: ServerEncryptionConfig['passwordProtector'],
+                    ) => ({
+                        wrappedKey: Uint8Array.from(
+                            atob(protector.wrappedKey),
+                            character => character.charCodeAt(0),
+                        ).buffer,
+                        iv: Uint8Array.from(
+                            atob(protector.iv),
+                            character => character.charCodeAt(0),
+                        ),
+                        salt: Uint8Array.from(
+                            atob(protector.salt),
+                            character => character.charCodeAt(0),
+                        ),
                     });
 
-                    const convertedEncryptionConfig: EncryptionConfig = {
+                    setEncryptionConfig({
                         version: nextEncryptionConfig.version,
-                        passwordProtector: convertProtector(nextEncryptionConfig.passwordProtector),
-                        recoveryProtector: convertProtector(nextEncryptionConfig.recoveryProtector),
-                    };
-
-                    setEncryptionConfig(convertedEncryptionConfig);
+                        passwordProtector: convertProtector(
+                            nextEncryptionConfig.passwordProtector,
+                        ),
+                        recoveryProtector: convertProtector(
+                            nextEncryptionConfig.recoveryProtector,
+                        ),
+                    });
+                } else {
+                    setEncryptionConfig(null);
                 }
-                if (nextEncryptionStatus) {
-                    setEncryptionStatus(nextEncryptionStatus);
+
+                setEncryptionStatus(
+                    nextEncryptionStatus ?? ENCRYPTION_STATUS.NOT_ENCRYPTED,
+                );
+            } catch (error) {
+                if (
+                    error instanceof DOMException &&
+                    error.name === 'AbortError'
+                ) {
+                    return;
                 }
 
-            } catch (err) {
-                console.error("Loading user settings failed:", err);
-                throw new Error('Failed to load user settings. Please refresh the page.');
+                // Log the real failure, but don't create an unhandled rejection.
+                console.error('Loading encryption settings failed:', error);
             }
         }
-        fetchEncryptionConfig();
-    }, []);
+
+        void fetchEncryptionConfig();
+
+        return () => controller.abort();
+    }, [isAuthenticated, isLoading]);
 
     const unlock = useCallback(async (password: string, config: EncryptionConfig) => {
         const key = await unlockMasterKey(password, config);

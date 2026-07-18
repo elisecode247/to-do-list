@@ -83,11 +83,6 @@ const LoggedIn: React.FC = () => {
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
 
     useEffect(() => {
-                    console.log("%c Line:87 🍰 !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)", "color:#93c0a4", !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey));
-            console.log("%c Line:89 🥪 isLoading", "color:#33a5ff", isLoading);
-            console.log("%c Line:90 🍢 taskError", "color:#b03734", taskError);
-            console.log("%c Line:91 🍩 itemLength", "color:#ff8c00", itemLength)
-            console.log("%c Line:92 🥯 readPersistentSetting(onboardingStorageKey)", "color:#ff69b4", readPersistentSetting(onboardingStorageKey));
         if (!isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
             setShowGettingStarted(true);
         }
