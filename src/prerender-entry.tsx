@@ -12,6 +12,7 @@ import type { TaskContextType } from "src/app/types";
 import { ToastContext } from "src/toast/toast-context";
 import type { ToastContextType } from "src/toast/types";
 import { DemoContext } from "src/pages/demo/DemoContext";
+import { DemoTaskContext, type DemoTaskContextType } from "src/pages/demo/demo-task-context";
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 
 const noop = () => undefined;
@@ -60,6 +61,11 @@ const tasks: TaskContextType = {
     loadDate: { current: null },
 };
 
+const demoTasks: DemoTaskContextType = {
+    ...tasks,
+    clear: noop,
+};
+
 const toast: ToastContextType = {
     toasts: [],
     showToast: noop,
@@ -73,7 +79,9 @@ function PublicProviders({ children }: { children: React.ReactNode }) {
                 <TaskContext.Provider value={tasks}>
                     <ToastContext.Provider value={toast}>
                         <DemoContext.Provider value={{ items: [], setItems: noop, resetDemo: noop }}>
-                            {children}
+                            <DemoTaskContext.Provider value={demoTasks}>
+                                {children}
+                            </DemoTaskContext.Provider>
                         </DemoContext.Provider>
                     </ToastContext.Provider>
                 </TaskContext.Provider>
