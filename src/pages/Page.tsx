@@ -4,6 +4,8 @@ import { Home } from "lucide-react";
 import { ROUTES } from "src/router";
 import './page.css';
 import { useTheme } from "src/themes/use-theme";
+import { useAuthentication } from "src/authentication/use-authentication";
+import { COMFORTABLE_DENSITY, DARK_MODE, GRAPHICS_TRUE, SPACE_STYLE } from "src/themes/constants";
 import { useState } from "react";
 import Footer from "src/footer/Footer";
 
@@ -13,7 +15,14 @@ interface PageProps {
     privacyLink?: boolean;
 }
 function Page({ title, children, privacyLink = true }: PageProps) {
-    useTheme();
+    const { isAuthenticated, isLoading } = useAuthentication();
+    const isPublicPage = !isLoading && !isAuthenticated;
+    useTheme(
+        isPublicPage ? DARK_MODE : undefined,
+        isPublicPage ? SPACE_STYLE : undefined,
+        isPublicPage ? COMFORTABLE_DENSITY : undefined,
+        isPublicPage ? GRAPHICS_TRUE : undefined,
+    );
     const [location] = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 

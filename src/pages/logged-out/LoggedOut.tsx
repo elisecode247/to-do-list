@@ -69,7 +69,14 @@ export default function LoggedOut({
     onSuccessfulLogin: (token: string) => Promise<void>;
     isCheckingSession?: boolean;
 }) {
-    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
+    // Preserve a returning user's saved theme while their session is resolving.
+    // Once they are confirmed signed out, public pages use the Space presentation.
+    useTheme(
+        isCheckingSession ? undefined : DARK_MODE,
+        isCheckingSession ? undefined : SPACE_STYLE,
+        isCheckingSession ? undefined : COMFORTABLE_DENSITY,
+        isCheckingSession ? undefined : GRAPHICS_TRUE,
+    );
 
     return (
         <>

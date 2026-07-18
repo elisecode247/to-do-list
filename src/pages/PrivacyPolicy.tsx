@@ -1,11 +1,8 @@
 import React from 'react';
 import Page from 'src/pages/Page';
-import { useTheme } from 'src/themes/use-theme';
 import './privacy-policy.css';
 
 const PrivacyPolicyPage: React.FC = () => {
-    useTheme();
-
     return (
         <Page privacyLink={false}>
             <article className="privacy-policy-page">
