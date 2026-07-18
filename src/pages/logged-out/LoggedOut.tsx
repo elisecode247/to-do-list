@@ -8,6 +8,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useLayoutEffect } from "react";
 import GoogleLoginButton from "src/authentication/google-login-button";
 import { useTheme } from "src/themes/use-theme";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
@@ -78,6 +79,11 @@ export default function LoggedOut({
         isCheckingSession ? undefined : GRAPHICS_TRUE,
         isCheckingSession,
     );
+
+    useLayoutEffect(() => {
+        document.documentElement.setAttribute('data-public-landing', 'true');
+        return () => document.documentElement.removeAttribute('data-public-landing');
+    }, []);
 
     return (
         <>

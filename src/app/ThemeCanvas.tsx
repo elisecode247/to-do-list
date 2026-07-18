@@ -344,7 +344,10 @@ const ThemeParticlesCanvas: FC = () => {
         const mobileCanvasQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
 
         const syncParticles = () => {
-            setEnableParticles(getEnableParticles() === 'true' && !mobileCanvasQuery.matches);
+            const isMobileLanding =
+                mobileCanvasQuery.matches &&
+                document.documentElement.hasAttribute('data-public-landing');
+            setEnableParticles(getEnableParticles() === 'true' && !isMobileLanding);
         };
 
         const sync = () => {
@@ -362,7 +365,7 @@ const ThemeParticlesCanvas: FC = () => {
 
         observer.observe(document.documentElement, {
             attributes: true,
-            attributeFilter: ['data-theme-style', 'data-graphics'],
+            attributeFilter: ['data-theme-style', 'data-graphics', 'data-public-landing'],
         });
 
         const onMotionChange = () => setReduceMotion(mediaQuery.matches);
