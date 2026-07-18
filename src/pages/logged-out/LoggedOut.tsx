@@ -6,6 +6,7 @@ import {
     NotebookPen,
     RefreshCcw,
     Sparkles,
+    Star,
 } from "lucide-react";
 import { Link } from "wouter";
 import GoogleLoginButton from "src/authentication/google-login-button";
@@ -121,10 +122,10 @@ export default function LoggedOut({
                                     <span className="landing-preview-kicker">Your gentle reset</span>
                                     <h2>Today</h2>
                                 </div>
-                                <span className="landing-preview-count">1 of 4 complete</span>
                             </div>
                             <div className="landing-preview-tabs" aria-hidden="true">
                                 <span>Journal</span>
+                                <span>Priority</span>
                                 <span className="is-active">Today</span>
                                 <span>Upcoming</span>
                             </div>
@@ -141,10 +142,6 @@ export default function LoggedOut({
                                     </li>
                                 ))}
                             </ul>
-                            <div className="landing-preview-note">
-                                <NotebookPen size={17} aria-hidden="true" />
-                                <span>There is room for the thought that interrupted you.</span>
-                            </div>
                         </div>
                     </div>
                 </section>
@@ -160,7 +157,7 @@ export default function LoggedOut({
                 <section className="landing-section landing-how" id="how-it-works" aria-labelledby="how-title">
                     <div className="landing-section-heading">
                         <p className="landing-eyebrow"><Layers3 size={15} aria-hidden="true" /> How it works</p>
-                        <h2 id="how-title">Remembering things should not become another thing to fail at.</h2>
+                        <h2 id="how-title">No more wondering if you forgot something.</h2>
                         <p>Daily Reset List keeps enough context to help, then gets out of your way.</p>
                     </div>
                     <ol className="landing-steps">

@@ -355,18 +355,6 @@ html[data-auth-session-hint="true"] .returning-user-loading {
     text-decoration: line-through;
 }
 
-.landing-preview-note {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 18px;
-    border-radius: 12px;
-    padding: 12px 14px;
-    color: #adb4d1;
-    background: rgba(113, 127, 255, 0.09);
-    font-size: 0.74rem;
-}
-
 .landing-promise {
     display: flex;
     align-items: center;
@@ -630,9 +618,6 @@ html[data-auth-session-hint="true"] .returning-user-loading {
         padding-block: 9px;
     }
 
-    .landing-hero .landing-preview-note {
-        margin-top: 14px;
-    }
 }
 
 @media (max-width: 920px) {
