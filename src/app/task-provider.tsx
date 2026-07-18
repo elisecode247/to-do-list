@@ -30,6 +30,7 @@ import { getLocalTodayAtMidnight } from './utilities/filter-tasks';
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
     const [items, setItems] = useState<ChecklistItem[]>([]);
+    console.log("%c Line:33 🍊 items", "color:#465975", items);
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
     const loadDateRef = useRef(new Date());

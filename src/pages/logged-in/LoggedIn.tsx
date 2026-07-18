@@ -31,6 +31,9 @@ import { readPersistentSetting, writePersistentSetting } from 'src/utilities/per
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { ROUTES } from 'src/router';
 import { useLocation } from 'wouter';
+import { addTask } from 'src/app/api';
+import { useDemoTask } from 'src/pages/demo/use-demo-task';
+import { hasModifiedDemoTasks } from 'src/pages/demo/demo-tasks';
 
 // preload pages
 import('src/pages/user-settings/UserSettings');
@@ -61,6 +64,7 @@ const LoggedIn: React.FC = () => {
     const { categories, googleCalendarEnabled } = useUserSettings();
     const { loadCalendarEvents, updateEvent } = useGoogleCalendar();
     const { email } = useAuthentication();
+    const { items: demoItems, isLoading: isLoadingDemoTasks } = useDemoTask();
     const [, setLocation] = useLocation();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
@@ -73,11 +77,17 @@ const LoggedIn: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [showGettingStarted, setShowGettingStarted] = useState(false);
+    const [isCopyingDemoTasks, setIsCopyingDemoTasks] = useState(false);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
 
     useEffect(() => {
+                    console.log("%c Line:87 🍰 !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)", "color:#93c0a4", !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey));
+            console.log("%c Line:89 🥪 isLoading", "color:#33a5ff", isLoading);
+            console.log("%c Line:90 🍢 taskError", "color:#b03734", taskError);
+            console.log("%c Line:91 🍩 itemLength", "color:#ff8c00", itemLength)
+            console.log("%c Line:92 🥯 readPersistentSetting(onboardingStorageKey)", "color:#ff69b4", readPersistentSetting(onboardingStorageKey));
         if (!isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
             setShowGettingStarted(true);
         }
@@ -98,6 +108,52 @@ const LoggedIn: React.FC = () => {
     function chooseTemplate() {
         completeGettingStarted();
         setLocation(ROUTES.templates);
+    }
+
+    function startWithDemoTasks() {
+        completeGettingStarted();
+        setLocation(ROUTES.demo);
+    }
+
+    async function copyDemoTasksToAccount() {
+        if (isCopyingDemoTasks) return;
+
+        setIsCopyingDemoTasks(true);
+        try {
+            const accountIdByDemoId = new Map<string, string>();
+            const orderedDemoItems = [...demoItems].sort((a, b) =>
+                Number(a.parentUuid !== null) - Number(b.parentUuid !== null) || a.sortOrder - b.sortOrder,
+            );
+
+            for (const demoItem of orderedDemoItems) {
+                const category = categories.find(candidate =>
+                    candidate.isBuiltIn && (candidate.builtInKey === demoItem.category || candidate.id === demoItem.category),
+                )?.id ?? demoItem.category;
+                const response = await addTask({
+                    ...demoItem,
+                    id: crypto.randomUUID(),
+                    category,
+                    parentUuid: demoItem.parentUuid
+                        ? accountIdByDemoId.get(demoItem.parentUuid) ?? null
+                        : null,
+                });
+
+                if ('error' in response) {
+                    throw new Error(response.error);
+                }
+
+                accountIdByDemoId.set(demoItem.id, response.id);
+            }
+
+            completeGettingStarted();
+            loadTasks();
+            showToast('Your demo tasks were added to your account.', 'success');
+        } catch (error) {
+            console.error('Failed to copy demo tasks:', error);
+            showToast('Could not copy your demo tasks. Please try again.', 'error');
+        } finally {
+            setIsCopyingDemoTasks(false);
+        }
     }
     async function handleEventSave(saveItem: GoogleEvent) {
         setIsSaving(true);
@@ -289,6 +345,13 @@ const LoggedIn: React.FC = () => {
             isOpen={showGettingStarted}
             onStartFromScratch={startFromScratch}
             onChooseTemplate={chooseTemplate}
+            onStartWithDemoTasks={startWithDemoTasks}
+            onCopyDemoTasks={
+                !isLoadingDemoTasks && hasModifiedDemoTasks(demoItems)
+                    ? copyDemoTasksToAccount
+                    : undefined
+            }
+            isCopyingDemoTasks={isCopyingDemoTasks}
         />
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
             {(leftOpen || rightOpen || menuOpen) && (

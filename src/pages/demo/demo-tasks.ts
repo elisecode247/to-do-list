@@ -163,3 +163,36 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() // + 2 days
     }
 ];
+
+function demoTaskSignature(item: ChecklistItem) {
+    return JSON.stringify({
+        id: item.id,
+        text: item.text,
+        note: item.note,
+        sortOrder: item.sortOrder,
+        tabSortOrder: item.tabSortOrder,
+        category: item.category,
+        mode: item.mode,
+        isPriority: item.isPriority,
+        isArchived: item.isArchived,
+        isHidden: item.isHidden,
+        hasSubChores: item.hasSubChores,
+        parentUuid: item.parentUuid,
+        done: item.done,
+        recurrence: item.recurrence && {
+            type: item.recurrence.type,
+            frequency: 'frequency' in item.recurrence ? item.recurrence.frequency : undefined,
+            numberOfRepetitions: 'numberOfRepetitions' in item.recurrence
+                ? item.recurrence.numberOfRepetitions
+                : undefined,
+        },
+        hasNextDue: item.nextDue !== null,
+    });
+}
+
+export function hasModifiedDemoTasks(items: ChecklistItem[]) {
+    if (items.length !== DEMO_TASKS.length) return true;
+
+    const originalById = new Map(DEMO_TASKS.map(item => [item.id, demoTaskSignature(item)]));
+    return items.some(item => originalById.get(item.id) !== demoTaskSignature(item));
+}

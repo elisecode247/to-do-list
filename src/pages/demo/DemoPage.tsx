@@ -130,6 +130,14 @@ const DemoPage: React.FC<DemoPageProps> = ({
         setLocation(`${ROUTES.templates}?demo=1`);
     }
 
+    function startWithDemoTasks() {
+        completeGettingStarted();
+        reset();
+        setEditingItem(null);
+        setActiveTab(TABS.today);
+        setRightOpen(false);
+    }
+
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
         setIsSaving(true);
@@ -253,6 +261,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 isOpen={showGettingStarted}
                 onStartFromScratch={startFromScratch}
                 onChooseTemplate={chooseTemplate}
+                onStartWithDemoTasks={startWithDemoTasks}
             />
             <div className="toast-container">
                 {toasts.map(toast => (
