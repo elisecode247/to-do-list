@@ -80,6 +80,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
                     size: "large",
                     shape: "pill",
                     logo_alignment: "left",
+                    width: 220,
                 });
             } catch (err) {
                 initializedRef.current = false;
