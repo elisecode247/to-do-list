@@ -55,7 +55,7 @@ export function useTheme(
 
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: 'true' }
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics! }
             : getStoredTheme(),
     );
 

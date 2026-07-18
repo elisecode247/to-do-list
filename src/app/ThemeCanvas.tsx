@@ -341,10 +341,15 @@ const ThemeParticlesCanvas: FC = () => {
         if (typeof window === 'undefined') return;
 
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const mobileCanvasQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+        const syncParticles = () => {
+            setEnableParticles(getEnableParticles() === 'true' && !mobileCanvasQuery.matches);
+        };
 
         const sync = () => {
             setThemeStyle(getActiveThemeStyle());
-            setEnableParticles(getEnableParticles() === 'true');
+            syncParticles();
             setReduceMotion(mediaQuery.matches);
         };
 
@@ -352,7 +357,7 @@ const ThemeParticlesCanvas: FC = () => {
 
         const observer = new MutationObserver(() => {
             setThemeStyle(getActiveThemeStyle());
-            setEnableParticles(getEnableParticles() === 'true');
+            syncParticles();
         });
 
         observer.observe(document.documentElement, {
@@ -361,11 +366,14 @@ const ThemeParticlesCanvas: FC = () => {
         });
 
         const onMotionChange = () => setReduceMotion(mediaQuery.matches);
+        const onMobileCanvasChange = () => syncParticles();
         mediaQuery.addEventListener('change', onMotionChange);
+        mobileCanvasQuery.addEventListener('change', onMobileCanvasChange);
 
         return () => {
             observer.disconnect();
             mediaQuery.removeEventListener('change', onMotionChange);
+            mobileCanvasQuery.removeEventListener('change', onMobileCanvasChange);
         };
     }, []);
 

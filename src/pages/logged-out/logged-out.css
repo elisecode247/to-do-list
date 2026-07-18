@@ -5,13 +5,11 @@
     --landing-card: rgba(20, 24, 49, 0.72);
     --landing-accent: #aeb8ff;
     --landing-accent-bright: #dce1ff;
-    position: relative;
-    height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
     color: var(--landing-ink);
     font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     scroll-behavior: smooth;
+    overflow-y: auto;
+    height: 100dvh;
 }
 
 .returning-user-loading {
@@ -621,6 +619,19 @@ html[data-auth-session-hint="true"] .returning-user-loading {
 }
 
 @media (max-width: 920px) {
+    body:has(.logged-out-root) {
+        display: block;
+    }
+
+    body:has(.logged-out-root) #app-root {
+        display: block;
+        width: 100%;
+    }
+
+    body:has(.logged-out-root) .theme-particles-canvas {
+        z-index: 0;
+    }
+
     .landing-hero {
         grid-template-columns: 1fr;
         padding-top: 90px;
