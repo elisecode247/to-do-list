@@ -151,7 +151,8 @@ const Checklist: FC<ChecklistProps> = ({
     });
 
     const completedDay = (items.some(item => item.done) || items.some(item => item.isHidden)) &&
-        filteredItems.length === 0 && activeTab === TABS.today;
+        items.length !== 0 && filteredItems.length === 0 && activeTab === TABS.today;
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -375,7 +376,7 @@ const Checklist: FC<ChecklistProps> = ({
                                     onClearFilters={clearFilters}
                                     filterCategory={filterCategory}
                                     hideCompleted={hideCompleted}
-                                    type={completedDay ? 'completedDay' : 'noTasks'}
+                                    type={items.length === 0 ? 'noTasks' :completedDay ? 'completedDay' : 'noTasks'}
                                 />
                             )}
                             {(allItems as (ChecklistItem | GoogleEvent)[]).map((item) => {

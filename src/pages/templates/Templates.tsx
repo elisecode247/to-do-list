@@ -7,6 +7,9 @@ import { TABS, type Tab } from "src/app-toolbar/tabs/types";
 import Checklist from "src/checklist/Checklist";
 import EditTaskForm from "src/edit-task-form/EditTaskForm";
 import { useAuthentication } from "src/authentication/use-authentication";
+import { useDemoTask } from "src/pages/demo/use-demo-task";
+import { ROUTES } from "src/router";
+import { useLocation, useSearch } from "wouter";
 import type { CategoryDefinition } from "src/category-select/types";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import {
@@ -140,8 +143,12 @@ function getSubtaskCount(template: TaskTemplate): number {
 
 export default function TemplatesPage() {
     const task = useTask();
+    const demoTask = useDemoTask();
     const { showToast } = useToast();
     const { isAuthenticated } = useAuthentication();
+    const [, setLocation] = useLocation();
+    const search = useSearch();
+    const isDemo = new URLSearchParams(search).get("demo") === "1";
     const { categories: userCategories } = useUserSettings();
     const categories = !isAuthenticated ? DEFAULT_CATEGORIES : userCategories;
     const [selectedCategory, setSelectedCategory] = useState<TemplateCategoryKey | "all">("all");
@@ -227,14 +234,31 @@ export default function TemplatesPage() {
                 };
             };
 
-            await addTasksFromTemplate({
-                parent: toTemplateChore(parentItem),
-                subChores: previewItems
-                    .filter(item => item.parentUuid === parentItem.id)
-                    .sort((a, b) => a.sortOrder - b.sortOrder)
-                    .map(toTemplateChore),
-            });
-            task.loadTasks();
+            if (isDemo) {
+                const idByPreviewId = new Map(previewItems.map(item => [item.id, crypto.randomUUID()]));
+                const demoItems = [...previewItems]
+                    .sort((a, b) => Number(a.parentUuid !== null) - Number(b.parentUuid !== null) || a.sortOrder - b.sortOrder)
+                    .map(item => ({
+                        ...item,
+                        id: idByPreviewId.get(item.id)!,
+                        parentUuid: item.parentUuid ? idByPreviewId.get(item.parentUuid) ?? null : null,
+                    }));
+
+                for (const item of demoItems) {
+                    await demoTask.addItem(item);
+                }
+
+                setLocation(ROUTES.demo);
+            } else {
+                await addTasksFromTemplate({
+                    parent: toTemplateChore(parentItem),
+                    subChores: previewItems
+                        .filter(item => item.parentUuid === parentItem.id)
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map(toTemplateChore),
+                });
+                task.loadTasks();
+            }
             showToast(`Added "${parentItem.text}" to your checklist`, "success");
         } catch (error) {
             console.error(error);

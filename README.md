@@ -13,3 +13,5 @@ Live: https://dailyresetlist.com
 
 ### To do
 - feature: improve ux for newly logged in user
+    - template link needs to be added to demo page
+    - demo tasks should be an option in dialog

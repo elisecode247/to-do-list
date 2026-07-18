@@ -14,12 +14,13 @@ interface EmptyStateFiltersProps {
     filterCategory: string;
     hideCompleted: boolean;
     onClearFilters: () => void;
-    type?: 'completedDay' | 'noTasks';
+    type?: 'completedDay' | 'noTasks' | 'noFilters';
 }
 
 const completedDayTitle = 'That’s everything for today';
 const completedDaySubtitle = 'You can view completed tasks by unchecking "Hide Completed" in the filters above.';
-const noTasksTitle = 'No tasks match your filters';
+const noFiltersTitle = 'No tasks match your filters';
+const noTasksTitle = 'No tasks yet';
 
 const themeIcons: Record<ThemeStyle, LucideIcon> = {
     calm: ListChecks,
@@ -53,7 +54,7 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
             </div>
 
             <h3 className="empty-state-title">
-                {type === 'completedDay' ? completedDayTitle : noTasksTitle}
+                {type === 'completedDay' ? completedDayTitle : type === 'noFilters' ? noFiltersTitle : noTasksTitle}
             </h3>
 
             {type === 'completedDay' && (

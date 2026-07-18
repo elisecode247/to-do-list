@@ -26,6 +26,11 @@ import EditEventForm from 'src/google-authorization/EditEventForm';
 import Footer from 'src/footer/Footer';
 import { useUserSettings } from 'src/user-settings/use-user-settings';
 import Search from 'src/app-toolbar/Search';
+import GettingStartedDialog from 'src/onboarding/GettingStartedDialog';
+import { readPersistentSetting, writePersistentSetting } from 'src/utilities/persistent-storage';
+import { useAuthentication } from 'src/authentication/use-authentication';
+import { ROUTES } from 'src/router';
+import { useLocation } from 'wouter';
 
 // preload pages
 import('src/pages/user-settings/UserSettings');
@@ -36,6 +41,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import TaskContextChecklist from './TaskContextChecklist';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
 
 const LoggedIn: React.FC = () => {
     useTheme();
@@ -51,6 +57,8 @@ const LoggedIn: React.FC = () => {
         itemLength,
         isUpdatedDate
     } = useTask();
+    const { email } = useAuthentication();
+    const [, setLocation] = useLocation();
     const { categories } = useUserSettings();
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState(TABS.today);
@@ -62,9 +70,34 @@ const LoggedIn: React.FC = () => {
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [showGettingStarted, setShowGettingStarted] = useState(false);
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const { updateEvent } = useGoogleCalendar();
+    const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
+
+    useEffect(() => {
+        if (!isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
+            setShowGettingStarted(true);
+        }
+    }, [isLoading, itemLength, onboardingStorageKey, taskError]);
+
+    function completeGettingStarted() {
+        writePersistentSetting(onboardingStorageKey, 'complete');
+        setShowGettingStarted(false);
+    }
+
+    function startFromScratch() {
+        completeGettingStarted();
+        setEditingItem(null);
+        setLeftOpen(false);
+        setRightOpen(true);
+    }
+
+    function chooseTemplate() {
+        completeGettingStarted();
+        setLocation(ROUTES.templates);
+    }
     async function handleEventSave(saveItem: GoogleEvent) {
         setIsSaving(true);
         try {
@@ -221,6 +254,11 @@ const LoggedIn: React.FC = () => {
         activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? 'empty' : activeTab;
 
     return (<>
+        <GettingStartedDialog
+            isOpen={showGettingStarted}
+            onStartFromScratch={startFromScratch}
+            onChooseTemplate={chooseTemplate}
+        />
         <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
             {(leftOpen || rightOpen || menuOpen) && (
                 <div

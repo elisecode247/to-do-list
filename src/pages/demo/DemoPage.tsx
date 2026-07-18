@@ -60,6 +60,10 @@ import "src/pages/user-settings/user-settings.css";
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
+import GettingStartedDialog from "src/onboarding/GettingStartedDialog";
+import { readPersistentSetting, writePersistentSetting } from "src/utilities/persistent-storage";
+import { ROUTES } from "src/router";
+import { useLocation } from "wouter";
 
 const daysOfWeek = [
     "Sunday",
@@ -70,6 +74,7 @@ const daysOfWeek = [
     "Friday",
     "Saturday",
 ];
+const DEMO_ONBOARDING_CHOICE_KEY = "daily-reset-list-demo-onboarding-choice-v1";
 
 interface DemoPageProps {
     onSuccessfulLogin: (token: string) => void;
@@ -84,6 +89,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
     const { toasts, showToast, removeToast } = useToast();
     const { items, clear, reset, isLoading, taskError, loadTasks, updateItem, loadDate } = useDemoTask();
+    const [, setLocation] = useLocation();
     const isDesktop = useIsDesktop();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeTab, setActiveTab] = useState<Tab>(TABS.today);
@@ -94,10 +100,35 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const [rightOpen, setRightOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [appearanceOpen, setAppearanceOpen] = useState(false);
+    const [showGettingStarted, setShowGettingStarted] = useState(false);
     const lastUpdatedRaw = loadDate && "current" in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const itemLength = items?.length ?? 0;
     const sparkles = <SparklesOverlay />;
+
+    useEffect(() => {
+        if (!isLoading && !readPersistentSetting(DEMO_ONBOARDING_CHOICE_KEY)) {
+            setShowGettingStarted(true);
+        }
+    }, [isLoading]);
+
+    function completeGettingStarted() {
+        writePersistentSetting(DEMO_ONBOARDING_CHOICE_KEY, "complete");
+        setShowGettingStarted(false);
+    }
+
+    function startFromScratch() {
+        completeGettingStarted();
+        clear();
+        setEditingItem(null);
+        setLeftOpen(false);
+        setRightOpen(true);
+    }
+
+    function chooseTemplate() {
+        completeGettingStarted();
+        setLocation(`${ROUTES.templates}?demo=1`);
+    }
 
     async function handleSave(saveItem: ChecklistItem) {
         if (!editingItem) return;
@@ -218,6 +249,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
     return (
         <>
+            <GettingStartedDialog
+                isOpen={showGettingStarted}
+                onStartFromScratch={startFromScratch}
+                onChooseTemplate={chooseTemplate}
+            />
             <div className="toast-container">
                 {toasts.map(toast => (
                     <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />

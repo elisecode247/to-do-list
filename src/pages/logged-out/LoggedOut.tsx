@@ -6,7 +6,6 @@ import {
     NotebookPen,
     RefreshCcw,
     Sparkles,
-    Star,
 } from "lucide-react";
 import { Link } from "wouter";
 import GoogleLoginButton from "src/authentication/google-login-button";

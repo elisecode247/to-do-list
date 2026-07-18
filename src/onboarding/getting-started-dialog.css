@@ -1,0 +1,98 @@
+.getting-started-dialog {
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.getting-started-dialog__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(8 12 24 / 0.58);
+    backdrop-filter: blur(5px);
+}
+
+.getting-started-dialog__panel {
+    position: relative;
+    width: min(100%, 520px);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: clamp(24px, 5vw, 38px);
+    color: contrast-color(var(--color-surface));
+    background: var(--color-surface);
+    box-shadow: 0 24px 64px rgb(0 0 0 / 0.24);
+}
+
+.getting-started-dialog__eyebrow {
+    margin-bottom: 8px;
+    color: var(--color-primary);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.getting-started-dialog__title {
+    font-size: clamp(1.65rem, 4vw, 2.2rem);
+    font-weight: 650;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+
+.getting-started-dialog__description {
+    max-width: 42ch;
+    margin-top: 14px;
+    color: color-mix(in srgb, currentColor 70%, transparent);
+    line-height: 1.55;
+}
+
+.getting-started-dialog__choices {
+    display: grid;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.getting-started-dialog__choice {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    width: 100%;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    color: inherit;
+    background: var(--color-surface--transparent);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.getting-started-dialog__choice svg {
+    color: var(--color-primary);
+}
+
+.getting-started-dialog__choice span {
+    display: grid;
+    gap: 3px;
+}
+
+.getting-started-dialog__choice strong {
+    font-size: 1rem;
+}
+
+.getting-started-dialog__choice small {
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.getting-started-dialog__choice:hover,
+.getting-started-dialog__choice:focus-visible {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+    outline: none;
+    transform: translateY(-1px);
+}
