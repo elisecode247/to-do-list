@@ -98,12 +98,12 @@ const App: FC = () => {
             <ThemeCanvas />
             <Switch>
                 <Route path={ROUTES.home}>
-                    {isLoading ? <LoadingSpinner /> :
-                        !isAuthenticated ? (
+                    {!isAuthenticated ? (
                             <LoggedOut onSuccessfulLogin={handleLoginSuccess} />
                         ) : (
                             <LoggedIn />
-                        )}
+                        )
+                    }
                 </Route>
                 <Route path={ROUTES.demo}>
                     {/** Demo page is faster without Suspense */}
@@ -128,9 +128,7 @@ const App: FC = () => {
                     <ThemePlaygroundLazy />
                 </Route>
                 <Route path={ROUTES.templates}>
-                    {isLoading ? <LoadingSpinner /> :(
-                            <TemplatesLazy />
-                    )}
+                    <TemplatesLazy />
                 </Route>
                 <Route>
                     <NotFoundLazy />

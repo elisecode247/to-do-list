@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Page from "src/pages/Page";
 import { useTask } from "src/app/use-task";
 import { useToast } from "src/toast/use-toast";
@@ -86,9 +86,9 @@ const TASK_TEMPLATES: TaskTemplate[] = [
     { id: "plan-leisure-outing", title: "Plan a leisure outing", description: "A lighter planning workflow for local activities and enjoyable time away.", categoryKey: "leisure", mode: "one-time", subtasks: [], items: PLAN_LEISURE_OUTING_TEMPLATE },
 ];
 
-function makeItem(overrides: Partial<ChecklistItem>): ChecklistItem {
+function makeItem(id: string, overrides: Partial<ChecklistItem>): ChecklistItem {
     return {
-        itemType: "checklist-item", id: crypto.randomUUID(), text: "", done: false,
+        itemType: "checklist-item", id, text: "", done: false,
         lastCompleted: "", note: "", sortOrder: 0, tabSortOrder: {}, category: "housework",
         mode: "one-time", isPriority: false, isArchived: false, isHidden: false,
         hasSubChores: false, parentUuid: null, recurrence: null, nextDue: null, ...overrides,
@@ -109,7 +109,10 @@ function resolveCategoryId(
 
 function buildPreview(template: TaskTemplate, categoryId: string = template.categoryKey): ChecklistItem[] {
     if (template.items) {
-        const idMap = new Map(template.items.map(item => [item.id, crypto.randomUUID()]));
+        const idMap = new Map(template.items.map(item => [
+            item.id,
+            `template-${template.id}-${item.id}`,
+        ]));
         return template.items.map(item => ({
             ...item,
             id: idMap.get(item.id)!,
@@ -118,8 +121,17 @@ function buildPreview(template: TaskTemplate, categoryId: string = template.cate
         }));
     }
 
-    const parent = makeItem({ text: template.title, note: template.description, category: categoryId, mode: template.mode, hasSubChores: template.subtasks.length > 0 });
-    return [parent, ...template.subtasks.map((text, index) => makeItem({ text, sortOrder: index, category: categoryId, mode: template.mode, parentUuid: parent.id }))];
+    const parent = makeItem(
+        `template-${template.id}-parent`,
+        { text: template.title, note: template.description, category: categoryId, mode: template.mode, hasSubChores: template.subtasks.length > 0 },
+    );
+    return [
+        parent,
+        ...template.subtasks.map((text, index) => makeItem(
+            `template-${template.id}-subtask-${index}`,
+            { text, sortOrder: index, category: categoryId, mode: template.mode, parentUuid: parent.id },
+        )),
+    ];
 }
 
 function getSubtaskCount(template: TaskTemplate): number {
@@ -142,6 +154,13 @@ export default function TemplatesPage() {
     const [isAdding, setIsAdding] = useState(false);
     const templates = useMemo(() => selectedCategory === "all" ? TASK_TEMPLATES : TASK_TEMPLATES.filter(t => t.categoryKey === selectedCategory), [selectedCategory]);
     const selectedTemplate = TASK_TEMPLATES.find(t => t.id === selectedTemplateId)!;
+
+    useEffect(() => {
+        setPreviewItems(buildPreview(
+            selectedTemplate,
+            resolveCategoryId(selectedTemplate.categoryKey, categories, isAuthenticated),
+        ));
+    }, [categories, isAuthenticated, selectedTemplate]);
 
     function selectTemplate(template: TaskTemplate) {
         setSelectedTemplateId(template.id);

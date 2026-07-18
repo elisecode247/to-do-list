@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import type { ComponentType, ReactNode } from 'react';
 import 'src/index.css';
 import App from 'app/App';
@@ -43,8 +43,16 @@ const providers = [
 
 const AppContextProvider = combineComponents(providers);
 
-createRoot(document.getElementById('app-root')!).render(
+const app = (
     <AppContextProvider>
         <App />
     </AppContextProvider>
 );
+
+const rootElement = document.getElementById('app-root')!;
+
+if (rootElement.hasChildNodes()) {
+    hydrateRoot(rootElement, app);
+} else {
+    createRoot(rootElement).render(app);
+}

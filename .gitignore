@@ -11,6 +11,7 @@ rejected-report.txt*
 node_modules
 dist
 dist-ssr
+.prerender
 *.local
 .env
 .env.*
