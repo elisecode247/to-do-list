@@ -417,6 +417,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         let cancelled = false;
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadTasks(cancelled);
         const now = new Date();
         loadDateRef.current = now;

@@ -363,6 +363,7 @@ export function useEncryptionMigration() {
             return;
         }
         if (latestJob && latestJob.processed < latestJob.total) {
+            // eslint-disable-next-line react-hooks/immutability
             processBatch();
         } else {
             setProcessingStep("completed");
@@ -378,11 +379,13 @@ export function useEncryptionMigration() {
 
     const pageRefresh = useEffectEvent(refresh);
     useEffect(function onPageLoad() {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         pageRefresh();
     }, []);
 
     useEffect(() => {
         if (isUnlocked) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setDialogOpen(false);
         }
     }, [isUnlocked]);

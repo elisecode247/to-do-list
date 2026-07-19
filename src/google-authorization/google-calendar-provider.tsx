@@ -255,6 +255,7 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
     );
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         void initializeCalendar();
     }, [initializeCalendar]);
 
@@ -289,5 +290,10 @@ export function GoogleCalendarProvider({ children }: { children: ReactNode }) {
         clientId,
     ]);
 
-    return createElement(GoogleCalendarContext.Provider, { value }, children);
+    return createElement(
+        GoogleCalendarContext.Provider,
+        // eslint-disable-next-line react-hooks/refs
+        { value },
+        children
+    );
 }

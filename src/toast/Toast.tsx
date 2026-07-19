@@ -47,13 +47,18 @@ const getToastCopy = (message: string, type: ToastProps['type'], hasUndoAction: 
 };
 
 const Toast = function({ message, type, onClose, duration = 3000, undoAction }: ToastProps) {
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<number | null>(null);
     const handleClose = useEffectEvent(onClose);
     const toastCopy = getToastCopy(message, type, Boolean(undoAction));
 
     useEffect(() => {
-        timerRef.current = setTimeout(handleClose, duration);
-        return () => clearTimeout(timerRef.current as NodeJS.Timeout);
+        timerRef.current = window.setTimeout(handleClose, duration);
+
+        return () => {
+            if (timerRef.current !== null) {
+                window.clearTimeout(timerRef.current);
+            }
+        };
     }, [duration]);
 
     const handleUndo = () => {
