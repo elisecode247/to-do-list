@@ -22,14 +22,6 @@ Live: https://dailyresetlist.com
 
 
 
-Verify production CORS and cookie settings
-
-Confirm cookies use Secure, HttpOnly, and appropriate SameSite values
-
-Add rate limits to authentication and destructive endpoints
-
-Verify users cannot access another user’s tasks or journal entries
-
 Validate and sanitize all server inputs
 
 Confirm OAuth requests use only necessary scopes
