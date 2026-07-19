@@ -452,11 +452,6 @@
         padding: var(--spacing-md);
     }
 
-    .sortable-item_checkbox {
-        width: 20px;
-        height: 20px;
-    }
-
     .sortable-item_text {
         font-size: 15px;
     }

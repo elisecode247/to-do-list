@@ -53,9 +53,9 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
                 <ThemeIcon size={26} strokeWidth={1.75} />
             </div>
 
-            <h3 className="empty-state-title">
+            <h2 className="empty-state-title">
                 {type === 'completedDay' ? completedDayTitle : type === 'noFilters' ? noFiltersTitle : noTasksTitle}
-            </h3>
+            </h2>
 
             {type === 'completedDay' && (
                 <p className="empty-state-subtitle">{completedDaySubtitle}</p>

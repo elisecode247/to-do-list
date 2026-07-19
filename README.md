@@ -19,3 +19,88 @@ Live: https://dailyresetlist.com
 * Artist to create manifest and og images
 * theme-based "stars"
 * review landing page language
+
+
+
+
+
+Reconcile the app’s “encrypted journal” messaging with the privacy policy
+Test critical user journeys
+
+
+Devices and accessibility
+
+Test current Chrome, Safari, Firefox, and Edge
+
+Test an actual iPhone and Android device
+
+Test narrow screens, zoom at 200%, and large text
+
+Complete core flows using only the keyboard
+
+Check VoiceOver or another screen reader
+
+Verify focus returns correctly after dialogs and menus close
+
+Check color contrast in every theme
+
+Respect reduced-motion preferences
+Security and privacy
+
+Verify production CORS and cookie settings
+
+Confirm cookies use Secure, HttpOnly, and appropriate SameSite values
+
+Add rate limits to authentication and destructive endpoints
+
+Verify users cannot access another user’s tasks or journal entries
+
+Validate and sanitize all server inputs
+
+Confirm OAuth requests use only necessary scopes
+
+Test token expiration and revoked Google access
+
+Confirm the privacy policy matches actual storage, encryption, retention, and deletion behavior
+
+Ensure secrets and production credentials are absent from the frontend and repository
+Reliability and operations
+
+Add production error monitoring with release/version information
+
+Add uptime monitoring for the site and API
+
+Create alerts for elevated authentication and API failures
+
+Decide how user data will be recovered after accidental loss
+
+Test database restoration if backups exist
+
+Document deployment and rollback steps
+
+Confirm production and development environments are isolated
+
+Add a health-check endpoint
+
+Verify custom-domain HTTPS and certificate renewal
+Beta program
+
+Start with 5–10 trusted testers
+
+Clearly label the product as beta
+
+Tell testers what data is stored and whether it is real or disposable
+
+Provide a visible feedback/support link
+
+Create a short feedback form covering bugs, confusion, and missing features
+
+Give testers a few representative tasks to try
+
+Provide instructions for reporting a bug, including device and browser
+
+Keep a prioritized issue tracker
+
+Define conditions for pausing the beta, such as data loss or account-access problems
+
+Schedule a review after the first week
