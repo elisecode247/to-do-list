@@ -83,10 +83,10 @@ const LoggedIn: React.FC = () => {
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
 
     useEffect(() => {
-        if (!isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
+        if (isAuthenticated && !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
             setShowGettingStarted(true);
         }
-    }, [isLoading, itemLength, onboardingStorageKey, taskError]);
+    }, [isAuthenticated, isLoading, itemLength, onboardingStorageKey, taskError]);
 
     function completeGettingStarted() {
         writePersistentSetting(onboardingStorageKey, 'complete');

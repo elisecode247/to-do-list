@@ -290,6 +290,7 @@ const Checklist: FC<ChecklistProps> = ({
 
 
     const displaySparkles = () => {
+        if (shouldReduceMotion) return;
         setShowSparkles(true);
         if (sparkleTimeoutRef.current) {
             clearTimeout(sparkleTimeoutRef.current);

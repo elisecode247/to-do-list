@@ -15,6 +15,7 @@ import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
+import { useReducedMotion } from 'framer-motion';
 
 function isTodayOrBefore(date: Date) {
   const today = new Date();
@@ -59,7 +60,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         unhideForToday,
     } = useDemoTask();
     const { events } = useGoogleCalendar();
-
+    const shouldReduceMotion = useReducedMotion();
     const [showSparkles, setShowSparkles] = useState(false);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const { showToast } = useToast();
@@ -204,6 +205,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
 
 
     const displaySparkles = () => {
+        if (shouldReduceMotion) return;
         setShowSparkles(true);
         if (sparkleTimeoutRef.current) {
             clearTimeout(sparkleTimeoutRef.current);

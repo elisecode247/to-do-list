@@ -11,6 +11,7 @@ import { EncryptionKeyProvider } from 'src/encryption/encryption-key-context';
 import { DemoProvider } from 'src/pages/demo/demo-provider';
 import { DemoTaskProvider } from 'src/pages/demo/demo-task-provider';
 import { AppRouter } from 'src/router';
+import { MotionConfig } from 'framer-motion';
 
 type ProviderComponent = ComponentType<{ children: ReactNode }>;
 
@@ -44,9 +45,11 @@ const providers = [
 const AppContextProvider = combineComponents(providers);
 
 const app = (
-    <AppContextProvider>
-        <App />
-    </AppContextProvider>
+    <MotionConfig reducedMotion="user">
+        <AppContextProvider>
+            <App />
+        </AppContextProvider>
+    </MotionConfig>
 );
 
 const rootElement = document.getElementById('app-root')!;
