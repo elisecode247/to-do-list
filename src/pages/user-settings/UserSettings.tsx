@@ -9,6 +9,7 @@ import EncryptionSettings from "src/user-settings/EncryptionSettings";
 import JournalExportSettings from "src/user-settings/JournalExportSettings";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import CategorySettings from "src/pages/user-settings/CategorySettings";
+import SharingSettings from "src/pages/user-settings/SharingSettings";
 
 function UserSettings() {
     useTheme();
@@ -28,6 +29,10 @@ function UserSettings() {
                 <h2 id="personalization-settings-title" className="settings-category-title">Personalization</h2>
                 <AppearanceSettings />
                 <CategorySettings />
+            </section>
+            <section className="settings-category" aria-labelledby="sharing-settings-title">
+                <h2 id="sharing-settings-title" className="settings-category-title">Sharing</h2>
+                <SharingSettings />
             </section>
             <section className="settings-category" aria-labelledby="integration-settings-title">
                 <h2 id="integration-settings-title" className="settings-category-title">Integrations</h2>

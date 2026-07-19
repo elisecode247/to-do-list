@@ -1,0 +1,83 @@
+.settings-input {
+    width: clamp(100px, 100%, 600px);
+}
+.settings-btn:disabled {
+    background-color: #f0f0f0;
+    color: #a0a0a0;
+}
+.settings-error-message {
+    border-inline-start: 3px solid var(--color-danger);
+    padding: 0 8px;
+    margin-top: 8px;
+}
+.settings-success-message {
+    border-inline-start: 3px solid var(--color-success);
+    padding: 0 8px;
+    margin-top: 8px;
+}
+
+.settings-info-message {
+    border-inline-start: 3px solid var(--color-info);
+    padding: 0 8px;
+    margin-top: 8px;
+}
+.shared-user-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+.shared-user-status {
+    margin: 0 4px;
+}
+.shared-user-actions {
+    display: flex;
+    gap: 8px;
+}
+.shared-user-name {
+    font-weight: bold;
+    margin: 0;
+}
+.shared-user-item-accept-btn {
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    margin: 4px 0;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-success);
+    color: contrast-color(var(--color-success));
+}
+.shared-user-item-decline-btn {
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    margin: 4px 0;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-danger);
+    color: contrast-color(var(--color-danger));
+}
+.shared-users-list {
+    margin-top: 16px;
+    height: clamp(100px, 100%, 600px);
+    overflow-y: auto;
+}
+.shared-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    margin-right: 8px;
+}
+.shared-user-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.shared-user-item-cancel-btn {
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    margin: 4px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-secondary);
+    color: contrast-color(var(--color-secondary));
+}
