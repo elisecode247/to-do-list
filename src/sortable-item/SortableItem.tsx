@@ -112,8 +112,16 @@ export const SortableItem: FC<SortableItemProps> = ({
 }) => {
     const { showToast } = useToast();
     const { categories } = useUserSettings();
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
-        useSortable({ id });
+    const {
+        attributes,
+        listeners,
+        setActivatorNodeRef,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+        isOver,
+    } = useSortable({ id });
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ?? false);
@@ -300,12 +308,13 @@ export const SortableItem: FC<SortableItemProps> = ({
                 ${isOver ? 'sortable-item_drag-over' : ''}
                 ${isMenuOpen ? 'sortable-item_drag-wrapper--menu-open' : ''}`}
             ref={setDragWrapperRef}
-            {...attributes}
         >
             {animate && <div
                     className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 >
                     <button
+                        ref={setActivatorNodeRef}
+                        {...attributes}
                         {...listeners}
                         className="sortable-item_drag-handle"
                         aria-label="Hold to move and reorder task"
