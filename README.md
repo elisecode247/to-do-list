@@ -22,31 +22,6 @@ Live: https://dailyresetlist.com
 
 
 
-
-
-Reconcile the app’s “encrypted journal” messaging with the privacy policy
-Test critical user journeys
-
-
-Devices and accessibility
-
-Test current Chrome, Safari, Firefox, and Edge
-
-Test an actual iPhone and Android device
-
-Test narrow screens, zoom at 200%, and large text
-
-Complete core flows using only the keyboard
-
-Check VoiceOver or another screen reader
-
-Verify focus returns correctly after dialogs and menus close
-
-Check color contrast in every theme
-
-Respect reduced-motion preferences
-Security and privacy
-
 Verify production CORS and cookie settings
 
 Confirm cookies use Secure, HttpOnly, and appropriate SameSite values

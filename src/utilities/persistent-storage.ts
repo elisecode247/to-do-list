@@ -24,6 +24,7 @@ function setCookie(name: string, value: string) {
         `Max-Age=${COOKIE_MAX_AGE_SECONDS}`,
         'Path=/',
         'SameSite=Lax',
+        'Secure',
     ].join('; ');
 }
 
@@ -67,6 +68,7 @@ export function removePersistentSetting(key: string) {
             'Max-Age=0',
             'Path=/',
             'SameSite=Lax',
+            'Secure',
         ].join('; ');
     }
 }
