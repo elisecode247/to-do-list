@@ -237,7 +237,7 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
                         type="submit"
                         aria-label="Add task"
                     >
-                        Add
+                        Add task
                     </button>
                 </div>
             </form>
@@ -266,45 +266,44 @@ const DemoEventUnavailable = ({ setRightOpen }: Pick<DemoAddFormProps, 'setRight
     );
 };
 
-const DemoAddForm = ({ isDesktop, setRightOpen, categories }: DemoAddFormProps) => {
+const DemoAddForm = ({ setRightOpen, categories }: DemoAddFormProps) => {
     const [formType, setFormType] = useState<FormType>('task');
 
     return (
         <div className="task-form-drawer">
             <div className="task-form-drawer__header">
-                <div
-                    className="form-type-toggle"
-                    role="tablist"
-                    aria-label="Create type"
-                >
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={formType === 'task'}
-                        className={`form-type-toggle__btn${formType === 'task' ? ' form-type-toggle__btn--active' : ''}`}
-                        onClick={() => setFormType('task')}
-                    >
-                        <ListTodo className="form-type-toggle__icon" />
-                        Task
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={formType === 'event'}
-                        className={`form-type-toggle__btn${formType === 'event' ? ' form-type-toggle__btn--active' : ''}`}
-                        onClick={() => setFormType('event')}
-                    >
-                        <CalendarCheck className="form-type-toggle__icon" />
-                        Event
-                    </button>
-                </div>
+                <h2 className="task-form-drawer__title">New item</h2>
+                <CloseButton
+                    onClick={() => setRightOpen(false)}
+                    label="Close new item form"
+                />
+            </div>
 
-                {isDesktop && (
-                    <CloseButton
-                        onClick={() => setRightOpen(false)}
-                        label="Close new task form"
-                    />
-                )}
+            <div
+                className="form-type-toggle"
+                role="tablist"
+                aria-label="Create type"
+            >
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={formType === 'task'}
+                    className={`form-type-toggle__btn${formType === 'task' ? ' form-type-toggle__btn--active' : ''}`}
+                    onClick={() => setFormType('task')}
+                >
+                    <ListTodo className="form-type-toggle__icon" />
+                    Task
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={formType === 'event'}
+                    className={`form-type-toggle__btn${formType === 'event' ? ' form-type-toggle__btn--active' : ''}`}
+                    onClick={() => setFormType('event')}
+                >
+                    <CalendarCheck className="form-type-toggle__icon" />
+                    Event
+                </button>
             </div>
 
             {formType === 'task' ? (

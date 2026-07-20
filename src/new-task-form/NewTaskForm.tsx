@@ -241,7 +241,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                         type="submit"
                         aria-label="Add task"
                     >
-                        Add
+                        Add task
                     </button>
                 </div>
             </form>

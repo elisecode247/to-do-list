@@ -5,7 +5,7 @@ import './footer.css';
 export function Footer() {
   return (
     <footer className={`footer`}>
-      <nav>
+      <nav className="footer-nav">
             <Link href={ROUTES.privacyPolicy} className="footer-link">
                 Privacy Policy
             </Link>

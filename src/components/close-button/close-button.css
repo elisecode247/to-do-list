@@ -1,10 +1,19 @@
 .drawer-close-button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
     background: transparent;
     border: none;
     padding: 0;
     margin-left: 12px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     color: inherit;
+}
+
+.drawer-close-button:hover {
+    background: color-mix(in srgb, currentColor 8%, transparent);
 }
 
 .drawer-close-icon {

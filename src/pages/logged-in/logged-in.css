@@ -38,7 +38,14 @@
 @media (max-width: 899px) {
     .app_container > .left_panel,
     .app_container > .right_panel {
-        z-index: 510;
+        z-index: 1100;
+    }
+
+    .app_container > .right_panel {
+        height: min(74dvh, 640px);
+        max-height: min(74dvh, 640px);
+        border-radius: 24px 24px 0 0;
+        overflow: hidden;
     }
 
     .app_h1 {

@@ -41,6 +41,12 @@
     --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
     --color-surface--transparent: light-dark(color(from var(--color-surface) srgb r g b / 0.8),
             color(from var(--color-surface) srgb r g b / 0.3));
+    --color-form-surface: light-dark(#f7f7f8,
+            color-mix(in srgb, var(--color-surface-dark) 88%, white 12%));
+    --color-form-control-surface: light-dark(#fbfbfc,
+            color-mix(in srgb, var(--color-surface-dark) 82%, white 18%));
+    --color-form-border: light-dark(#dedee2,
+            color-mix(in srgb, var(--color-surface-dark) 58%, white 42%));
     --color-hover: light-dark(color-mix(in srgb, var(--color-surface) 88%, black),
             color-mix(in srgb, var(--color-surface) 88%, white));
     --color-white-black: light-dark(white, black);

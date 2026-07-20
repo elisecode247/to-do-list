@@ -1,4 +1,4 @@
-import { XCircle } from 'lucide-react';
+import { X } from 'lucide-react';
 import './close-button.css';
 
 type CloseButtonProps = {
@@ -13,7 +13,7 @@ const CloseButton = ({ onClick, label }: CloseButtonProps) => {
             onClick={onClick}
             aria-label={label}
         >
-            <XCircle size={28} className="drawer-close-icon" strokeWidth={1} />
+            <X size={24} className="drawer-close-icon" strokeWidth={2} />
         </button>
     );
 };

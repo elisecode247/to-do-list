@@ -224,7 +224,7 @@ const NewEventForm = ({ setRightOpen }: NewEventFormProps) => {
                         type="submit"
                         aria-label="Create event"
                     >
-                        {isSaving ? <span>Saving...</span> : <span>Create</span>}
+                        {isSaving ? <span>Saving...</span> : <span>Add event</span>}
                     </button>
                 </div>
             </form>
