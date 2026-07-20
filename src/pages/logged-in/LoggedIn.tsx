@@ -481,9 +481,11 @@ const LoggedIn: React.FC = () => {
                         categories={categories}
                         key={editingItem.id} // force remount when editing a different item
                         isSaving={isSaving}
+                        enableSharing
                         formData={editingItem as ChecklistItem}
                         onSave={handleSave}
                         onClose={handleCloseEditModal}
+                        onMembersChanged={loadTasks}
                     />
                 ) : rightOpen && editingItem && editingItem.itemType === 'google-event' ? (
                     <EditEventForm

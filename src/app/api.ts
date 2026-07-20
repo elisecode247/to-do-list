@@ -1,5 +1,9 @@
 import { API_CHORES_URL } from "app/constants";
-import { type ChecklistItem } from "app/types";
+import {
+    type ChecklistItem,
+    type ChoreMember,
+    type ChoreMemberRole,
+} from "app/types";
 import { authHeaders } from "src/authentication/authentication-api";
 
 export type ApiErrorResponse = {
@@ -134,6 +138,53 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
         console.error("Failed to save task:", err);
         throw err;
     }
+}
+
+export async function addChoreMember(
+    choreUuid: string,
+    userUuid: string,
+    role: ChoreMemberRole,
+): Promise<ChoreMember> {
+    const response = await fetch(`${API_CHORES_URL}/${choreUuid}/members`, {
+        method: "POST",
+        headers: await authHeaders(),
+        body: JSON.stringify({ userUuid, role }),
+    });
+
+    if (!response.ok) {
+        const responseText = (await response.text()).trim();
+        let message = '';
+
+        if (responseText) {
+            try {
+                const data: unknown = JSON.parse(responseText);
+                if (typeof data === 'object' && data !== null) {
+                    const error = 'error' in data ? data.error : undefined;
+                    const detail = 'message' in data ? data.message : undefined;
+                    message = typeof error === 'string'
+                        ? error
+                        : typeof detail === 'string'
+                            ? detail
+                            : '';
+                }
+            } catch {
+                if (!responseText.startsWith('<')) {
+                    message = responseText;
+                }
+            }
+        }
+
+        if (!message) {
+            if (response.status === 409) message = 'This user is already a member of the task.';
+            else if (response.status === 404) message = 'This task or user is not available.';
+            else if (response.status === 400) message = 'Choose a valid user and role.';
+            else message = 'Failed to add task member.';
+        }
+
+        throw new Error(message);
+    }
+
+    return await response.json() as ChoreMember;
 }
 
 export async function updateTasksOrder(

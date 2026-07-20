@@ -1,7 +1,12 @@
 import 'src/edit-task-form/edit-task-form.css';
 import 'src/task-form/task-form-shared.css';
-import { useState, useRef, type FC } from 'react';
-import type { ChecklistItem, Mode } from 'app/types';
+import { useMemo, useState, useRef, type FC } from 'react';
+import type {
+    ChecklistItem,
+    ChoreMember,
+    ChoreMemberRole,
+    Mode,
+} from 'app/types';
 import { MODES, OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'checklist/constants';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
@@ -20,6 +25,8 @@ import CloseButton from 'components/close-button/CloseButton';
 import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 'react-hook-form';
 import { getDaysAgo } from 'src/utilities/days-ago';
 import type { CategoryDefinition } from 'src/category-select/types';
+import { useShareTasks, type SharedUser } from 'src/sharing/use-share-tasks';
+import { addChoreMember } from 'src/app/api';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -27,6 +34,8 @@ type EditTaskFormProps = {
     onSave: (item: ChecklistItem) => void;
     onClose: () => void;
     categories: CategoryDefinition[];
+    enableSharing?: boolean;
+    onMembersChanged?: () => void;
 };
 
 type RecurrenceFormValues = {
@@ -50,9 +59,17 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     onSave,
     onClose,
     categories,
+    enableSharing = false,
+    onMembersChanged,
 }) => {
     const [mode, setMode] = useState<Mode>(formData.mode);
     const [isPriority, setIsPriority] = useState(formData.isPriority);
+    const [members, setMembers] = useState<ChoreMember[]>(formData.members ?? []);
+    const [selectedUserUuid, setSelectedUserUuid] = useState('');
+    const [selectedRole, setSelectedRole] = useState<ChoreMemberRole>('editor');
+    const [isAddingMember, setIsAddingMember] = useState(false);
+    const [memberError, setMemberError] = useState<string | null>(null);
+    const { sharedUsers } = useShareTasks({ enabled: enableSharing });
     const noteRef = useRef<MDXEditorMethods>(null);
     const recurrence = formData.recurrence;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
@@ -60,6 +77,13 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const categoryId = categories.find(category =>
         category.id === formData.category || category.builtInKey === formData.category
     )?.id ?? formData.category;
+    const availableSharedUsers = useMemo(
+        () => sharedUsers.filter(user =>
+            user.status === 'accepted'
+            && !members.some(member => member.userUuid === user.uuid)
+        ),
+        [members, sharedUsers],
+    );
 
     const defaultValues: EditTaskFormValues = {
         taskName: formData.text,
@@ -121,6 +145,43 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
 
     const modeLabel = (m: string) =>
         m === 'one-time' ? 'One-time' : m.charAt(0).toUpperCase() + m.slice(1);
+
+    const getUserLabel = (user: Pick<SharedUser, 'displayName' | 'email' | 'uuid'>) =>
+        user.displayName || user.email || user.uuid;
+
+    const handleAddMember = async () => {
+        if (!selectedUserUuid) {
+            setMemberError('Choose a shared user to add.');
+            return;
+        }
+
+        setIsAddingMember(true);
+        setMemberError(null);
+
+        try {
+            const selectedUser = sharedUsers.find(user => user.uuid === selectedUserUuid);
+            const membership = await addChoreMember(formData.id, selectedUserUuid, selectedRole);
+            const member: ChoreMember = {
+                ...membership,
+                userUuid: membership.userUuid ?? selectedUserUuid,
+                role: membership.role ?? selectedRole,
+                user: membership.user ?? (selectedUser ? {
+                    uuid: selectedUser.uuid,
+                    displayName: selectedUser.displayName,
+                    avatarUrl: selectedUser.avatarUrl,
+                    email: selectedUser.email,
+                } : undefined),
+            };
+
+            setMembers(currentMembers => [...currentMembers, member]);
+            setSelectedUserUuid('');
+            onMembersChanged?.();
+        } catch (error) {
+            setMemberError(error instanceof Error ? error.message : 'Failed to add task member.');
+        } finally {
+            setIsAddingMember(false);
+        }
+    };
 
     return (
         <FormProvider {...methods}>
@@ -219,7 +280,112 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             onClick={(e) => e.currentTarget.showPicker?.()}
                         />
                     </div>
+                    <div className="task-form-field">
+                        <div className="task-form-section-divider">Sharing</div>
+                        <span className="task-form-field__label">Task members</span>
+                        {members.length > 0 ? (
+                            <ul className="edit-task-member-list">
+                                {members.map(member => (
+                                    <li
+                                        className="edit-task-member"
+                                        key={member.uuid ?? member.userUuid}
+                                    >
+                                        {member.user?.avatarUrl ? (
+                                            <img
+                                                className="edit-task-member__avatar"
+                                                src={member.user.avatarUrl}
+                                                alt=""
+                                            />
+                                        ) : (
+                                            <span
+                                                aria-hidden="true"
+                                                className="edit-task-member__avatar edit-task-member__avatar--fallback"
+                                            >
+                                                {(member.user?.displayName
+                                                    || member.user?.email
+                                                    || '?').charAt(0).toUpperCase()}
+                                            </span>
+                                        )}
+                                        <span className="edit-task-member__identity">
+                                            <span className="edit-task-member__name">
+                                                {member.user
+                                                    ? getUserLabel(member.user)
+                                                    : member.userUuid}
+                                            </span>
+                                            {member.user?.displayName && member.user.email && (
+                                                <span className="edit-task-member__email">
+                                                    {member.user.email}
+                                                </span>
+                                            )}
+                                        </span>
+                                        <span className="edit-task-member__role">{member.role}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="edit-task-sharing__empty">Only you have access to this task.</p>
+                        )}
 
+                        {enableSharing && (
+                            <div className="edit-task-sharing__add">
+                                <label
+                                    className="task-form-field__label"
+                                    htmlFor={`edit-task-member-user-${formData.id}`}
+                                >
+                                    Add a shared user
+                                </label>
+                                <select
+                                    id={`edit-task-member-user-${formData.id}`}
+                                    className="task-form-input task-form-select"
+                                    value={selectedUserUuid}
+                                    onChange={event => {
+                                        setSelectedUserUuid(event.target.value);
+                                        setMemberError(null);
+                                    }}
+                                    disabled={isAddingMember || availableSharedUsers.length === 0}
+                                >
+                                    <option value="">
+                                        {availableSharedUsers.length > 0
+                                            ? 'Choose a user'
+                                            : 'No other accepted shared users'}
+                                    </option>
+                                    {availableSharedUsers.map(user => (
+                                        <option key={user.uuid} value={user.uuid}>
+                                            {getUserLabel(user)}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="edit-task-sharing__controls">
+                                    <select
+                                        aria-label="Member role"
+                                        className="task-form-input task-form-select edit-task-sharing__role"
+                                        value={selectedRole}
+                                        onChange={event =>
+                                            setSelectedRole(event.target.value as ChoreMemberRole)
+                                        }
+                                        disabled={isAddingMember}
+                                    >
+                                        <option value="editor">Editor</option>
+                                        <option value="doer">Doer</option>
+                                        <option value="viewer">Viewer</option>
+                                    </select>
+                                    <button
+                                        className="task-form-action-button edit-task-sharing__add-button"
+                                        type="button"
+                                        onClick={() => void handleAddMember()}
+                                        disabled={isAddingMember || !selectedUserUuid}
+                                    >
+                                        {isAddingMember ? 'Adding…' : 'Add'}
+                                    </button>
+                                </div>
+                                {memberError && (
+                                    <p className="task-form-drawer__error" role="alert">
+                                        {memberError}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </div>
                     <div className="task-form-field">
                         <div className="task-form-section-divider">Options</div>
                         <button

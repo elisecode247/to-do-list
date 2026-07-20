@@ -50,6 +50,25 @@ export type IntervalRecurrence = {
     startDate: string;
 }
 
+export type ChoreMemberRole = 'editor' | 'doer' | 'viewer';
+
+export interface ChoreMemberUser {
+    uuid: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+    email: string | null;
+}
+
+export interface ChoreMember {
+    uuid?: string;
+    choreUuid?: string;
+    userUuid: string;
+    role: ChoreMemberRole;
+    createdAt?: string;
+    updatedAt?: string;
+    user?: ChoreMemberUser;
+}
+
 export interface ChecklistItem {
     itemType: 'checklist-item' | 'google-event';
     isHidden: boolean;
@@ -68,6 +87,7 @@ export interface ChecklistItem {
     parentUuid: string | null;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     nextDue: string | null;
+    members?: ChoreMember[];
     createdAt?: string;
     updatedAt?: string;
     /** upcoming indicates if subtask needs to be shown in subtask list for today,

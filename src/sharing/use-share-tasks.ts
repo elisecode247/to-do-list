@@ -60,7 +60,7 @@ async function ensureSuccessfulResponse(response: Response, fallbackMessage: str
     throw new Error(serverMessage || fallbackMessage);
 }
 
-const useShareTasks = () => {
+const useShareTasks = ({ enabled = true }: { enabled?: boolean } = {}) => {
     const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([]);
     const [invitations, setInvitations] = useState<InvitedUser[]>([]);
 
@@ -133,12 +133,16 @@ const useShareTasks = () => {
     };
 
     useEffect(() => {
+        if (!enabled) {
+            return;
+        }
+
         // This effect synchronizes the hook with the task-sharing API on mount.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         void refreshSharing().catch((error: unknown) => {
             console.error('Failed to load task-sharing data:', error);
         });
-    }, [refreshSharing]);
+    }, [enabled, refreshSharing]);
 
     return {
         sharedUsers,

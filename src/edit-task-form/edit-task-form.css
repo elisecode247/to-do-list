@@ -61,3 +61,101 @@
     color: contrast-color(color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%));
     width: 100%;
 }
+
+.edit-task-member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.edit-task-member {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    padding: 7px 8px;
+    border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.edit-task-member__avatar {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.edit-task-member__avatar--fallback {
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+    color: contrast-color(color-mix(in srgb, var(--color-primary) 18%, var(--color-surface)));
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.edit-task-member__identity {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.edit-task-member__name,
+.edit-task-member__email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.edit-task-member__name {
+    font-size: 13px;
+}
+
+.edit-task-member__email,
+.edit-task-sharing__empty {
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 11px;
+}
+
+.edit-task-member__role {
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+    font-size: 10px;
+    text-transform: capitalize;
+}
+
+.edit-task-sharing__empty {
+    margin: 0;
+}
+
+.edit-task-sharing__add {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.edit-task-sharing__controls {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-task-sharing__role {
+    flex: 1;
+}
+
+.edit-task-sharing__add-button {
+    border: 0;
+    background: var(--color-primary);
+    color: contrast-color(var(--color-primary));
+}

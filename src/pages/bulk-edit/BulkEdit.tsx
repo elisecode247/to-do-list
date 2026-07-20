@@ -16,7 +16,7 @@ interface ChecklistItemWithDepth extends ChecklistItem {
 
 function BulkEdit() {
     const { showToast } = useToast();
-    const { items, updateItem, deleteItem, bulkUpdate } = useTask();
+    const { items, updateItem, deleteItem, bulkUpdate, loadTasks } = useTask();
     const { categories } = useUserSettings();
 
     const [localItems, setLocalItems] = useState<ChecklistItem[]>(items);
@@ -247,12 +247,14 @@ function BulkEdit() {
             {selectedItem && (
                 <EditTaskForm
                     categories={categories}
+                    enableSharing
                     formData={selectedItem}
                     onSave={(item) => {
                         updateItem(item);
                         setSelectedItem(null);
                     }}
                     onClose={() => setSelectedItem(null)}
+                    onMembersChanged={loadTasks}
                 />
             )}
         </Page>
