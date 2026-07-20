@@ -31,6 +31,21 @@ textarea {
     font-family: inherit;
     font-size: var(--font-size-md);
 }
+/* for ios safari */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"] {
+  min-width: 0; /* Forces WebKit to look past the implicit size attribute */
+  flex-shrink: 1; /* Ensures it can collapse smaller than its parent */
+}
+/* Temporal Sizing Glitches: iOS Safari forces an internal display: inline-flex
+input[type="date"],
+input[type="time"] {
+  display: block;
+  width: 100%;
+}
 
 @media (prefers-reduced-motion: reduce) {
     html:focus-within {
