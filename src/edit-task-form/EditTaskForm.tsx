@@ -40,7 +40,7 @@ import {
 type EditTaskFormProps = {
     isSaving?: boolean;
     formData: ChecklistItem;
-    onSave: (item: ChecklistItem) => void;
+    onSave: (item: ChecklistItem) => Promise<void> | void;
     onClose: () => void;
     categories: CategoryDefinition[];
     enableSharing?: boolean;
@@ -82,11 +82,14 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const [pendingMemberUuid, setPendingMemberUuid] = useState<string | null>(null);
     const [isLoadingMembers, setIsLoadingMembers] = useState(enableSharing);
     const [memberError, setMemberError] = useState<string | null>(null);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const canEdit = canEditTask(formData.accessRole);
     const canManageMembers = canManageSharing
         && canManageTaskMembers(formData.accessRole);
     const { sharedUsers } = useShareTasks({ enabled: enableSharing });
     const noteRef = useRef<MDXEditorMethods>(null);
+    const readOnlyDescriptionId = `edit-task-read-only-${formData.id}`;
     const recurrence = formData.recurrence;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
     const isOneTimeRecurrence = recurrence?.type === ONE_TIME_RECURRENCE;
@@ -180,19 +183,31 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             };
         }
 
-        onSave({
-            ...formData,
-            text: data.taskName,
-            category: data.category,
-            isPriority,
-            mode,
-            note: watchNote,
-            lastCompleted: data.lastCompleted
-                ? new Date(localDateWithNowTime(data.lastCompleted)).toISOString()
-                : '',
-            recurrence,
-        });
-        onClose();
+        setIsSubmitting(true);
+        setSaveError(null);
+        try {
+            await onSave({
+                ...formData,
+                text: data.taskName,
+                category: data.category,
+                isPriority,
+                mode,
+                note: watchNote,
+                lastCompleted: data.lastCompleted
+                    ? new Date(localDateWithNowTime(data.lastCompleted)).toISOString()
+                    : '',
+                recurrence,
+            });
+            onClose();
+        } catch (error) {
+            setSaveError(
+                error instanceof Error && error.message
+                    ? error.message
+                    : 'Failed to save task. Please try again.',
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const modeLabel = (m: string) =>
@@ -314,7 +329,11 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
 
                 <div className="task-form-drawer__body">
                     {!canEdit && (
-                        <p className="edit-task-read-only-message" role="status">
+                        <p
+                            className="edit-task-read-only-message"
+                            id={readOnlyDescriptionId}
+                            role="status"
+                        >
                             Editing requires owner or editor access.
                         </p>
                     )}
@@ -327,6 +346,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             type="text"
                             placeholder="Task name"
                             disabled={!canEdit}
+                            aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                         />
                     </div>
 
@@ -339,6 +359,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                 selectedCategory={watchCategory}
                                 onChange={(value) => methods.setValue('category', value)}
                                 disabled={!canEdit}
+                                ariaDescribedBy={!canEdit ? readOnlyDescriptionId : undefined}
                             />
                         </div>
                     </div>
@@ -352,6 +373,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                     type="button"
                                     onClick={() => setMode(m)}
                                     disabled={!canEdit}
+                                    aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                                     className={`edit-task-chip ${mode === m ? 'edit-task-chip--active' : ''}`}
                                 >
                                     {modeLabel(m)}
@@ -376,11 +398,13 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                     min={1}
                                     max={1000}
                                     disabled={!canEdit}
+                                    aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                                 />
                                 <select
                                     {...register('frequency')}
                                     className="task-form-input task-form-select task-form-recurrence-frequency"
                                     disabled={!canEdit}
+                                    aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                                 >
                                     {IntervalOptions.map(option => (
                                         <option key={option.key} value={option.key}>{option.title}(s)</option>
@@ -398,6 +422,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             type="date"
                             onClick={(e) => e.currentTarget.showPicker?.()}
                             disabled={!canEdit}
+                            aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                         />
                     </div>
                     <div className="task-form-field">
@@ -408,6 +433,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             type="date"
                             onClick={(e) => e.currentTarget.showPicker?.()}
                             disabled={!canEdit}
+                            aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                         />
                     </div>
                     <div className="task-form-field">
@@ -564,6 +590,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             type="button"
                             onClick={() => setIsPriority(p => !p)}
                             disabled={!canEdit}
+                            aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
                             className={`edit-task-priority ${isPriority ? 'edit-task-priority--active' : ''}`}
                             title="Prioritize this task"
                         >
@@ -574,7 +601,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
 
                     <div className="task-form-field">
                         <label className="task-form-field__label">Notes</label>
-                        <div className="edit-task-notes-wrap">
+                        <div
+                            className="edit-task-notes-wrap"
+                            aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}
+                        >
                             <Controller
                                 name="note"
                                 control={control}
@@ -635,6 +665,11 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             {errors.frequency.message || 'Frequency is required'}
                         </div>
                     )}
+                    {saveError && (
+                        <div className="task-form-drawer__error" role="alert">
+                            {saveError}
+                        </div>
+                    )}
                     <button
                         className="task-form-action-button task-form-action-button--cancel"
                         onClick={onClose}
@@ -644,12 +679,14 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                         Cancel
                     </button>
                     <button
-                        disabled={isSaving || !canEdit}
+                        disabled={isSaving || isSubmitting || !canEdit}
                         className="task-form-action-button task-form-action-button--save"
                         type="submit"
                         aria-label="Save changes"
                     >
-                        {isSaving ? <span>Saving...</span> : <span>Save</span>}
+                        {isSaving || isSubmitting
+                            ? <span>Saving...</span>
+                            : <span>Save</span>}
                     </button>
                 </div>
             </form>
