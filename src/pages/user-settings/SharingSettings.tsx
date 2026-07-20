@@ -1,26 +1,50 @@
 import { useState } from 'react';
 import './sharing-settings.css';
 import { useShareTasks } from 'src/sharing/use-share-tasks';
+import DeleteUserDialog from 'src/sharing/DeleteUserDialog';
+import { useToast } from 'src/toast/use-toast';
 
+function getErrorMessage(error: unknown, fallbackMessage: string) {
+    return error instanceof Error ? error.message : fallbackMessage;
+}
 
 const SharingSettings = function () {
     const [email, setEmail] = useState('');
     const [isSending, setIsSending] = useState(false);
     const [sent, setSent] = useState(false);
     const [error, setError] = useState('');
+    const [selectedUserUuid, setSelectedUserUuid] = useState<string | null>(null);
+    const { showToast } = useToast();
+    const closeDeleteConfirmation = () => {
+        setSelectedUserUuid(null);
+    };
     const {
         invitations,
         sharedUsers,
         acceptInvitation,
         sendInvitation,
         cancelInvitation,
-        declineInvitation
+        declineInvitation,
+        deleteSharedUser,
     } = useShareTasks();
     const pendingIncomingInvitations = invitations.filter(user => user.direction === 'incoming' && user.status === 'pending');
     const pendingOutgoingInvitations = invitations.filter(user => user.direction === 'outgoing' && user.status === 'pending');
     const acceptedInvitations = sharedUsers.filter(user => user.status === 'accepted');
 
-    const sendEmail = () => {
+    const handleInvitationAction = async (
+        action: () => Promise<void>,
+        successMessage: string,
+        failureMessage: string,
+    ) => {
+        try {
+            await action();
+            showToast(successMessage, 'success');
+        } catch (actionError) {
+            showToast(getErrorMessage(actionError, failureMessage), 'error');
+        }
+    };
+
+    const sendEmail = async () => {
         if (!email.length) {
             setError('Please enter an email address.');
             return;
@@ -30,14 +54,32 @@ const SharingSettings = function () {
             return;
         }
         setIsSending(true);
-        sendInvitation(email)
-            .finally(() => setIsSending(false))
-            .then(() => setSent(true))
-            .catch((err) => {
-                console.error(err);
-                setError(err);
-            });
+        setSent(false);
+
+        try {
+            await sendInvitation(email);
+            setSent(true);
+            setEmail('');
+            showToast('Invitation sent.', 'success');
+        } catch (sendError) {
+            const message = getErrorMessage(sendError, 'Failed to send invitation');
+            setError(message);
+            showToast(message, 'error');
+        } finally {
+            setIsSending(false);
+        }
     };
+
+    const handleDeleteSharedUser = async (userUuid: string) => {
+        try {
+            await deleteSharedUser(userUuid);
+            showToast('Shared user deleted successfully.', 'success');
+        } catch (deleteError) {
+            showToast(getErrorMessage(deleteError, 'Shared user deletion failed'), 'error');
+            throw deleteError;
+        }
+    };
+
     return (
         <>
             {pendingIncomingInvitations?.length > 0 && (
@@ -55,14 +97,22 @@ const SharingSettings = function () {
                                     <button
                                         className="settings-btn shared-user-item-accept-btn"
                                         type="button"
-                                        onClick={() => acceptInvitation(user.invitationId!)}
+                                        onClick={() => void handleInvitationAction(
+                                            () => acceptInvitation(user.invitationId),
+                                            'Invitation accepted.',
+                                            'Failed to accept invitation',
+                                        )}
                                     >
                                         Accept
                                     </button>
                                     <button
                                         className="settings-btn shared-user-item-decline-btn"
                                         type="button"
-                                        onClick={() => declineInvitation(user.invitationId!)}
+                                        onClick={() => void handleInvitationAction(
+                                            () => declineInvitation(user.invitationId),
+                                            'Invitation declined.',
+                                            'Failed to decline invitation',
+                                        )}
                                     >
                                         Decline
                                     </button>
@@ -93,7 +143,7 @@ const SharingSettings = function () {
                 <button
                     className="settings-btn"
                     type="button"
-                    onClick={sendEmail}
+                    onClick={() => void sendEmail()}
                     disabled={email.length === 0 || isSending}
                 >
                     Share
@@ -122,7 +172,11 @@ const SharingSettings = function () {
                             <button
                                 className="shared-user-item-cancel-btn"
                                 type="button"
-                                onClick={() => cancelInvitation(user.invitationId!)}
+                                onClick={() => void handleInvitationAction(
+                                    () => cancelInvitation(user.invitationId),
+                                    'Invitation canceled.',
+                                    'Failed to cancel invitation',
+                                )}
                             >
                                 Cancel
                             </button>
@@ -140,21 +194,28 @@ const SharingSettings = function () {
                             {user.displayName ? (
                                 <span className="shared-user-name">{user.displayName}</span>
                             ) : null}
-                            {user.email} {user.direction === 'outgoing' && user.status === 'pending' && (
-                                <span className="shared-user-status">(Pending)</span>
-                            )}
-                            {user.status === 'pending' && user.direction === 'outgoing' && (
+                            {user.email}
+                            {user.status === 'accepted' && (
                                 <button
-                                    className="shared-user-item-cancel-btn"
+                                    className="settings-btn shared-user-item-delete-btn"
                                     type="button"
-                                    onClick={() => cancelInvitation(user.invitationId!)}
+                                    onClick={() => {
+                                        setSelectedUserUuid(user.uuid);
+                                    }}
                                 >
-                                    Cancel
+                                    Delete
                                 </button>
                             )}
                         </p>
                     ))}
                 </div>
+                {!!selectedUserUuid && (
+                    <DeleteUserDialog
+                        isOpen={!!selectedUserUuid}
+                        onClose={closeDeleteConfirmation}
+                        onDelete={() => handleDeleteSharedUser(selectedUserUuid)}
+                    />
+                )}
             </section>
         </>
     );
