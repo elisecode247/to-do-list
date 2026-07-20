@@ -40,10 +40,11 @@ import SparklesOverlay from "src/app/SparklesOverlay";
 import { useTheme } from "src/themes/use-theme";
 import AppToolBar from "src/app-toolbar/AppToolbar";
 import {
+    MOBILE_TAB_LABELS,
     TABS,
-    TAB_LABELS,
     type Tab,
 } from "src/app-toolbar/tabs/types";
+import MobileTabContent from "src/app-toolbar/tabs/MobileTabContent";
 import { ALL_CATEGORIES, DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { ALL_MODES } from "src/checklist/constants";
 import useIsDesktop from "src/pages/use-is-desktop";
@@ -227,7 +228,10 @@ const DemoPage: React.FC<DemoPageProps> = ({
         const barElement = mobileTabBarRef.current;
         const activeElement = mobileTabButtonRefs.current[activeTab];
         if (!barElement || !activeElement) return;
-        setMobileIndicator({ x: activeElement.offsetLeft, width: activeElement.offsetWidth });
+        setMobileIndicator({
+            x: activeElement.offsetLeft + 6,
+            width: Math.max(0, activeElement.offsetWidth - 12),
+        });
     }, [activeTab]);
     useEffect(() => {
         updateMobileIndicator();
@@ -275,25 +279,27 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 <header className="app_header demo-app_header">
                     {!isJournal && (
                         <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
-                            <IconButton
-                                className="filter-toggle-button"
-                                onClick={toggleLeft}
-                                label="Filters"
-                                ariaLabel="Toggle filters"
-                                icon={<ListFilter size={24} />}
-                                showLabel={isDesktop}
-                                isPriority={false}
-                            />
-                            {!isDesktop && (
+                            <div className="mobile-top-toolbar">
                                 <IconButton
-                                    className="show-completed-toggle-button"
-                                    onClick={() => setHideCompleted(current => !current)}
-                                    label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                                    ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                                    icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                    className="filter-toggle-button"
+                                    onClick={toggleLeft}
+                                    label="Filters"
+                                    ariaLabel="Toggle filters"
+                                    icon={<ListFilter size={24} />}
+                                    showLabel={isDesktop}
                                     isPriority={false}
                                 />
-                            )}
+                                {!isDesktop && (
+                                    <IconButton
+                                        className="show-completed-toggle-button"
+                                        onClick={() => setHideCompleted(current => !current)}
+                                        label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
+                                        ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                        icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                        isPriority={false}
+                                    />
+                                )}
+                            </div>
                             <IconButton
                                 className="new-task-form-toggle-button"
                                 onClick={toggleAddForm}
@@ -503,9 +509,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
                         <motion.span className="mobile-tab-motion" animate={{ x: mobileIndicator.x, width: mobileIndicator.width }} transition={{ type: "spring", stiffness: 580, damping: 44 }} />
                         {mobileTabs.map(tab => (
-                            <button aria-label={TAB_LABELS[tab]} key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
+                            <button aria-label={MOBILE_TAB_LABELS[tab]} key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
                                 <span className="mobile-tab-button-content">
-                                    {tab === TABS.journal ? <PencilIcon size={16} /> : TAB_LABELS[tab]}
+                                    <MobileTabContent tab={tab} />
                                 </span>
                             </button>
                         ))}

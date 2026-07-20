@@ -11,13 +11,14 @@ import { useTheme } from 'src/themes/use-theme';
 import AccountMenu from 'app/AccountMenu';
 import NewForm from 'src/task-form/NewForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
-import { TABS, TAB_LABELS, type Tab } from 'src/app-toolbar/tabs/types';
+import { MOBILE_TAB_LABELS, TABS, type Tab } from 'src/app-toolbar/tabs/types';
+import MobileTabContent from 'src/app-toolbar/tabs/MobileTabContent';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Check, Eye, EyeOff, ListFilter, PencilIcon, Plus } from 'lucide-react';
+import { Check, Eye, EyeOff, ListFilter, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -222,8 +223,8 @@ const LoggedIn: React.FC = () => {
         if (!barEl || !activeEl) return;
 
         setMobileIndicator({
-            x: activeEl.offsetLeft,
-            width: activeEl.offsetWidth,
+            x: activeEl.offsetLeft + 6,
+            width: Math.max(0, activeEl.offsetWidth - 12),
             y: activeEl.offsetTop,
             height: activeEl.offsetHeight
         });
@@ -365,24 +366,27 @@ const LoggedIn: React.FC = () => {
             )}
             <header className="app_header">
                 {activeTab !== TABS.journal && (
-                    <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
-                        <IconButton
-                            className="filter-toggle-button"
-                            onClick={toggleLeft}
-                            label="Filters"
-                            icon={<ListFilter size={24} />}
-                            showLabel={isDesktop}
-                            isPriority={false}
-                        />
-                        {!isDesktop && (
+                    <div className={`mobile-action-rail`}>
+                        <div className="mobile-top-toolbar">
                             <IconButton
-                                className="show-completed-toggle-button"
-                                onClick={() => setHideCompleted(prev => !prev)}
-                                label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                                icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                className="filter-toggle-button"
+                                onClick={toggleLeft}
+                                label="Filters"
+                                icon={<ListFilter size={24} />}
+                                showLabel={isDesktop}
                                 isPriority={false}
                             />
-                        )}
+                            {!isDesktop && (
+                                <IconButton
+                                    className="show-completed-toggle-button"
+                                    onClick={() => setHideCompleted(prev => !prev)}
+                                    label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
+                                    ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                    icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                    isPriority={false}
+                                />
+                            )}
+                        </div>
                         <IconButton
                             className="new-task-form-toggle-button"
                             onClick={toggleAddForm}
@@ -518,7 +522,7 @@ const LoggedIn: React.FC = () => {
                     />
                     {mobileTabs.map(tab => (
                         <button
-                            aria-label={tab}
+                            aria-label={MOBILE_TAB_LABELS[tab]}
                             key={tab}
                             ref={el => {
                                 mobileTabButtonRefs.current[tab] = el;
@@ -527,9 +531,7 @@ const LoggedIn: React.FC = () => {
                             onClick={() => handleTabChange(tab)}
                         >
                             <span className="mobile-tab-button-content">
-                                {tab === TABS.journal
-                                    ? <PencilIcon size={16} />
-                                    : TAB_LABELS[tab]}
+                                <MobileTabContent tab={tab} />
                             </span>
                         </button>
                     ))}

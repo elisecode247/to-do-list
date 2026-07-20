@@ -28,3 +28,13 @@ export const TAB_LABELS: Record<Tab, string> = {
     [TAB_JOURNAL]: 'Journal',
     [TAB_SEARCH]: 'Search'
 }
+
+export const MOBILE_TAB_LABELS: Record<Tab, string> = {
+    [TAB_PRIORITY]: 'Priority',
+    [TAB_TODAY]: 'Today',
+    [TAB_UPCOMING]: 'Upcoming',
+    [TAB_HIDDEN]: 'Hidden',
+    [TAB_ARCHIVED]: 'Archived',
+    [TAB_JOURNAL]: 'Edit',
+    [TAB_SEARCH]: 'Search',
+}

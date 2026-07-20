@@ -1,15 +1,19 @@
 .demo-app_header {
     display: grid;
-    /* two rows, first row buttons, second row title */
-    grid-template-columns: auto auto auto;
-    grid-template-rows: 60px 1fr;
-    grid-template-areas: "actions actions actions" "title title title";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 52px 68px 52px;
+    grid-template-areas:
+        "demo-actions"
+        "title"
+        "toolbar";
     align-items: center;
-    justify-content: space-between;
-    gap: 0;
-    height: 120px;
+    height: 172px;
     padding: 0 16px;
     width: 100%;
+}
+
+.demo-app_header .mobile-top-toolbar {
+    grid-area: toolbar;
 }
 
 .google-login-shell {
@@ -80,9 +84,10 @@
 }
 
 .demo-header-actions {
-    grid-area: actions;
+    grid-area: demo-actions;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 8px;
 }
 
@@ -245,6 +250,12 @@
     }
 }
 
+@media (max-width: 899px) {
+    .app_container:has(> .demo-app_header) {
+        grid-template-rows: 172px 1fr;
+    }
+}
+
 @media (min-width: 900px) {
     .demo-app_header {
         grid-area: header;
@@ -256,6 +267,10 @@
         height: 120px;
         padding: 0 16px;
         width: 100%;
+    }
+
+    .demo-header-actions {
+        grid-area: actions;
     }
 }
 

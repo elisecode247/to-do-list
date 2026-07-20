@@ -12,12 +12,13 @@
 
 .app_header {
     display: grid;
-    /* two rows, first row buttons, second row title */
-    grid-template-columns: auto 1fr auto auto minmax(0, auto);
-    grid-template-rows: 60px 60px;
-    grid-template-areas: "filter blank create menu show-completed" "title title title title title";
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 68px 52px;
+    grid-template-areas:
+        "title menu"
+        "actions actions";
     align-items: center;
-    gap: 0;
+    column-gap: var(--spacing-sm);
     height: 120px;
     padding: 0 16px;
     width: 100%;
@@ -26,6 +27,7 @@
 .app_header_title {
     grid-area: title;
     display: flex;
+    min-width: 0;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -34,65 +36,93 @@
 }
 
 @media (max-width: 899px) {
-  .mobile-action-rail {
-    position: fixed;
-    right: 16px;
-    bottom: calc(25px + var(--mobile-tab-bar-height) + 16px + env(safe-area-inset-bottom));
-    z-index: 500;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 7px;
-    border: 1px solid color-mix(in srgb, var(--color-border) 75%, white 25%);
-    border-radius: var(--radius-rounded);
-    background: color-mix(in srgb, var(--color-surface) 72%, transparent);
-    box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.55),
-        0 10px 28px rgb(0 0 0 / 0.14);
-    backdrop-filter: blur(12px) saturate(145%);
-    -webkit-backdrop-filter: blur(12px) saturate(145%);
-}
+    .app_h1 {
+        max-width: 100%;
+        margin: 0;
+        overflow: hidden;
+        font-size: 22px;
+        line-height: 1.1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
-.mobile-action-rail--hidden {
-    display: none;
-}
+    .app_subtitle {
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+    }
 
-.mobile-action-rail > .filter-toggle-button,
-.mobile-action-rail > .show-completed-toggle-button,
-.mobile-action-rail > .new-task-form-toggle-button {
-    position: static;
-    width: 48px;
-    min-width: 48px;
-    height: 48px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-full);
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-}
+    .mobile-action-rail {
+        display: contents;
+    }
 
-.mobile-action-rail > .filter-toggle-button:hover,
-.mobile-action-rail > .show-completed-toggle-button:hover {
-    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
-    box-shadow: none;
-}
+    .mobile-action-rail--hidden {
+        display: none;
+    }
 
-.mobile-action-rail > .new-task-form-toggle-button {
-    margin-top: 2px;
-    background: var(--color-primary);
-    color: contrast-color(var(--color-primary));
-    opacity: 1;
-    box-shadow: 0 5px 14px color-mix(in srgb, var(--color-primary) 35%, transparent);
-}
+    .mobile-top-toolbar {
+        grid-area: actions;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        min-height: 44px;
+        width: 100%;
+        padding: 3px 6px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: color-mix(in srgb, var(--color-surface) 66%, transparent);
+    }
 
-  .mobile-action-rail > .new-task-form-toggle-button:hover {
-    background: var(--color-primary-hover);
-    box-shadow: 0 5px 16px color-mix(in srgb, var(--color-primary) 48%, transparent);
-  }
+    .mobile-top-toolbar>.filter-toggle-button,
+    .mobile-top-toolbar>.show-completed-toggle-button {
+        position: static;
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: inherit;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .mobile-top-toolbar>.filter-toggle-button:hover,
+    .mobile-top-toolbar>.show-completed-toggle-button:hover {
+        background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+        box-shadow: none;
+    }
+
+    .mobile-action-rail>.new-task-form-toggle-button {
+        position: fixed;
+        right: 20px;
+        bottom: calc(16px + max(12px, env(safe-area-inset-bottom)) + var(--mobile-tab-bar-height) + 16px);
+        z-index: 501;
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: var(--radius-full);
+        background: var(--color-primary);
+        color: contrast-color(var(--color-primary));
+        opacity: 1;
+        box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primary) 38%, transparent);
+    }
+
+    .mobile-action-rail>.new-task-form-toggle-button:hover {
+        background: var(--color-primary-hover);
+        box-shadow: 0 7px 20px color-mix(in srgb, var(--color-primary) 48%, transparent);
+    }
+
+    .checklist_list-content {
+        padding-bottom: calc(var(--mobile-tab-bar-height) + 120px + env(safe-area-inset-bottom));
+    }
 }
 
 .filter-toggle-button {
@@ -111,10 +141,7 @@
     gap: var(--spacing-xs);
     min-width: 44px;
     width: fit-content;
-    position: fixed;
-    bottom: calc(3 * var(--mobile-tab-bar-height) + var(--fab-spacing));
-    right: 25px;
-    z-index: 99999;
+    position: static;
     backdrop-filter: blur(10px);
 }
 
@@ -138,10 +165,7 @@
     gap: var(--spacing-xs);
     min-width: 44px;
     width: fit-content;
-    position: fixed;
-    bottom: calc(2 * var(--mobile-tab-bar-height) + var(--fab-spacing));
-    right: 25px;
-    z-index: 99999;
+    position: static;
     backdrop-filter: blur(10px);
 }
 
@@ -206,49 +230,58 @@
 
 .mobile-tab-bar {
     position: fixed;
-    bottom: 25px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 340px;
+    bottom: calc(16px + max(12px, env(safe-area-inset-bottom)));
+    left: 16px;
+    right: 16px;
+    margin: 0 auto;
+    width: auto;
+    max-width: 680px;
     height: var(--mobile-tab-bar-height);
-    border-radius: var(--radius-rounded);
-    background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
-    backdrop-filter: blur(4px);
-    border-top: 1px solid var(--color-border);
+    padding: 6px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background-color: color-mix(in srgb, var(--color-surface) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(135%);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
     display: flex;
-    justify-content: space-around;
+    justify-content: stretch;
     align-items: center;
     z-index: 500;
     overflow: hidden;
+    box-shadow: 0 8px 28px rgb(0 0 0 / 0.12);
 }
 
 .mobile-tab-button {
     position: relative;
     z-index: 2;
+    flex: 1 1 25%;
+    height: 100%;
+    min-width: 0;
     box-sizing: border-box;
-    border-radius: var(--radius-rounded);
-    padding: 8px 12px;
+    border-radius: var(--radius-lg);
+    padding: 5px 2px;
     border: 0;
     background-color: transparent;
     color: inherit;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
 }
 
 .mobile-tab-button-content {
     position: relative;
     z-index: 2;
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 3px;
+    line-height: 1.1;
 }
 
 .mobile-tab-button--active:hover,
 .mobile-tab-button--active {
-    --mobile-tab-glass-mid: color-mix(in srgb, var(--color-primary) 30%, white 70%);
-    color: contrast-color(var(--mobile-tab-glass-mid));
+    color: contrast-color(var(--color-primary));
     border: 0;
     z-index: 10;
 }
@@ -256,23 +289,12 @@
 .mobile-tab-motion {
     position: absolute;
     left: 0;
-    top: 9px;
-    bottom: 9px;
-    background:
-        linear-gradient(
-            235deg,
-            color-mix(in srgb, var(--color-primary) 34%, white 26%) 0%,
-            color-mix(in srgb, var(--color-primary) 32%, white 98%) 55%,
-            color-mix(in srgb, var(--color-primary) 42%, white 28%) 100%
-        );
-    backdrop-filter: blur(10px) saturate(145%);
-    -webkit-backdrop-filter: blur(10px) saturate(145%);
+    top: 6px;
+    bottom: 6px;
+    background: var(--color-primary);
     border: 0;
-    border-radius: var(--radius-rounded);
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, white 78%, transparent),
-        inset 0 -1px 0 color-mix(in srgb, black 16%, transparent),
-        0 8px 20px color-mix(in srgb, var(--color-shadow) 42%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 30%, transparent);
     z-index: 1;
     pointer-events: none;
 }
@@ -320,6 +342,10 @@
 @media (min-width: 900px) {
 
     .mobile-action-rail {
+        display: contents;
+    }
+
+    .mobile-top-toolbar {
         display: contents;
     }
 
