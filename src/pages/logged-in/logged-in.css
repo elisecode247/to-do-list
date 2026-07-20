@@ -48,6 +48,22 @@
         overflow: hidden;
     }
 
+    .app_container > .left_panel {
+        height: min(92dvh, 720px);
+        max-height: min(92dvh, 720px);
+        border-radius: 24px 24px 0 0;
+        overflow: hidden;
+    }
+
+    .task-form-drawer input,
+    .task-form-drawer select,
+    .task-form-drawer textarea,
+    .checklist_filter-container input,
+    .checklist_filter-container select,
+    .checklist_filter-container textarea {
+        font-size: 16px;
+    }
+
     .app_h1 {
         max-width: 100%;
         margin: 0;
@@ -354,7 +370,7 @@
     }
 
     .app_container {
-        grid-template-columns: 255px minmax(0, 1fr) 420px;
+        grid-template-columns: var(--filters-panel-width) minmax(0, 1fr) 420px;
         grid-template-rows: 140px 1fr;
         grid-template-areas:
             "left header header"
@@ -432,7 +448,7 @@
 
     /* If right panel is closed */
     .app_container:not(.right-open) {
-        grid-template-columns: 255px minmax(0, 1fr) 0;
+        grid-template-columns: var(--filters-panel-width) minmax(0, 1fr) 0;
         grid-template-areas:
             "left header header"
             "left main   right";

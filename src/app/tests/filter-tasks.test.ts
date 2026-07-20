@@ -424,6 +424,105 @@ describe('filterTasks – common filters', () => {
 
         expect(result).toEqual([occasional]);
     });
+
+    it('does not filter by sharing when both sharing toggles are off', () => {
+        const privateTask = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: false,
+        });
+        const sharedByMe = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: true,
+        });
+        const sharedByOthers = makeTask({
+            accessRole: 'editor',
+            isOwner: false,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [privateTask, sharedByMe, sharedByOthers],
+            })
+        );
+
+        expect(result).toEqual([privateTask, sharedByMe, sharedByOthers]);
+    });
+
+    it('filters to owned tasks that have members when Shared by me is on', () => {
+        const privateTask = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: false,
+        });
+        const sharedByMe = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: true,
+        });
+        const sharedByOthers = makeTask({
+            accessRole: 'viewer',
+            isOwner: false,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [privateTask, sharedByMe, sharedByOthers],
+                sharedByMe: true,
+            })
+        );
+
+        expect(result).toEqual([sharedByMe]);
+    });
+
+    it('filters to non-owned tasks when Shared by others is on', () => {
+        const sharedByMe = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: true,
+        });
+        const sharedByOthers = makeTask({
+            accessRole: 'doer',
+            isOwner: false,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [sharedByMe, sharedByOthers],
+                sharedByOthers: true,
+            })
+        );
+
+        expect(result).toEqual([sharedByOthers]);
+    });
+
+    it('combines sharing toggles with OR logic and still excludes private tasks', () => {
+        const privateTask = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: false,
+        });
+        const sharedByMe = makeTask({
+            accessRole: 'owner',
+            isOwner: true,
+            hasMembers: true,
+        });
+        const sharedByOthers = makeTask({
+            accessRole: 'editor',
+            isOwner: false,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [privateTask, sharedByMe, sharedByOthers],
+                sharedByMe: true,
+                sharedByOthers: true,
+            })
+        );
+
+        expect(result).toEqual([sharedByMe, sharedByOthers]);
+    });
 });
 
 // --------------------

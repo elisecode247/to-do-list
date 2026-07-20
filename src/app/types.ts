@@ -103,6 +103,8 @@ export type FilterParams = {
     activeTab: Tab;
     hideCompleted: boolean;
     filterCategory: string;
+    sharedByMe?: boolean;
+    sharedByOthers?: boolean;
 };
 export interface TaskContextType {
     itemLength: number;

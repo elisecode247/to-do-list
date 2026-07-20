@@ -41,12 +41,23 @@
     --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
     --color-surface--transparent: light-dark(color(from var(--color-surface) srgb r g b / 0.8),
             color(from var(--color-surface) srgb r g b / 0.3));
-    --color-form-surface: light-dark(#f7f7f8,
-            color-mix(in srgb, var(--color-surface-dark) 88%, white 12%));
-    --color-form-control-surface: light-dark(#fbfbfc,
-            color-mix(in srgb, var(--color-surface-dark) 82%, white 18%));
-    --color-form-border: light-dark(#dedee2,
-            color-mix(in srgb, var(--color-surface-dark) 58%, white 42%));
+    --color-panel-surface: light-dark(#f4f5f7, #181a1f);
+    --color-form-surface: var(--color-panel-surface);
+    --color-panel-control-surface: light-dark(#ffffff, #23262d);
+    --color-form-control-surface: var(--color-panel-control-surface);
+    --color-panel-border: light-dark(#d7d9de, #3a3e48);
+    --color-form-border: var(--color-panel-border);
+    --color-filter-panel: var(--color-panel-surface);
+    --color-filter-surface: var(--color-panel-control-surface);
+    --color-filter-border: var(--color-panel-border);
+    --color-filter-muted: light-dark(#666b75, #9ba1ad);
+    --color-filter-selected: var(--color-primary);
+    --color-filter-selected-soft: color-mix(in srgb, var(--color-filter-selected) 18%, transparent);
+    --panel-title-font-size: 20px;
+    --panel-label-font-size: 14px;
+    --panel-section-label-font-size: 11px;
+    --panel-control-font-size: 16px;
+    --panel-control-height: 40px;
     --color-hover: light-dark(color-mix(in srgb, var(--color-surface) 88%, black),
             color-mix(in srgb, var(--color-surface) 88%, white));
     --color-white-black: light-dark(white, black);
@@ -95,6 +106,7 @@
     --transition-fast: 0.2s ease;
 
     /* Layout */
+    --filters-panel-width: 300px;
     --mobile-tab-bar-height: 82px;
     --fab-spacing: 45px;
 }

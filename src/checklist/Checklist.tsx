@@ -48,6 +48,8 @@ interface ChecklistProps {
     modeFilter: Mode | typeof ALL_MODES;
     hideCompleted: boolean;
     filterCategory: string;
+    sharedByMe?: boolean;
+    sharedByOthers?: boolean;
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;
@@ -64,6 +66,8 @@ const Checklist: FC<ChecklistProps> = ({
     modeFilter,
     hideCompleted,
     filterCategory,
+    sharedByMe = false,
+    sharedByOthers = false,
     clearFilters,
     onEditItem,
     onEditEvent,
@@ -108,7 +112,15 @@ const Checklist: FC<ChecklistProps> = ({
         (enablePullToRefresh ?? checklistType !== 'template') && !isDragging
       );
 
-    const filteredItems = filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
+    const filteredItems = filterTasks({
+        items,
+        modeFilter,
+        activeTab,
+        hideCompleted,
+        filterCategory,
+        sharedByMe,
+        sharedByOthers,
+    })
         .sort((a, b) => {
             if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
                 return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
@@ -120,7 +132,7 @@ const Checklist: FC<ChecklistProps> = ({
             return a.sortOrder - b.sortOrder;
         });
 
-    const filteredEvents = events?.filter(event => {
+    const filteredEvents = (sharedByMe || sharedByOthers) ? [] : events?.filter(event => {
         if (activeTab === TABS.hidden) return event.isHidden;
         if (event.isHidden) return false;
         if (activeTab === TABS.today) {
@@ -402,6 +414,8 @@ const Checklist: FC<ChecklistProps> = ({
                                     onClearFilters={clearFilters}
                                     filterCategory={filterCategory}
                                     hideCompleted={hideCompleted}
+                                    sharedByMe={sharedByMe}
+                                    sharedByOthers={sharedByOthers}
                                     type={items.length === 0 ? 'noTasks' :completedDay ? 'completedDay' : 'noTasks'}
                                 />
                             )}

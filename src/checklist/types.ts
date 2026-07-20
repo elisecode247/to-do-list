@@ -12,6 +12,8 @@ export interface ChecklistProps {
     modeFilter: Mode | typeof ALL_MODES;
     hideCompleted: boolean;
     filterCategory: string;
+    sharedByMe?: boolean;
+    sharedByOthers?: boolean;
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     onEditEvent?: (item: GoogleEvent) => void;

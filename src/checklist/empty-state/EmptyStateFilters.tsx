@@ -13,6 +13,8 @@ interface EmptyStateFiltersProps {
     modeFilter: Mode | typeof ALL_MODES;
     filterCategory: string;
     hideCompleted: boolean;
+    sharedByMe?: boolean;
+    sharedByOthers?: boolean;
     onClearFilters: () => void;
     type?: 'completedDay' | 'noTasks' | 'noFilters';
 }
@@ -35,6 +37,8 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
     modeFilter,
     filterCategory,
     hideCompleted,
+    sharedByMe = false,
+    sharedByOthers = false,
     onClearFilters,
     type = 'noTasks',
 }) => {
@@ -45,7 +49,11 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
         ? 'No category'
         : getCategoryLabel(categories, filterCategory);
 
-    const hasFilters = modeFilter !== ALL_MODES || filterCategory !== ALL_CATEGORIES || hideCompleted;
+    const hasFilters = modeFilter !== ALL_MODES
+        || filterCategory !== ALL_CATEGORIES
+        || hideCompleted
+        || sharedByMe
+        || sharedByOthers;
 
     return (
         <div className="empty-state">
@@ -77,6 +85,16 @@ const EmptyStateFilters: React.FC<EmptyStateFiltersProps> = ({
                         {hideCompleted && (
                             <span className="filters-applied__chip">
                                 Hide completed
+                            </span>
+                        )}
+                        {sharedByMe && (
+                            <span className="filters-applied__chip">
+                                Shared by me
+                            </span>
+                        )}
+                        {sharedByOthers && (
+                            <span className="filters-applied__chip">
+                                Shared by others
                             </span>
                         )}
                     </div>

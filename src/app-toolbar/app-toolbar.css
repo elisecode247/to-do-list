@@ -1,221 +1,238 @@
-/* Drawer shell */
 .checklist_filter-container {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+    gap: 20px;
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    padding: 12px;
-    border: 1px solid color-mix(in srgb, var(--color-border) 70%, #252530 30%);
-    background: color-mix(in srgb, var(--color-background) 100%, #16161a 14%);
-    color: contrast-color(color-mix(in srgb, var(--color-background) 100%, #16161a 14%));
+    padding: 14px;
+    border: 1px solid var(--color-filter-border);
+    background: var(--color-filter-panel);
+    color: contrast-color(var(--color-filter-panel));
+    font-family: inherit;
+    overscroll-behavior: contain;
 }
 
 .drawer-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
-    min-height: 24px;
+    min-height: 36px;
 }
 
 .drawer-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: var(--panel-title-font-size);
+    font-weight: 650;
 }
 
 .drawer-badge {
-    background: var(--color-accent-bg);
-    color: contrast-color(var(--color-accent-bg));
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
     margin-inline-start: 8px;
+    padding: 0 6px;
+    border-radius: var(--radius-rounded);
+    background: var(--color-filter-selected);
+    color: contrast-color(var(--color-filter-selected));
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .drawer-section {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: 0;
 }
 
 .drawer-section--compact {
-    margin-bottom: 0;
+    padding-bottom: 4px;
 }
 
 .drawer-section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    margin: 0;
+    color: var(--color-filter-muted);
+    font-size: var(--panel-section-label-font-size);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
     text-transform: uppercase;
-    margin-bottom: 10px;
 }
 
-.drawer-divider {
-    height: 1px;
-    background: color-mix(in srgb, var(--color-border) 60%, #1e1e26 40%);
-    margin: 0 0 18px;
-}
-
-/* View tabs as drawer rows */
-.checklist_filter-container .tabs-container {
-    width: 100%;
-}
-
-.checklist_filter-container .tablist {
+.drawer-nav-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.checklist_filter-container .tab {
+.drawer-nav-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     width: 100%;
-    height: auto;
-    padding: 9px 12px;
-    border: none;
-    border-radius: 9px;
+    min-height: var(--panel-control-height);
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
     background: transparent;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 400;
-    opacity: 1;
-    transition: all 0.15s ease;
-}
-
-.checklist_filter-container .tab:hover,
-.checklist_filter-container .tab:focus-visible {
-    background: color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%);
-    color: contrast-color(color-mix(in srgb, var(--color-surface) 40%, #1e1e26 60%));
-}
-
-.checklist_filter-container .tab.tab-active {
-    background: color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent-border) 45%, transparent);
-    font-weight: 500;
-    opacity: 1;
-}
-
-/* Mode buttons */
-.mode-filter-button-group {
-    display: block;
-    width: 100%;
-    min-height: 42px;
-    padding: 9px 36px 9px 12px;
-    border: 1px solid color-mix(in srgb, var(--color-border) 72%, var(--color-accent-border) 28%);
-    border-radius: 9px;
-    background-color: color-mix(in srgb, var(--color-surface) 48%, transparent);
     color: inherit;
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--color-shadow) 55%, transparent);
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: capitalize;
+    font-size: var(--panel-control-font-size);
+    text-align: left;
     cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.mode-filter-button-group:hover {
-    border-color: var(--color-accent-border);
-    background-color: color-mix(in srgb, var(--color-accent-bg) 28%, var(--color-surface) 72%);
+.drawer-nav-item:hover,
+.drawer-nav-item:focus-visible {
+    background: var(--color-filter-surface);
 }
 
-.mode-filter-button-group:focus-visible {
-    outline: 2px solid var(--color-accent-border);
-    outline-offset: 2px;
-    border-color: var(--color-accent-border);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-bg) 35%, transparent);
+.drawer-nav-item.active {
+    border-color: var(--color-filter-selected);
+    background: var(--color-filter-selected-soft);
+    color: inherit;
+    font-weight: 600;
 }
 
-.mode-filter-button-group > option {
-    background-color: var(--color-surface);
-    color: contrast-color(var(--color-surface));
-    text-transform: capitalize;
-}
-
-/* Category pills */
+.drawer-timeframe-chips,
 .drawer-category-pills {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 7px;
 }
 
+.drawer-timeframe-chip,
 .drawer-category-pill {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    border: 1px solid var(--category-background-color, var(--color-border));
-    font-size: 12px;
+    min-height: 36px;
+    padding: 6px 11px;
+    border: 1px solid var(--color-filter-border);
+    border-radius: var(--radius-rounded);
+    background: var(--color-filter-surface);
+    color: inherit;
+    font-size: var(--panel-label-font-size);
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
-    background: transparent;
-    color: inherit;
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+        color 0.15s ease;
 }
 
+.drawer-timeframe-chip:hover,
 .drawer-category-pill:hover {
-    border-color: color-mix(in srgb, var(--color-border) 30%, #252530 70%);
-    color: contrast-color(color-mix(in srgb, var(--color-border) 30%, #252530 70%));
+    border-color: color-mix(in srgb, var(--color-filter-selected) 55%, var(--color-filter-border));
 }
 
+.drawer-timeframe-chip.active,
 .drawer-category-pill.active {
-    border-color: var(--color-accent-border);
-    color: inherit;
-    background: color-mix(in srgb, var(--color-accent-bg) 30%, transparent);
+    border-color: var(--color-filter-selected);
+    background: var(--color-filter-selected);
+    color: contrast-color(var(--color-filter-selected));
+    font-weight: 650;
 }
 
-/* drawer toggle */
+.drawer-category-pill svg,
+.drawer-category-pill .category-dot-icon {
+    flex: 0 0 auto;
+}
+
+.drawer-category-pill.active svg {
+    filter: saturate(0.85) brightness(1.12);
+}
+
+.mode-filter-button-group {
+    display: block;
+    width: 100%;
+    min-height: var(--panel-control-height);
+    padding: 7px 36px 7px 11px;
+    border: 1px solid var(--color-filter-border);
+    border-radius: var(--radius-md);
+    background: var(--color-filter-surface);
+    color: contrast-color(var(--color-filter-surface));
+    font-size: var(--panel-control-font-size);
+    font-weight: 500;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mode-filter-button-group:hover {
+    border-color: color-mix(in srgb, var(--color-filter-selected) 55%, var(--color-filter-border));
+}
+
+.mode-filter-button-group:focus-visible {
+    outline: 2px solid var(--color-filter-selected);
+    outline-offset: 2px;
+}
+
+.mode-filter-button-group > option {
+    background: var(--color-filter-surface);
+    color: contrast-color(var(--color-filter-surface));
+    text-transform: capitalize;
+}
+
 .drawer-toggle-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
+    min-height: 38px;
+    padding: 0 2px;
+}
+
+.drawer-sharing-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .drawer-toggle-label {
-    font-size: 13px;
+    font-size: var(--panel-label-font-size);
 }
 
 .drawer-toggle {
-    width: 36px;
-    height: 20px;
-    background: var(--color-accent-border);
-    border-radius: 10px;
     position: relative;
-    border: none;
+    width: 40px;
+    height: 22px;
+    flex: 0 0 auto;
+    padding: 0;
+    border: 1px solid var(--color-filter-selected);
+    border-radius: var(--radius-rounded);
+    background: var(--color-filter-selected);
     cursor: pointer;
-    flex-shrink: 0;
-    transition: background 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .drawer-toggle-thumb {
     position: absolute;
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    border-radius: 50%;
     inset-block-start: 3px;
     inset-inline-end: 3px;
-    inset-inline-start: auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: contrast-color(var(--color-filter-selected));
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
     transition: inset-inline-start 0.2s ease, inset-inline-end 0.2s ease;
 }
 
 .drawer-toggle.off {
-    background: color-mix(in srgb, var(--color-border) 75%, #2a2a35 25%);
+    border-color: var(--color-filter-border);
+    background: var(--color-filter-surface);
 }
 
 .drawer-toggle.off .drawer-toggle-thumb {
     inset-inline-end: auto;
     inset-inline-start: 3px;
+    background: var(--color-filter-muted);
 }
 
 .drawer-toggle:focus-visible {
-    outline: 2px solid var(--color-accent-border);
+    outline: 2px solid var(--color-filter-selected);
     outline-offset: 2px;
 }
 
@@ -223,9 +240,4 @@
     .checklist_filter-container {
         min-height: 560px;
     }
-
-    .checklist_filter-container .tablist {
-        flex-direction: column;
-    }
-
 }

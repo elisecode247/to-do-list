@@ -10,6 +10,8 @@ export function filterTasks({
     modeFilter,
     hideCompleted,
     filterCategory,
+    sharedByMe = false,
+    sharedByOthers = false,
 }: FilterParams): ChecklistItem[] {
     if (!items.length) return [];
 
@@ -19,6 +21,8 @@ export function filterTasks({
             modeFilter,
             hideCompleted,
             filterCategory,
+            sharedByMe,
+            sharedByOthers,
         })
     );
 }
@@ -63,15 +67,20 @@ function matchCommonFilters(
         modeFilter,
         hideCompleted,
         filterCategory,
+        sharedByMe,
+        sharedByOthers,
     }: {
         modeFilter: Mode | typeof ALL_MODES;
         hideCompleted: boolean;
         filterCategory: string;
+        sharedByMe: boolean;
+        sharedByOthers: boolean;
     }
 ): boolean {
     if (isCompleted(hideCompleted, task)) return false;
     if (!isCategory(filterCategory, task)) return false;
     if (!isMode(modeFilter, task)) return false;
+    if (!isSharingMatch(sharedByMe, sharedByOthers, task)) return false;
     return true;
 }
 
@@ -81,3 +90,15 @@ const isCategory = (selectedCategory: string, task: ChecklistItem): boolean => i
 const isMode = (modeFilter: Mode | typeof ALL_MODES, task: ChecklistItem): boolean => {
     return modeFilter === ALL_MODES || modeFilter === task.mode;
 }
+const isSharingMatch = (
+    sharedByMe: boolean,
+    sharedByOthers: boolean,
+    task: ChecklistItem,
+): boolean => {
+    if (!sharedByMe && !sharedByOthers) return true;
+
+    const isSharedByMe = task.accessRole === 'owner' && task.hasMembers;
+    const isSharedByOthers = task.accessRole !== 'owner';
+
+    return (sharedByMe && isSharedByMe) || (sharedByOthers && isSharedByOthers);
+};

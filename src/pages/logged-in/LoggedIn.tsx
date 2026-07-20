@@ -44,6 +44,7 @@ import('src/pages/PrivacyPolicy');
 import { AnimatePresence, motion } from 'framer-motion';
 import TaskContextChecklist from './TaskContextChecklist';
 import { canManageTaskMembers } from 'src/sharing/chore-access';
+import { useShareTasks } from 'src/sharing/use-share-tasks';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
@@ -73,6 +74,8 @@ const LoggedIn: React.FC = () => {
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
+    const [sharedByMe, setSharedByMe] = useState(false);
+    const [sharedByOthers, setSharedByOthers] = useState(false);
     const isDesktop = useIsDesktop();
     const [leftOpen, setLeftOpen] = useState(isDesktop ? true : false);
     const [rightOpen, setRightOpen] = useState(false);
@@ -83,6 +86,8 @@ const LoggedIn: React.FC = () => {
     const lastUpdatedRaw = loadDate && 'current' in loadDate ? loadDate.current : null;
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
+    const { sharedUsers } = useShareTasks({ enabled: isAuthenticated });
+    const hasSharedUsers = sharedUsers.some(user => user.status === 'accepted');
 
     useEffect(() => {
         if (isAuthenticated && !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
@@ -293,6 +298,8 @@ const LoggedIn: React.FC = () => {
         setModeFilter(ALL_MODES);
         setFilterCategory(ALL_CATEGORIES);
         setHideCompleted(false);
+        setSharedByMe(false);
+        setSharedByOthers(false);
     }
 
 
@@ -427,6 +434,11 @@ const LoggedIn: React.FC = () => {
                     setHideCompleted={setHideCompleted}
                     filterCategory={filterCategory}
                     setFilterCategory={setFilterCategory}
+                    hasSharedUsers={hasSharedUsers}
+                    sharedByMe={sharedByMe}
+                    setSharedByMe={setSharedByMe}
+                    sharedByOthers={sharedByOthers}
+                    setSharedByOthers={setSharedByOthers}
                     setLeftOpen={setLeftOpen}
                     isDesktop={isDesktop}
                     categories={categories}
@@ -477,6 +489,8 @@ const LoggedIn: React.FC = () => {
                                 modeFilter={modeFilter}
                                 hideCompleted={hideCompleted}
                                 filterCategory={filterCategory}
+                                sharedByMe={sharedByMe}
+                                sharedByOthers={sharedByOthers}
                                 clearFilters={clearFilters}
                                 enablePullToRefresh={true}
                             />

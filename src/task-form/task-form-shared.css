@@ -8,6 +8,7 @@
     background: var(--color-form-surface);
     color: contrast-color(var(--color-form-surface));
     border-left: 1px solid var(--color-form-border);
+    font-family: inherit;
 }
 
 .task-form-drawer__header {
@@ -23,7 +24,7 @@
 
 .task-form-drawer__title {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--panel-title-font-size);
     font-weight: 650;
     text-transform: none;
     letter-spacing: 0;
@@ -66,18 +67,18 @@
 }
 
 .task-form-field__label {
-    font-size: 14px;
+    font-size: var(--panel-label-font-size);
     font-weight: 500;
 }
 
 .task-form-input {
     width: 100%;
-    min-height: 40px;
+    min-height: var(--panel-control-height);
     padding: 7px 10px;
     border-radius: 8px;
     border: 1px solid var(--color-form-border);
     background: var(--color-form-control-surface);
-    font-size: 16px;
+    font-size: var(--panel-control-font-size);
     line-height: 1.25;
     color: contrast-color(var(--color-form-control-surface));
     box-sizing: border-box;
@@ -115,10 +116,10 @@
 .task-form-category-wrap .select-input {
     width: 100%;
     min-width: 0;
-    min-height: 40px;
+    min-height: var(--panel-control-height);
     border-radius: 8px;
     padding: 8px 10px;
-    font-size: 16px;
+    font-size: var(--panel-control-font-size);
     font-weight: 400;
     border-color: var(--color-form-border);
     background: var(--color-form-control-surface);
@@ -128,7 +129,7 @@
 .task-form-section-divider {
     width: 100%;
     color: color-mix(in srgb, currentColor 66%, transparent);
-    font-size: 11px;
+    font-size: var(--panel-section-label-font-size);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -166,10 +167,10 @@
 }
 
 .task-form-action-button {
-    min-height: 40px;
+    min-height: var(--panel-control-height);
     padding: 7px 14px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--panel-control-font-size);
     cursor: pointer;
     transition: all 0.15s ease;
 }
