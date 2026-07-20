@@ -1,5 +1,74 @@
 
-/* ─── Back button ─────────────────────────────────────────────────────── */
+/* ─── Settings navigation ─────────────────────────────────────────────── */
+
+.settings-layout {
+    width: min(100%, 1120px);
+    margin: 0 auto;
+}
+
+.settings-nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-bottom: var(--spacing-md);
+    padding: 8px 0;
+    background: color-mix(in srgb, var(--color-background) 94%, transparent);
+    backdrop-filter: blur(12px);
+}
+
+.settings-nav-list {
+    display: flex;
+    gap: 6px;
+    padding: 0 1px;
+    flex-wrap: wrap;
+}
+
+.settings-nav-list::-webkit-scrollbar {
+    display: none;
+}
+
+.settings-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 13px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-rounded);
+    background: var(--color-surface);
+    color: contrast-color(var(--color-surface));
+    font-size: 16px;
+    font-weight: 550;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.settings-nav-link:hover,
+.settings-nav-link:focus-visible {
+    border-color: var(--color-primary);
+}
+
+.settings-nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.settings-nav-link.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: contrast-color(var(--color-primary));
+}
+
+.settings-content {
+    min-width: 0;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────── */
 
 .settings-btn {
     display: inline-flex;
@@ -59,6 +128,7 @@
 
 .settings-category {
     margin-bottom: var(--spacing-xl);
+    scroll-margin-top: 68px;
 }
 
 .settings-category-title {
@@ -127,6 +197,56 @@ legend {
 
 .settings-section + .settings-section {
     margin-top: 0;
+}
+
+@media (min-width: 800px) {
+    .settings-layout {
+        display: grid;
+        grid-template-columns: 190px minmax(0, 820px);
+        align-items: start;
+        justify-content: center;
+        gap: clamp(24px, 4vw, 48px);
+    }
+
+    .settings-nav {
+        top: 0;
+        margin-bottom: 0;
+        padding: 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        backdrop-filter: none;
+    }
+
+    .settings-nav-list {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .settings-nav-link {
+        justify-content: flex-start;
+        width: 100%;
+        border-color: transparent;
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: contrast-color(var(--color-surface));
+        font-size: 15px;
+    }
+
+    .settings-nav-link:hover,
+    .settings-nav-link:focus-visible {
+        background: var(--color-hover);
+    }
+
+    .settings-nav-link.active {
+        border-color: var(--color-primary);
+        background: var(--color-primary);
+        color: contrast-color(var(--color-primary));
+    }
+
+    .settings-category {
+        scroll-margin-top: 12px;
+    }
 }
 
 /* ─── Radio group ─────────────────────────────────────────────────────── */
