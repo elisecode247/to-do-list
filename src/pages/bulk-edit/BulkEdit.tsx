@@ -253,7 +253,9 @@ function BulkEdit() {
                                                 id={accessDescriptionId}
                                                 title={task.accessRole === 'owner'
                                                     ? 'You own this task'
-                                                    : `Shared with you as ${task.accessRole}`}
+                                                    : task.ownerName
+                                                        ? `Shared by ${task.ownerName} with ${task.accessRole} access`
+                                                        : `Shared with you as ${task.accessRole}`}
                                             >
                                                 {task.accessRole === 'viewer'
                                                     ? 'View only'

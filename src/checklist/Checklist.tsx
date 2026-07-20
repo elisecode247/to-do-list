@@ -449,6 +449,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             getSubtasks={getSubtasks}
                                             recurrence={checklistItem.recurrence}
                                             accessRole={checklistItem.accessRole}
+                                            ownerName={checklistItem.ownerName}
                                             hasMembers={checklistItem.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
                                             itemLookup={itemLookup}

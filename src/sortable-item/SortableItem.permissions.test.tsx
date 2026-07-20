@@ -74,6 +74,7 @@ function propsFor(accessRole: ChoreAccessRole): ComponentProps<typeof SortableIt
         nextDue: null,
         recurrence: null,
         accessRole,
+        ownerName: accessRole === 'owner' ? 'You' : 'Alex',
         hasMembers: accessRole === 'owner',
     };
 }
@@ -103,6 +104,7 @@ describe('SortableItem role permissions', () => {
         expect(completion.getAttribute('title')).toBe(
             'Viewer access cannot change completion',
         );
+        expect(rendered.container.textContent).toContain('Shared by Alex');
         expect(byLabel(rendered.container, 'More task actions')).toBeNull();
     });
 

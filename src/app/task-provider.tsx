@@ -249,6 +249,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 hasMembers: false,
                 isOwner: true,
                 accessRole: "owner",
+                ownerUuid: data.ownerUuid,
+                ownerName: data.ownerName,
                 itemType: 'checklist-item',
                 id: data.id,
                 isPriority: data.isPriority ?? false,

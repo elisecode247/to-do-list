@@ -81,6 +81,7 @@ interface SortableItemProps {
     isUpcomingSubtask?: boolean;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     accessRole?: ChoreAccessRole;
+    ownerName?: string | null;
     hasMembers: boolean;
     expandedNoteItemIds?: ReadonlySet<string>;
     itemLookup?: ReadonlyMap<string, ChecklistItem>;
@@ -118,6 +119,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     getSubtasks = () => [],
     recurrence,
     accessRole,
+    ownerName,
     hasMembers,
     expandedNoteItemIds,
     itemLookup,
@@ -427,10 +429,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {accessRole && accessRole !== 'owner' && (
                                 <span
                                     className="sortable-item_metadata-text sortable-item_sharing-status"
-                                    title={`Shared with you as ${accessRole}`}
+                                    title={ownerName
+                                        ? `Shared by ${ownerName} with ${accessRole} access`
+                                        : `Shared with you as ${accessRole}`}
                                 >
                                     <Users aria-hidden="true" size={12} />
-                                    Shared with Me
+                                    {ownerName ? `Shared by ${ownerName}` : 'Shared with Me'}
                                 </span>
                             )}
                             {accessRole === 'owner' && hasMembers && (
@@ -739,6 +743,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             getSubtasks={getSubtasks}
                                             recurrence={subtask.recurrence}
                                             accessRole={subtask.accessRole}
+                                            ownerName={subtask.ownerName}
                                             hasMembers={subtask.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
                                             itemLookup={itemLookup}
@@ -807,6 +812,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                         getSubtasks={getSubtasks}
                                                         recurrence={subtask.recurrence}
                                                         accessRole={subtask.accessRole}
+                                                        ownerName={subtask.ownerName}
                                                         hasMembers={subtask.hasMembers}
                                                         expandedNoteItemIds={expandedNoteItemIds}
                                                         itemLookup={itemLookup}
