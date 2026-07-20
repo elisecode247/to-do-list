@@ -77,7 +77,7 @@ const AppToolbar = ({
     return (
         <div className="checklist_filter-container">
             <div className="drawer-header">
-                <div>
+                <div className="drawer-header-content">
                     <span className="drawer-title">Filters</span>
                     {activeFilterCount > 0 && (
                         <span className="drawer-badge">{activeFilterCount}</span>
