@@ -366,7 +366,7 @@ const Checklist: FC<ChecklistProps> = ({
         }
 
         completedDayRef.current = completedDay;
-    }, [completedDay, activeTab, modeFilter, filterCategory, displaySparkles]);
+    }, [completedDay, activeTab, modeFilter, filterCategory, displaySparkles, sharedByMe, sharedByOthers]);
 
     useEffect(() => {
         const contentElement = listContentRef.current;

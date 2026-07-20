@@ -17,7 +17,6 @@ Live: https://dailyresetlist.com
 * Reconcile the privacy policy’s “not end-to-end encrypted” journal language with the app/README’s “encrypted journal” description.
 * Add a meta description to [index.html (line 4)](/Users/elisestraub/Projects/daily-to-do/index.html:4).
 * Artist to create manifest and og images
-* theme-based "stars"
 * review landing page language
 
 
