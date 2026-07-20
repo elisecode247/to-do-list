@@ -9,6 +9,7 @@ import {
 import { CALM_STYLE, COMFORTABLE_DENSITY, DARK_MODE, GRAPHICS_FALSE } from './constants';
 
 const THEME_CUSTOM_COLORS_KEY = 'theme-custom-colors';
+const THEME_CHANGE_EVENT = 'daily-reset-list-theme-change';
 const LOADING_THEME: ThemeState = {
     mode: DARK_MODE,
     style: CALM_STYLE,
@@ -155,25 +156,35 @@ export function useTheme(
                 e.key === 'theme-style' ||
                 e.key === 'theme-density' ||
                 e.key === 'theme-graphics' ||
+                e.key === 'theme-toggle-icon-text' ||
                 e.key === THEME_CUSTOM_COLORS_KEY
             ) {
                 setTheme(getStoredTheme());
             }
         };
+        const handleThemeChange = (event: Event) => {
+            setTheme((event as CustomEvent<ThemeState>).detail);
+        };
 
         mediaQuery.addEventListener('change', handleSystemChange);
         window.addEventListener('storage', handleStorage);
+        window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
 
         return () => {
             mediaQuery.removeEventListener('change', handleSystemChange);
             window.removeEventListener('storage', handleStorage);
+            window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
         };
     }, [theme, isLoading, hasOverride]);
 
 
     const updateTheme = (updates: Partial<ThemeState>) => {
         if (isLoading || hasOverride) return;
-        setTheme(prev => ({ ...prev, ...updates }));
+        const nextTheme = { ...theme, ...updates };
+        setTheme(nextTheme);
+        window.dispatchEvent(new CustomEvent<ThemeState>(THEME_CHANGE_EVENT, {
+            detail: nextTheme,
+        }));
     };
 
     return { ...(isLoading ? LOADING_THEME : theme), updateTheme };

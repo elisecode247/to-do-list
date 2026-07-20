@@ -419,7 +419,6 @@ const LoggedIn: React.FC = () => {
                     </p>
                 </div>
                 <AccountMenu
-                    isDesktop={isDesktop}
                     isMenuOpen={menuOpen}
                     onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
                     onMenuClose={handleCloseAccountMenu}

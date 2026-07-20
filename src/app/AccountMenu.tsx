@@ -16,14 +16,12 @@ interface AccountMenuProps {
     isMenuOpen: boolean;
     onMenuToggleOpen: () => void;
     onMenuClose: () => void;
-    isDesktop?: boolean;
 }
 
 function AccountMenu({
     isMenuOpen,
     onMenuToggleOpen,
-    onMenuClose,
-    isDesktop
+    onMenuClose
 }: AccountMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,7 +64,7 @@ function AccountMenu({
                 label="Menu"
                 ariaLabel="Account menu"
                 icon={<Menu className="app_header_menu-icon" size={24} />}
-                showLabel={isDesktop}
+                showLabel={false}
             />
 
             {isAuthenticated ? createPortal(

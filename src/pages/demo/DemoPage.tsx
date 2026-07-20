@@ -109,6 +109,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
     useEffect(() => {
         if (!isLoading && !readPersistentSetting(DEMO_ONBOARDING_CHOICE_KEY)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setShowGettingStarted(true);
         }
     }, [isLoading]);
