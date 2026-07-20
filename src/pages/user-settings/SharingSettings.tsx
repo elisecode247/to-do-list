@@ -9,14 +9,17 @@ const SharingSettings = function () {
     const [sent, setSent] = useState(false);
     const [error, setError] = useState('');
     const {
+        invitations,
         sharedUsers,
         acceptInvitation,
         sendInvitation,
         cancelInvitation,
         declineInvitation
     } = useShareTasks();
-    const pendingIncomingInvitations = sharedUsers.filter(user => user.direction === 'incoming' && user.status === 'pending');
-    const acceptedAndOutgoingInvitations = sharedUsers.filter(user => (user.direction === 'outgoing' && user.status === 'pending') || user.status === 'accepted');
+    const pendingIncomingInvitations = invitations.filter(user => user.direction === 'incoming' && user.status === 'pending');
+    const pendingOutgoingInvitations = invitations.filter(user => user.direction === 'outgoing' && user.status === 'pending');
+    const acceptedInvitations = sharedUsers.filter(user => user.status === 'accepted');
+
     const sendEmail = () => {
         if (!email.length) {
             setError('Please enter an email address.');
@@ -45,15 +48,8 @@ const SharingSettings = function () {
                     </p>
                     <div className="shared-users-list">
                         {pendingIncomingInvitations.map((user) => (
-                            <div className="shared-user-item" key={user.email}>
-                                {!!user.avatarUrl && (
-                                    <img
-                                        src={user.avatarUrl}
-                                        alt={user.displayName || 'Avatar'}
-                                        className="shared-user-avatar"
-                                    />
-                                )}
-                                <span className="shared-user-name">{user.email}</span>
+                            <div className="shared-user-item" key={user.recipientEmail}>
+                                <span className="shared-user-name">{user.recipientEmail}</span>
                                 <span className="shared-user-status">(Pending)</span>
                                 <div className="shared-user-actions">
                                     <button
@@ -116,10 +112,23 @@ const SharingSettings = function () {
                 )}
                 <div className="shared-users-list">
                     <h3 className="settings-section-title">Shared Users</h3>
-                    {acceptedAndOutgoingInvitations.length === 0 && (
+                    {acceptedInvitations.length === 0 && pendingOutgoingInvitations.length === 0 && (
                         <p className="settings-info-message">No shared users.</p>
                     )}
-                    {acceptedAndOutgoingInvitations.map((user) => (
+                    {pendingOutgoingInvitations.map((user) => (
+                        <p className="shared-user-item" key={user.recipientEmail}>
+                            <span className="shared-user-email">{user.recipientEmail}</span>
+                            <span className="shared-user-status">(Pending)</span>
+                            <button
+                                className="shared-user-item-cancel-btn"
+                                type="button"
+                                onClick={() => cancelInvitation(user.invitationId!)}
+                            >
+                                Cancel
+                            </button>
+                        </p>
+                    ))}
+                    {acceptedInvitations.map((user) => (
                         <p className="shared-user-item" key={user.email}>
                             {!!user.avatarUrl && (
                                 <img
@@ -129,7 +138,7 @@ const SharingSettings = function () {
                                 />
                             )}
                             {user.displayName ? (
-                                <span className="shared-user-name">{user.displayName || user.email}</span>
+                                <span className="shared-user-name">{user.displayName}</span>
                             ) : null}
                             {user.email} {user.direction === 'outgoing' && user.status === 'pending' && (
                                 <span className="shared-user-status">(Pending)</span>
