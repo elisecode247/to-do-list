@@ -11,7 +11,8 @@ import {
     deleteTask,
     addTask,
     toggleHideToday,
-    bulkUpdateTasks
+    bulkUpdateTasks,
+    updateTaskCompletion,
 } from 'app/api';
 import {
     type ChecklistItem,
@@ -82,7 +83,37 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         try {
             const updatedItem = { ...previousItem, ...partialItem } as ChecklistItem;
-            const updatedTask = await updateTask(updatedItem);
+            const hasCompletionUpdate = Object.prototype.hasOwnProperty.call(
+                partialItem,
+                'lastCompleted',
+            );
+            const hasGeneralTaskUpdate = Object.keys(partialItem).some(key =>
+                !['id', 'lastCompleted', 'done', 'nextDue', 'itemType'].includes(key)
+            );
+            let updatedTask = updatedItem;
+
+            if (hasGeneralTaskUpdate) {
+                updatedTask = {
+                    ...updatedTask,
+                    ...await updateTask(updatedItem),
+                };
+            }
+
+            if (hasCompletionUpdate) {
+                const completion = await updateTaskCompletion(
+                    updatedItem.id,
+                    updatedItem.lastCompleted
+                        ? new Date(updatedItem.lastCompleted).toISOString()
+                        : null,
+                );
+                updatedTask = {
+                    ...updatedTask,
+                    lastCompleted: completion.lastCompleted ?? '',
+                    nextDue: completion.nextDue,
+                    done: isDateToday(completion.lastCompleted ?? ''),
+                };
+            }
+
             setItems(prev => {
                 previousItem = prev.find(i => i.id === partialItem.id);
                 return prev.map(i => i.id === partialItem.id ? {
@@ -112,7 +143,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
 
         try {
-            const updatedTask = await updateTask(updatedItem);
+            let updatedTask = await updateTask(updatedItem);
+            if (previousItem?.lastCompleted !== updatedItem.lastCompleted) {
+                const completion = await updateTaskCompletion(
+                    updatedItem.id,
+                    updatedItem.lastCompleted
+                        ? new Date(updatedItem.lastCompleted).toISOString()
+                        : null,
+                );
+                updatedTask = {
+                    ...updatedTask,
+                    lastCompleted: completion.lastCompleted ?? '',
+                    nextDue: completion.nextDue,
+                };
+            }
             setItems(prev => {
                 previousItem = prev.find(i => i.id === updatedItem.id);
                 return prev.map(i => i.id === updatedItem.id ? {
@@ -240,6 +284,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const toggleItem = async (id: string, checked: boolean) => {
         let previousItem: ChecklistItem | undefined;
+        const optimisticLastCompleted = checked ? new Date().toISOString() : '';
 
         setItems(prev => {
             const item = prev.find(i => i.id === id);
@@ -254,7 +299,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                     ? {
                         ...i,
                         done: checked,
-                        lastCompleted: checked ? new Date().toISOString() : '',
+                        lastCompleted: optimisticLastCompleted,
                         itemType: 'checklist-item',
                     }
                     : i
@@ -262,12 +307,20 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
 
         try {
-            await updateTask({
-                ...previousItem!,
-                id: id,
-                done: checked,
-                lastCompleted: checked ? new Date().toISOString() : '',
-            });
+            const completion = await updateTaskCompletion(
+                id,
+                checked ? optimisticLastCompleted : null,
+            );
+            setItems(prev => prev.map(item =>
+                item.id === id
+                    ? {
+                        ...item,
+                        lastCompleted: completion.lastCompleted ?? '',
+                        nextDue: completion.nextDue,
+                        done: isDateToday(completion.lastCompleted ?? ''),
+                    }
+                    : item
+            ));
         } catch (err) {
             if (previousItem) {
                 setItems(prev =>

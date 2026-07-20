@@ -22,6 +22,12 @@ export type AddTasksFromTemplateResponse = {
     subChores: ChecklistItem[];
 };
 
+export type UpdateTaskCompletionResponse = {
+    id: string;
+    lastCompleted: string | null;
+    nextDue: string | null;
+};
+
 export async function fetchTasks(): Promise<ChecklistItem[]> {
     try {
         const response = await fetch(API_CHORES_URL, {
@@ -139,6 +145,25 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
         throw err;
     }
 }
+
+export async function updateTaskCompletion(
+    choreUuid: string,
+    lastCompleted: string | null,
+): Promise<UpdateTaskCompletionResponse> {
+    const response = await fetch(`${API_CHORES_URL}/${choreUuid}/completion`, {
+        method: "PATCH",
+        headers: await authHeaders(),
+        body: JSON.stringify({ lastCompleted }),
+    });
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    return await response.json() as UpdateTaskCompletionResponse;
+}
+
 export async function getChoreMembers(choreUuid: string): Promise<ChoreMember[]> {
     const response = await fetch(`${API_CHORES_URL}/${choreUuid}/members`, {
         method: "GET",
