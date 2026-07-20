@@ -4,6 +4,9 @@ import { TABS } from "src/app-toolbar/tabs/types";
 import { type ChecklistItem } from "app/types";
 
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
+    ownerUuid: crypto.randomUUID(),
+    isOwner: true,
+    accessRole: 'owner',
     itemType: 'checklist-item',
     id: crypto.randomUUID(),
     text: 'Task',

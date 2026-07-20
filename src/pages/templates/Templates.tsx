@@ -91,6 +91,8 @@ const TASK_TEMPLATES: TaskTemplate[] = [
 
 function makeItem(id: string, overrides: Partial<ChecklistItem>): ChecklistItem {
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item", id, text: "", done: false,
         lastCompleted: "", note: "", sortOrder: 0, tabSortOrder: {}, category: "housework",
         mode: "one-time", isPriority: false, isArchived: false, isHidden: false,
@@ -163,6 +165,7 @@ export default function TemplatesPage() {
     const selectedTemplate = TASK_TEMPLATES.find(t => t.id === selectedTemplateId)!;
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreviewItems(buildPreview(
             selectedTemplate,
             resolveCategoryId(selectedTemplate.categoryKey, categories, isAuthenticated),

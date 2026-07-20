@@ -10,6 +10,8 @@ function morningResetTask(
     parentUuid: string | null = MORNING_RESET_ID,
 ): ChecklistItem {
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,
@@ -215,6 +217,8 @@ function bedtimeRoutineTask(
     parentUuid: string | null = BEDTIME_ROUTINE_ID,
 ): ChecklistItem {
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,
@@ -465,6 +469,8 @@ function walkingRoutineTask(
     parentUuid: string | null = GO_FOR_A_WALK_ID,
 ): ChecklistItem {
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,

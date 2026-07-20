@@ -6,6 +6,8 @@ twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
 
 export const DEMO_TASKS: ChecklistItem[] = [
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "1",
         text: "Put your thoughts somewhere safe",
@@ -25,6 +27,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "2",
         text: "Tap to check something off",
@@ -44,6 +48,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "3",
         text: "Mark one thing as important",
@@ -63,6 +69,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "4",
         text: "Break something into smaller steps",
@@ -82,6 +90,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "5",
         text: "Drag tasks into the order that feels right",
@@ -101,6 +111,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "6",
         text: "Hide this task for today",
@@ -120,6 +132,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "7",
         text: "Example subtask: choose one tiny next step",
@@ -139,6 +153,8 @@ export const DEMO_TASKS: ChecklistItem[] = [
         nextDue: null
     },
     {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: 'checklist-item',
         id: "8",
         text: "Example task with due date in two days",

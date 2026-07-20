@@ -80,6 +80,8 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
         }
 
         const newItem: ChecklistItem = {
+            isOwner: true,
+            accessRole: 'owner',
             itemType: 'checklist-item',
             id: crypto.randomUUID(),
             text: '',

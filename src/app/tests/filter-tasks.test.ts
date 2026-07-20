@@ -42,6 +42,9 @@ const getDateRelativeToToday = (offset: number): string => {
 };
 
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
+    ownerUuid: crypto.randomUUID(),
+    isOwner: false,
+    accessRole: 'editor',
     itemType: 'checklist-item',
     id: crypto.randomUUID(),
     text: 'Task',

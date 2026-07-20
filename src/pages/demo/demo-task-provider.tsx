@@ -225,6 +225,8 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         try {
 
             const formattedTask: ChecklistItem = {
+                isOwner: true,
+                accessRole: 'owner',
                 itemType: 'checklist-item',
                 id: newItem.id || generateId(),
                 isPriority: newItem.isPriority ?? false,
@@ -464,6 +466,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line
         loadTasks();
         const now = new Date();
         loadDateRef.current = now;

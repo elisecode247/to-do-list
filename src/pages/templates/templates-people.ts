@@ -18,6 +18,8 @@ function peopleTask(
     const mode: Mode = schedule === "weekly" ? "occasional" : "one-time";
 
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,

@@ -18,6 +18,8 @@ function dogCareTask(
     const isDaily = numberOfRepetitions === 1 && frequency === FrequencyType.Daily;
 
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,
@@ -165,7 +167,7 @@ Do not pull or cut tight mats close to the skin. Ask a groomer or veterinarian f
 * [ ] Use a dog toothbrush or soft pet dental tool
 * [ ] Use dog-specific toothpaste
 * [ ] Lift the lip gently
-* [ ] Brush the outer tooth surfaces and gumline
+* [ ] Brush the outer tooth surfaces and gum-line
 * [ ] Praise or reward the dog
 * [ ] Rinse and put away the toothbrush
 
@@ -259,6 +261,8 @@ function catCareTask(
     const isDaily = numberOfRepetitions === 1 && frequency === FrequencyType.Daily;
 
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,
@@ -396,7 +400,7 @@ Do not pull or cut tight mats close to the skin. Ask a groomer or veterinarian f
 * [ ] Use cat-specific toothpaste
 * [ ] Let the cat taste the toothpaste
 * [ ] Lift the lip gently
-* [ ] Brush the outer tooth surfaces and gumline
+* [ ] Brush the outer tooth surfaces and gum-line
 * [ ] Stop before the cat becomes distressed
 
 **Minimum version:** Brush a few teeth or practice calmly touching the muzzle.

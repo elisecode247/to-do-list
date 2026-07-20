@@ -9,6 +9,8 @@ function templateTaskDefaults(
     parentUuid: string | null,
 ): ChecklistItem {
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,

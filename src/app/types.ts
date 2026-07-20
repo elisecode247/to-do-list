@@ -66,6 +66,9 @@ export interface ChoreMember {
 
 export interface ChecklistItem {
     itemType: 'checklist-item' | 'google-event';
+    ownerUuid?: string;
+    isOwner: boolean;
+    accessRole: ChoreAccessRole;
     isHidden: boolean;
     id: string;
     text: string;

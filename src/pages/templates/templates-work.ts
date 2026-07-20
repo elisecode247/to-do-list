@@ -20,6 +20,8 @@ function workTask(
         : schedule;
 
     return {
+        isOwner: true,
+        accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
         id,
