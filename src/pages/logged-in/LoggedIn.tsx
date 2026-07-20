@@ -366,25 +366,28 @@ const LoggedIn: React.FC = () => {
             )}
             <header className="app_header">
                 {activeTab !== TABS.journal && (
-                    <div className={`mobile-action-rail`}>
-                        <IconButton
-                            className="filter-toggle-button"
-                            onClick={toggleLeft}
-                            label="Filters"
-                            icon={<ListFilter size={24} />}
-                            showLabel={isDesktop}
-                            isPriority={false}
-                        />
-                        {!isDesktop && (
+                    <>
+                        <div className="mobile-action-rail">
                             <IconButton
-                                className="show-completed-toggle-button"
-                                onClick={() => setHideCompleted(prev => !prev)}
-                                label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                                ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                                icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                className="filter-toggle-button"
+                                onClick={toggleLeft}
+                                label="Filters"
+                                icon={<ListFilter size={24} />}
+                                showLabel
                                 isPriority={false}
                             />
-                        )}
+                            {!isDesktop && (
+                                <IconButton
+                                    className="show-completed-toggle-button"
+                                    onClick={() => setHideCompleted(prev => !prev)}
+                                    label={hideCompleted ? "Show completed" : "Hide completed"}
+                                    ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                    icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                    showLabel
+                                    isPriority={false}
+                                />
+                            )}
+                        </div>
                         <IconButton
                             className="new-task-form-toggle-button"
                             onClick={toggleAddForm}
@@ -392,7 +395,7 @@ const LoggedIn: React.FC = () => {
                             icon={<Plus size={24} strokeWidth={3} />}
                             isPriority={true}
                         />
-                    </div>
+                    </>
                 )}
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset List</h1>

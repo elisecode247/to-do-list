@@ -278,26 +278,29 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
                 <header className="app_header demo-app_header">
                     {!isJournal && (
-                        <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
-                            <IconButton
-                                className="filter-toggle-button"
-                                onClick={toggleLeft}
-                                label="Filters"
-                                ariaLabel="Toggle filters"
-                                icon={<ListFilter size={24} />}
-                                showLabel={isDesktop}
-                                isPriority={false}
-                            />
-                            {!isDesktop && (
+                        <>
+                            <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
                                 <IconButton
-                                    className="show-completed-toggle-button"
-                                    onClick={() => setHideCompleted(current => !current)}
-                                    label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                                    ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                                    icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                    className="filter-toggle-button"
+                                    onClick={toggleLeft}
+                                    label="Filters"
+                                    ariaLabel="Toggle filters"
+                                    icon={<ListFilter size={24} />}
+                                    showLabel
                                     isPriority={false}
                                 />
-                            )}
+                                {!isDesktop && (
+                                    <IconButton
+                                        className="show-completed-toggle-button"
+                                        onClick={() => setHideCompleted(current => !current)}
+                                        label={hideCompleted ? "Show completed" : "Hide completed"}
+                                        ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                        icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                        showLabel
+                                        isPriority={false}
+                                    />
+                                )}
+                            </div>
                             <IconButton
                                 className="new-task-form-toggle-button"
                                 onClick={toggleAddForm}
@@ -306,7 +309,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 icon={<Plus size={24} strokeWidth={3} />}
                                 isPriority
                             />
-                        </div>
+                        </>
                     )}
 
                     <div className="app_header_title">
