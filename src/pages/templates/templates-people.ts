@@ -19,6 +19,7 @@ function peopleTask(
 
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,

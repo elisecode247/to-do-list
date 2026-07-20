@@ -175,6 +175,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 throw new Error(data.error);
             }
             const formattedTask: ChecklistItem = {
+                hasMembers: false,
                 isOwner: true,
                 accessRole: "owner",
                 itemType: 'checklist-item',

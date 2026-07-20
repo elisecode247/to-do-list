@@ -92,6 +92,7 @@ const TASK_TEMPLATES: TaskTemplate[] = [
 function makeItem(id: string, overrides: Partial<ChecklistItem>): ChecklistItem {
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item", id, text: "", done: false,
         lastCompleted: "", note: "", sortOrder: 0, tabSortOrder: {}, category: "housework",

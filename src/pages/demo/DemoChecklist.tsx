@@ -204,7 +204,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
 
 
 
-    const displaySparkles = () => {
+    const displaySparkles = useCallback(() => {
         if (shouldReduceMotion) return;
         setShowSparkles(true);
         if (sparkleTimeoutRef.current) {
@@ -215,7 +215,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
             setShowSparkles(false);
             sparkleTimeoutRef.current = null;
         }, 3000)
-    }
+    }, [shouldReduceMotion]);
 
     useEffect(() => {
         return () => {
@@ -233,7 +233,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                 completedDayRef.current = !!completedDay;
             }, 0);
         }
-    }, [completedDay, activeTab]);
+    }, [completedDay, activeTab, displaySparkles]);
 
     return (
         <>
@@ -287,6 +287,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         onSuccess={displaySparkles}
                                         nextDue={checklistItem.nextDue}
                                         recurrence={checklistItem.recurrence}
+                                        hasMembers={false}
                                     />
                                 );
                             }

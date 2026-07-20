@@ -19,6 +19,7 @@ function dogCareTask(
 
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
@@ -262,6 +263,7 @@ function catCareTask(
 
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,

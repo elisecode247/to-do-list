@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FC, type ReactElement } from 'react';
+import { useState, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -289,7 +289,7 @@ const Checklist: FC<ChecklistProps> = ({
 
 
 
-    const displaySparkles = () => {
+    const displaySparkles = useCallback(() => {
         if (shouldReduceMotion) return;
         setShowSparkles(true);
         if (sparkleTimeoutRef.current) {
@@ -300,7 +300,7 @@ const Checklist: FC<ChecklistProps> = ({
             setShowSparkles(false);
             sparkleTimeoutRef.current = null;
         }, 3000)
-    }
+    }, [shouldReduceMotion]);
 
     useEffect(() => {
         return () => {
@@ -328,7 +328,7 @@ const Checklist: FC<ChecklistProps> = ({
         }
 
         completedDayRef.current = completedDay;
-    }, [completedDay, activeTab, modeFilter, filterCategory]);
+    }, [completedDay, activeTab, modeFilter, filterCategory, displaySparkles]);
 
     useEffect(() => {
         const contentElement = listContentRef.current;
@@ -423,6 +423,8 @@ const Checklist: FC<ChecklistProps> = ({
                                             partialUpdateItem={partialUpdateItem}
                                             getSubtasks={getSubtasks}
                                             recurrence={checklistItem.recurrence}
+                                            accessRole={checklistItem.accessRole}
+                                            hasMembers={checklistItem.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
                                             itemLookup={itemLookup}
                                         />

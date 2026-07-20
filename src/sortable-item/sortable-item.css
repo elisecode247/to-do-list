@@ -217,6 +217,14 @@
     opacity: 0.72;
 }
 
+.sortable-item_sharing-status {
+    padding: 2px 7px;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-radius: var(--radius-rounded);
+    background: color-mix(in srgb, var(--color-primary) 9%, transparent);
+    opacity: 0.82;
+}
+
 .sortable-item_last-completed-text,
 .sortable-item_next-due-text {
     display: inline-block;

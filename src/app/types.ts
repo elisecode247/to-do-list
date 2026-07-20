@@ -85,7 +85,7 @@ export interface ChecklistItem {
     parentUuid: string | null;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     nextDue: string | null;
-    members?: ChoreMember[];
+    hasMembers: boolean;
     createdAt?: string;
     updatedAt?: string;
     /** upcoming indicates if subtask needs to be shown in subtask list for today,

@@ -226,6 +226,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
 
             const formattedTask: ChecklistItem = {
                 isOwner: true,
+                hasMembers: false,
                 accessRole: 'owner',
                 itemType: 'checklist-item',
                 id: newItem.id || generateId(),

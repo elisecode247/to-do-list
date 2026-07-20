@@ -5,6 +5,7 @@ import { type ChecklistItem } from "app/types";
 
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     ownerUuid: crypto.randomUUID(),
+    hasMembers: false,
     isOwner: true,
     accessRole: 'owner',
     itemType: 'checklist-item',

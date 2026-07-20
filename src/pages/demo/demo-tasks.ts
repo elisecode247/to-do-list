@@ -7,6 +7,7 @@ twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
 export const DEMO_TASKS: ChecklistItem[] = [
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "1",
@@ -28,6 +29,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "2",
@@ -49,6 +51,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "3",
@@ -70,6 +73,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "4",
@@ -91,6 +95,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "5",
@@ -112,6 +117,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "6",
@@ -133,6 +139,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "7",
@@ -154,6 +161,7 @@ export const DEMO_TASKS: ChecklistItem[] = [
     },
     {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: 'checklist-item',
         id: "8",

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { getDaysAgo, getDaysFromNow } from 'src/utilities/days-ago';
-import type { ChecklistItem, Mode } from 'src/app/types';
+import type { ChecklistItem, ChoreAccessRole, Mode } from 'src/app/types';
 import { useToast } from 'src/toast/use-toast';
 import {
     Ban,
@@ -26,7 +26,8 @@ import {
     ListChevronsDownUp,
     ListChevronsUpDown,
     RefreshCw,
-    ChevronRight
+    ChevronRight,
+    Users,
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
@@ -73,6 +74,8 @@ interface SortableItemProps {
     getSubtasks?: (parentId: string) => ChecklistItem[];
     isUpcomingSubtask?: boolean;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
+    accessRole?: ChoreAccessRole;
+    hasMembers: boolean;
     expandedNoteItemIds?: ReadonlySet<string>;
     itemLookup?: ReadonlyMap<string, ChecklistItem>;
 }
@@ -108,6 +111,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     partialUpdateItem,
     getSubtasks = () => [],
     recurrence,
+    accessRole,
+    hasMembers,
     expandedNoteItemIds,
     itemLookup,
 }) => {
@@ -201,6 +206,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         // inherit parent task's category and mode, but not priority or hidden status
         const newChecklistItem: ChecklistItem = {
             isOwner: true,
+            hasMembers: false,
             accessRole: 'owner',
             itemType: 'checklist-item',
             id: crypto.randomUUID(),
@@ -386,6 +392,24 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </h2>
                         </div>
                         <div className="sortable-item_metadata">
+                            {accessRole && accessRole !== 'owner' && (
+                                <span
+                                    className="sortable-item_metadata-text sortable-item_sharing-status"
+                                    title={`Shared with you as ${accessRole}`}
+                                >
+                                    <Users aria-hidden="true" size={12} />
+                                    Shared with me as {accessRole}
+                                </span>
+                            )}
+                            {accessRole === 'owner' && hasMembers && (
+                                <span
+                                    className="sortable-item_metadata-text sortable-item_sharing-status"
+                                    title="Shared by me"
+                                >
+                                    <Users aria-hidden="true" size={12} />
+                                    Shared by Me
+                                </span>
+                            )}
                             {(activeTab === TABS.today) && (
                                 <span className="sortable-item_metadata-text sortable-item_recurrence-text">
                                     {mode === 'one-time' ?
@@ -661,6 +685,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             partialUpdateItem={partialUpdateItem}
                                             getSubtasks={getSubtasks}
                                             recurrence={subtask.recurrence}
+                                            accessRole={subtask.accessRole}
+                                            hasMembers={subtask.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
                                             itemLookup={itemLookup}
                                         />
@@ -727,6 +753,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                         partialUpdateItem={partialUpdateItem}
                                                         getSubtasks={getSubtasks}
                                                         recurrence={subtask.recurrence}
+                                                        accessRole={subtask.accessRole}
+                                                        hasMembers={subtask.hasMembers}
                                                         expandedNoteItemIds={expandedNoteItemIds}
                                                         itemLookup={itemLookup}
                                                     />

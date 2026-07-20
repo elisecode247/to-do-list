@@ -11,6 +11,7 @@ function morningResetTask(
 ): ChecklistItem {
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
@@ -218,6 +219,7 @@ function bedtimeRoutineTask(
 ): ChecklistItem {
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,
@@ -470,6 +472,7 @@ function walkingRoutineTask(
 ): ChecklistItem {
     return {
         isOwner: true,
+        hasMembers: false,
         accessRole: 'owner',
         itemType: "checklist-item",
         isHidden: false,

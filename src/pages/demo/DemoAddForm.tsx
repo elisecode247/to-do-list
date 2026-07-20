@@ -89,6 +89,7 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
 
         const newItem: ChecklistItem = {
             isOwner: true,
+            hasMembers: false,
             accessRole: 'owner',
             itemType: 'checklist-item',
             id: crypto.randomUUID(),
