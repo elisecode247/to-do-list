@@ -12,7 +12,7 @@ const routes = [
     {
         path: "/",
         output: "dist/index.html",
-        title: "Daily Reset List | Gentle Daily Task List",
+        title: "Daily Reset List",
         description: "A calm daily task list for recurring responsibilities and one-time reminders—without streaks, scores, or overdue guilt.",
         social: true,
     },
