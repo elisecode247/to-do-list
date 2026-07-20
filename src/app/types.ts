@@ -52,21 +52,15 @@ export type IntervalRecurrence = {
 
 export type ChoreMemberRole = 'editor' | 'doer' | 'viewer';
 
-export interface ChoreMemberUser {
-    uuid: string;
+export interface ChoreMember {
+    choreUuid: string;
+    userUuid: string;
+    role: ChoreMemberRole;
     displayName: string | null;
     avatarUrl: string | null;
     email: string | null;
-}
-
-export interface ChoreMember {
-    uuid?: string;
-    choreUuid?: string;
-    userUuid: string;
-    role: ChoreMemberRole;
-    createdAt?: string;
-    updatedAt?: string;
-    user?: ChoreMemberUser;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ChecklistItem {

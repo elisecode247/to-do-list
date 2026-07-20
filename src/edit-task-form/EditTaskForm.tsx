@@ -1,6 +1,6 @@
 import 'src/edit-task-form/edit-task-form.css';
 import 'src/task-form/task-form-shared.css';
-import { useMemo, useState, useRef, type FC } from 'react';
+import { useEffect, useMemo, useState, useRef, type FC } from 'react';
 import type {
     ChecklistItem,
     ChoreMember,
@@ -26,7 +26,12 @@ import { useForm, FormProvider, type SubmitHandler, Controller, useWatch } from 
 import { getDaysAgo } from 'src/utilities/days-ago';
 import type { CategoryDefinition } from 'src/category-select/types';
 import { useShareTasks, type SharedUser } from 'src/sharing/use-share-tasks';
-import { addChoreMember } from 'src/app/api';
+import {
+    getChoreMembers,
+    addChoreMember,
+    deleteChoreMember,
+    updateChoreMemberRole,
+} from 'src/app/api';
 
 type EditTaskFormProps = {
     isSaving?: boolean;
@@ -68,6 +73,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const [selectedUserUuid, setSelectedUserUuid] = useState('');
     const [selectedRole, setSelectedRole] = useState<ChoreMemberRole>('editor');
     const [isAddingMember, setIsAddingMember] = useState(false);
+    const [pendingMemberUuid, setPendingMemberUuid] = useState<string | null>(null);
+    const [isLoadingMembers, setIsLoadingMembers] = useState(enableSharing);
     const [memberError, setMemberError] = useState<string | null>(null);
     const { sharedUsers } = useShareTasks({ enabled: enableSharing });
     const noteRef = useRef<MDXEditorMethods>(null);
@@ -77,6 +84,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const categoryId = categories.find(category =>
         category.id === formData.category || category.builtInKey === formData.category
     )?.id ?? formData.category;
+
     const availableSharedUsers = useMemo(
         () => sharedUsers.filter(user =>
             user.status === 'accepted'
@@ -84,6 +92,39 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         ),
         [members, sharedUsers],
     );
+
+    useEffect(() => {
+        if (!enableSharing) {
+            return;
+        }
+
+        let cancelled = false;
+        void getChoreMembers(formData.id)
+            .then(choreMembers => {
+                if (!cancelled) {
+                    setMembers(choreMembers);
+                    setMemberError(null);
+                }
+            })
+            .catch((error: unknown) => {
+                if (!cancelled) {
+                    setMemberError(
+                        error instanceof Error
+                            ? error.message
+                            : 'Failed to load task members.',
+                    );
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setIsLoadingMembers(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [enableSharing, formData.id]);
 
     const defaultValues: EditTaskFormValues = {
         taskName: formData.text,
@@ -146,8 +187,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     const modeLabel = (m: string) =>
         m === 'one-time' ? 'One-time' : m.charAt(0).toUpperCase() + m.slice(1);
 
-    const getUserLabel = (user: Pick<SharedUser, 'displayName' | 'email' | 'uuid'>) =>
-        user.displayName || user.email || user.uuid;
+    const getUserLabel = (
+        user: Pick<SharedUser, 'displayName' | 'email'> & {
+            uuid?: string;
+            userUuid?: string;
+        },
+    ) => user.displayName || user.email || user.uuid || user.userUuid || 'Unknown user';
 
     const handleAddMember = async () => {
         if (!selectedUserUuid) {
@@ -165,12 +210,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                 ...membership,
                 userUuid: membership.userUuid ?? selectedUserUuid,
                 role: membership.role ?? selectedRole,
-                user: membership.user ?? (selectedUser ? {
-                    uuid: selectedUser.uuid,
-                    displayName: selectedUser.displayName,
-                    avatarUrl: selectedUser.avatarUrl,
-                    email: selectedUser.email,
-                } : undefined),
+                choreUuid: membership.choreUuid ?? formData.id,
+                displayName: membership.displayName ?? selectedUser?.displayName ?? null,
+                avatarUrl: membership.avatarUrl ?? selectedUser?.avatarUrl ?? null,
+                email: membership.email ?? selectedUser?.email ?? null,
+                createdAt: membership.createdAt ?? new Date().toISOString(),
+                updatedAt: membership.updatedAt ?? new Date().toISOString(),
             };
 
             setMembers(currentMembers => [...currentMembers, member]);
@@ -180,6 +225,60 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             setMemberError(error instanceof Error ? error.message : 'Failed to add task member.');
         } finally {
             setIsAddingMember(false);
+        }
+    };
+
+    const handleChangeMemberRole = async (
+        member: ChoreMember,
+        role: ChoreMemberRole,
+    ) => {
+        setPendingMemberUuid(member.userUuid);
+        setMemberError(null);
+
+        try {
+            const updatedMember = await updateChoreMemberRole(
+                formData.id,
+                member.userUuid,
+                role,
+            );
+            setMembers(currentMembers => currentMembers.map(currentMember =>
+                currentMember.userUuid === member.userUuid
+                    ? {
+                        ...currentMember,
+                        ...updatedMember,
+                        userUuid: updatedMember.userUuid ?? member.userUuid,
+                        role: updatedMember.role ?? role,
+                    }
+                    : currentMember
+            ));
+            onMembersChanged?.();
+        } catch (error) {
+            setMemberError(
+                error instanceof Error ? error.message : 'Failed to update task member.',
+            );
+        } finally {
+            setPendingMemberUuid(null);
+        }
+    };
+
+    const handleDeleteMember = async (member: ChoreMember) => {
+        setPendingMemberUuid(member.userUuid);
+        setMemberError(null);
+
+        try {
+            await deleteChoreMember(formData.id, member.userUuid);
+            setMembers(currentMembers =>
+                currentMembers.filter(currentMember =>
+                    currentMember.userUuid !== member.userUuid
+                )
+            );
+            onMembersChanged?.();
+        } catch (error) {
+            setMemberError(
+                error instanceof Error ? error.message : 'Failed to remove task member.',
+            );
+        } finally {
+            setPendingMemberUuid(null);
         }
     };
 
@@ -283,17 +382,19 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     <div className="task-form-field">
                         <div className="task-form-section-divider">Sharing</div>
                         <span className="task-form-field__label">Task members</span>
-                        {members.length > 0 ? (
+                        {isLoadingMembers ? (
+                            <p className="edit-task-sharing__empty">Loading task members…</p>
+                        ) : members.length > 0 ? (
                             <ul className="edit-task-member-list">
                                 {members.map(member => (
                                     <li
                                         className="edit-task-member"
-                                        key={member.uuid ?? member.userUuid}
+                                        key={member.userUuid}
                                     >
-                                        {member.user?.avatarUrl ? (
+                                        {member.avatarUrl ? (
                                             <img
                                                 className="edit-task-member__avatar"
-                                                src={member.user.avatarUrl}
+                                                src={member.avatarUrl}
                                                 alt=""
                                             />
                                         ) : (
@@ -301,24 +402,56 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                                 aria-hidden="true"
                                                 className="edit-task-member__avatar edit-task-member__avatar--fallback"
                                             >
-                                                {(member.user?.displayName
-                                                    || member.user?.email
+                                                {(member.displayName
+                                                    || member.email
                                                     || '?').charAt(0).toUpperCase()}
                                             </span>
                                         )}
                                         <span className="edit-task-member__identity">
                                             <span className="edit-task-member__name">
-                                                {member.user
-                                                    ? getUserLabel(member.user)
-                                                    : member.userUuid}
+                                                {getUserLabel(member)}
                                             </span>
-                                            {member.user?.displayName && member.user.email && (
+                                            {member.displayName && member.email && (
                                                 <span className="edit-task-member__email">
-                                                    {member.user.email}
+                                                    {member.email}
                                                 </span>
                                             )}
                                         </span>
-                                        <span className="edit-task-member__role">{member.role}</span>
+                                        {enableSharing ? (
+                                            <span className="edit-task-member__actions">
+                                                <select
+                                                    aria-label={`Role for ${
+                                                        getUserLabel(member)
+                                                    }`}
+                                                    className="task-form-input task-form-select edit-task-member__role-select"
+                                                    value={member.role}
+                                                    onChange={event => void handleChangeMemberRole(
+                                                        member,
+                                                        event.target.value as ChoreMemberRole,
+                                                    )}
+                                                    disabled={pendingMemberUuid !== null}
+                                                >
+                                                    <option value="editor">Editor</option>
+                                                    <option value="doer">Doer</option>
+                                                    <option value="viewer">Viewer</option>
+                                                </select>
+                                                <button
+                                                    aria-label={`Remove ${
+                                                        getUserLabel(member)
+                                                    } from task`}
+                                                    className="edit-task-member__remove"
+                                                    type="button"
+                                                    onClick={() => void handleDeleteMember(member)}
+                                                    disabled={pendingMemberUuid !== null}
+                                                >
+                                                    {pendingMemberUuid === member.userUuid
+                                                        ? 'Working…'
+                                                        : 'Remove'}
+                                                </button>
+                                            </span>
+                                        ) : (
+                                            <span className="edit-task-member__role">{member.role}</span>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -342,7 +475,11 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                         setSelectedUserUuid(event.target.value);
                                         setMemberError(null);
                                     }}
-                                    disabled={isAddingMember || availableSharedUsers.length === 0}
+                                    disabled={
+                                        isAddingMember
+                                        || pendingMemberUuid !== null
+                                        || availableSharedUsers.length === 0
+                                    }
                                 >
                                     <option value="">
                                         {availableSharedUsers.length > 0
@@ -363,7 +500,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                         onChange={event =>
                                             setSelectedRole(event.target.value as ChoreMemberRole)
                                         }
-                                        disabled={isAddingMember}
+                                        disabled={isAddingMember || pendingMemberUuid !== null}
                                     >
                                         <option value="editor">Editor</option>
                                         <option value="doer">Doer</option>
@@ -373,7 +510,11 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                         className="task-form-action-button edit-task-sharing__add-button"
                                         type="button"
                                         onClick={() => void handleAddMember()}
-                                        disabled={isAddingMember || !selectedUserUuid}
+                                        disabled={
+                                            isAddingMember
+                                            || pendingMemberUuid !== null
+                                            || !selectedUserUuid
+                                        }
                                     >
                                         {isAddingMember ? 'Adding…' : 'Add'}
                                     </button>

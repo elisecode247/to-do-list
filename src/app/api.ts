@@ -139,6 +139,19 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
         throw err;
     }
 }
+export async function getChoreMembers(choreUuid: string): Promise<ChoreMember[]> {
+    const response = await fetch(`${API_CHORES_URL}/${choreUuid}/members`, {
+        method: "GET",
+        headers: await authHeaders(),
+    });
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    return await response.json() as ChoreMember[];
+}
 
 export async function addChoreMember(
     choreUuid: string,
@@ -185,6 +198,56 @@ export async function addChoreMember(
     }
 
     return await response.json() as ChoreMember;
+}
+
+export async function updateChoreMemberRole(
+    choreUuid: string,
+    userUuid: string,
+    role: ChoreMemberRole,
+): Promise<ChoreMember> {
+    const response = await fetch(
+        `${API_CHORES_URL}/${choreUuid}/members/${encodeURIComponent(userUuid)}`,
+        {
+            method: "PATCH",
+            headers: await authHeaders(),
+            body: JSON.stringify({ role }),
+        },
+    );
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(
+            response.status === 400
+                ? 'Choose a valid member role.'
+                : response.status === 404
+                    ? 'This task member is not available.'
+                    : `Failed to update task member${text.trim() ? `: ${text.trim()}` : '.'}`,
+        );
+    }
+
+    return await response.json() as ChoreMember;
+}
+
+export async function deleteChoreMember(
+    choreUuid: string,
+    userUuid: string,
+): Promise<void> {
+    const response = await fetch(
+        `${API_CHORES_URL}/${choreUuid}/members/${encodeURIComponent(userUuid)}`,
+        {
+            method: "DELETE",
+            headers: await authHeaders(),
+        },
+    );
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(
+            response.status === 404
+                ? 'This task member is not available.'
+                : `Failed to remove task member${text.trim() ? `: ${text.trim()}` : '.'}`,
+        );
+    }
 }
 
 export async function updateTasksOrder(
