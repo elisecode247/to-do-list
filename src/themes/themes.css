@@ -106,7 +106,7 @@
     --transition-fast: 0.2s ease;
 
     /* Layout */
-    --filters-panel-width: 300px;
+    --filters-panel-width: 384px;
     --mobile-tab-bar-height: 82px;
     --fab-spacing: 45px;
 }

@@ -349,7 +349,8 @@ const Checklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
-        const noOtherFilters = modeFilter === ALL_MODES && filterCategory === 'all';
+        const noOtherFilters = modeFilter === ALL_MODES && filterCategory === 'all' &&
+            sharedByMe === false && sharedByOthers === false;
 
         // Prevent sparkle animation on initial page load.
         if (!hasInitializedCompletedDayRef.current) {
