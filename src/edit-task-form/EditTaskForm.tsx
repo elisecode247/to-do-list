@@ -40,6 +40,7 @@ type EditTaskFormProps = {
     onClose: () => void;
     categories: CategoryDefinition[];
     enableSharing?: boolean;
+    canManageSharing?: boolean;
     onMembersChanged?: () => void;
 };
 
@@ -65,6 +66,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     onClose,
     categories,
     enableSharing = false,
+    canManageSharing = enableSharing,
     onMembersChanged,
 }) => {
     const [mode, setMode] = useState<Mode>(formData.mode);
@@ -417,7 +419,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                                 </span>
                                             )}
                                         </span>
-                                        {enableSharing ? (
+                                        {canManageSharing ? (
                                             <span className="edit-task-member__actions">
                                                 <select
                                                     aria-label={`Role for ${
@@ -459,7 +461,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             <p className="edit-task-sharing__empty">Only you have access to this task.</p>
                         )}
 
-                        {enableSharing && (
+                        {canManageSharing && (
                             <div className="edit-task-sharing__add">
                                 <label
                                     className="task-form-field__label"

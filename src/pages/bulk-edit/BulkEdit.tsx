@@ -9,6 +9,11 @@ import { getCategoryOptions } from "src/category-select/category-constants";
 import { useToast } from "src/toast/use-toast";
 import { useTask } from "src/app/use-task";
 import { useUserSettings } from "src/user-settings/use-user-settings";
+import {
+    canDeleteTask,
+    canEditTask,
+    canManageTaskMembers,
+} from "src/sharing/chore-access";
 
 interface ChecklistItemWithDepth extends ChecklistItem {
     depth: number;
@@ -65,9 +70,33 @@ function BulkEdit() {
     };
 
     const filteredTasks = filterTasks();
+    const editableTaskCount = filteredTasks.filter(task =>
+        canEditTask(task.accessRole)
+    ).length;
+    const completionOnlyTaskCount = filteredTasks.filter(task =>
+        task.accessRole === 'doer'
+    ).length;
+    const viewOnlyTaskCount = filteredTasks.filter(task =>
+        task.accessRole === 'viewer'
+    ).length;
+
+    const getChangedEditableTasks = () => localItems.filter(local => {
+        if (!canEditTask(local.accessRole)) return false;
+
+        const original = items.find(item => item.id === local.id);
+        if (!original) return false;
+
+        return (
+            original.isArchived !== local.isArchived ||
+            original.mode !== local.mode ||
+            original.category !== local.category
+        );
+    });
+    const hasEditableChanges = getChangedEditableTasks().length > 0;
 
     // Sync if tasks reload
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLocalItems(items);
     }, [items]);
 
@@ -91,6 +120,9 @@ function BulkEdit() {
     ) => {
         setLocalItems(prev => {
             return prev.map(item => {
+                if (item.id === id && !canEditTask(item.accessRole)) {
+                    return item;
+                }
                 const updatedItem = item.id === id ? { ...item, [field]: value } : item;
                 return updatedItem;
             });
@@ -101,16 +133,10 @@ function BulkEdit() {
         setIsSaving(true);
 
         try {
-            const changed = localItems.filter(local => {
-                const original = items.find(i => i.id === local.id);
-                if (!original) return false;
-
-                return (
-                    original.isArchived !== local.isArchived ||
-                    original.mode !== local.mode ||
-                    original.category !== local.category
-                );
-            });
+            const changed = getChangedEditableTasks();
+            if (changed.length === 0) {
+                return;
+            }
 
             await bulkUpdate(changed);
             showToast("All changes saved successfully.", "success");
@@ -121,16 +147,21 @@ function BulkEdit() {
             } else {
                 showToast("Failed to save changes.", "error");
             }
+            loadTasks();
         } finally {
             setIsSaving(false);
         }
     };
 
-    async function handleDelete(id: string) {
+    async function handleDelete(task: ChecklistItem) {
+        if (!canDeleteTask(task.accessRole)) {
+            return;
+        }
+
         try {
             const confirmed = confirm("Are you sure you want to delete this task? This action cannot be undone.");
             if (confirmed) {
-                await deleteItem(id);
+                await deleteItem(task.id);
                 showToast("Task deleted successfully.");
             }
         } catch (err) {
@@ -143,6 +174,20 @@ function BulkEdit() {
         <Page title="Bulk Edit Tasks">
             <div className="bulk-edit-container">
                 <p>Total {filteredTasks.length} Tasks</p>
+                <p className="bulk-edit-access-summary">
+                    {editableTaskCount} editable
+                    {completionOnlyTaskCount > 0
+                        ? ` · ${completionOnlyTaskCount} completion-only`
+                        : ''}
+                    {viewOnlyTaskCount > 0
+                        ? ` · ${viewOnlyTaskCount} view-only`
+                        : ''}
+                </p>
+                {editableTaskCount === 0 && filteredTasks.length > 0 && (
+                    <p className="bulk-edit-read-only-message" role="status">
+                        These tasks are shared with you as view-only or completion-only.
+                    </p>
+                )}
                 <div className="bulk-edit-table-container">
                     <table className="bulk_table">
                         <thead>
@@ -150,6 +195,7 @@ function BulkEdit() {
                                 <th>#</th>
                                 <th>ID</th>
                                 <th>Task</th>
+                                <th>Access</th>
                                 <th>Archived</th>
                                 <th>Mode</th>
                                 <th>Category</th>
@@ -163,6 +209,7 @@ function BulkEdit() {
                                     includeId: task.category,
                                 });
                                 const categoryValue = categoryOptions.some(option => option.value === task.category) ? task.category : '';
+                                const canEdit = canEditTask(task.accessRole);
                                 return (
                                     <tr
                                         key={task.id}
@@ -171,12 +218,39 @@ function BulkEdit() {
                                     >
                                         <td>{index + 1}</td>
                                         <td>{task.id}</td>
-                                        <td className="bulk_task_cell" onClick={() => setSelectedItem(task)}>
-                                            {/** add loop of ↳ for each subtask depth */}
-                                            {Array.from({ length: task.depth }).map((_, i) => (
-                                                <span key={i}>↳</span>
-                                            ))}
-                                            {task.text}
+                                        <td className={`bulk_task_cell ${canEdit ? 'bulk_task_cell--editable' : ''}`}>
+                                            {canEdit ? (
+                                                <button
+                                                    className="bulk-task-edit-link"
+                                                    type="button"
+                                                    onClick={() => setSelectedItem(task)}
+                                                >
+                                                    {Array.from({ length: task.depth }).map((_, i) => (
+                                                        <span key={i}>↳</span>
+                                                    ))}
+                                                    {task.text}
+                                                </button>
+                                            ) : (
+                                                <>
+                                                    {Array.from({ length: task.depth }).map((_, i) => (
+                                                        <span key={i}>↳</span>
+                                                    ))}
+                                                    {task.text}
+                                                </>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <span
+                                                className={`bulk-access-badge bulk-access-badge--${task.accessRole}`}
+                                                title={task.accessRole === 'owner'
+                                                    ? 'You own this task'
+                                                    : `Shared with you as ${task.accessRole}`}
+                                            >
+                                                {task.accessRole === 'viewer'
+                                                    ? 'View only'
+                                                    : task.accessRole.charAt(0).toUpperCase()
+                                                        + task.accessRole.slice(1)}
+                                            </span>
                                         </td>
                                         <td className="bulk_checkbox_cell">
                                             <input
@@ -185,6 +259,9 @@ function BulkEdit() {
                                                 onChange={e =>
                                                     updateLocal(task.id, "isArchived", e.target.checked)
                                                 }
+                                                disabled={!canEdit}
+                                                aria-label={`${task.isArchived ? 'Unarchive' : 'Archive'} ${task.text}`}
+                                                title={!canEdit ? 'Owner or editor access required' : undefined}
                                             />
                                         </td>
                                         <td>
@@ -194,6 +271,9 @@ function BulkEdit() {
                                                 onChange={e =>
                                                     updateLocal(task.id, "mode", e.target.value)
                                                 }
+                                                disabled={!canEdit}
+                                                aria-label={`Mode for ${task.text}`}
+                                                title={!canEdit ? 'Owner or editor access required' : undefined}
                                             >
                                                 {MODES.map(mode => (
                                                     <option key={mode} value={mode}>
@@ -209,6 +289,9 @@ function BulkEdit() {
                                                 onChange={e => {
                                                     updateLocal(task.id, "category", e.target.value)
                                                 }}
+                                                disabled={!canEdit}
+                                                aria-label={`Category for ${task.text}`}
+                                                title={!canEdit ? 'Owner or editor access required' : undefined}
                                             >
                                                 {categoryOptions.map(({ value, label }) => (
                                                     <option key={value} value={value}>
@@ -224,7 +307,14 @@ function BulkEdit() {
                                                     {showSubtasksFor.has(task.id) ? "Hide Subtasks" : "View Subtasks"}
                                                 </button>
                                             )}
-                                            <button className="page-btn" onClick={() => handleDelete(task.id)}>Delete</button>
+                                            {canDeleteTask(task.accessRole) && (
+                                                <button
+                                                    className="page-btn"
+                                                    onClick={() => handleDelete(task)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
                                             </div>
                                         </td>
                                     </tr>
@@ -237,9 +327,9 @@ function BulkEdit() {
                     <button
                         className="page-btn page-btn--primary"
                         onClick={handleSaveAll}
-                        disabled={isSaving}
+                        disabled={isSaving || !hasEditableChanges}
                     >
-                        Save All Changes
+                        {isSaving ? 'Saving…' : 'Save All Changes'}
                     </button>
                 </div>
             </div>
@@ -248,6 +338,7 @@ function BulkEdit() {
                 <EditTaskForm
                     categories={categories}
                     enableSharing
+                    canManageSharing={canManageTaskMembers(selectedItem.accessRole)}
                     formData={selectedItem}
                     onSave={(item) => {
                         updateItem(item);

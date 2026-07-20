@@ -42,6 +42,7 @@ import('src/pages/not-found/NotFound');
 import('src/pages/PrivacyPolicy');
 import { AnimatePresence, motion } from 'framer-motion';
 import TaskContextChecklist from './TaskContextChecklist';
+import { canManageTaskMembers } from 'src/sharing/chore-access';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
@@ -84,6 +85,7 @@ const LoggedIn: React.FC = () => {
 
     useEffect(() => {
         if (isAuthenticated && !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setShowGettingStarted(true);
         }
     }, [isAuthenticated, isLoading, itemLength, onboardingStorageKey, taskError]);
@@ -482,6 +484,9 @@ const LoggedIn: React.FC = () => {
                         key={editingItem.id} // force remount when editing a different item
                         isSaving={isSaving}
                         enableSharing
+                        canManageSharing={canManageTaskMembers(
+                            (editingItem as ChecklistItem).accessRole
+                        )}
                         formData={editingItem as ChecklistItem}
                         onSave={handleSave}
                         onClose={handleCloseEditModal}
