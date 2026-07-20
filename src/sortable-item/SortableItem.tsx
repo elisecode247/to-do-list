@@ -142,6 +142,12 @@ export const SortableItem: FC<SortableItemProps> = ({
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
 
+    const priorityBtnTitle = (accessRole === 'viewer' || accessRole === 'doer') && isPriority ?
+        "Members with viewer or doer role cannot un-prioritize this task" :
+        (accessRole === 'viewer' || accessRole === 'doer') && !isPriority ?
+        "Members with viewer or doer role cannot prioritize this task" : isPriority ?
+        "Un-prioritize task" : "Prioritize task";
+
     const toggleNotes = () => {
         setShowNotes(!showNotes);
         setOpenNewTaskForm(false);
@@ -434,10 +440,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                 </div>
                 <div className="sortable-item_button-group-container">
                     <button
+                        disabled={accessRole === 'viewer' || accessRole === 'doer'}
                         className="sortable-item_main-button sortable-item_priority-button"
                         onClick={() => prioritizeItem(id)}
-                        aria-label="Prioritize task"
-                        title="Prioritize task"
+                        aria-label={priorityBtnTitle}
+                        title={priorityBtnTitle}
                         type="button"
                     >
                         {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
