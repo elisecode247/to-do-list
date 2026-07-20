@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ComponentProps, ReactNode } from 'react';
+import { act, type ComponentProps, type ReactNode } from 'react';
 import { SortableItem } from './SortableItem';
 import { TABS } from 'src/app-toolbar/tabs/types';
 import type { ChoreAccessRole } from 'app/types';
@@ -80,7 +80,9 @@ function propsFor(accessRole: ChoreAccessRole): ComponentProps<typeof SortableIt
 }
 
 function byLabel(container: HTMLElement, label: string): HTMLElement | null {
-    return Array.from(container.querySelectorAll<HTMLElement>('[aria-label]'))
+    return Array.from(
+        container.ownerDocument.body.querySelectorAll<HTMLElement>('[aria-label]'),
+    )
         .find(element => element.getAttribute('aria-label') === label) ?? null;
 }
 
@@ -132,6 +134,8 @@ describe('SortableItem role permissions', () => {
         expect(menu).not.toBeNull();
         await click(menu!);
 
+        expect(document.querySelector('.sortable-item_menu-dropdown')?.parentElement)
+            .toBe(document.body);
         expect(byLabel(rendered.container, 'Edit task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Archive task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Delete task')).toBeNull();
@@ -149,5 +153,46 @@ describe('SortableItem role permissions', () => {
         expect(byLabel(rendered.container, 'Archive task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Delete task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Add subtask')).not.toBeNull();
+    });
+
+    it('closes the action menu when its task scrolls out of view', async () => {
+        rendered = await renderUi(<SortableItem {...propsFor('owner')} />);
+
+        const menu = byLabel(
+            rendered.container,
+            'More task actions',
+        ) as HTMLButtonElement;
+        menu.getBoundingClientRect = () => ({
+            x: 100,
+            y: 100,
+            top: 100,
+            right: 140,
+            bottom: 140,
+            left: 100,
+            width: 40,
+            height: 40,
+            toJSON: () => ({}),
+        });
+        await click(menu);
+        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+            .not.toBeNull();
+
+        menu.getBoundingClientRect = () => ({
+            x: 100,
+            y: -50,
+            top: -50,
+            right: 140,
+            bottom: -10,
+            left: 100,
+            width: 40,
+            height: 40,
+            toJSON: () => ({}),
+        });
+        await act(async () => {
+            window.dispatchEvent(new Event('scroll'));
+        });
+
+        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+            .toBeNull();
     });
 });

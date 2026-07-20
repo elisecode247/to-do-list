@@ -1,7 +1,8 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { useEffect, useRef } from 'react';
-import type { FC, Dispatch, SetStateAction, RefObject } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import type { FC, Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import 'sortable-item/sortable-item.css';
 import { CSS } from '@dnd-kit/utilities';
 import { getDaysAgo, getDaysFromNow } from 'src/utilities/days-ago';
@@ -141,12 +142,12 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ? true : false);
     const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
-    const [alignLeft, setAlignLeft] = useState(false);
+    const [menuPosition, setMenuPosition] = useState<React.CSSProperties>({});
     const [animate, setAnimate] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showUpcoming, setShowUpcoming] = useState(false);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
-    const menuDropdownRef = useRef<HTMLElement>(null);
+    const menuDropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
     const effectiveAccessRole = accessRole ?? 'owner';
@@ -261,33 +262,39 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }
 
-    const updateMenuPosition = () => {
+    const updateMenuPosition = useCallback(() => {
         if (!buttonRef.current) return;
-        setIsMenuOpen(!isMenuOpen);
 
         const buttonRect = buttonRef.current.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const viewportGutter = 8;
+        const menuGap = 4;
+        const dropdownHeight = menuDropdownRef.current?.offsetHeight || 260;
+        const horizontalPosition = buttonRect.left < viewportWidth / 2
+            ? { left: Math.max(buttonRect.left, viewportGutter) }
+            : {
+                right: Math.max(
+                    viewportWidth - buttonRect.right,
+                    viewportGutter,
+                ),
+            };
 
-        // Check if button is in the left half of viewport
-        const isLeftSide = buttonRect.left < viewportWidth / 2;
-        setAlignLeft(isLeftSide);
-
-        // Position dropdown above the button if it's on the bottom of the viewport
-        const dropdownHeight = 260; // to be above bottom app menu
-        const spaceBelow = window.innerHeight - buttonRect.bottom;
-        const dropdown = menuDropdownRef.current;
-
-        if (dropdown) {
-            if (spaceBelow < dropdownHeight) {
-                dropdown.style.bottom = '45px'; // button height
-                dropdown.style.top = 'auto';
-
-            } else {
-                dropdown.style.top = "100%";
-                dropdown.style.bottom = 'auto';
-            }
+        if (viewportHeight - buttonRect.bottom < dropdownHeight) {
+            setMenuPosition({
+                ...horizontalPosition,
+                bottom: Math.max(
+                    viewportGutter,
+                    viewportHeight - buttonRect.top + menuGap,
+                ),
+            });
+        } else {
+            setMenuPosition({
+                ...horizontalPosition,
+                top: buttonRect.bottom + menuGap,
+            });
         }
-    };
+    }, []);
 
     async function delayHide() {
         setAnimate(false);
@@ -335,6 +342,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     function toggleMenuOpen() {
         if (!isMenuOpen) {
             updateMenuPosition();
+            setIsMenuOpen(true);
         } else {
             setIsMenuOpen(false);
         }
@@ -348,6 +356,40 @@ export const SortableItem: FC<SortableItemProps> = ({
         setIsMenuOpen(false);
     };
     useOnClickOutside(menuDropdownRef as React.RefObject<HTMLElement>, handleClickOutsideMenu)
+
+    useEffect(() => {
+        if (!isMenuOpen) return;
+
+        const handleViewportChange = () => {
+            const button = buttonRef.current;
+            if (!button) {
+                setIsMenuOpen(false);
+                return;
+            }
+
+            const buttonRect = button.getBoundingClientRect();
+            const isOutsideViewport = (
+                buttonRect.bottom <= 0
+                || buttonRect.top >= window.innerHeight
+                || buttonRect.right <= 0
+                || buttonRect.left >= window.innerWidth
+            );
+
+            if (isOutsideViewport) {
+                setIsMenuOpen(false);
+                return;
+            }
+
+            updateMenuPosition();
+        };
+
+        window.addEventListener('resize', handleViewportChange);
+        window.addEventListener('scroll', handleViewportChange, true);
+        return () => {
+            window.removeEventListener('resize', handleViewportChange);
+            window.removeEventListener('scroll', handleViewportChange, true);
+        };
+    }, [isMenuOpen, updateMenuPosition]);
 
     return (
         <div
@@ -544,15 +586,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                             <MoreHorizontal size={24} />
                         </button>
 
+                        {isMenuOpen && typeof document !== 'undefined' && createPortal(
                         <div
-                            ref={menuDropdownRef as RefObject<HTMLDivElement>}
+                            ref={menuDropdownRef}
                             className={`sortable-item_menu-dropdown
-                                    ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}
-                                    ${alignLeft ?
-                                    'sortable-item_menu-dropdown--align-left' :
-                                    ''
-                                }`
-                            }
+                                ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}`}
+                            style={menuPosition}
                         >
                             {canAddSubtask && (
                             <button
@@ -636,6 +675,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </button>
                             )}
                         </div>
+                        , document.body)}
                     </div>
                     )}
                 </div>
