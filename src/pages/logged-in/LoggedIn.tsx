@@ -380,7 +380,7 @@ const LoggedIn: React.FC = () => {
                                 onClick={toggleLeft}
                                 label="Filters"
                                 icon={<ListFilter size={24} />}
-                                showLabel
+                                showLabel={true}
                                 isPriority={false}
                             />
                             {!isDesktop && (
@@ -390,7 +390,7 @@ const LoggedIn: React.FC = () => {
                                     label={hideCompleted ? "Show completed" : "Hide completed"}
                                     ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
                                     icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                                    showLabel
+                                    showLabel={true}
                                     isPriority={false}
                                 />
                             )}
@@ -401,6 +401,7 @@ const LoggedIn: React.FC = () => {
                             label="Add new task"
                             icon={<Plus size={24} strokeWidth={3} />}
                             isPriority={true}
+                            showLabel={false}
                         />
                     </>
                 )}

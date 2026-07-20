@@ -14,6 +14,7 @@ const LOADING_THEME: ThemeState = {
     style: CALM_STYLE,
     density: COMFORTABLE_DENSITY,
     graphics: GRAPHICS_FALSE,
+    toggleIconText: 'true',
 };
 
 const readStoredCustomColors = (): Record<string, string> => {
@@ -46,6 +47,7 @@ const getStoredTheme = (): ThemeState => ({
     density: (readPersistentSetting('theme-density') as Density) || 'comfortable',
     graphics: (readPersistentSetting('theme-graphics') as ThemeGraphic) ?? 'true',
     customColors: readStoredCustomColors(),
+    toggleIconText: (readPersistentSetting('theme-toggle-icon-text') as 'true' | 'false') ?? 'true',
 });
 
 export function useTheme(
@@ -63,7 +65,7 @@ export function useTheme(
 
     const [theme, setTheme] = useState<ThemeState>(
         hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics! }
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics!, toggleIconText: 'true' }
             : getStoredTheme(),
     );
 
@@ -111,7 +113,7 @@ export function useTheme(
         const nextTheme = isLoading
             ? LOADING_THEME
             : hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics! }
+            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics!, toggleIconText: 'true' as const }
             : theme;
 
         applyTheme(nextTheme);
@@ -130,6 +132,7 @@ export function useTheme(
         writePersistentSetting('theme-style', theme.style);
         writePersistentSetting('theme-density', theme.density);
         writePersistentSetting('theme-graphics', theme.graphics);
+        writePersistentSetting('theme-toggle-icon-text', theme.toggleIconText);
 
         if (theme.customColors) {
             writePersistentSetting(THEME_CUSTOM_COLORS_KEY, JSON.stringify(theme.customColors));

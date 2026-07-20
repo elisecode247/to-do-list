@@ -286,7 +286,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     label="Filters"
                                     ariaLabel="Toggle filters"
                                     icon={<ListFilter size={24} />}
-                                    showLabel
+                                    showLabel={true}
                                     isPriority={false}
                                 />
                                 {!isDesktop && (
@@ -296,7 +296,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                         label={hideCompleted ? "Show completed" : "Hide completed"}
                                         ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
                                         icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                                        showLabel
+                                        showLabel={true}
                                         isPriority={false}
                                     />
                                 )}
@@ -308,6 +308,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 ariaLabel="Add new task"
                                 icon={<Plus size={24} strokeWidth={3} />}
                                 isPriority
+                                showLabel={false}
                             />
                         </>
                     )}

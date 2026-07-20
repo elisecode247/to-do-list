@@ -523,68 +523,60 @@ export const SortableItem: FC<SortableItemProps> = ({
                 </div>
                 <div className="sortable-item_button-group-container">
                     {canEdit && (
-                        <button
+                        <IconButton
                             className="sortable-item_main-button sortable-item_priority-button"
                             onClick={() => prioritizeItem(id)}
                             aria-label={priorityBtnTitle}
                             title={priorityBtnTitle}
-                            type="button"
-                        >
-                            {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
-                        </button>
+                            icon={!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
+                            label="Priority"
+                            showLabel={true}
+                        />
                     )}
 
                     {hasSubChores && (
-                        <button
+                        <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
                             onClick={toggleCollapsed}
                             aria-label={collapsed ? "Show subtasks" : "Collapse task"}
                             title={collapsed ? "Show subtasks" : "Collapse task"}
-                            type="button"
-                        >
-                            {collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
-                            <span className="sortable-item_button-text-span">Subtasks</span>
-                        </button>
+                            icon={collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
+                            label="Subtasks"
+                        />
                     )}
 
                     {!!note?.length && (
-                        <button
+                        <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
                             onClick={toggleNotes}
                             aria-label="Show notes"
                             title={showNotes ? "Hide notes" : "Show notes"}
-                            type="button"
-                        >
-                            {showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
-                            <span className="sortable-item_button-text-span">Notes</span>
-                        </button>
+                            label="Notes"
+                            icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                        />
                     )}
                     {activeTab === TABS.archived || checklistType === 'template' ? null : (
-                        <button
+                        <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
                             onClick={delayHide}
                             aria-label="Hide task"
                             title={isHidden ? "Unhide task for today" : "Hide task for today"}
-                            type="button"
-                        >
-                            {isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
-                            <span className="sortable-item_button-text-span">
-                                {isHidden ? "Do Today" : "Skip"}
-                            </span>
-                        </button>
+                            icon={isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
+                            label={isHidden ? "Do Today" : "Skip"}
+                        />
                     )}
                     {hasMenuActions && (
                     <div className="sortable-item_menu-wrapper">
-                        <button
+                        <IconButton
                             className={`sortable-item_main-button sortable-item_menu-button
                                     ${isMenuOpen ? 'sortable-item_menu-button--active' : ''}`}
                             aria-label="More task actions"
-                            type="button"
                             ref={buttonRef}
                             onClick={toggleMenuOpen}
-                        >
-                            <MoreHorizontal size={24} />
-                        </button>
+                            showLabel={true}
+                            icon={<MoreHorizontal size={24} />}
+                            label="Actions"
+                        />
 
                         {isMenuOpen && typeof document !== 'undefined' && createPortal(
                         <div

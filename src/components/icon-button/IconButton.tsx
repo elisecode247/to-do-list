@@ -1,36 +1,43 @@
-import React, { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, type ReactNode } from 'react';
+import { useTheme } from 'src/themes/use-theme';
 import './icon-button.css';
 
 type IconButtonProps = {
     className: string;
     onClick: () => void;
     label: string;
-    icon: React.ReactNode;
+    title?: string;
+    icon: ReactNode;
     showLabel?: boolean;
     isPriority?: boolean;
     disabled?: boolean;
     ariaLabel?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
     longPressLabel?: string; // tooltip text shown on long press, defaults to `label`
     longPressDuration?: number; // ms, defaults to 500
+    ref?: React.Ref<HTMLButtonElement>;
 };
 
 const IconButton = ({
     className,
     onClick,
     label,
+    title,
     icon,
-    showLabel = false,
+    showLabel = true,
     isPriority = false,
     ariaLabel,
     children,
     longPressLabel,
     longPressDuration = 500,
     disabled = false,
+    ref,
 }: IconButtonProps) => {
+    const { toggleIconText } = useTheme();
     const [showTooltip, setShowTooltip] = useState(false);
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const wasLongPress = useRef(false);
+    const shouldShowLabel = showLabel && toggleIconText === 'true';
 
     const clearPressTimer = useCallback(() => {
         if (pressTimer.current) {
@@ -69,6 +76,7 @@ const IconButton = ({
     return (
         <button
             type="button"
+            title={title ?? ariaLabel ?? label}
             className={`icon-button ${isPriority ? "icon-button--priority" : ""} ${className}`}
             onClick={handleClick}
             onPointerDown={handlePointerDown}
@@ -76,10 +84,11 @@ const IconButton = ({
             onPointerLeave={handlePointerLeave}
             aria-label={ariaLabel ?? label}
             disabled={disabled}
+            ref={ref}
         >
             {icon}
-            {showLabel && <span>{label}</span>}
-            {!showLabel && showTooltip && (
+            {shouldShowLabel && <span>{label}</span>}
+            {!shouldShowLabel && showTooltip && (
                 <span className="icon-button__tooltip" role="tooltip">
                     {longPressLabel ?? label}
                 </span>

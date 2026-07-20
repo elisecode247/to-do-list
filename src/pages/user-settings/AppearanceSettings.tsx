@@ -75,6 +75,10 @@ function AppearanceSettings() {
         getStored('theme-graphics', 'true')
     );
 
+    const [toggleIconText, setToggleIconText] = useState<'true' | 'false'>(() =>
+        getStored('theme-toggle-icon-text', 'true')
+    );
+
     const [customColors, setCustomColors] = useState<Record<string, string>>(() => readStoredCustomColors());
     const [resolvedThemeColors, setResolvedThemeColors] = useState<Record<string, string>>({});
     const [resolvedCustomBackgroundColors, setResolvedCustomBackgroundColors] = useState<Record<string, string>>({});
@@ -106,6 +110,11 @@ function AppearanceSettings() {
     function handleSetGraphics(newGraphics: 'true' | 'false') {
         setGraphics(newGraphics);
         updateTheme({ graphics: newGraphics });
+    }
+
+    function handleSetToggleIconText(newToggleIconText: 'true' | 'false') {
+        setToggleIconText(newToggleIconText);
+        updateTheme({ toggleIconText: newToggleIconText });
     }
 
     function handleResetAllColorsToBackground() {
@@ -256,6 +265,19 @@ function AppearanceSettings() {
                     />
                 </fieldset>
             ) : null}
+
+            <fieldset>
+                <legend>Toggle Icon Text Label</legend>
+                <RadioGroup
+                    name="theme-toggle-icon-text"
+                    value={toggleIconText}
+                    onChange={handleSetToggleIconText}
+                    options={[
+                        { value: 'true', label: 'Enabled' },
+                        { value: 'false', label: 'Disabled' },
+                    ]}
+                />
+            </fieldset>
         </section>
     );
 }

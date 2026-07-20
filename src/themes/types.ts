@@ -8,8 +8,8 @@ export type ThemeGraphic = typeof GRAPHICS[number];
 export interface ThemeState {
     mode: ThemeMode;
     style: ThemeStyle;
-    density: Density;
     graphics: ThemeGraphic;
+    toggleIconText: 'true' | 'false';
 }
 
 export interface ThemeState {
@@ -19,3 +19,4 @@ export interface ThemeState {
     graphics: ThemeGraphic;
     customColors?: Record<string, string>;
 }
+
