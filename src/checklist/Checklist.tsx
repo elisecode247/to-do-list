@@ -16,6 +16,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
 import { motion, useReducedMotion } from 'framer-motion';
+import { canEditTask } from 'src/sharing/chore-access';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -173,6 +174,18 @@ const Checklist: FC<ChecklistProps> = ({
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
+        const activeItem = items.find(item => item.id === active.id);
+        const overItem = items.find(item => item.id === over.id);
+        if (
+            activeItem
+            && overItem
+            && !canEditTask(activeItem.accessRole)
+            && (activeItem.parentUuid ?? null) !== (overItem.parentUuid ?? null)
+        ) {
+            showToast('Owner or editor access is required to move tasks between groups.', 'error');
+            return;
+        }
+
         sortItems(filteredItems, activeTab, active.id as string, over.id as string);
     };
 
@@ -197,7 +210,8 @@ const Checklist: FC<ChecklistProps> = ({
                         id: id,
                         // unarchive if the item has been archived
                         lastCompleted: selectedItem.lastCompleted,
-                        ...((selectedItem?.mode === ONE_TIME_MODE) ?
+                        ...((selectedItem?.mode === ONE_TIME_MODE
+                            && canEditTask(selectedItem.accessRole)) ?
                             { isArchived: false } : {}),
                     } as Partial<ChecklistItem>;
                     partialUpdateItem(updatedItem);
@@ -207,7 +221,11 @@ const Checklist: FC<ChecklistProps> = ({
                 showToast(`"${selectedItem?.text}" completed`, 'success', undoAction);
             }
             // archive if item's mode is ONE_TIME_MODE and is being marked completed
-            if (selectedItem?.mode === ONE_TIME_MODE && checked) {
+            if (
+                selectedItem?.mode === ONE_TIME_MODE
+                && checked
+                && canEditTask(selectedItem.accessRole)
+            ) {
                 await archiveItem(id);
                 showToast('Task archived successfully', 'success');
             }

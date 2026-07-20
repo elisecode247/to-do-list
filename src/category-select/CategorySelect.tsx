@@ -8,6 +8,7 @@ interface CategorySelectProps {
     selectedCategory?: string;
     onChange?: (value: string) => void;
     categories: CategoryDefinition[];
+    disabled?: boolean;
 }
 
 const CategorySelect = ({
@@ -16,6 +17,7 @@ const CategorySelect = ({
     selectedCategory,
     onChange,
     categories,
+    disabled = false,
 }: CategorySelectProps) => {
     const methods = useFormContext();
     const registration = methods?.register
@@ -34,6 +36,7 @@ const CategorySelect = ({
                 {...registration}
                 id={`category-select-${id}`}
                 className={`select-input ${isFilter ? 'category-select_filter' : ''}`}
+                disabled={disabled}
                 {...(selectedCategory !== undefined ? { value: selectedCategory } : {})}
                 onChange={(event) => {
                     registration?.onChange(event);

@@ -42,6 +42,11 @@ import { getRecurrenceText } from 'src/sortable-item/utilities/get-recurrence-te
 import { useUserSettings } from 'src/user-settings/use-user-settings';
 import { getCategoryById } from 'src/category-select/category-constants';
 import { CategoryIcon } from 'src/category-select/category-icons';
+import {
+    canCompleteTask,
+    canDeleteTask,
+    canEditTask,
+} from 'src/sharing/chore-access';
 
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
@@ -141,12 +146,13 @@ export const SortableItem: FC<SortableItemProps> = ({
     const menuDropdownRef = useRef<HTMLElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const noteRef = useRef<MDXEditorMethods>(null)
-
-    const priorityBtnTitle = (accessRole === 'viewer' || accessRole === 'doer') && isPriority ?
-        "Members with viewer or doer role cannot un-prioritize this task" :
-        (accessRole === 'viewer' || accessRole === 'doer') && !isPriority ?
-        "Members with viewer or doer role cannot prioritize this task" : isPriority ?
-        "Un-prioritize task" : "Prioritize task";
+    const effectiveAccessRole = accessRole ?? 'owner';
+    const canEdit = canEditTask(effectiveAccessRole);
+    const canComplete = canCompleteTask(effectiveAccessRole);
+    const canDelete = canDeleteTask(effectiveAccessRole);
+    const canAddSubtask = checklistType === 'template' || effectiveAccessRole === 'owner';
+    const hasMenuActions = canEdit || canDelete || canAddSubtask;
+    const priorityBtnTitle = isPriority ? "Un-prioritize task" : "Prioritize task";
 
     const toggleNotes = () => {
         setShowNotes(!showNotes);
@@ -189,6 +195,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
 
     const saveNote = () => {
+        if (!canEdit) return;
+
         try {
             partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
             showToast('Notes saved successfully', 'success');
@@ -205,6 +213,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     };
 
     async function handleAdd(id: string) {
+        if (!canAddSubtask) return;
+
         if (!inputText.trim()) {
             showToast('Task details cannot be empty.', 'error');
             return;
@@ -291,6 +301,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     }
 
     async function handleDeleteTask() {
+        if (!canDelete) return;
+
         const answer = confirm("Are you sure?");
         if (!answer) return;
         try {
@@ -303,6 +315,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     }
 
     function handleOpenTaskForm() {
+        if (!canAddSubtask) return;
+
         setOpenNewTaskForm(!openNewTaskForm);
         setShowNotes(false);
         toggleMenuOpen();
@@ -355,8 +369,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                         type="checkbox"
                         checked={checked}
                         onChange={delayCheck}
+                        disabled={!canComplete}
                         aria-label={`Mark task "${text}" as done`}
-                        title={checked ? "Mark as not done" : "Mark as done"}
+                        title={!canComplete
+                            ? 'Viewer access cannot change completion'
+                            : checked ? "Mark as not done" : "Mark as done"}
                         onPointerDown={(e) => e.stopPropagation()}
                         onTouchStart={(e) => e.stopPropagation()}
                     />
@@ -404,7 +421,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     title={`Shared with you as ${accessRole}`}
                                 >
                                     <Users aria-hidden="true" size={12} />
-                                    Shared with me as {accessRole}
+                                    Shared with Me
                                 </span>
                             )}
                             {accessRole === 'owner' && hasMembers && (
@@ -439,16 +456,17 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </div>
                 </div>
                 <div className="sortable-item_button-group-container">
-                    <button
-                        disabled={accessRole === 'viewer' || accessRole === 'doer'}
-                        className="sortable-item_main-button sortable-item_priority-button"
-                        onClick={() => prioritizeItem(id)}
-                        aria-label={priorityBtnTitle}
-                        title={priorityBtnTitle}
-                        type="button"
-                    >
-                        {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
-                    </button>
+                    {canEdit && (
+                        <button
+                            className="sortable-item_main-button sortable-item_priority-button"
+                            onClick={() => prioritizeItem(id)}
+                            aria-label={priorityBtnTitle}
+                            title={priorityBtnTitle}
+                            type="button"
+                        >
+                            {!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
+                        </button>
+                    )}
 
                     {hasSubChores && (
                         <button
@@ -489,6 +507,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </span>
                         </button>
                     )}
+                    {hasMenuActions && (
                     <div className="sortable-item_menu-wrapper">
                         <button
                             className={`sortable-item_main-button sortable-item_menu-button
@@ -511,6 +530,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 }`
                             }
                         >
+                            {canAddSubtask && (
                             <button
                                 className="sortable-item_edit-button sortable-item_add-subtask-button"
                                 onClick={handleOpenTaskForm}
@@ -521,8 +541,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <PlusCircle size={24} />
                                 <span className="sortable-item_button-text-span">Add Subtask</span>
                             </button>
+                            )}
 
-                            {!hasSubChores && (
+                            {canEdit && !hasSubChores && (
                                 <button
                                     className="sortable-item_hide-button"
                                     onClick={() => {
@@ -538,6 +559,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </button>
                             )}
 
+                            {canEdit && (
                             <button
                                 className="sortable-item_edit-button"
                                 onClick={() => {
@@ -551,8 +573,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <Edit size={24} />
                                 <span className="sortable-item_button-text-span">Edit</span>
                             </button>
+                            )}
 
-                            {checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
+                            {!canEdit || checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
                                 <button
                                     className="sortable-item_archive-button"
                                     onClick={() => onMoveItem(id, false)}
@@ -576,6 +599,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </button>
                             )}
 
+                            {canDelete && (
                             <button
                                 className="sortable-item_delete-button"
                                 onClick={handleDeleteTask}
@@ -586,8 +610,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <Trash size={24} />
                                 <span className="sortable-item_button-text-span">Delete</span>
                             </button>
+                            )}
                         </div>
                     </div>
+                    )}
                 </div>
                 <AnimatePresence initial={false}>
                     {showNotes && (
@@ -611,8 +637,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <NoteEditor
                                     ref={noteRef}
                                     initialMarkdown={note ?? ''}
-                                    onChange={handleNoteChange}
-                                    readOnly={false}
+                                    onChange={canEdit ? handleNoteChange : undefined}
+                                    readOnly={!canEdit}
                                 />
                             )}
                         </motion.div>
@@ -623,7 +649,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                     <SortableContext items={filteredTasks?.map(i => i.id) || []}>
                         <AnimatePresence initial={false}>
-                            {!hasSubChores && dropZoneOpen && (
+                            {canEdit && !hasSubChores && dropZoneOpen && (
                                 <motion.div
                                     key={`placeholder-${id}`}
                                     className="sortable-item_subtasks-motion-shell"
@@ -775,7 +801,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </SortableContext>
 
                 </div>
-                {openNewTaskForm ? (
+                {canAddSubtask && openNewTaskForm ? (
                     <div className="sortable-item_new-item-form">
                         <h3>New Task</h3>
                         <button

@@ -21,6 +21,23 @@
     color: contrast-color(var(--color-hover));
 }
 
+.edit-task-chip:disabled,
+.edit-task-priority:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.edit-task-read-only-message {
+    width: 100%;
+    margin: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
 .edit-task-chip--active {
     border-color: color-mix(in srgb, var(--color-primary) 70%, #2563eb 30%);
     background: color-mix(in srgb, var(--color-primary) 14%, #eff6ff 86%);
