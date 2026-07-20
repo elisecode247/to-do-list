@@ -14,7 +14,7 @@ import AppToolBar from 'src/app-toolbar/AppToolbar';
 import { MOBILE_TAB_LABELS, TABS, type Tab } from 'src/app-toolbar/tabs/types';
 import MobileTabContent from 'src/app-toolbar/tabs/MobileTabContent';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
-import { ALL_MODES } from 'src/checklist/constants';
+import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
@@ -48,6 +48,60 @@ import { useShareTasks } from 'src/sharing/use-share-tasks';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
+const FILTER_STORAGE_KEY = 'daily-reset-list-filters-v1';
+
+type StoredFilters = {
+    activeTab: Tab;
+    modeFilter: Mode | typeof ALL_MODES;
+    hideCompleted: boolean;
+    filterCategory: string;
+    sharedByMe: boolean;
+    sharedByOthers: boolean;
+    leftOpen: boolean;
+};
+
+const readStoredFilters = (storageKey: string): Partial<StoredFilters> => {
+    if (typeof window === 'undefined') return {};
+
+    try {
+        const storedValue = window.localStorage.getItem(storageKey);
+        if (!storedValue) return {};
+
+        const parsed: unknown = JSON.parse(storedValue);
+        if (!parsed || typeof parsed !== 'object') return {};
+
+        const values = parsed as Record<string, unknown>;
+        const filters: Partial<StoredFilters> = {};
+        const validTabs = Object.values(TABS) as Tab[];
+        const validModes: Array<Mode | typeof ALL_MODES> = [ALL_MODES, ...MODES];
+
+        if (validTabs.includes(values.activeTab as Tab)) {
+            filters.activeTab = values.activeTab as Tab;
+        }
+        if (validModes.includes(values.modeFilter as Mode | typeof ALL_MODES)) {
+            filters.modeFilter = values.modeFilter as Mode | typeof ALL_MODES;
+        }
+        if (typeof values.hideCompleted === 'boolean') {
+            filters.hideCompleted = values.hideCompleted;
+        }
+        if (typeof values.filterCategory === 'string') {
+            filters.filterCategory = values.filterCategory;
+        }
+        if (typeof values.sharedByMe === 'boolean') {
+            filters.sharedByMe = values.sharedByMe;
+        }
+        if (typeof values.sharedByOthers === 'boolean') {
+            filters.sharedByOthers = values.sharedByOthers;
+        }
+        if (typeof values.leftOpen === 'boolean') {
+            filters.leftOpen = values.leftOpen;
+        }
+
+        return filters;
+    } catch {
+        return {};
+    }
+};
 
 const LoggedIn: React.FC = () => {
     useTheme();
@@ -63,21 +117,22 @@ const LoggedIn: React.FC = () => {
         itemLength,
         isUpdatedDate,
     } = useTask();
-    const { isAuthenticated } = useAuthentication();
+    const { isAuthenticated, email } = useAuthentication();
     const { categories, googleCalendarEnabled } = useUserSettings();
     const { loadCalendarEvents, updateEvent } = useGoogleCalendar();
-    const { email } = useAuthentication();
     const { items: demoItems, isLoading: isLoadingDemoTasks } = useDemoTask();
     const [, setLocation] = useLocation();
-    const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
-    const [activeTab, setActiveTab] = useState(TABS.today);
-    const [hideCompleted, setHideCompleted] = useState(true);
-    const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
-    const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
-    const [sharedByMe, setSharedByMe] = useState(false);
-    const [sharedByOthers, setSharedByOthers] = useState(false);
     const isDesktop = useIsDesktop();
-    const [leftOpen, setLeftOpen] = useState(isDesktop ? true : false);
+    const filterStorageKey = `${FILTER_STORAGE_KEY}:${email ?? 'current-user'}`;
+    const [storedFilters] = useState(() => readStoredFilters(filterStorageKey));
+    const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
+    const [activeTab, setActiveTab] = useState<Tab>(storedFilters.activeTab ?? TABS.today);
+    const [hideCompleted, setHideCompleted] = useState(storedFilters.hideCompleted ?? true);
+    const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(storedFilters.modeFilter ?? ALL_MODES);
+    const [filterCategory, setFilterCategory] = useState<string>(storedFilters.filterCategory ?? ALL_CATEGORIES);
+    const [sharedByMe, setSharedByMe] = useState(storedFilters.sharedByMe ?? false);
+    const [sharedByOthers, setSharedByOthers] = useState(storedFilters.sharedByOthers ?? false);
+    const [leftOpen, setLeftOpen] = useState(storedFilters.leftOpen ?? isDesktop);
     const [rightOpen, setRightOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -88,6 +143,33 @@ const LoggedIn: React.FC = () => {
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
     const { sharedUsers } = useShareTasks({ enabled: isAuthenticated });
     const hasSharedUsers = sharedUsers.some(user => user.status === 'accepted');
+
+    useEffect(() => {
+        const filters: StoredFilters = {
+            activeTab,
+            modeFilter,
+            hideCompleted,
+            filterCategory,
+            sharedByMe,
+            sharedByOthers,
+            leftOpen,
+        };
+
+        try {
+            window.localStorage.setItem(filterStorageKey, JSON.stringify(filters));
+        } catch {
+            // The UI remains usable when storage is unavailable or full.
+        }
+    }, [
+        activeTab,
+        filterCategory,
+        filterStorageKey,
+        hideCompleted,
+        leftOpen,
+        modeFilter,
+        sharedByMe,
+        sharedByOthers,
+    ]);
 
     useEffect(() => {
         if (isAuthenticated && !isLoading && !taskError && itemLength === 0 && !readPersistentSetting(onboardingStorageKey)) {
@@ -434,7 +516,7 @@ const LoggedIn: React.FC = () => {
                     setHideCompleted={setHideCompleted}
                     filterCategory={filterCategory}
                     setFilterCategory={setFilterCategory}
-                    hasSharedUsers={hasSharedUsers}
+                    hasSharedUsers={hasSharedUsers || sharedByMe || sharedByOthers}
                     sharedByMe={sharedByMe}
                     setSharedByMe={setSharedByMe}
                     sharedByOthers={sharedByOthers}
