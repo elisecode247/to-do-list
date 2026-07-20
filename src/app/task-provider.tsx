@@ -13,6 +13,8 @@ import {
     toggleHideToday,
     bulkUpdateTasks,
     updateTaskCompletion,
+    type BulkUpdateTaskRequest,
+    type TaskOrderUpdate,
 } from 'app/api';
 import {
     type ChecklistItem,
@@ -87,9 +89,15 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 partialItem,
                 'lastCompleted',
             );
-            const hasGeneralTaskUpdate = Object.keys(partialItem).some(key =>
-                !['id', 'lastCompleted', 'done', 'nextDue', 'itemType'].includes(key)
-            );
+            const hasGeneralTaskUpdate = [
+                'text',
+                'note',
+                'mode',
+                'isPriority',
+                'isArchived',
+                'category',
+                'recurrence',
+            ].some(key => Object.prototype.hasOwnProperty.call(partialItem, key));
             let updatedTask = updatedItem;
 
             if (hasGeneralTaskUpdate) {
@@ -143,7 +151,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
 
         try {
-            let updatedTask = await updateTask(updatedItem);
+            let updatedTask: ChecklistItem = {
+                ...updatedItem,
+                ...await updateTask(updatedItem),
+            };
             if (previousItem?.lastCompleted !== updatedItem.lastCompleted) {
                 const completion = await updateTaskCompletion(
                     updatedItem.id,
@@ -160,6 +171,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             setItems(prev => {
                 previousItem = prev.find(i => i.id === updatedItem.id);
                 return prev.map(i => i.id === updatedItem.id ? {
+                    ...i,
                     ...updatedTask,
                     done: isDateToday(updatedTask.lastCompleted),
                     itemType: 'checklist-item',
@@ -178,7 +190,14 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const bulkUpdate = async (updatedItems: ChecklistItem[]) => {
         try {
-            await bulkUpdateTasks(updatedItems);
+            const requests: BulkUpdateTaskRequest[] = updatedItems.map(item => ({
+                id: item.id,
+                mode: item.mode,
+                isArchived: item.isArchived,
+                category: item.category,
+                isPriority: item.isPriority,
+            }));
+            await bulkUpdateTasks(requests);
             setItems(prev => {
                 return prev.map(item => {
                     const updated = updatedItems.find(i => i.id === item.id);
@@ -409,13 +428,35 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (changed.length > 0) {
-                updateTasksOrder(
-                    changed.map((i: { id: string; sortOrder: number; parentUuid: string | null; }) => ({
-                        id: i.id,
-                        sortOrder: i.sortOrder,
-                        parentUuid: i.parentUuid ?? null,
-                    }))
-                ).catch(console.error);
+                const orders = changed.map((item): TaskOrderUpdate => {
+                    const old = prev.find(previous => previous.id === item.id);
+                    const order: TaskOrderUpdate = { id: item.id };
+
+                    if (old?.sortOrder !== item.sortOrder) {
+                        order.sortOrder = item.sortOrder;
+                    }
+
+                    const oldTabOrder = old?.tabSortOrder?.[activeTab];
+                    const newTabOrder = item.tabSortOrder?.[activeTab];
+                    if (oldTabOrder !== newTabOrder && newTabOrder !== undefined) {
+                        order.tabName = activeTab;
+                        order.tabSortOrder = newTabOrder;
+                    }
+
+                    if (
+                        old
+                        && old.parentUuid !== item.parentUuid
+                        && (item.accessRole === 'owner' || item.accessRole === 'editor')
+                    ) {
+                        order.parentUuid = item.parentUuid ?? null;
+                    }
+
+                    return order;
+                }).filter(order => Object.keys(order).length > 1);
+
+                if (orders.length > 0) {
+                    updateTasksOrder(orders).catch(console.error);
+                }
             }
 
             return updated;
@@ -457,13 +498,25 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const unhideForToday = async (id: string) => {
+        let previousItem: ChecklistItem | undefined;
+
+        setItems(prev => {
+            previousItem = prev.find(item => item.id === id);
+            return prev.map(item =>
+                item.id === id ? { ...item, isHidden: false } : item
+            );
+        });
+
         try {
-            setItems(prev => {
-                toggleHideToday(id, false)
-                return prev.map(item => item.id === id ? { ...item, isHidden: false } : item);
-            });
+            await toggleHideToday(id, false);
         } catch (err) {
-            console.error('Failed to unhide task for today:', err);
+            if (previousItem) {
+                setItems(prev =>
+                    prev.map(item =>
+                        item.id === id ? previousItem! : item
+                    )
+                );
+            }
             throw err;
         }
     };

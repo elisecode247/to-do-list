@@ -4,6 +4,7 @@ import {
     type ChoreMember,
     type ChoreMemberRole,
 } from "app/types";
+import type { Tab } from "src/app-toolbar/tabs/types";
 import { authHeaders } from "src/authentication/authentication-api";
 
 export type ApiErrorResponse = {
@@ -26,6 +27,36 @@ export type UpdateTaskCompletionResponse = {
     id: string;
     lastCompleted: string | null;
     nextDue: string | null;
+};
+
+export type UpdateTaskRequest = Pick<
+    ChecklistItem,
+    | "id"
+    | "text"
+    | "note"
+    | "mode"
+    | "isPriority"
+    | "isArchived"
+    | "category"
+    | "recurrence"
+>;
+
+export type UpdateTaskResponse = UpdateTaskRequest & Pick<
+    ChecklistItem,
+    "nextDue" | "updatedAt"
+>;
+
+export type BulkUpdateTaskRequest = Pick<
+    ChecklistItem,
+    "id" | "mode" | "isArchived" | "category" | "isPriority"
+>;
+
+export type TaskOrderUpdate = {
+    id: string;
+    sortOrder?: number;
+    parentUuid?: string | null;
+    tabName?: Tab;
+    tabSortOrder?: number;
 };
 
 export async function fetchTasks(): Promise<ChecklistItem[]> {
@@ -88,12 +119,19 @@ export async function addTasksFromTemplate(
     }
 }
 
-export async function bulkUpdateTasks(tasks: ChecklistItem[]): Promise<void> {
+export async function bulkUpdateTasks(tasks: BulkUpdateTaskRequest[]): Promise<void> {
     try {
+        const payloadTasks = tasks.map((task): BulkUpdateTaskRequest => ({
+            id: task.id,
+            mode: task.mode,
+            isArchived: task.isArchived,
+            category: task.category,
+            isPriority: task.isPriority,
+        }));
         const response = await fetch(`${API_CHORES_URL}/bulk-update`, {
             method: "PUT",
             headers: await authHeaders(),
-            body: JSON.stringify({ tasks }),
+            body: JSON.stringify({ tasks: payloadTasks }),
         });
 
         if (!response.ok) {
@@ -126,12 +164,24 @@ export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem
     }
 }
 
-export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
+export async function updateTask(task: UpdateTaskRequest): Promise<UpdateTaskResponse> {
     try {
+        // Completion, ordering, and hidden state have dedicated endpoints and
+        // must never leak into the shared chore update contract.
+        const payload: UpdateTaskRequest = {
+            id: task.id,
+            text: task.text,
+            note: task.note,
+            mode: task.mode,
+            isPriority: task.isPriority,
+            isArchived: task.isArchived,
+            category: task.category,
+            recurrence: task.recurrence,
+        };
         const response = await fetch(`${API_CHORES_URL}`, {
             method: "PUT",
             headers: await authHeaders(),
-            body: JSON.stringify(task),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
@@ -139,7 +189,19 @@ export async function updateTask(task: ChecklistItem): Promise<ChecklistItem> {
             throw new Error(`HTTP ${response.status}: ${text}`);
         }
 
-        return await response.json();
+        const data = await response.json() as ChecklistItem;
+        return {
+            id: data.id,
+            text: data.text,
+            note: data.note,
+            mode: data.mode,
+            isPriority: data.isPriority,
+            isArchived: data.isArchived,
+            category: data.category,
+            recurrence: data.recurrence,
+            nextDue: data.nextDue,
+            updatedAt: data.updatedAt,
+        };
     } catch (err) {
         console.error("Failed to save task:", err);
         throw err;
@@ -276,7 +338,7 @@ export async function deleteChoreMember(
 }
 
 export async function updateTasksOrder(
-    orders: { id: string; sortOrder?: number, tabSortOrder?: number }[]
+    orders: TaskOrderUpdate[],
 ): Promise<void> {
     const response = await fetch(`${API_CHORES_URL}/order`, {
         method: "PUT",
