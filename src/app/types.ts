@@ -50,7 +50,8 @@ export type IntervalRecurrence = {
     startDate: string;
 }
 
-export type ChoreMemberRole = 'editor' | 'doer' | 'viewer';
+export type ChoreAccessRole = "owner" | "editor" | "doer" | "viewer";
+export type ChoreMemberRole = Exclude<ChoreAccessRole, "owner">;
 
 export interface ChoreMember {
     choreUuid: string;
