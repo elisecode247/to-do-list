@@ -29,6 +29,7 @@ function UserSettings() {
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
     const [activeSection, setActiveSection] = useState<SettingsSectionId>(SETTINGS_SECTIONS[0].id);
     const settingsLayoutRef = useRef<HTMLDivElement>(null);
+    const settingsNavListRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const settingsLayout = settingsLayoutRef.current;
@@ -83,6 +84,20 @@ function UserSettings() {
         };
     }, []);
 
+    useEffect(() => {
+        const navList = settingsNavListRef.current;
+        const activeLink = navList?.querySelector<HTMLElement>(`[href="#${activeSection}"]`);
+        if (!navList || !activeLink) return;
+
+        const navRect = navList.getBoundingClientRect();
+        const linkRect = activeLink.getBoundingClientRect();
+        if (linkRect.left < navRect.left) {
+            navList.scrollBy({ left: linkRect.left - navRect.left - 8 });
+        } else if (linkRect.right > navRect.right) {
+            navList.scrollBy({ left: linkRect.right - navRect.right + 8 });
+        }
+    }, [activeSection]);
+
     function openDeleteAccountDialog() {
         setIsDeleteAccountDialogOpen(true);
     }
@@ -91,7 +106,7 @@ function UserSettings() {
         <Page title="User Settings">
             <div className="settings-layout" ref={settingsLayoutRef}>
                 <nav className="settings-nav" aria-label="Settings sections">
-                    <div className="settings-nav-list">
+                    <div className="settings-nav-list" ref={settingsNavListRef}>
                         {SETTINGS_SECTIONS.map(section => (
                             <a
                                 key={section.id}
