@@ -113,10 +113,10 @@ export interface TaskContextType {
     partialUpdateItem: (partialItem: Partial<ChecklistItem>) => Promise<void>;
     updateItem: (item: ChecklistItem) => Promise<void>;
     bulkUpdate: (items: ChecklistItem[]) => Promise<void>;
-    deleteItem: (id: string) => void;
+    deleteItem: (id: string) => Promise<void> | void;
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;
-    archiveItem: (id: string) => void;
+    archiveItem: (id: string) => Promise<void> | void;
     sortItems: (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];

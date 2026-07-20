@@ -47,6 +47,7 @@ import {
     canDeleteTask,
     canEditTask,
 } from 'src/sharing/chore-access';
+import { isChoreAccessChangedError } from 'src/app/api';
 
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
@@ -195,15 +196,17 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
 
-    const saveNote = () => {
+    const saveNote = async () => {
         if (!canEdit) return;
 
         try {
-            partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
+            await partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
             showToast('Notes saved successfully', 'success');
         } catch (error) {
             console.error('Failed to save note:', error);
-            showToast('Failed to save note. Please try again.', 'error');
+            if (!isChoreAccessChangedError(error)) {
+                showToast('Failed to save note. Please try again.', 'error');
+            }
         }
     };
 
@@ -249,8 +252,10 @@ export const SortableItem: FC<SortableItemProps> = ({
             await addItem(newChecklistItem);
             setInputText('');
             showToast('Task added successfully', 'success');
-        } catch {
-            showToast('Failed to add task. Please try again.', 'error');
+        } catch (error) {
+            if (!isChoreAccessChangedError(error)) {
+                showToast('Failed to add task. Please try again.', 'error');
+            }
         }
     }
 
@@ -311,7 +316,9 @@ export const SortableItem: FC<SortableItemProps> = ({
             showToast('Task deleted successfully', 'success');
         } catch (err) {
             console.error('Failed to delete task:', err);
-            showToast('Failed to delete task. Please try again.', 'error');
+            if (!isChoreAccessChangedError(err)) {
+                showToast('Failed to delete task. Please try again.', 'error');
+            }
         }
     }
 

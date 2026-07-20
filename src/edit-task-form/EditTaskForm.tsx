@@ -30,6 +30,7 @@ import {
     getChoreMembers,
     addChoreMember,
     deleteChoreMember,
+    isChoreAccessChangedError,
     updateChoreMemberRole,
 } from 'src/app/api';
 import {
@@ -89,6 +90,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
         && canManageTaskMembers(formData.accessRole);
     const { sharedUsers } = useShareTasks({ enabled: enableSharing });
     const noteRef = useRef<MDXEditorMethods>(null);
+    const onCloseRef = useRef(onClose);
     const readOnlyDescriptionId = `edit-task-read-only-${formData.id}`;
     const recurrence = formData.recurrence;
     const isIntervalRecurrence = recurrence?.type === INTERVAL_RECURRENCE;
@@ -106,6 +108,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
     );
 
     useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
+    useEffect(() => {
         if (!enableSharing) {
             return;
         }
@@ -120,6 +126,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             })
             .catch((error: unknown) => {
                 if (!cancelled) {
+                    if (isChoreAccessChangedError(error)) {
+                        onCloseRef.current();
+                        return;
+                    }
                     setMemberError(
                         error instanceof Error
                             ? error.message
@@ -200,6 +210,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             });
             onClose();
         } catch (error) {
+            if (isChoreAccessChangedError(error)) {
+                onClose();
+                return;
+            }
             setSaveError(
                 error instanceof Error && error.message
                     ? error.message
@@ -250,6 +264,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             setSelectedUserUuid('');
             onMembersChanged?.();
         } catch (error) {
+            if (isChoreAccessChangedError(error)) {
+                onClose();
+                return;
+            }
             setMemberError(error instanceof Error ? error.message : 'Failed to add task member.');
         } finally {
             setIsAddingMember(false);
@@ -283,6 +301,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             ));
             onMembersChanged?.();
         } catch (error) {
+            if (isChoreAccessChangedError(error)) {
+                onClose();
+                return;
+            }
             setMemberError(
                 error instanceof Error ? error.message : 'Failed to update task member.',
             );
@@ -306,6 +328,10 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
             );
             onMembersChanged?.();
         } catch (error) {
+            if (isChoreAccessChangedError(error)) {
+                onClose();
+                return;
+            }
             setMemberError(
                 error instanceof Error ? error.message : 'Failed to remove task member.',
             );

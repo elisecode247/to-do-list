@@ -31,7 +31,7 @@ import { readPersistentSetting, writePersistentSetting } from 'src/utilities/per
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { ROUTES } from 'src/router';
 import { useLocation } from 'wouter';
-import { addTask } from 'src/app/api';
+import { addTask, isChoreAccessChangedError } from 'src/app/api';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { hasModifiedDemoTasks } from 'src/pages/demo/demo-tasks';
 
@@ -177,7 +177,10 @@ const LoggedIn: React.FC = () => {
             await updateItem(saveItem);
             showToast('Task updated successfully', 'success');
         } catch (error) {
-            if (error instanceof Error && error?.message) {
+            if (isChoreAccessChangedError(error)) {
+                setEditingItem(null);
+                setRightOpen(false);
+            } else if (error instanceof Error && error?.message) {
                 showToast(`Failed to update task: ${error.message}`, 'error');
             } else {
                 showToast('Failed to update task. Please try again.', 'error');

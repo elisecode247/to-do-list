@@ -11,6 +11,40 @@ export type ApiErrorResponse = {
     error: string;
 };
 
+export class ApiRequestError extends Error {
+    readonly status: number;
+
+    constructor(message: string, status: number) {
+        super(message);
+        this.name = "ApiRequestError";
+        this.status = status;
+    }
+}
+
+type ChoreAccessChangeListener = () => void;
+const choreAccessChangeListeners = new Set<ChoreAccessChangeListener>();
+
+export function subscribeToChoreAccessChanges(
+    listener: ChoreAccessChangeListener,
+): () => void {
+    choreAccessChangeListeners.add(listener);
+    return () => choreAccessChangeListeners.delete(listener);
+}
+
+export function isChoreAccessChangedError(
+    error: unknown,
+): error is ApiRequestError {
+    return error instanceof ApiRequestError && error.status === 404;
+}
+
+function apiRequestError(status: number, message: string): ApiRequestError {
+    const error = new ApiRequestError(message, status);
+    if (status === 404) {
+        choreAccessChangeListeners.forEach(listener => listener());
+    }
+    return error;
+}
+
 export type AddTaskResponse = ChecklistItem | ApiErrorResponse;
 
 export type AddTasksFromTemplateRequest = {
@@ -67,7 +101,10 @@ export async function fetchTasks(): Promise<ChecklistItem[]> {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new ApiRequestError(
+                `HTTP error! status: ${response.status}`,
+                response.status,
+            );
         }
 
         return await response.json();
@@ -87,7 +124,7 @@ export async function addTask(task: ChecklistItem): Promise<AddTaskResponse> {
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
 
         return await response.json();
@@ -109,7 +146,7 @@ export async function addTasksFromTemplate(
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
 
         return await response.json();
@@ -136,7 +173,7 @@ export async function bulkUpdateTasks(tasks: BulkUpdateTaskRequest[]): Promise<v
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
     } catch (err) {
         console.error("Failed to bulk update tasks:", err);
@@ -154,7 +191,7 @@ export async function prioritizeTask(task: ChecklistItem): Promise<ChecklistItem
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
 
         return await response.json();
@@ -186,7 +223,7 @@ export async function updateTask(task: UpdateTaskRequest): Promise<UpdateTaskRes
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
 
         const data = await response.json() as ChecklistItem;
@@ -220,7 +257,7 @@ export async function updateTaskCompletion(
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(`HTTP ${response.status}: ${text}`);
+        throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
     }
 
     return await response.json() as UpdateTaskCompletionResponse;
@@ -234,7 +271,7 @@ export async function getChoreMembers(choreUuid: string): Promise<ChoreMember[]>
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(`HTTP ${response.status}: ${text}`);
+        throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
     }
 
     return await response.json() as ChoreMember[];
@@ -281,7 +318,7 @@ export async function addChoreMember(
             else message = 'Failed to add task member.';
         }
 
-        throw new Error(message);
+        throw apiRequestError(response.status, message);
     }
 
     return await response.json() as ChoreMember;
@@ -303,7 +340,8 @@ export async function updateChoreMemberRole(
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(
+        throw apiRequestError(
+            response.status,
             response.status === 400
                 ? 'Choose a valid member role.'
                 : response.status === 404
@@ -329,7 +367,8 @@ export async function deleteChoreMember(
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(
+        throw apiRequestError(
+            response.status,
             response.status === 404
                 ? 'This task member is not available.'
                 : `Failed to remove task member${text.trim() ? `: ${text.trim()}` : '.'}`,
@@ -347,7 +386,7 @@ export async function updateTasksOrder(
     });
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(`HTTP ${response.status}: ${text}`);
+        throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
     }
     if (response.status === 204) return;
     return response.json();
@@ -362,7 +401,7 @@ export async function deleteTask(id: string): Promise<void> {
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
 
         await response.json();
@@ -382,7 +421,7 @@ export async function toggleHideToday(id: string, hide: boolean): Promise<void> 
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text}`);
+            throw apiRequestError(response.status, `HTTP ${response.status}: ${text}`);
         }
         await response.json();
     } catch (err) {

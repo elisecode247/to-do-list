@@ -14,6 +14,7 @@ import {
     canEditTask,
     canManageTaskMembers,
 } from "src/sharing/chore-access";
+import { isChoreAccessChangedError } from "src/app/api";
 
 interface ChecklistItemWithDepth extends ChecklistItem {
     depth: number;
@@ -142,12 +143,16 @@ function BulkEdit() {
             showToast("All changes saved successfully.", "success");
         } catch (err) {
             console.error(err);
-            if (err instanceof Error && err.message) {
+            if (isChoreAccessChangedError(err)) {
+                setSelectedItem(null);
+            } else if (err instanceof Error && err.message) {
                 showToast(`Failed to save changes: ${err.message}`, "error");
             } else {
                 showToast("Failed to save changes.", "error");
             }
-            loadTasks();
+            if (!isChoreAccessChangedError(err)) {
+                loadTasks();
+            }
         } finally {
             setIsSaving(false);
         }
@@ -166,7 +171,9 @@ function BulkEdit() {
             }
         } catch (err) {
             console.error(err);
-            showToast("Failed to delete task. Please try again.");
+            if (!isChoreAccessChangedError(err)) {
+                showToast("Failed to delete task. Please try again.");
+            }
         }
     }
 

@@ -13,6 +13,7 @@ import {
     toggleHideToday,
     bulkUpdateTasks,
     updateTaskCompletion,
+    subscribeToChoreAccessChanges,
     type BulkUpdateTaskRequest,
     type TaskOrderUpdate,
 } from 'app/api';
@@ -25,13 +26,15 @@ import {
     INTERVAL_RECURRENCE,
     ONE_TIME_RECURRENCE,
 } from 'app/types';
-import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import { TaskContext } from './task-context';
 import { getLocalTodayAtMidnight } from './utilities/filter-tasks';
+import { useToast } from 'src/toast/use-toast';
 
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated: enabled } = useAuthentication();
+    const { showToast } = useToast();
     const [items, setItems] = useState<ChecklistItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [taskError, setTaskError] = useState<string | null>(null);
@@ -45,7 +48,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
     };
 
-    function loadTasks(cancelled = false) {
+    const loadTasks = useCallback((cancelled = false) => {
         if (!cancelled) setTaskError(null);
         setIsLoading(true);
         fetchTasks().then((data) => {
@@ -74,7 +77,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const timer = setTimeout(() => setIsUpdatedDate(false), 20000);
             return () => clearTimeout(timer);
         });
-    }
+    }, []);
+
+    useEffect(() => subscribeToChoreAccessChanges(() => {
+        loadTasks();
+        showToast('Your access to this task changed.', 'info');
+    }), [loadTasks, showToast]);
 
     const partialUpdateItem = async (partialItem: Partial<ChecklistItem>) => {
         let previousItem: ChecklistItem | undefined;
@@ -280,23 +288,19 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const deleteItem = (id: string) => {
-        deleteTask(id).then(() => {
-            setItems(prev => {
-                // update hasSubChores of parent has last subtask deleted
-                const deletedTask = prev.find(item => item.id === id);
-                const parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
-                const updatedPrev = prev.map(item => {
-                    if (item.id === deletedTask?.parentUuid && parentSubTaskCount === 1) {
-                        return { ...item, hasSubChores: false };
-                    }
-                    return item;
-                });
-                return updatedPrev.filter(item => item.id !== id);
+    const deleteItem = async (id: string) => {
+        await deleteTask(id);
+        setItems(prev => {
+            // update hasSubChores of parent has last subtask deleted
+            const deletedTask = prev.find(item => item.id === id);
+            const parentSubTaskCount = prev.filter(item => item.parentUuid === deletedTask?.parentUuid).length;
+            const updatedPrev = prev.map(item => {
+                if (item.id === deletedTask?.parentUuid && parentSubTaskCount === 1) {
+                    return { ...item, hasSubChores: false };
+                }
+                return item;
             });
-        }).catch((err) => {
-            console.error('Failed to delete task:', err);
-            throw err;
+            return updatedPrev.filter(item => item.id !== id);
         });
     }
 
@@ -375,22 +379,22 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
-    const archiveItem = (id: string) => {
-        updateTask({
-            ...items.find(item => item.id === id)!,
+    const archiveItem = async (id: string) => {
+        const item = items.find(currentItem => currentItem.id === id);
+        if (!item) return;
+
+        await updateTask({
+            ...item,
             id,
-            isArchived: !items.find(item => item.id === id)!.isArchived,
-        }).then(() => {
-            setItems(prev =>
-                prev.map(item =>
-                    item.id === id
-                        ? { ...item, isArchived: !item.isArchived }
-                        : item
-                )
-            );
-        }).catch((err) => {
-            console.error('Failed to archive task:', err);
+            isArchived: !item.isArchived,
         });
+        setItems(prev =>
+            prev.map(currentItem =>
+                currentItem.id === id
+                    ? { ...currentItem, isArchived: !currentItem.isArchived }
+                    : currentItem
+            )
+        );
     }
     const sortItems = (
         filteredItems: ChecklistItem[],
@@ -534,7 +538,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         return () => {
             cancelled = true;
         };
-    }, [enabled])
+    }, [enabled, loadTasks])
 
     return (
         <TaskContext.Provider value={{

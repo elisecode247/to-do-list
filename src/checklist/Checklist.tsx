@@ -17,6 +17,7 @@ import type { GoogleEvent } from 'src/google-authorization/types';
 import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
 import { motion, useReducedMotion } from 'framer-motion';
 import { canEditTask } from 'src/sharing/chore-access';
+import { isChoreAccessChangedError } from 'src/app/api';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -231,7 +232,9 @@ const Checklist: FC<ChecklistProps> = ({
             }
         } catch (err) {
             console.error('Failed to toggle task:', err);
-            showToast('Failed to update task status. Please try again.', 'error');
+            if (!isChoreAccessChangedError(err)) {
+                showToast('Failed to update task status. Please try again.', 'error');
+            }
         }
     };
 
@@ -274,7 +277,9 @@ const Checklist: FC<ChecklistProps> = ({
             }
         } catch (err) {
             console.error('Failed to update task visibility:', err);
-            showToast('Failed to update task visibility. Please try again.', 'error');
+            if (!isChoreAccessChangedError(err)) {
+                showToast('Failed to update task visibility. Please try again.', 'error');
+            }
         }
     };
 
@@ -301,7 +306,9 @@ const Checklist: FC<ChecklistProps> = ({
             }
         } catch (err) {
             console.error('Failed to archive task:', err);
-            showToast('Failed to archive task. Please try again.', 'error');
+            if (!isChoreAccessChangedError(err)) {
+                showToast('Failed to archive task. Please try again.', 'error');
+            }
         }
     };
 
