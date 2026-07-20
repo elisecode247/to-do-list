@@ -153,6 +153,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const canAddSubtask = checklistType === 'template' || effectiveAccessRole === 'owner';
     const hasMenuActions = canEdit || canDelete || canAddSubtask;
     const priorityBtnTitle = isPriority ? "Un-prioritize task" : "Prioritize task";
+    const accessDescriptionId = `task-access-${id}`;
 
     const toggleNotes = () => {
         setShowNotes(!showNotes);
@@ -371,6 +372,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         onChange={delayCheck}
                         disabled={!canComplete}
                         aria-label={`Mark task "${text}" as done`}
+                        aria-describedby={!canComplete ? accessDescriptionId : undefined}
                         title={!canComplete
                             ? 'Viewer access cannot change completion'
                             : checked ? "Mark as not done" : "Mark as done"}
@@ -431,6 +433,17 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 >
                                     <Users aria-hidden="true" size={12} />
                                     Shared by Me
+                                </span>
+                            )}
+                            {(effectiveAccessRole === 'doer'
+                                || effectiveAccessRole === 'viewer') && (
+                                <span
+                                    className="sortable-item_metadata-text sortable-item_access-status"
+                                    id={accessDescriptionId}
+                                >
+                                    {effectiveAccessRole === 'doer'
+                                        ? 'Completion only'
+                                        : 'View only'}
                                 </span>
                             )}
                             {(activeTab === TABS.today) && (

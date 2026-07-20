@@ -225,6 +225,11 @@
     opacity: 0.82;
 }
 
+.sortable-item_access-status {
+    font-weight: 500;
+    opacity: 0.72;
+}
+
 .sortable-item_last-completed-text,
 .sortable-item_next-due-text {
     display: inline-block;

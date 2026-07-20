@@ -175,7 +175,6 @@ const LoggedIn: React.FC = () => {
         setIsSaving(true);
         try {
             await updateItem(saveItem);
-            setEditingItem(null);
             showToast('Task updated successfully', 'success');
         } catch (error) {
             if (error instanceof Error && error?.message) {
@@ -183,9 +182,9 @@ const LoggedIn: React.FC = () => {
             } else {
                 showToast('Failed to update task. Please try again.', 'error');
             }
+            throw error;
         } finally {
             setIsSaving(false);
-            setRightOpen(false);
         }
     }
 

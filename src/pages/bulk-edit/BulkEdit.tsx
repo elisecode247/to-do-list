@@ -210,6 +210,7 @@ function BulkEdit() {
                                 });
                                 const categoryValue = categoryOptions.some(option => option.value === task.category) ? task.category : '';
                                 const canEdit = canEditTask(task.accessRole);
+                                const accessDescriptionId = `bulk-task-access-${task.id}`;
                                 return (
                                     <tr
                                         key={task.id}
@@ -242,6 +243,7 @@ function BulkEdit() {
                                         <td>
                                             <span
                                                 className={`bulk-access-badge bulk-access-badge--${task.accessRole}`}
+                                                id={accessDescriptionId}
                                                 title={task.accessRole === 'owner'
                                                     ? 'You own this task'
                                                     : `Shared with you as ${task.accessRole}`}
@@ -261,6 +263,7 @@ function BulkEdit() {
                                                 }
                                                 disabled={!canEdit}
                                                 aria-label={`${task.isArchived ? 'Unarchive' : 'Archive'} ${task.text}`}
+                                                aria-describedby={!canEdit ? accessDescriptionId : undefined}
                                                 title={!canEdit ? 'Owner or editor access required' : undefined}
                                             />
                                         </td>
@@ -273,6 +276,7 @@ function BulkEdit() {
                                                 }
                                                 disabled={!canEdit}
                                                 aria-label={`Mode for ${task.text}`}
+                                                aria-describedby={!canEdit ? accessDescriptionId : undefined}
                                                 title={!canEdit ? 'Owner or editor access required' : undefined}
                                             >
                                                 {MODES.map(mode => (
@@ -291,6 +295,7 @@ function BulkEdit() {
                                                 }}
                                                 disabled={!canEdit}
                                                 aria-label={`Category for ${task.text}`}
+                                                aria-describedby={!canEdit ? accessDescriptionId : undefined}
                                                 title={!canEdit ? 'Owner or editor access required' : undefined}
                                             >
                                                 {categoryOptions.map(({ value, label }) => (
@@ -340,8 +345,8 @@ function BulkEdit() {
                     enableSharing
                     canManageSharing={canManageTaskMembers(selectedItem.accessRole)}
                     formData={selectedItem}
-                    onSave={(item) => {
-                        updateItem(item);
+                    onSave={async (item) => {
+                        await updateItem(item);
                         setSelectedItem(null);
                     }}
                     onClose={() => setSelectedItem(null)}

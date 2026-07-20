@@ -9,6 +9,7 @@ interface CategorySelectProps {
     onChange?: (value: string) => void;
     categories: CategoryDefinition[];
     disabled?: boolean;
+    ariaDescribedBy?: string;
 }
 
 const CategorySelect = ({
@@ -18,6 +19,7 @@ const CategorySelect = ({
     onChange,
     categories,
     disabled = false,
+    ariaDescribedBy,
 }: CategorySelectProps) => {
     const methods = useFormContext();
     const registration = methods?.register
@@ -37,6 +39,7 @@ const CategorySelect = ({
                 id={`category-select-${id}`}
                 className={`select-input ${isFilter ? 'category-select_filter' : ''}`}
                 disabled={disabled}
+                aria-describedby={ariaDescribedBy}
                 {...(selectedCategory !== undefined ? { value: selectedCategory } : {})}
                 onChange={(event) => {
                     registration?.onChange(event);
