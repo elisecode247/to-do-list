@@ -1,48 +1,66 @@
-import React from 'react';
+import type { FC } from 'react';
 import Page from 'src/pages/Page';
 import './privacy-policy.css';
 
-const PrivacyPolicyPage: React.FC = () => {
+const PrivacyPolicyContents: FC = () => (
+    <ol className="privacy-policy-toc__list">
+        <li><a href="#information-we-collect">Information We Collect</a></li>
+        <li><a href="#how-we-use-information">How We Use Information</a></li>
+        <li><a href="#google-user-data">Google User Data</a></li>
+        <li><a href="#artificial-intelligence">Artificial Intelligence</a></li>
+        <li><a href="#third-party-services">Third-Party Services</a></li>
+        <li><a href="#cookies-and-local-storage">Cookies and Local Storage</a></li>
+        <li><a href="#data-retention">Data Retention</a></li>
+        <li><a href="#account-deletion">Account Deletion</a></li>
+        <li><a href="#data-security">Data Security</a></li>
+        <li><a href="#oauth-token-storage">OAuth Token Storage</a></li>
+        <li>
+            <a href="#your-privacy-rights">Your Privacy Rights</a>
+            <ol>
+                <li><a href="#eea-uk-switzerland">EEA, United Kingdom, and Switzerland</a></li>
+                <li><a href="#california-residents">California Residents</a></li>
+            </ol>
+        </li>
+        <li><a href="#international-data-transfers">International Data Transfers</a></li>
+        <li><a href="#childrens-privacy">Children's Privacy</a></li>
+        <li><a href="#legal-basis-for-processing">Legal Basis for Processing</a></li>
+        <li><a href="#changes-to-this-privacy-policy">Changes to This Privacy Policy</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ol>
+);
+
+const PrivacyPolicyPage: FC = () => {
     return (
         <Page privacyLink={false}>
             <article className="privacy-policy-page">
-                <h1>Privacy Policy</h1>
-                <p><strong>Last Updated:</strong> June 19, 2026</p>
-                <p>
-                    Daily Reset List ("Daily Reset List," "the App," "we," "our," or "us")
-                    values your privacy. This Privacy Policy explains what information
-                    we collect, how we use it, and the choices available to you
-                    when using Daily Reset List.
-                </p>
+                <header className="privacy-policy-header">
+                    <p className="privacy-policy-eyebrow">Legal</p>
+                    <h1>Privacy Policy</h1>
+                    <p className="privacy-policy-updated">
+                        <span>Last updated</span>
+                        <time dateTime="2026-06-19">June 19, 2026</time>
+                    </p>
+                    <p className="privacy-policy-intro">
+                        Daily Reset List ("Daily Reset List," "the App," "we," "our," or "us")
+                        values your privacy. This Privacy Policy explains what information
+                        we collect, how we use it, and the choices available to you
+                        when using Daily Reset List.
+                    </p>
+                </header>
 
                 <div className="privacy-policy-layout">
-                    <nav className="privacy-policy-toc" aria-label="Table of contents">
-                        <h2 className="privacy-policy-toc__title">Table of Contents</h2>
-                        <ol className="privacy-policy-toc__list">
-                            <li><a href="#information-we-collect">Information We Collect</a></li>
-                            <li><a href="#how-we-use-information">How We Use Information</a></li>
-                            <li><a href="#google-user-data">Google User Data</a></li>
-                            <li><a href="#artificial-intelligence">Artificial Intelligence</a></li>
-                            <li><a href="#third-party-services">Third-Party Services</a></li>
-                            <li><a href="#cookies-and-local-storage">Cookies and Local Storage</a></li>
-                            <li><a href="#data-retention">Data Retention</a></li>
-                            <li><a href="#account-deletion">Account Deletion</a></li>
-                            <li><a href="#data-security">Data Security</a></li>
-                            <li><a href="#oauth-token-storage">OAuth Token Storage</a></li>
-                            <li>
-                                <a href="#your-privacy-rights">Your Privacy Rights</a>
-                                <ol>
-                                    <li><a href="#eea-uk-switzerland">EEA, United Kingdom, and Switzerland</a></li>
-                                    <li><a href="#california-residents">California Residents</a></li>
-                                </ol>
-                            </li>
-                            <li><a href="#international-data-transfers">International Data Transfers</a></li>
-                            <li><a href="#childrens-privacy">Children's Privacy</a></li>
-                            <li><a href="#legal-basis-for-processing">Legal Basis for Processing</a></li>
-                            <li><a href="#changes-to-this-privacy-policy">Changes to This Privacy Policy</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                        </ol>
-                    </nav>
+                    <aside className="privacy-policy-toc privacy-policy-toc--desktop">
+                        <p className="privacy-policy-toc__title">On this page</p>
+                        <nav aria-label="Table of contents">
+                            <PrivacyPolicyContents />
+                        </nav>
+                    </aside>
+                    <details className="privacy-policy-toc privacy-policy-toc--mobile">
+                        <summary>On this page</summary>
+                        <nav aria-label="Table of contents">
+                            <PrivacyPolicyContents />
+                        </nav>
+                    </details>
 
                     <div className="privacy-policy-content">
                         <h2 id="information-we-collect">Information We Collect</h2>
