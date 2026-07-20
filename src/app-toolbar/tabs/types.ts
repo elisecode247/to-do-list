@@ -35,6 +35,6 @@ export const MOBILE_TAB_LABELS: Record<Tab, string> = {
     [TAB_UPCOMING]: 'Upcoming',
     [TAB_HIDDEN]: 'Hidden',
     [TAB_ARCHIVED]: 'Archived',
-    [TAB_JOURNAL]: 'Edit',
+    [TAB_JOURNAL]: 'Journal',
     [TAB_SEARCH]: 'Search',
 }

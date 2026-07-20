@@ -24,19 +24,16 @@ export default function MobileTabContent({ tab }: MobileTabContentProps) {
         'aria-hidden': true,
     };
 
-    const icon = tab === TABS.journal
-        ? <PencilLine {...iconProps} />
-        : tab === TABS.priority
-            ? <Star {...iconProps} />
-            : tab === TABS.today
-                ? <CalendarCheck {...iconProps} />
-                : tab === TABS.upcoming
-                    ? <CalendarDays {...iconProps} />
-                    : tab === TABS.hidden
-                        ? <EyeOff {...iconProps} />
-                        : tab === TABS.archived
-                            ? <Archive {...iconProps} />
-                            : <Search {...iconProps} />;
+    const icons = {
+        [TABS.journal]: <PencilLine {...iconProps} />,
+        [TABS.priority]: <Star {...iconProps} />,
+        [TABS.today]: <CalendarCheck {...iconProps} />,
+        [TABS.upcoming]: <CalendarDays {...iconProps} />,
+        [TABS.hidden]: <EyeOff {...iconProps} />,
+        [TABS.archived]: <Archive {...iconProps} />,
+    } as const;
+
+    const icon = icons[tab] ?? <Search {...iconProps} />;
 
     return (
         <>

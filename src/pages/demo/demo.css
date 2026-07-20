@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-.demo-app_header .mobile-top-toolbar {
+.demo-app_header .mobile-action-rail {
     grid-area: toolbar;
 }
 

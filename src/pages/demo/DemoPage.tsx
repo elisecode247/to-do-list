@@ -279,27 +279,25 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 <header className="app_header demo-app_header">
                     {!isJournal && (
                         <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
-                            <div className="mobile-top-toolbar">
+                            <IconButton
+                                className="filter-toggle-button"
+                                onClick={toggleLeft}
+                                label="Filters"
+                                ariaLabel="Toggle filters"
+                                icon={<ListFilter size={24} />}
+                                showLabel={isDesktop}
+                                isPriority={false}
+                            />
+                            {!isDesktop && (
                                 <IconButton
-                                    className="filter-toggle-button"
-                                    onClick={toggleLeft}
-                                    label="Filters"
-                                    ariaLabel="Toggle filters"
-                                    icon={<ListFilter size={24} />}
-                                    showLabel={isDesktop}
+                                    className="show-completed-toggle-button"
+                                    onClick={() => setHideCompleted(current => !current)}
+                                    label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
+                                    ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                    icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
                                     isPriority={false}
                                 />
-                                {!isDesktop && (
-                                    <IconButton
-                                        className="show-completed-toggle-button"
-                                        onClick={() => setHideCompleted(current => !current)}
-                                        label={hideCompleted ? "Completed Tasks Hidden" : "Completed Tasks Shown"}
-                                        ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                                        icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                                        isPriority={false}
-                                    />
-                                )}
-                            </div>
+                            )}
                             <IconButton
                                 className="new-task-form-toggle-button"
                                 onClick={toggleAddForm}
