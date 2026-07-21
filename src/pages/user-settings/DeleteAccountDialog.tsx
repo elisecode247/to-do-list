@@ -16,6 +16,7 @@ const DeleteAccountModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
     React.useEffect(() => {
         if (!isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsConfirmed(false);
             setIsDeleting(false);
             setErrorMessage(null);

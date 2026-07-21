@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, type ReactNode } from 'react';
+import { forwardRef, useRef, useState, useCallback, type ReactNode } from 'react';
 import { useTheme } from 'src/themes/use-theme';
 import './icon-button.css';
 
@@ -12,13 +12,13 @@ type IconButtonProps = {
     isPriority?: boolean;
     disabled?: boolean;
     ariaLabel?: string;
+    'aria-label'?: string;
     children?: ReactNode;
     longPressLabel?: string; // tooltip text shown on long press, defaults to `label`
     longPressDuration?: number; // ms, defaults to 500
-    ref?: React.Ref<HTMLButtonElement>;
 };
 
-const IconButton = ({
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
     className,
     onClick,
     label,
@@ -27,15 +27,16 @@ const IconButton = ({
     showLabel = true,
     isPriority = false,
     ariaLabel,
+    'aria-label': ariaLabelProp,
     children,
     longPressLabel,
     longPressDuration = 500,
     disabled = false,
-    ref,
-}: IconButtonProps) => {
+}, ref) => {
     const { toggleIconText } = useTheme();
     const [showTooltip, setShowTooltip] = useState(false);
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const accessibleLabel = ariaLabel ?? ariaLabelProp ?? label;
     const wasLongPress = useRef(false);
     const shouldShowLabel = showLabel && toggleIconText === 'true';
 
@@ -82,7 +83,7 @@ const IconButton = ({
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerLeave}
-            aria-label={ariaLabel ?? label}
+            aria-label={accessibleLabel}
             disabled={disabled}
             ref={ref}
         >
@@ -96,6 +97,8 @@ const IconButton = ({
             {children}
         </button>
     );
-};
+});
+
+IconButton.displayName = 'IconButton';
 
 export default IconButton;

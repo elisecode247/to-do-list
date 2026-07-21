@@ -46,6 +46,7 @@ export const EncryptionKeyProvider = ({ children }: { children: ReactNode }) => 
         if (isLoading) return;
 
         if (!isAuthenticated) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setEncryptionConfig(null);
             setMasterKey(null);
             setIsEncryptionEnabled(false);
