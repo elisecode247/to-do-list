@@ -84,7 +84,10 @@ function matchCommonFilters(
     return true;
 }
 
-const isSubtask = (task: ChecklistItem): boolean => !!task.parentUuid;
+const isSubtask = (task: ChecklistItem): boolean => {
+    if (!task.isOwner && task.accessRole !== 'owner') return false;
+    return !!task.parentUuid;
+};
 const isCompleted = (hideCompleted: boolean, task: ChecklistItem): boolean => hideCompleted && task.done;
 const isCategory = (selectedCategory: string, task: ChecklistItem): boolean => isCategoryIncluded(selectedCategory, task.category);
 const isMode = (modeFilter: Mode | typeof ALL_MODES, task: ChecklistItem): boolean => {

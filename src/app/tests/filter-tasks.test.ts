@@ -44,8 +44,8 @@ const getDateRelativeToToday = (offset: number): string => {
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
     ownerUuid: crypto.randomUUID(),
     hasMembers: false,
-    isOwner: false,
-    accessRole: 'editor',
+    isOwner: true,
+    accessRole: 'owner',
     itemType: 'checklist-item',
     id: crypto.randomUUID(),
     text: 'Task',
@@ -372,6 +372,23 @@ describe('filterTasks – subtask rules', () => {
             makeParams({
                 items: [subtask],
                 activeTab: TAB_PRIORITY,
+            })
+        );
+
+        expect(result).toHaveLength(1);
+    });
+    it('allows subtasks if shared by others', () => {
+        const subtask = makeTask({
+            parentUuid: 'parent-1',
+            accessRole: 'editor',
+            isOwner: false,
+            nextDue: null
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [subtask],
+                activeTab: TAB_TODAY,
             })
         );
 
