@@ -127,7 +127,7 @@ const LoggedIn: React.FC = () => {
     const [storedFilters] = useState(() => readStoredFilters(filterStorageKey));
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
     const [activeTab, setActiveTab] = useState<Tab>(storedFilters.activeTab ?? TABS.today);
-    const [hideCompleted, setHideCompleted] = useState(storedFilters.hideCompleted ?? true);
+    const [hideCompleted, setHideCompleted] = useState(storedFilters.hideCompleted ?? false);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(storedFilters.modeFilter ?? ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(storedFilters.filterCategory ?? ALL_CATEGORIES);
     const [sharedByMe, setSharedByMe] = useState(storedFilters.sharedByMe ?? false);
