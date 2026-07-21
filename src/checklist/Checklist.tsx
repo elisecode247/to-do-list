@@ -164,8 +164,13 @@ const Checklist: FC<ChecklistProps> = ({
         return 1;
     });
 
-    const completedDay = (items.some(item => item.done) || items.some(item => item.isHidden)) &&
-        items.length !== 0 && filteredItems.length === 0 && activeTab === TABS.today;
+    const allFilteredItemsAreCompletedOrSkipped =
+        filteredItems.length > 0 && filteredItems.every(item => item.done || item.isHidden);
+
+    const completedDay = (items.some(item => item.done) || items.some(item => item.isHidden))
+        && items.length !== 0
+        && activeTab === TABS.today
+        && (hideCompleted ? filteredItems.length === 0 : allFilteredItemsAreCompletedOrSkipped);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
