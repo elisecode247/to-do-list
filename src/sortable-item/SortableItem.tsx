@@ -297,13 +297,13 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }, []);
 
-    const scheduleExitAnimation = useCallback((callback: () => void) => {
+    const scheduleExitAnimation = useCallback((callback: () => void, delay = 220) => {
         setIsExiting(true);
         exitTimerRef.current = window.setTimeout(() => {
             exitTimerRef.current = null;
             setIsExiting(false);
             callback();
-        }, 400);
+        }, delay);
     }, []);
 
     async function delayHide() {
@@ -317,7 +317,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         if (checked && isHideCompleted) {
             scheduleExitAnimation(() => {
                 toggleChecked(id, checked);
-            });
+            }, 180);
         } else {
             toggleChecked(id, checked);
         }
@@ -410,8 +410,8 @@ export const SortableItem: FC<SortableItemProps> = ({
             <motion.div
                 className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 initial={false}
-                animate={isExiting ? { opacity: 0, y: -8, scale: 0.98 } : { opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
+                animate={isExiting ? { opacity: 0, y: -10, scale: 0.97 } : { opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             >
                 <button
                     ref={setActivatorNodeRef}
