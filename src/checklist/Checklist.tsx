@@ -233,15 +233,6 @@ const Checklist: FC<ChecklistProps> = ({
             if (checked) {
                 showToast(`"${selectedItem?.text}" completed`, 'success', undoAction);
             }
-            // archive if item's mode is ONE_TIME_MODE and is being marked completed
-            if (
-                selectedItem?.mode === ONE_TIME_MODE
-                && checked
-                && canEditTask(selectedItem.accessRole)
-            ) {
-                await archiveItem(id);
-                showToast('Task archived successfully', 'success');
-            }
         } catch (err) {
             console.error('Failed to toggle task:', err);
             if (!isChoreAccessChangedError(err)) {
