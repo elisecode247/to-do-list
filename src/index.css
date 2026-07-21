@@ -31,20 +31,39 @@ textarea {
     font-family: inherit;
     font-size: var(--font-size-md);
 }
+
 /* for ios safari */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
 input[type="date"] {
-  min-width: 0; /* Forces WebKit to look past the implicit size attribute */
-  flex-shrink: 1; /* Ensures it can collapse smaller than its parent */
+    min-width: 0;
+    /* Forces WebKit to look past the implicit size attribute */
+    flex-shrink: 1;
+    /* Ensures it can collapse smaller than its parent */
 }
+
 /* Temporal Sizing Glitches: iOS Safari forces an internal display: inline-flex */
 input[type="date"],
 input[type="time"] {
-  display: block;
-  width: 100%;
+    /* 1. Removes the stubborn native iOS theme that ignores box widths */
+    -webkit-appearance: none;
+    appearance: none;
+
+    /* 2. Overrides the browser default "inline-flex" layout */
+    display: block;
+
+    /* 3. Forces full-width stretching safely inside parent structures */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* 4. Fixes an internal text-rendering bug that can block width shrinkage */
+input::-webkit-datetime-edit {
+    display: inline-block;
+    padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
