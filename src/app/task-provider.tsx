@@ -307,6 +307,26 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         let previousItem: ChecklistItem | undefined;
         const optimisticLastCompleted = checked ? new Date().toISOString() : '';
 
+        setItems(prev => {
+            const item = prev.find(i => i.id === id);
+            if (!item) {
+                return prev;
+            }
+
+            previousItem = item;
+
+            return prev.map(i =>
+                i.id === id
+                    ? {
+                        ...i,
+                        done: checked,
+                        lastCompleted: optimisticLastCompleted,
+                        itemType: 'checklist-item',
+                    }
+                    : i
+            );
+        });
+
         try {
             const completion = await updateTaskCompletion(
                 id,

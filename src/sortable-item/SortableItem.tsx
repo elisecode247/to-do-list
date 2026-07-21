@@ -317,7 +317,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         if (checked && isHideCompleted) {
             scheduleExitAnimation(() => {
                 toggleChecked(id, checked);
-            }, 180);
+            }, 220);
         } else {
             toggleChecked(id, checked);
         }
