@@ -4,7 +4,6 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
-import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import type { ChecklistController } from 'checklist/types';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
@@ -226,11 +225,7 @@ const Checklist: FC<ChecklistProps> = ({
                 if (selectedItem && checked) {
                     const updatedItem = {
                         id: id,
-                        // unarchive if the item has been archived
-                        lastCompleted: selectedItem.lastCompleted,
-                        ...((selectedItem?.mode === ONE_TIME_MODE
-                            && canEditTask(selectedItem.accessRole)) ?
-                            { isArchived: false } : {}),
+                        lastCompleted: selectedItem.lastCompleted
                     } as Partial<ChecklistItem>;
                     partialUpdateItem(updatedItem);
                 }

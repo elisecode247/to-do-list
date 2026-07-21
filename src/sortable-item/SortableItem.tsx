@@ -143,8 +143,9 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState<React.CSSProperties>({});
-    const [animate, setAnimate] = useState(true);
+    const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const exitTimerRef = useRef<number | null>(null);
     const [showUpcoming, setShowUpcoming] = useState(false);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
     const menuDropdownRef = useRef<HTMLDivElement>(null);
@@ -296,17 +297,30 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }, []);
 
-    async function delayHide() {
-        setAnimate(false);
-        setTimeout(() => {
-            handleHideItem(id, isHidden);
+    const scheduleExitAnimation = useCallback((callback: () => void) => {
+        setIsExiting(true);
+        exitTimerRef.current = window.setTimeout(() => {
+            exitTimerRef.current = null;
+            setIsExiting(false);
+            callback();
         }, 400);
-    }
+    }, []);
 
+    async function delayHide() {
+        scheduleExitAnimation(() => {
+            handleHideItem(id, isHidden);
+        });
+    }
 
     async function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
         const checked = e.target.checked;
-        toggleChecked(id, checked)
+        if (checked && isHideCompleted) {
+            scheduleExitAnimation(() => {
+                toggleChecked(id, checked);
+            });
+        } else {
+            toggleChecked(id, checked);
+        }
         if (checked && isPriority) onSuccess(true);
     }
 
@@ -393,8 +407,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                 ${isMenuOpen ? 'sortable-item_drag-wrapper--menu-open' : ''}`}
             ref={setDragWrapperRef}
         >
-            {animate && <div
+            <motion.div
                 className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
+                initial={false}
+                animate={isExiting ? { opacity: 0, y: -8, scale: 0.98 } : { opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
             >
                 <button
                     ref={setActivatorNodeRef}
@@ -889,7 +906,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </div>
                     </div>
                 ) : null}
-            </div>}
+            </motion.div>
         </div>
     );
 };

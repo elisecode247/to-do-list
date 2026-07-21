@@ -86,10 +86,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     const partialUpdateItem = async (partialItem: Partial<ChecklistItem>) => {
         let previousItem: ChecklistItem | undefined;
-        setItems(prev => {
-            previousItem = prev.find(i => i.id === partialItem.id);
-            return prev.map(i => i.id === partialItem.id ? { ...i, ...partialItem } : i);
-        });
 
         try {
             const updatedItem = { ...previousItem, ...partialItem } as ChecklistItem;
@@ -310,26 +306,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const toggleItem = async (id: string, checked: boolean) => {
         let previousItem: ChecklistItem | undefined;
         const optimisticLastCompleted = checked ? new Date().toISOString() : '';
-
-        setItems(prev => {
-            const item = prev.find(i => i.id === id);
-            if (!item) {
-                return prev;
-            }
-
-            previousItem = item;
-
-            return prev.map(i =>
-                i.id === id
-                    ? {
-                        ...i,
-                        done: checked,
-                        lastCompleted: optimisticLastCompleted,
-                        itemType: 'checklist-item',
-                    }
-                    : i
-            );
-        });
 
         try {
             const completion = await updateTaskCompletion(
