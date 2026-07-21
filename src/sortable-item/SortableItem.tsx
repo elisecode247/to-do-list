@@ -304,15 +304,10 @@ export const SortableItem: FC<SortableItemProps> = ({
     }
 
 
-    async function delayCheck(e: React.ChangeEvent<HTMLInputElement>) {
+    async function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
         const checked = e.target.checked;
-        if (checked && isHideCompleted) {
-            setAnimate(false);
-        }
-        setTimeout(() => {
-            toggleChecked(id, checked)
-            if (checked && isPriority) onSuccess(true);
-        }, 400)
+        toggleChecked(id, checked)
+        if (checked && isPriority) onSuccess(true);
     }
 
     async function handleDeleteTask() {
@@ -420,7 +415,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         className="sortable-item_checkbox"
                         type="checkbox"
                         checked={checked}
-                        onChange={delayCheck}
+                        onChange={handleCheck}
                         disabled={!canComplete}
                         aria-label={`Mark task "${text}" as done`}
                         aria-describedby={!canComplete ? accessDescriptionId : undefined}
