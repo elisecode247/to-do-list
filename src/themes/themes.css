@@ -75,12 +75,12 @@
     --color-badge-bg: var(--color-accent-bg);
     --color-badge-text: var(--color-accent-text);
 
-    --color-distract-row-bg: light-dark(#fffbf0, rgba(250, 199, 117, 0.05));
-    --color-distract-row-bg-hover: light-dark(#fff8e6, rgba(250, 199, 117, 0.08));
-    --color-distract-pill-bg: light-dark(#faeeda, #5c3a0a);
-    --color-distract-pill-text: light-dark(#854f0b, #fde68a);
-    --color-distract-pill-border: light-dark(#ef9f27, #fbbf24);
-    --color-distract-pill-bg-hover: light-dark(#f5c475, #854f0b);
+    --color-distract-row-bg: var(--color-surface);
+    --color-distract-row-bg-hover: color-mix(in srgb, var(--color-distract-row-bg) 90%, var(--color-accent-bg) 10%);
+    --color-distract-pill-bg: var(--color-accent-bg);
+    --color-distract-pill-text: contrast-color(var(--color-accent-bg));
+    --color-distract-pill-border: var(--color-border);
+    --color-distract-pill-bg-hover: color-mix(in srgb, var(--color-distract-pill-bg) 90%, var(--color-accent-bg) 10%);
 
     /* Spacing */
     --spacing-xs: 8px;
