@@ -106,25 +106,26 @@ const AppToolbar = ({
                     ))}
                 </nav>
             </div>
-
-            <div className="drawer-section">
-                <div className="drawer-section-label">Timeframe</div>
-                <div className="drawer-timeframe-chips" role="radiogroup" aria-label="Task timeframe">
-                    {timeframeItems.map(item => (
-                        <button
-                            key={item.value}
-                            type="button"
-                            role="radio"
-                            aria-checked={activeTab === item.value}
-                            className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
-                            onClick={() => handleTabChange(item.value)}
-                        >
-                            {item.label}
-                        </button>
-                    ))}
+            {activeTab !== 'search' && activeTab !== 'journal' ? (
+                <div className="drawer-section">
+                    <div className="drawer-section-label">Timeframe</div>
+                    <div className="drawer-timeframe-chips" role="radiogroup" aria-label="Task timeframe">
+                        {timeframeItems.map(item => (
+                            <button
+                                key={item.value}
+                                type="button"
+                                role="radio"
+                                aria-checked={activeTab === item.value}
+                                className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
+                                onClick={() => handleTabChange(item.value)}
+                            >
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            {activeTab !== 'search' ? (
+            ) : null}
+            {activeTab !== 'search' && activeTab !== 'journal' ? (
                 <div className="drawer-section">
                     <div className="drawer-section-label">Mode</div>
                     <Select
@@ -147,7 +148,7 @@ const AppToolbar = ({
                     </Select>
                 </div>
             ) : null}
-            {activeTab !== 'search' ? (
+            {activeTab !== 'search' && activeTab !== 'journal' ? (
                 <div className="drawer-section">
                     <div className="drawer-section-label">Category</div>
                     <div className="drawer-category-pills">
@@ -170,7 +171,7 @@ const AppToolbar = ({
                     </div>
                 </div>
             ) : null}
-            {activeTab !== 'search' ? (
+            {activeTab !== 'search' && activeTab !== 'journal' ? (
                 <div className="drawer-section drawer-section--compact">
                     <div className="drawer-section-label">Completed</div>
                     <div className="drawer-toggle-row">
@@ -188,7 +189,7 @@ const AppToolbar = ({
                     </div>
                 </div>
             ) : null}
-            {activeTab !== 'search' ? (
+            {activeTab !== 'search' && activeTab !== 'journal' ? (
                 hasSharedUsers ? (
                     <div className="drawer-section">
                         <div className="drawer-section-label">Sharing</div>
