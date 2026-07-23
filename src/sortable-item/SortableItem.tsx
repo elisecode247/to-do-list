@@ -309,7 +309,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     async function delayHide() {
         scheduleExitAnimation(() => {
             handleHideItem(id, isHidden);
-        });
+        }, 400);
     }
 
     async function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
@@ -317,7 +317,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         if (checked && isHideCompleted) {
             scheduleExitAnimation(() => {
                 toggleChecked(id, checked);
-            }, 220);
+            }, 400);
         } else {
             toggleChecked(id, checked);
         }
