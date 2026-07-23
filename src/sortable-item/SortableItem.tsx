@@ -9,7 +9,6 @@ import { getDaysAgo, getDaysFromNow } from 'src/utilities/days-ago';
 import type { ChecklistItem, ChoreAccessRole, Mode } from 'src/app/types';
 import { useToast } from 'src/toast/use-toast';
 import {
-    Ban,
     Calendar1,
     CalendarPlus2,
     GripVertical,
@@ -24,6 +23,7 @@ import {
     BookPlus,
     BookMinus,
     Star,
+    SkipForward,
     ListChevronsDownUp,
     ListChevronsUpDown,
     RefreshCw,
@@ -426,9 +426,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                 >
                     <GripVertical size={24} />
                 </button>
-                <div className="sortable-item_main-content">
-
-                    <input
+                <div className="sortable-item_checkbox-container">
+                <input
                         className="sortable-item_checkbox"
                         type="checkbox"
                         checked={checked}
@@ -442,6 +441,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                         onPointerDown={(e) => e.stopPropagation()}
                         onTouchStart={(e) => e.stopPropagation()}
                     />
+                </div>
+                <div className="sortable-item_main-content">
+
+                    
 
                     <div className="sortable-item_text-container">
                         {checklistType === 'search-results' && (
@@ -532,8 +535,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             ) : null}
                         </div>
                     </div>
-                </div>
-                <div className="sortable-item_button-group-container">
+                    <div className="sortable-item_button-group-container">
                     {canEdit && (
                         <IconButton
                             className="sortable-item_main-button sortable-item_priority-button"
@@ -571,10 +573,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                         <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
                             onClick={delayHide}
-                            aria-label="Hide task"
-                            title={isHidden ? "Unhide task for today" : "Hide task for today"}
-                            icon={isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
-                            label={isHidden ? "Do Today" : "Skip"}
+                            aria-label={isHidden ? "Do task today" : "Skip task today"}
+                            title={isHidden ? "Do task today" : "Skip task today"}
+                            icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
+                            label={isHidden ? "Do Today" : "Skip Today"}
                         />
                     )}
                     {hasMenuActions && (
@@ -682,6 +684,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         , document.body)}
                     </div>
                     )}
+                </div>
                 </div>
                 <AnimatePresence initial={false}>
                     {showNotes && (
