@@ -94,45 +94,42 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
         onToggleDistraction(entry.id, nextDistraction);
     }
     return (
-        <div className={`entry-row ${isDistraction ? " entry-row--distraction" : ""}`}>
-            <div className="time-cell">
-
-                <input
-                    className="time-input"
-                    value={time}
-                    onChange={(e) => handleTimeChange(e.target.value)}
-                    placeholder="0:00 AM"
-                    aria-label="JournalEntry time"
-                    type="time"
-                />
-            </div>
-            <div className="text-container-cell">
-                <div className="note-cell">
-                    <AutoTextarea
-                        id={`entry-textarea-${entry.id}`}
-                        value={text}
-                        onChange={handleTextChange}
-                        placeholder="What just happened? How do you feel? What's next?"
+        <div className={`entry-row${isDistraction ? " entry-row--distraction" : ""}`}>
+            <span className="entry-node" aria-hidden="true" />
+            <div className="entry-card">
+                <div className="entry-card-top">
+                    <input
+                        className="time-input"
+                        value={time}
+                        onChange={(e) => handleTimeChange(e.target.value)}
+                        aria-label="Journal entry time"
+                        type="time"
                     />
+                    <div className="entry-card-actions">
+                        <button
+                            className={`distraction-tag${isDistraction ? " distraction-tag--active" : ""}`}
+                            onClick={handleToggleDistraction}
+                            aria-label={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
+                            title={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
+                        >
+                            Distraction
+                        </button>
+                        <button
+                            className="delete-entry-btn"
+                            onClick={() => onDelete(entry.id)}
+                            aria-label="Delete journal entry"
+                            type="button"
+                        >
+                            <X aria-hidden="true" size={16} />
+                        </button>
+                    </div>
                 </div>
-                <div className="action-buttons-cell">
-                    <button
-                        className={`distraction-tag ${isDistraction ? " distraction-tag--active" : ""}`}
-                        onClick={handleToggleDistraction}
-                        aria-label={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
-                        title={isDistraction ? "Remove distraction tag" : "Mark as distraction"}
-                    >
-                        Distraction
-                    </button>
-                    <button
-                        className="delete-entry-btn"
-                        onClick={() => onDelete(entry.id)}
-                        aria-label="Delete journal entry"
-                        type="button"
-                    >
-                        <X aria-hidden="true" size={18} />
-                    </button>
-                </div>
+                <AutoTextarea
+                    id={`entry-textarea-${entry.id}`}
+                    value={text}
+                    onChange={handleTextChange}
+                    placeholder="What just happened? How do you feel? What's next?"
+                />
             </div>
         </div>
     );
@@ -209,7 +206,7 @@ export default function Journal() {
                     <div className="header-left">
                         <div className="date-nav">
                             <button className="journal-nav-btn" onClick={() => setOffset((o) => o - 1)} aria-label="Previous day">
-                                <MoveLeft size={20} />
+                                <MoveLeft size={18} />
                             </button>
                             <input
                                 name="calendar-jump"
@@ -222,38 +219,43 @@ export default function Journal() {
                                 value={selectedDay}
                             />
                             <button className="journal-nav-btn" onClick={() => setOffset((o) => o + 1)} aria-label="Next day">
-                                <MoveRight size={20} />
+                                <MoveRight size={18} />
                             </button>
                         </div>
                         {badge && <span className="today-badge">{badge}</span>}
                     </div>
                     <div className="header-right">
-                        {isEncryptionEnabled ? (
-                            <><Lock size={14} strokeWidth={2} /><span className="journal-encryption-status">Encrypted</span></>
-                        ) : (
-                            <><Unlock size={14} strokeWidth={2} /><span className="journal-encryption-status">Unencrypted</span></>
-                        )}
+                        <span className="journal-chip">
+                            {isEncryptionEnabled ? (
+                                <Lock size={13} strokeWidth={2} aria-hidden="true" />
+                            ) : (
+                                <Unlock size={13} strokeWidth={2} aria-hidden="true" />
+                            )}
+                            <span className="journal-encryption-status">
+                                {isEncryptionEnabled ? "Encrypted" : "Unencrypted"}
+                            </span>
+                        </span>
                         <button
                             className="guide-toggle"
                             onClick={() => setGuideOpen((o) => !o)}
                             aria-label="Show guide"
                             title="How to write an entry"
                         >
-                            <HelpCircle size={20} strokeWidth={2} />
+                            <HelpCircle size={18} strokeWidth={2} />
                         </button>
                     </div>
                 </div>
 
                 <div className="journal-reminder" aria-label="Journal writing reminder">
-                    <div>
+                    <div className="journal-reminder-steps">
                         <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">1. </span> what you finished
+                            <span className="journal-reminder-num">1</span> what you finished
                         </span>
                         <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">2. </span> how you feel
+                            <span className="journal-reminder-num">2</span> how you feel
                         </span>
                         <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">3. </span> what's next
+                            <span className="journal-reminder-num">3</span> what's next
                         </span>
                     </div>
                     <div className="journal-popup-hint">
@@ -266,36 +268,40 @@ export default function Journal() {
                     <Guide onGuideOpen={setGuideOpen} />
                 )}
 
-                <div className="col-headers">
-                    <div className="col-hdr">Time</div>
-                    <div className="col-hdr">Entry</div>
-                </div>
-
                 <div className="entries">
-                    <button className="add-row-btn" onClick={addEntry}>
-                        <Plus size={20} strokeWidth={3} />
-                        Add entry
-                    </button>
+                    <div className="entries-toolbar">
+                        <h3 className="entries-heading">Today's thread</h3>
+                        <button className="add-row-btn" onClick={addEntry}>
+                            <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
+                            Add entry
+                        </button>
+                    </div>
+
                     {entries.length === 0 && (
                         <div className="journal-empty-state">
                             <div className="journal-plus-glyph">＋</div>
                             <h3>No entries yet today</h3>
                             <p>Log your first entry to start today's reset.</p>
-                            <button className="add-btn">
-                                <Plus size={20} strokeWidth={3} />
-                                 Add entry
+                            <button className="add-btn" onClick={addEntry}>
+                                <Plus size={20} strokeWidth={3} aria-hidden="true" />
+                                Add entry
                             </button>
                         </div>
                     )}
-                    {entries.map((entry: JournalEntry) => (
-                        <EntryRow
-                            key={entry.id}
-                            entry={entry}
-                            onChange={handleChange}
-                            onDelete={handleDelete}
-                            onToggleDistraction={handleToggleDistraction}
-                        />
-                    ))}
+
+                    {entries.length > 0 && (
+                        <div className="entry-thread">
+                            {entries.map((entry: JournalEntry) => (
+                                <EntryRow
+                                    key={entry.id}
+                                    entry={entry}
+                                    onChange={handleChange}
+                                    onDelete={handleDelete}
+                                    onToggleDistraction={handleToggleDistraction}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

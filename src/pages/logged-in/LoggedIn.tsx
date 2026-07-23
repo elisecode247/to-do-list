@@ -454,36 +454,38 @@ const LoggedIn: React.FC = () => {
                 />
             )}
             <header className="app_header">
-                <div className="mobile-action-rail">
-                    <IconButton
-                        className="filter-toggle-button"
-                        onClick={toggleLeft}
-                        label="Filters"
-                        icon={<ListFilter size={24} />}
-                        showLabel={true}
-                        isPriority={false}
-                    />
-                    {!isDesktop && (
+                {activeTab === 'journal' && !isDesktop ? null : (
+                    <div className="mobile-action-rail">
                         <IconButton
-                            className="show-completed-toggle-button"
-                            onClick={() => setHideCompleted(prev => !prev)}
-                            label={hideCompleted ? "Show completed" : "Hide completed"}
-                            ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                            icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                            className="filter-toggle-button"
+                            onClick={toggleLeft}
+                            label="Filters"
+                            icon={<ListFilter size={24} />}
                             showLabel={true}
                             isPriority={false}
                         />
-                    )}
-                </div>
+                        {!isDesktop && (
+                            <IconButton
+                                className="show-completed-toggle-button"
+                                onClick={() => setHideCompleted(prev => !prev)}
+                                label={hideCompleted ? "Show completed" : "Hide completed"}
+                                ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                                icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
+                                showLabel={true}
+                                isPriority={false}
+                            />
+                        )}
+                    </div>
+                )}
                 {activeTab !== 'journal' ? (
-                <IconButton
-                    className="new-task-form-toggle-button"
-                    onClick={toggleAddForm}
-                    label="Add new task"
-                    icon={<Plus size={24} strokeWidth={3} />}
-                    isPriority={true}
-                    showLabel={false}
-                />) : null}
+                    <IconButton
+                        className="new-task-form-toggle-button"
+                        onClick={toggleAddForm}
+                        label="Add new task"
+                        icon={<Plus size={24} strokeWidth={3} />}
+                        isPriority={true}
+                        showLabel={false}
+                    />) : null}
                 <div className="app_header_title">
                     <h1 className="app_h1">Daily Reset List</h1>
                     <p className="app_subtitle">

@@ -109,6 +109,9 @@
     --filters-panel-width: 384px;
     --mobile-tab-bar-height: 82px;
     --fab-spacing: 45px;
+
+    /** Misc */
+    --app-header-height: 120px;
 }
 
 /* Default body */

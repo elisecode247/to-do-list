@@ -2,7 +2,7 @@
 
 .app_container {
     display: grid;
-    grid-template-rows: 120px 1fr;
+    grid-template-rows: var(--app-header-height) 1fr;
     grid-template-areas:
         "header"
         "main";
@@ -19,7 +19,7 @@
         "actions actions";
     align-items: center;
     column-gap: var(--spacing-sm);
-    height: 120px;
+    height: var(--app-header-height);
     padding: 0 16px;
     width: 100%;
 }
@@ -145,7 +145,7 @@
     }
 
     .checklist_list-content {
-        padding-bottom: calc(var(--mobile-tab-bar-height) + 120px + env(safe-area-inset-bottom));
+        padding-bottom: calc(var(--mobile-tab-bar-height) + var(--app-header-height) + env(safe-area-inset-bottom));
     }
 }
 

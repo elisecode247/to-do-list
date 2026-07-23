@@ -264,7 +264,7 @@
         grid-template-rows: 60px 1fr;
         align-items: center;
         gap: 8px;
-        height: 120px;
+        height: var(--app-header-height);
         padding: 0 16px;
         width: 100%;
     }
