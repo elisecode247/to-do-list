@@ -459,12 +459,6 @@
             "blank add-task add-task add-task";
     }
 
-    .sortable-item_text-container {
-        /* Reset flex-basis for desktop */
-        flex-basis: auto;
-        margin-inline-start: var(--spacing-md);
-    }
-
     .sortable-item_drag-handle {
         padding: var(--spacing-md);
     }
