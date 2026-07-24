@@ -454,29 +454,28 @@ const LoggedIn: React.FC = () => {
                 />
             )}
             <header className="app_header">
-                {activeTab === 'journal' && !isDesktop ? null : (
-                    <div className="mobile-action-rail">
+
+                <div className="mobile-action-rail">
+                    <IconButton
+                        className="filter-toggle-button"
+                        onClick={toggleLeft}
+                        label="Filters"
+                        icon={<ListFilter size={24} />}
+                        showLabel={true}
+                        isPriority={false}
+                    />
+                    {!isDesktop && (activeTab !== 'search' && activeTab !== 'journal') && (
                         <IconButton
-                            className="filter-toggle-button"
-                            onClick={toggleLeft}
-                            label="Filters"
-                            icon={<ListFilter size={24} />}
+                            className="show-completed-toggle-button"
+                            onClick={() => setHideCompleted(prev => !prev)}
+                            label={hideCompleted ? "Show completed" : "Hide completed"}
+                            ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
+                            icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
                             showLabel={true}
                             isPriority={false}
                         />
-                        {!isDesktop && (
-                            <IconButton
-                                className="show-completed-toggle-button"
-                                onClick={() => setHideCompleted(prev => !prev)}
-                                label={hideCompleted ? "Show completed" : "Hide completed"}
-                                ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
-                                icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                                showLabel={true}
-                                isPriority={false}
-                            />
-                        )}
-                    </div>
-                )}
+                    )}
+                </div>
                 {activeTab !== 'journal' ? (
                     <IconButton
                         className="new-task-form-toggle-button"
