@@ -327,3 +327,15 @@ legend {
     border-color: black;
     opacity: 1;
 }
+
+.warning-paragraph {
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+}
+
+.warning-icon {
+    margin-right: 4px;
+    vertical-align: top;
+}
