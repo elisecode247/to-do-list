@@ -148,10 +148,7 @@ export default function Journal() {
     const [text, setText] = useState('');
 
     useEffect(() => {
-        if (entries.length) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setText(entries[0]?.text ?? '');
-        }
+        setText(entries[0]?.text ?? '');
     }, [entries]);
 
     useEffect(() => {
@@ -236,7 +233,6 @@ export default function Journal() {
     if (isEncryptionEnabled && !isUnlocked) {
         return <JournalLockScreen />;
     }
-
     return (
         <div className="journal-page">
             <div className="journal-wrap">
@@ -344,6 +340,7 @@ export default function Journal() {
                                 )}
                             </div>
                         )}
+
                     </div>
                 ) : (
                     <textarea
