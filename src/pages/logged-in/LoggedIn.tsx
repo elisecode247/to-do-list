@@ -294,7 +294,7 @@ const LoggedIn: React.FC = () => {
     const handleTabChange = (tab: SetStateAction<Tab>) => {
         setActiveTab(tab);
     }
-    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived;
+    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived || activeTab === TABS.search;
     const mobileTabs: Tab[] = useMemo(() => {
         return isSecondaryTabActive
             ? [TABS.journal, TABS.priority, TABS.today, activeTab]

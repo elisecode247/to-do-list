@@ -106,25 +106,23 @@ const AppToolbar = ({
                     ))}
                 </nav>
             </div>
-            {activeTab !== 'search' && activeTab !== 'journal' ? (
-                <div className="drawer-section">
-                    <div className="drawer-section-label">Timeframe</div>
-                    <div className="drawer-timeframe-chips" role="radiogroup" aria-label="Task timeframe">
-                        {timeframeItems.map(item => (
-                            <button
-                                key={item.value}
-                                type="button"
-                                role="radio"
-                                aria-checked={activeTab === item.value}
-                                className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
-                                onClick={() => handleTabChange(item.value)}
-                            >
-                                {item.label}
-                            </button>
-                        ))}
-                    </div>
+            <div className="drawer-section">
+                <div className="drawer-section-label">Timeframe</div>
+                <div className="drawer-timeframe-chips" role="radiogroup" aria-label="Task timeframe">
+                    {timeframeItems.map(item => (
+                        <button
+                            key={item.value}
+                            type="button"
+                            role="radio"
+                            aria-checked={activeTab === item.value}
+                            className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
+                            onClick={() => handleTabChange(item.value)}
+                        >
+                            {item.label}
+                        </button>
+                    ))}
                 </div>
-            ) : null}
+            </div>
             {activeTab !== 'search' && activeTab !== 'journal' ? (
                 <div className="drawer-section">
                     <div className="drawer-section-label">Mode</div>
