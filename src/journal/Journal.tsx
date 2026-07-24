@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./journal.css";
 import type { JournalEntry } from "./types";
 import { useJournal } from "./use-journal";
@@ -8,6 +8,7 @@ import { MoveLeft, MoveRight, HelpCircle, Unlock, Lock, X, Plus } from "lucide-r
 import JournalLockScreen from 'src/journal/JournalLockScreen';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
 import { useTheme } from 'src/themes/use-theme';
+import { useUserSettings } from "src/user-settings/use-user-settings";
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -143,6 +144,15 @@ export default function Journal() {
     const selectedDay = formatDate(offset);
     const { isUnlocked, isEncryptionEnabled } = useEncryptionKey();
     const { toggleIconText } = useTheme();
+    const { interstitialJournalEnabled } = useUserSettings();
+    const [text, setText] = useState('');
+
+    useEffect(() => {
+        if (entries.length) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setText(entries[0]?.text ?? '');
+        }
+    }, [entries]);
 
     useEffect(() => {
         if (isEncryptionEnabled && !isUnlocked) {
@@ -193,6 +203,36 @@ export default function Journal() {
 
     const badge = offsetBadge(offset);
 
+    const creatingEntryRef = useRef(false);
+
+    const handleStandardJournalTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const val = e.target.value;
+        setText(val);
+
+        if (entries.length === 0) {
+            // No entry exists for this day yet - create one instead of dropping the edit.
+            // Guard against creating duplicates from rapid keystrokes before `entries` updates.
+            if (creatingEntryRef.current) return;
+            creatingEntryRef.current = true;
+            addJournalEntry({
+                id: uuidv4(),
+                entryTime: new Date().toISOString(),
+                text: val,
+                distraction: false,
+                day: selectedDay,
+                ciphertext: "",
+                iv: "",
+                encryptionVersion: 1,
+            }).finally(() => {
+                creatingEntryRef.current = false;
+            });
+            return;
+        }
+
+        handleChange(entries[0].id, 'text', val);
+    }, [entries, handleChange, addJournalEntry, selectedDay]);
+
+
     if (isEncryptionEnabled && !isUnlocked) {
         return <JournalLockScreen />;
     }
@@ -238,14 +278,15 @@ export default function Journal() {
                                 </span>
                             )}
                         </span>
-                        <button
-                            className="guide-toggle"
-                            onClick={() => setGuideOpen((o) => !o)}
-                            aria-label="Show guide"
-                            title="How to write an entry"
-                        >
-                            <HelpCircle size={18} strokeWidth={2} />
-                        </button>
+                        {interstitialJournalEnabled ? (
+                            <button
+                                className="guide-toggle"
+                                onClick={() => setGuideOpen((o) => !o)}
+                                aria-label="Show guide"
+                                title="How to write an entry"
+                            >
+                                <HelpCircle size={18} strokeWidth={2} />
+                            </button>) : null}
                     </div>
                 </div>
                 {guideOpen && (
@@ -267,42 +308,51 @@ export default function Journal() {
                         </div>
                     </div>
                 )}
-
-                <div className="entries">
-                    <div className="entries-toolbar">
-                        <h3 className="entries-heading">Today's thread</h3>
-                        <button className="add-row-btn" onClick={addEntry}>
-                            <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
-                            Add entry
-                        </button>
-                    </div>
-
-                    {entries.length === 0 && (
-                        <div className="journal-empty-state">
-                            <div className="journal-plus-glyph">＋</div>
-                            <h3>No entries yet today</h3>
-                            <p>Log your first entry to start today's reset.</p>
-                            <button className="add-btn" onClick={addEntry}>
-                                <Plus size={20} strokeWidth={3} aria-hidden="true" />
+                {interstitialJournalEnabled ? (
+                    <div className="entries">
+                        <div className="entries-toolbar">
+                            <h3 className="entries-heading">Today's thread</h3>
+                            <button className="add-row-btn" onClick={addEntry}>
+                                <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
                                 Add entry
                             </button>
                         </div>
-                    )}
 
-                    {entries.length > 0 && (
-                        <div className="entry-thread">
-                            {entries.map((entry: JournalEntry) => (
-                                <EntryRow
-                                    key={entry.id}
-                                    entry={entry}
-                                    onChange={handleChange}
-                                    onDelete={handleDelete}
-                                    onToggleDistraction={handleToggleDistraction}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
+                        {entries.length === 0 && (
+                            <div className="journal-empty-state">
+                                <div className="journal-plus-glyph">＋</div>
+                                <h3>No entries yet today</h3>
+                                <p>Log your first entry to start today's reset.</p>
+                                <button className="add-btn" onClick={addEntry}>
+                                    <Plus size={20} strokeWidth={3} aria-hidden="true" />
+                                    Add entry
+                                </button>
+                            </div>
+                        )}
+
+                        {entries.length > 0 && (
+                            <div className="entry-thread">
+                                {entries.map((entry: JournalEntry) => (
+                                    <EntryRow
+                                        key={entry.id}
+                                        entry={entry}
+                                        onChange={handleChange}
+                                        onDelete={handleDelete}
+                                        onToggleDistraction={handleToggleDistraction}
+                                    />
+                                )
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <textarea
+                        name="standard-journal-textarea"
+                        className="entry-textarea standard-entry-textarea"
+                        value={text}
+                        onChange={handleStandardJournalTextChange}
+                    />
+                )}
             </div>
         </div>
     );

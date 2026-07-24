@@ -40,6 +40,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false);
     const [categories, setCategories] = useState<CategoryDefinition[]>([]);
     const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+    const [interstitialJournalEnabled, setInterstitialJournalEnabled] = useState(true);
     const { showToast } = useToast();
 
     const fetchUserCategories = useCallback(async (cancelled = false): Promise<void> => {
@@ -112,6 +113,10 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
                     setCategories(normalizeFetchedCategories(rawCategories));
                     setIsLoadingSettings(false);
                 }
+
+                if (settings?.interstitialJournalEnabled !== undefined && !isCancelled) {
+                    setInterstitialJournalEnabled(settings.interstitialJournalEnabled);
+                }
             } catch (err) {
                 console.error("Loading user settings failed:", err);
                 showToast('Failed to load user settings. Please refresh the page.', 'error');
@@ -130,7 +135,7 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
 
     const updateEnableCalendar = useCallback(async (nextValue: boolean) => {
         try {
-            const response = await fetch(USER_SETTINGS_URL, {
+            const response = await fetch(`${USER_SETTINGS_URL}/google-calendar`, {
                 method: "PUT",
                 headers: await authHeaders(),
                 body: JSON.stringify({ googleCalendarEnabled: nextValue }),
@@ -144,6 +149,25 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         } catch (err) {
             console.error("Updating user settings failed:", err);
             showToast('Failed to update Google Calendar setting. Please try again.', 'error');
+        }
+    }, [showToast]);
+
+    const updateInterstitialJournalEnabled = useCallback(async (nextValue: boolean) => {
+        try {
+            const response = await fetch(`${USER_SETTINGS_URL}/interstitial-journal`, {
+                method: "PUT",
+                headers: await authHeaders(),
+                body: JSON.stringify({ interstitialJournalEnabled: nextValue }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update user settings: ${response.status}`);
+            }
+            const updatedSettings = await response.json();
+            setInterstitialJournalEnabled(updatedSettings?.interstitialJournalEnabled);
+        } catch (err) {
+            console.error("Updating user settings failed:", err);
+            showToast('Failed to update journal type setting. Please try again.', 'error');
         }
     }, [showToast]);
 
@@ -299,6 +323,8 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         updateCategory,
         setCategoryVisibility,
         deleteCategory,
+        interstitialJournalEnabled,
+        updateInterstitialJournalEnabled,
     }), [
         googleCalendarEnabled,
         categories,
@@ -308,6 +334,8 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
         updateCategory,
         setCategoryVisibility,
         deleteCategory,
+        interstitialJournalEnabled,
+        updateInterstitialJournalEnabled,
     ]);
 
     return createElement(UserSettingsContext.Provider, { value }, children);

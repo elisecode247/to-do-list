@@ -10,6 +10,7 @@ import JournalExportSettings from "src/user-settings/JournalExportSettings";
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import CategorySettings from "src/pages/user-settings/CategorySettings";
 import SharingSettings from "src/pages/user-settings/SharingSettings";
+import JournalTypeSettings from "src/pages/user-settings/JournalTypeSettings";
 
 const SETTINGS_SECTIONS = [
     { id: 'personalization-settings', label: 'Personalization' },
@@ -24,7 +25,7 @@ function UserSettings() {
     useTheme();
     const {
         googleCalendarEnabled,
-        updateEnableCalendar
+        updateEnableCalendar,
     } = useUserSettings();
     const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
     const [activeSection, setActiveSection] = useState<SettingsSectionId>(SETTINGS_SECTIONS[0].id);
@@ -130,6 +131,7 @@ function UserSettings() {
                         <AppearanceSettings />
                         <CategorySettings />
                     </section>
+                    <JournalTypeSettings />
                     <section
                         id="sharing-settings"
                         className="settings-category"

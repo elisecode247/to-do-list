@@ -37,6 +37,8 @@ const settings: UserSettingsContextValue = {
     updateCategory: noop,
     setCategoryVisibility: noop,
     deleteCategory: noop,
+    interstitialJournalEnabled: true,
+    updateInterstitialJournalEnabled: asyncNoop,
 };
 
 const tasks: TaskContextType = {

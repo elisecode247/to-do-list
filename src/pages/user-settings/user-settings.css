@@ -18,9 +18,11 @@
 
 .settings-nav-list {
     display: flex;
+    align-items: center;
     gap: 6px;
     padding: 0 1px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .settings-nav-list::-webkit-scrollbar {

@@ -3,10 +3,44 @@ import { JournalContext } from './journal-context';
 import type { JournalEntry } from './types';
 import { addEntry, fetchJournalEntries, updateEntry, deleteEntry } from './api';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
+import { useUserSettings } from 'src/user-settings/use-user-settings';
 
 export const JournalProvider = ({ children }: { children: ReactNode }) => {
+    const { interstitialJournalEnabled } = useUserSettings();
     const [entries, setEntries] = useState<JournalEntry[]>([]);
     const { isUnlocked, decryptData, encryptData, isEncryptionEnabled, encryptionConfig } = useEncryptionKey();
+
+    // When a day has multiple entries (written while interstitial mode was on) but the
+    // user is now in non-interstitial mode, we need a single entry to bind the "one entry
+    // per day" textarea to. Previously this was faked client-side only, which meant edits
+    // landed on one arbitrary underlying entry while the rest silently stuck around in
+    // storage - so switching modes back and forth kept re-combining stale duplicates.
+    // Instead, actually merge on the server: keep the chronologically-earliest entry,
+    // fold every entry's text into it (oldest -> newest), and delete the others.
+    const consolidateEntries = useCallback(async (day: string, sameDayEntries: JournalEntry[], combinedText: string) => {
+        const [keep, ...rest] = [...sameDayEntries].sort(
+            (a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime()
+        );
+
+        const mergedEntry: JournalEntry = { ...keep, text: combinedText, day };
+
+        try {
+            if (isEncryptionEnabled && encryptionConfig) {
+                const { ciphertext, iv, encryptionVersion } = await encryptData(combinedText);
+                await updateEntry({ ...mergedEntry, text: '', ciphertext, iv, encryptionVersion });
+                mergedEntry.ciphertext = ciphertext;
+                mergedEntry.iv = iv;
+                mergedEntry.encryptionVersion = encryptionVersion;
+            } else {
+                await updateEntry(mergedEntry);
+            }
+            await Promise.all(rest.map((e) => deleteEntry(e.id)));
+        } catch (err) {
+            console.error("Failed to consolidate journal entries:", err);
+        }
+
+        return mergedEntry;
+    }, [isEncryptionEnabled, encryptionConfig, encryptData]);
 
     const loadJournalEntries = useCallback(async (day: string) => {
         try {
@@ -14,6 +48,15 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
 
             // if encryption is not enabled, just return raw entries
             if (!isEncryptionEnabled || !encryptionConfig) {
+                if (!interstitialJournalEnabled && data.length > 1) {
+                    const combined = [...data]
+                        .sort((a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime())
+                        .map(entry => entry.text)
+                        .join("\n");
+                    const mergedEntry = await consolidateEntries(day, data, combined);
+                    setEntries([mergedEntry]);
+                    return;
+                }
                 setEntries(data);
                 return;
             }
@@ -35,12 +78,20 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                     }
                 })
             );
-
+            if (!interstitialJournalEnabled && decryptedEntries.length > 1) {
+                const combined = [...decryptedEntries]
+                    .sort((a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime())
+                    .map(entry => entry.text)
+                    .join("\n");
+                const mergedEntry = await consolidateEntries(day, decryptedEntries, combined);
+                setEntries([mergedEntry]);
+                return;
+            }
             setEntries(decryptedEntries);
         } catch (err) {
             console.error("Failed to load journal entries:", err);
         }
-    }, [isEncryptionEnabled, encryptionConfig, isUnlocked, decryptData]);
+    }, [isEncryptionEnabled, encryptionConfig, isUnlocked, decryptData, interstitialJournalEnabled, consolidateEntries]);
 
     const addJournalEntry = async (entry: JournalEntry) => {
         try {

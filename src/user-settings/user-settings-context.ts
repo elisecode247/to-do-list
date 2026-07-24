@@ -16,6 +16,8 @@ export type UserSettingsContextValue = {
     updateCategory: (id: string, updates: Partial<CreateCategoryInput>) => void;
     setCategoryVisibility: (id: string, isVisible: boolean) => void;
     deleteCategory: (id: string) => void;
+    interstitialJournalEnabled: boolean;
+    updateInterstitialJournalEnabled: (nextValue: boolean) => Promise<void>;
 };
 
 export const UserSettingsContext = createContext<UserSettingsContextValue | null>(null);

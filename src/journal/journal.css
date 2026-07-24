@@ -380,6 +380,12 @@ input[type="time"].time-input {
     color: color-mix(in srgb, contrast-color(var(--color-white-black)) 45%, transparent);
 }
 
+.standard-entry-textarea {
+    height: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
 
 /* ── Distraction tag ─────────────────────────────────── */
 
