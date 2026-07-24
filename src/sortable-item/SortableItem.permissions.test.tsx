@@ -7,6 +7,10 @@ import { TABS } from 'src/app-toolbar/tabs/types';
 import type { ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
+const { useOnClickOutsideMock } = vi.hoisted(() => ({
+    useOnClickOutsideMock: vi.fn(),
+}));
+
 vi.mock('@dnd-kit/sortable', () => ({
     useSortable: () => ({
         attributes: {},
@@ -31,7 +35,7 @@ vi.mock('framer-motion', () => ({
 }));
 
 vi.mock('usehooks-ts', () => ({
-    useOnClickOutside: vi.fn(),
+    useOnClickOutside: useOnClickOutsideMock,
     useDebounceCallback: (callback: (...args: unknown[]) => unknown) => callback,
 }));
 
@@ -89,6 +93,7 @@ function byLabel(container: HTMLElement, label: string): HTMLElement | null {
 afterEach(async () => {
     vi.useRealTimers();
     toggleChecked.mockReset();
+    useOnClickOutsideMock.mockReset();
     await rendered?.unmount();
     rendered = undefined;
 });
@@ -194,5 +199,32 @@ describe('SortableItem role permissions', () => {
 
         expect(document.querySelector('.sortable-item_menu-dropdown--open'))
             .toBeNull();
+    });
+
+    it('keeps the action menu open for clicks inside the same task container', async () => {
+        rendered = await renderUi(<SortableItem {...propsFor('owner')} />);
+
+        const menu = byLabel(
+            rendered.container,
+            'More task actions',
+        ) as HTMLButtonElement;
+        await click(menu);
+
+        const taskHeading = rendered.container.querySelector('.sortable-item_text-heading');
+        const handleClickOutsideMenu = useOnClickOutsideMock.mock.calls.at(-1)?.[1] as
+            | ((event: MouseEvent | TouchEvent | FocusEvent) => void)
+            | undefined;
+
+        expect(taskHeading).not.toBeNull();
+        expect(handleClickOutsideMenu).toBeTypeOf('function');
+        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+            .not.toBeNull();
+
+        await act(async () => {
+            handleClickOutsideMenu?.({ target: taskHeading } as unknown as MouseEvent);
+        });
+
+        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+            .not.toBeNull();
     });
 });

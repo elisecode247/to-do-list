@@ -357,13 +357,20 @@ export const SortableItem: FC<SortableItemProps> = ({
         }
     }
     function handleClickOutsideMenu(event: MouseEvent | TouchEvent | FocusEvent) {
-        // if target is buttonRef, do not close menu, since button's onClick will handle toggling
-        const target = event.target as Node | null;
-        if (target && buttonRef.current?.contains(target)) {
+        const target = event.target;
+        if (!(target instanceof Node)) {
+            setIsMenuOpen(false);
             return;
         }
+
+        // Ignore clicks within the same task row so sibling controls can finish
+        // their own click handling without the menu tearing down first.
+        if (buttonRef.current?.contains(target) || dragWrapperRef.current?.contains(target)) {
+            return;
+        }
+
         setIsMenuOpen(false);
-    };
+    }
     useOnClickOutside(menuDropdownRef as React.RefObject<HTMLElement>, handleClickOutsideMenu)
 
     useEffect(() => {
