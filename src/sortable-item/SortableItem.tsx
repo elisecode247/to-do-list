@@ -417,8 +417,24 @@ export const SortableItem: FC<SortableItemProps> = ({
             <motion.div
                 className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
                 initial={false}
-                animate={isExiting ? { opacity: 0, y: -10, scale: 0.97 } : { opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                animate={
+                    isExiting
+                        ? {
+                            opacity: [1, 0.8, 0],
+                            scale: [1, 1.15, 0.5],
+                            filter: [
+                                "blur(0px)",
+                                "blur(1px)",
+                                "blur(6px)"
+                            ],
+                        }
+                        : {
+                            opacity: 1,
+                            scale: 1,
+                            filter: "blur(0px)",
+                        }
+                }
+                transition={{ duration: 0.32 }}
             >
                 <button
                     ref={setActivatorNodeRef}
@@ -434,7 +450,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <GripVertical size={24} />
                 </button>
                 <div className="sortable-item_checkbox-container">
-                <input
+                    <input
                         className="sortable-item_checkbox"
                         type="checkbox"
                         checked={checked}
@@ -451,7 +467,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                 </div>
                 <div className="sortable-item_main-content">
 
-                    
+
 
                     <div className="sortable-item_text-container">
                         {checklistType === 'search-results' && (
@@ -512,15 +528,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                             )}
                             {(effectiveAccessRole === 'doer'
                                 || effectiveAccessRole === 'viewer') && (
-                                <span
-                                    className="sortable-item_metadata-text sortable-item_access-status"
-                                    id={accessDescriptionId}
-                                >
-                                    {effectiveAccessRole === 'doer'
-                                        ? 'Completion only'
-                                        : 'View only'}
-                                </span>
-                            )}
+                                    <span
+                                        className="sortable-item_metadata-text sortable-item_access-status"
+                                        id={accessDescriptionId}
+                                    >
+                                        {effectiveAccessRole === 'doer'
+                                            ? 'Completion only'
+                                            : 'View only'}
+                                    </span>
+                                )}
                             {(activeTab === TABS.today) && (
                                 <span className="sortable-item_metadata-text sortable-item_recurrence-text">
                                     {mode === 'one-time' ?
@@ -543,155 +559,155 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </div>
                     </div>
                     <div className="sortable-item_button-group-container">
-                    {canEdit && (
-                        <IconButton
-                            className="sortable-item_main-button sortable-item_priority-button"
-                            onClick={() => prioritizeItem(id)}
-                            aria-label={priorityBtnTitle}
-                            title={priorityBtnTitle}
-                            icon={!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
-                            label="Priority"
-                            showLabel={true}
-                        />
-                    )}
+                        {canEdit && (
+                            <IconButton
+                                className="sortable-item_main-button sortable-item_priority-button"
+                                onClick={() => prioritizeItem(id)}
+                                aria-label={priorityBtnTitle}
+                                title={priorityBtnTitle}
+                                icon={!isPriority ? (<Star size={24} />) : <Star fill="#ffff00" strokeWidth={0} size={24} />}
+                                label="Priority"
+                                showLabel={true}
+                            />
+                        )}
 
-                    {hasSubChores && (
-                        <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
-                            onClick={toggleCollapsed}
-                            aria-label={collapsed ? "Show subtasks" : "Collapse task"}
-                            title={collapsed ? "Show subtasks" : "Collapse task"}
-                            icon={collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
-                            label="Subtasks"
-                        />
-                    )}
+                        {hasSubChores && (
+                            <IconButton
+                                className="sortable-item_main-button sortable-item_hide-button"
+                                onClick={toggleCollapsed}
+                                aria-label={collapsed ? "Show subtasks" : "Collapse task"}
+                                title={collapsed ? "Show subtasks" : "Collapse task"}
+                                icon={collapsed ? <ListChevronsDownUp size={24} /> : <ListChevronsUpDown size={24} />}
+                                label="Subtasks"
+                            />
+                        )}
 
-                    {!!note?.length && (
-                        <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
-                            onClick={toggleNotes}
-                            aria-label="Show notes"
-                            title={showNotes ? "Hide notes" : "Show notes"}
-                            label="Notes"
-                            icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
-                        />
-                    )}
-                    {activeTab === TABS.archived || checklistType === 'template' ? null : (
-                        <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
-                            onClick={delayHide}
-                            aria-label={isHidden ? "Do task today" : "Skip task today"}
-                            title={isHidden ? "Do task today" : "Skip task today"}
-                            icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
-                            label={isHidden ? "Do Today" : "Skip Today"}
-                        />
-                    )}
-                    {hasMenuActions && (
-                    <div className="sortable-item_menu-wrapper">
-                        <IconButton
-                            className={`sortable-item_main-button sortable-item_menu-button
+                        {!!note?.length && (
+                            <IconButton
+                                className="sortable-item_main-button sortable-item_hide-button"
+                                onClick={toggleNotes}
+                                aria-label="Show notes"
+                                title={showNotes ? "Hide notes" : "Show notes"}
+                                label="Notes"
+                                icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
+                            />
+                        )}
+                        {activeTab === TABS.archived || checklistType === 'template' ? null : (
+                            <IconButton
+                                className="sortable-item_main-button sortable-item_hide-button"
+                                onClick={delayHide}
+                                aria-label={isHidden ? "Do task today" : "Skip task today"}
+                                title={isHidden ? "Do task today" : "Skip task today"}
+                                icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
+                                label={isHidden ? "Do Today" : "Skip Today"}
+                            />
+                        )}
+                        {hasMenuActions && (
+                            <div className="sortable-item_menu-wrapper">
+                                <IconButton
+                                    className={`sortable-item_main-button sortable-item_menu-button
                                     ${isMenuOpen ? 'sortable-item_menu-button--active' : ''}`}
-                            aria-label="More task actions"
-                            ref={buttonRef}
-                            onClick={toggleMenuOpen}
-                            showLabel={true}
-                            icon={<MoreHorizontal size={24} />}
-                            label="Actions"
-                        />
+                                    aria-label="More task actions"
+                                    ref={buttonRef}
+                                    onClick={toggleMenuOpen}
+                                    showLabel={true}
+                                    icon={<MoreHorizontal size={24} />}
+                                    label="Actions"
+                                />
 
-                        {isMenuOpen && typeof document !== 'undefined' && createPortal(
-                        <div
-                            ref={menuDropdownRef}
-                            className={`sortable-item_menu-dropdown
+                                {isMenuOpen && typeof document !== 'undefined' && createPortal(
+                                    <div
+                                        ref={menuDropdownRef}
+                                        className={`sortable-item_menu-dropdown
                                 ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}`}
-                            style={menuPosition}
-                        >
-                            {canAddSubtask && (
-                            <button
-                                className="sortable-item_edit-button sortable-item_add-subtask-button"
-                                onClick={handleOpenTaskForm}
-                                aria-label="Add subtask"
-                                title="Add subtask"
-                                type="button"
-                            >
-                                <PlusCircle size={24} />
-                                <span className="sortable-item_button-text-span">Add Subtask</span>
-                            </button>
-                            )}
+                                        style={menuPosition}
+                                    >
+                                        {canAddSubtask && (
+                                            <button
+                                                className="sortable-item_edit-button sortable-item_add-subtask-button"
+                                                onClick={handleOpenTaskForm}
+                                                aria-label="Add subtask"
+                                                title="Add subtask"
+                                                type="button"
+                                            >
+                                                <PlusCircle size={24} />
+                                                <span className="sortable-item_button-text-span">Add Subtask</span>
+                                            </button>
+                                        )}
 
-                            {canEdit && !hasSubChores && (
-                                <button
-                                    className="sortable-item_hide-button"
-                                    onClick={() => {
-                                        setDropZoneOpen(!dropZoneOpen);
-                                        setIsMenuOpen(false);
-                                    }}
-                                    aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
-                                >
-                                    {dropZoneOpen ? <Minimize2 size={24} /> : <Expand size={24} />}
-                                    <span className="sortable-item_button-text-span">
-                                        {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
-                                    </span>
-                                </button>
-                            )}
+                                        {canEdit && !hasSubChores && (
+                                            <button
+                                                className="sortable-item_hide-button"
+                                                onClick={() => {
+                                                    setDropZoneOpen(!dropZoneOpen);
+                                                    setIsMenuOpen(false);
+                                                }}
+                                                aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
+                                            >
+                                                {dropZoneOpen ? <Minimize2 size={24} /> : <Expand size={24} />}
+                                                <span className="sortable-item_button-text-span">
+                                                    {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
+                                                </span>
+                                            </button>
+                                        )}
 
-                            {canEdit && (
-                            <button
-                                className="sortable-item_edit-button"
-                                onClick={() => {
-                                    handleEdit(id);
-                                    setIsMenuOpen(false);
-                                }}
-                                aria-label="Edit task"
-                                title="Edit task"
-                                type="button"
-                            >
-                                <Edit size={24} />
-                                <span className="sortable-item_button-text-span">Edit</span>
-                            </button>
-                            )}
+                                        {canEdit && (
+                                            <button
+                                                className="sortable-item_edit-button"
+                                                onClick={() => {
+                                                    handleEdit(id);
+                                                    setIsMenuOpen(false);
+                                                }}
+                                                aria-label="Edit task"
+                                                title="Edit task"
+                                                type="button"
+                                            >
+                                                <Edit size={24} />
+                                                <span className="sortable-item_button-text-span">Edit</span>
+                                            </button>
+                                        )}
 
-                            {!canEdit || checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
-                                <button
-                                    className="sortable-item_archive-button"
-                                    onClick={() => onMoveItem(id, false)}
-                                    aria-label="Archive task"
-                                    title="Archive task"
-                                    type="button"
-                                >
-                                    <Archive size={24} />
-                                    <span className="sortable-item_button-text-span">Archive</span>
-                                </button>
-                            ) : (
-                                <button
-                                    className="sortable-item_restore-button"
-                                    onClick={() => onMoveItem(id, true)}
-                                    aria-label="Restore archived task"
-                                    title="Restore archived task"
-                                    type="button"
-                                >
-                                    <ListPlus size={24} />
-                                    <span className="sortable-item_button-text-span">Restore</span>
-                                </button>
-                            )}
+                                        {!canEdit || checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
+                                            <button
+                                                className="sortable-item_archive-button"
+                                                onClick={() => onMoveItem(id, false)}
+                                                aria-label="Archive task"
+                                                title="Archive task"
+                                                type="button"
+                                            >
+                                                <Archive size={24} />
+                                                <span className="sortable-item_button-text-span">Archive</span>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="sortable-item_restore-button"
+                                                onClick={() => onMoveItem(id, true)}
+                                                aria-label="Restore archived task"
+                                                title="Restore archived task"
+                                                type="button"
+                                            >
+                                                <ListPlus size={24} />
+                                                <span className="sortable-item_button-text-span">Restore</span>
+                                            </button>
+                                        )}
 
-                            {canDelete && (
-                            <button
-                                className="sortable-item_delete-button"
-                                onClick={handleDeleteTask}
-                                aria-label="Delete task"
-                                title="Delete task"
-                                type="button"
-                            >
-                                <Trash size={24} />
-                                <span className="sortable-item_button-text-span">Delete</span>
-                            </button>
-                            )}
-                        </div>
-                        , document.body)}
+                                        {canDelete && (
+                                            <button
+                                                className="sortable-item_delete-button"
+                                                onClick={handleDeleteTask}
+                                                aria-label="Delete task"
+                                                title="Delete task"
+                                                type="button"
+                                            >
+                                                <Trash size={24} />
+                                                <span className="sortable-item_button-text-span">Delete</span>
+                                            </button>
+                                        )}
+                                    </div>
+                                    , document.body)}
+                            </div>
+                        )}
                     </div>
-                    )}
-                </div>
                 </div>
                 <AnimatePresence initial={false}>
                     {showNotes && (
