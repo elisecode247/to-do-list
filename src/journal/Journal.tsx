@@ -136,6 +136,25 @@ function EntryRow({ entry, onChange, onToggleDistraction, onDelete }: { entry: J
     );
 }
 
+function StandardEntry({ initialText, onChange }: { initialText: string; onChange: (value: string) => void }) {
+    const [text, setText] = useState(initialText);
+
+    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const val = e.target.value;
+        setText(val);
+        onChange(val);
+    };
+
+    return (
+        <textarea
+            name="standard-journal-textarea"
+            className="entry-textarea standard-entry-textarea"
+            value={text}
+            onChange={handleTextChange}
+        />
+    );
+}
+
 export default function Journal() {
     const { entries, loadJournalEntries, updateJournalEntry, deleteJournalEntry, addJournalEntry } = useJournal();
     const [offset, setOffset] = useState(0);
@@ -145,11 +164,6 @@ export default function Journal() {
     const { isUnlocked, isEncryptionEnabled } = useEncryptionKey();
     const { toggleIconText } = useTheme();
     const { interstitialJournalEnabled } = useUserSettings();
-    const [text, setText] = useState('');
-
-    useEffect(() => {
-        setText(entries[0]?.text ?? '');
-    }, [entries]);
 
     useEffect(() => {
         if (isEncryptionEnabled && !isUnlocked) {
@@ -202,10 +216,7 @@ export default function Journal() {
 
     const creatingEntryRef = useRef(false);
 
-    const handleStandardJournalTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const val = e.target.value;
-        setText(val);
-
+    const handleStandardJournalTextChange = useCallback((val: string) => {
         if (entries.length === 0) {
             // No entry exists for this day yet - create one instead of dropping the edit.
             // Guard against creating duplicates from rapid keystrokes before `entries` updates.
@@ -343,10 +354,9 @@ export default function Journal() {
 
                     </div>
                 ) : (
-                    <textarea
-                        name="standard-journal-textarea"
-                        className="entry-textarea standard-entry-textarea"
-                        value={text}
+                    <StandardEntry
+                        key={selectedDay}
+                        initialText={entries[0]?.text ?? ''}
                         onChange={handleStandardJournalTextChange}
                     />
                 )}
