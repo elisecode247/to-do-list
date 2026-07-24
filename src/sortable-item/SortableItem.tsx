@@ -309,7 +309,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     async function delayHide() {
         scheduleExitAnimation(() => {
             handleHideItem(id, isHidden);
-        }, 400);
+        }, 334);
     }
 
     async function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
@@ -317,7 +317,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         if (checked && isHideCompleted) {
             scheduleExitAnimation(() => {
                 toggleChecked(id, checked);
-            }, 400);
+            }, 334);
         } else {
             toggleChecked(id, checked);
         }
@@ -416,17 +416,17 @@ export const SortableItem: FC<SortableItemProps> = ({
         >
             <motion.div
                 className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
-                initial={false}
+                initial={{
+                    opacity: 0,
+                    scale: 0.95,
+                    filter: "blur(2px)",
+                }}
                 animate={
                     isExiting
                         ? {
-                            opacity: [1, 0.8, 0],
-                            scale: [1, 1.15, 0.5],
-                            filter: [
-                                "blur(0px)",
-                                "blur(1px)",
-                                "blur(6px)"
-                            ],
+                            opacity: [1, 0.3, 0],
+                            scale: [1, 0.5, 0],
+                            filter: "blur(2px)",
                         }
                         : {
                             opacity: 1,
