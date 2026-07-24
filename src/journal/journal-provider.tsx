@@ -17,10 +17,26 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
     // storage - so switching modes back and forth kept re-combining stale duplicates.
     // Instead, actually merge on the server: keep the chronologically-earliest entry,
     // fold every entry's text into it (oldest -> newest), and delete the others.
-    const consolidateEntries = useCallback(async (day: string, sameDayEntries: JournalEntry[], combinedText: string) => {
-        const [keep, ...rest] = [...sameDayEntries].sort(
+    const formatEntryTimestamp = (entryTime: string) => {
+        const parsed = new Date(entryTime);
+        if (Number.isNaN(parsed.getTime())) return '';
+        const hours = String(parsed.getHours()).padStart(2, '0');
+        const minutes = String(parsed.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    };
+
+    const consolidateEntries = useCallback(async (day: string, sameDayEntries: JournalEntry[]) => {
+        const sorted = [...sameDayEntries].sort(
             (a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime()
         );
+        const [keep, ...rest] = sorted;
+
+        const combinedText = sorted
+            .map((entry) => {
+                const timestamp = formatEntryTimestamp(entry.entryTime);
+                return timestamp ? `[${timestamp}] ${entry.text}` : entry.text;
+            })
+            .join('\n');
 
         const mergedEntry: JournalEntry = { ...keep, text: combinedText, day };
 
@@ -49,11 +65,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
             // if encryption is not enabled, just return raw entries
             if (!isEncryptionEnabled || !encryptionConfig) {
                 if (!interstitialJournalEnabled && data.length > 1) {
-                    const combined = [...data]
-                        .sort((a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime())
-                        .map(entry => entry.text)
-                        .join("\n");
-                    const mergedEntry = await consolidateEntries(day, data, combined);
+                    const mergedEntry = await consolidateEntries(day, data);
                     setEntries([mergedEntry]);
                     return;
                 }
@@ -79,11 +91,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                 })
             );
             if (!interstitialJournalEnabled && decryptedEntries.length > 1) {
-                const combined = [...decryptedEntries]
-                    .sort((a, b) => new Date(a.entryTime).getTime() - new Date(b.entryTime).getTime())
-                    .map(entry => entry.text)
-                    .join("\n");
-                const mergedEntry = await consolidateEntries(day, decryptedEntries, combined);
+                const mergedEntry = await consolidateEntries(day, decryptedEntries);
                 setEntries([mergedEntry]);
                 return;
             }

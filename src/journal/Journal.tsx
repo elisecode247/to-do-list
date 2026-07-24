@@ -355,7 +355,7 @@ export default function Journal() {
                     </div>
                 ) : (
                     <StandardEntry
-                        key={selectedDay}
+                        key={selectedDay && entries[0]?.id}
                         initialText={entries[0]?.text ?? ''}
                         onChange={handleStandardJournalTextChange}
                     />
