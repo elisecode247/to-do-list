@@ -153,9 +153,10 @@ input[type="date"].calendar-jump-input {
     margin: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: 12px;
-    background: var(--color-accent-bg);
+    background: var(--color-surface);
     border: 1px solid var(--color-accent-border);
     border-radius: var(--radius-lg);
+    color: contrast-color(var(--color-surface));
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -335,6 +336,7 @@ input[type="time"].time-input {
     background: transparent;
     color: var(--color-filter-muted);
     min-width: 0;
+    width: fit-content;
     padding: 0;
     cursor: text;
 }

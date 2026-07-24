@@ -4,7 +4,7 @@ import './icon-button.css';
 
 type IconButtonProps = {
     className: string;
-    onClick: () => void;
+    onClick?: () => void;
     label: string;
     title?: string;
     icon: ReactNode;
@@ -71,7 +71,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
             wasLongPress.current = false;
             return;
         }
-        onClick();
+        onClick?.();
     }, [onClick]);
 
     return (

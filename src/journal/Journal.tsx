@@ -5,9 +5,9 @@ import { useJournal } from "./use-journal";
 import { v4 as uuidv4 } from "uuid";
 import { useDebounceCallback } from 'usehooks-ts';
 import { MoveLeft, MoveRight, HelpCircle, Unlock, Lock, X, Plus } from "lucide-react";
-import Guide from "./Guide";
 import JournalLockScreen from 'src/journal/JournalLockScreen';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
+import { useTheme } from 'src/themes/use-theme';
 
 // e.g. "2026-05-07"
 function formatDate(offset: number) {
@@ -142,6 +142,7 @@ export default function Journal() {
     const debouncedUpdate = useDebounceCallback(updateJournalEntry, 1000);
     const selectedDay = formatDate(offset);
     const { isUnlocked, isEncryptionEnabled } = useEncryptionKey();
+    const { toggleIconText } = useTheme();
 
     useEffect(() => {
         if (isEncryptionEnabled && !isUnlocked) {
@@ -231,9 +232,11 @@ export default function Journal() {
                             ) : (
                                 <Unlock size={13} strokeWidth={2} aria-hidden="true" />
                             )}
-                            <span className="journal-encryption-status">
-                                {isEncryptionEnabled ? "Encrypted" : "Unencrypted"}
-                            </span>
+                            {toggleIconText === 'true' && (
+                                <span className="journal-encryption-status">
+                                    {isEncryptionEnabled ? "Encrypted" : "Unencrypted"}
+                                </span>
+                            )}
                         </span>
                         <button
                             className="guide-toggle"
@@ -245,27 +248,24 @@ export default function Journal() {
                         </button>
                     </div>
                 </div>
-
-                <div className="journal-reminder" aria-label="Journal writing reminder">
-                    <div className="journal-reminder-steps">
-                        <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">1</span> what you finished
-                        </span>
-                        <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">2</span> how you feel
-                        </span>
-                        <span className="journal-reminder-step">
-                            <span className="journal-reminder-num">3</span> what's next
-                        </span>
-                    </div>
-                    <div className="journal-popup-hint">
-                        <span className="journal-popup-hint-icon">!</span>
-                        If distracted — log it, then return
-                    </div>
-                </div>
-
                 {guideOpen && (
-                    <Guide onGuideOpen={setGuideOpen} />
+                    <div className="journal-reminder" aria-label="Journal writing reminder">
+                        <div className="journal-reminder-steps">
+                            <span className="journal-reminder-step">
+                                <span className="journal-reminder-num">1</span> what you finished
+                            </span>
+                            <span className="journal-reminder-step">
+                                <span className="journal-reminder-num">2</span> how you feel
+                            </span>
+                            <span className="journal-reminder-step">
+                                <span className="journal-reminder-num">3</span> what's next
+                            </span>
+                        </div>
+                        <div className="journal-popup-hint">
+                            <span className="journal-popup-hint-icon">!</span>
+                            If distracted — log it, then return
+                        </div>
+                    </div>
                 )}
 
                 <div className="entries">
