@@ -210,10 +210,10 @@ function EncryptionSettings() {
             {!isEncryptionEnabled ? (
                 <>
                     <p>
-                        Keep your journal private by turning on end-to-end encryption.
-                        <strong> Even Daily Reset List cannot read it. </strong>
+                        Keep your journal entry text private by turning on end-to-end encryption.
+                        Once encryption is complete, <strong>Daily Reset List cannot read the encrypted text. </strong>
                         When you turn this on, you'll create a password and receive a recovery key.
-                        Keep both in a safe place. Only you will be able to read your journal entries.
+                        Keep both in a safe place. Existing entries are not protected until the encryption status is Encrypted.
                     </p>
                     <p>
                         <strong>Important:</strong> If you lose both your password and recovery code,
@@ -238,8 +238,8 @@ function EncryptionSettings() {
             ) : (
                 <>
                     <p>
-                        Your journal entries are locked with your personal
-                        password before they leave your device, so only you can read them.
+                        Journal entry text protected by Private Journal is encrypted in your browser
+                        before it leaves your device. Check the status below to confirm that existing entries are encrypted.
                     </p>
                     <div className="action-buttons">
                         <button className="settings-btn" type="button" onClick={onChangePasswordClick}>

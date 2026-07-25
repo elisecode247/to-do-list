@@ -38,7 +38,7 @@ const PrivacyPolicyPage: FC = () => {
                     <h1>Privacy Policy</h1>
                     <p className="privacy-policy-updated">
                         <span>Last updated</span>
-                        <time dateTime="2026-06-19">June 19, 2026</time>
+                        <time dateTime="2026-07-25">July 25, 2026</time>
                     </p>
                     <p className="privacy-policy-intro">
                         Daily Reset List ("Daily Reset List," "the App," "we," "our," or "us")
@@ -88,10 +88,19 @@ const PrivacyPolicyPage: FC = () => {
                         <h3>Journal Entries</h3>
                         <p>If you use the journaling features, we store the journal entries and content you create.</p>
                         <p>
-                            Journal entries are stored on Daily Reset List servers and are <strong>not end-to-end encrypted</strong>.
-                            The developer may access stored journal content when reasonably necessary to provide technical support,
+                            Journal entry text is <strong>not end-to-end encrypted by default</strong>. Unless you enable the
+                            Private Journal feature and encryption has completed, journal text stored on Daily Reset List
+                            servers may be accessed by the developer when reasonably necessary to provide technical support,
                             investigate bugs, maintain service reliability, comply with legal obligations, or protect the
                             security of the service.
+                        </p>
+                        <p>
+                            If you enable Private Journal, journal entry text is encrypted in your browser before it is sent
+                            to Daily Reset List. After encryption is complete, the servers store the encrypted text and Daily
+                            Reset List cannot read it without your encryption password or recovery key. Existing entries remain
+                            readable by the service until they have been encrypted, and removing Private Journal encryption
+                            makes the journal text readable by the service again. This encryption applies to journal entry text;
+                            associated information such as entry dates and identifiers is still stored by the service.
                         </p>
 
                         <h3>Google Calendar Data</h3>

@@ -8,43 +8,24 @@ Live: https://dailyresetlist.com
 * low pressure: no goals, no habit tracking, and no gamification
 * tasks that reset each day and an be easily skipped and delayed
 * shows the last time you completed a task
-* includes an encrypted interstitial journal to combat context switching and procrastination
+* includes an interstitial journal with optional end-to-end encryption of entry text to combat context switching and procrastination
 
 ## Todo
 * Add production error monitoring, availability checks, and a way for testers to report feedback.
 * Verify production OAuth scopes, cookie settings, rate limiting, CORS, account deletion, and data-loss behavior against the backend.
-* Reconcile the privacy policy’s “not end-to-end encrypted” journal language with the app/README’s “encrypted journal” description.
 * Artist to create manifest and og images
 * review landing page language
+* Add production error monitoring with release/version information
 
+* Add uptime monitoring for the site and API
 
+* Create alerts for elevated authentication and API failures
 
-Validate and sanitize all server inputs
+* Decide how user data will be recovered after accidental loss
 
-Confirm OAuth requests use only necessary scopes
+* Test database restoration if backups exist
 
-Test token expiration and revoked Google access
-
-Confirm the privacy policy matches actual storage, encryption, retention, and deletion behavior
-
-Ensure secrets and production credentials are absent from the frontend and repository
-Reliability and operations
-
-Add production error monitoring with release/version information
-
-Add uptime monitoring for the site and API
-
-Create alerts for elevated authentication and API failures
-
-Decide how user data will be recovered after accidental loss
-
-Test database restoration if backups exist
-
-Document deployment and rollback steps
-
-Confirm production and development environments are isolated
-
-Add a health-check endpoint
+* Document deployment and rollback steps
 
 Verify custom-domain HTTPS and certificate renewal
 Beta program
