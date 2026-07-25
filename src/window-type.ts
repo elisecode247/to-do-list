@@ -31,6 +31,7 @@ declare global {
                     initCodeClient(config: {
                         client_id: string;
                         scope: string;
+                        include_granted_scopes?: boolean;
                         ux_mode: string;
                         prompt?: string;
                         callback: (response: { code: string }) => void;
