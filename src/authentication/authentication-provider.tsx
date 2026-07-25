@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, type ReactNode } from 'react';
 import { CLIENT_ID } from 'src/app/constants';
-import { getAuthEmail, getSessionUser, getValidAuthToken, loginWithGoogle, logout as logoutAPI } from 'src/authentication/authentication-api';
+import { getAuthEmail, getValidAuthToken, loginWithGoogle, logout as logoutAPI } from 'src/authentication/authentication-api';
 import { AuthenticationContext } from './authentication-context';
 import { requestGoogleCredential } from './google-identity';
 
@@ -22,14 +22,9 @@ export const AuthenticationProvider = ({ children }: { children: ReactNode }) =>
         let isMounted = true;
 
         getValidAuthToken()
-            .then(async (token) => {
+            .then((token) => {
                 if (isMounted) {
-                    if (token) {
-                        const session = await getSessionUser();
-                        setEmail(session?.email ?? getAuthEmail());
-                    } else {
-                        setEmail(undefined);
-                    }
+                    setEmail(token ? getAuthEmail() : undefined);
                     setIsAuthenticated(Boolean(token));
                     setIsLoading(false);
                 }

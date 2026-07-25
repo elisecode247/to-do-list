@@ -3,7 +3,6 @@ import { removePersistentSetting, writePersistentSetting } from "src/utilities/p
 
 const SKEW_MS = 30_000; // 30s buffer before expiry
 export const AUTH_SESSION_HINT_KEY = "auth-session-present";
-const API_SESSION_URL = `${API_AUTH_URL}/session`;
 const API_REAUTH_URL = `${API_AUTH_URL}/reauth/google`;
 const API_DELETE_ACCOUNT_URL = `${API_AUTH_URL}/account`;
 let accessToken: string | null = null;
@@ -35,9 +34,8 @@ export async function loginWithGoogle(token: string): Promise<{email?: string}> 
             throw new Error("Invalid auth response from server");
         }
 
-        persistTokens(data.accessToken, data.expiresIn);
-        const session = await getSessionUser();
-        return { email: session?.email };
+        persistTokens(data.accessToken, data.expiresIn, data.email);
+        return { email: getAuthEmail() };
     } catch (err) {
         console.error("Failed to authenticate:", err);
         throw new Error("Google authentication failed", { cause: err });
@@ -103,33 +101,11 @@ export async function getValidAuthToken(): Promise<string | null> {
     });
 }
 
-function persistTokens(access: string, expiresIn: number): void {
+function persistTokens(access: string, expiresIn: number, email: unknown): void {
     accessToken = access;
     expiresAtMs = Date.now() + expiresIn * 1000;
+    emailAddress = typeof email === "string" ? email : null;
     writePersistentSetting(AUTH_SESSION_HINT_KEY, "true");
-}
-
-export async function getSessionUser(): Promise<{ email?: string } | null> {
-    try {
-        const headers = await authHeaders();
-        const response = await fetch(API_SESSION_URL, {
-            method: "GET",
-            headers,
-            credentials: "include",
-        });
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const data = await response.json();
-        const nextEmail = typeof data?.email === "string" ? data.email : undefined;
-        emailAddress = nextEmail ?? null;
-
-        return { email: nextEmail };
-    } catch {
-        return null;
-    }
 }
 
 export async function refreshAuthToken(): Promise<string | null> {
@@ -153,7 +129,7 @@ export async function refreshAuthToken(): Promise<string | null> {
         if (!data?.accessToken || !data?.expiresIn) {
             throw new Error("Invalid refresh response from server");
         }
-        persistTokens(data.accessToken, data.expiresIn);
+        persistTokens(data.accessToken, data.expiresIn, data.email);
         return data.accessToken;
     } catch {
         logout();
