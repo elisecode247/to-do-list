@@ -12,13 +12,9 @@ Live: https://dailyresetlist.com
 
 ## Todo
 * Add production error monitoring with release/version information, availability checks, and a way for testers to report feedback.
-* Verify production OAuth scopes, cookie settings, rate limiting, CORS, account deletion, and data-loss behavior against the backend.
-* Artist to create manifest and og images
+* Artist to create manifest and og images, and landing page images
 * review landing page language
-
-* Add uptime monitoring for the site and API
-
 * Create alerts for elevated authentication and API failures
-
 * Decide how user data will be recovered after accidental loss
+* bug: subtasks shown from shared task in today when parent task is shared.
 

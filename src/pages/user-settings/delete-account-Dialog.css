@@ -41,6 +41,15 @@
     margin: 12px 0 12px 0;
 }
 
+.delete-dialog-warning {
+    margin: 12px 0;
+    padding: 12px;
+    border: 1px solid var(--color-danger);
+    border-radius: var(--radius-sm);
+    color: var(--color-danger);
+    font-size: 14px;
+}
+
 .delete-dialog-error {
     margin: 8px 0 12px 0;
     color: var(--color-danger);

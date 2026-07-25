@@ -58,6 +58,9 @@ const DeleteAccountModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                 <DialogTitle className="delete-dialog__title">Delete account</DialogTitle>
                 <Description>This will permanently delete your account</Description>
                 <p className="delete-dialog-p">Are you sure you want to delete your account? All of your data will be permanently removed.</p>
+                <p className="delete-dialog-warning">
+                    <strong>Shared chores:</strong> Any shared chores you own will permanently disappear from your collaborators&apos; lists.
+                </p>
 
                 {errorMessage && <p className="delete-dialog-error">{errorMessage}</p>}
 
