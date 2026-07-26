@@ -4,14 +4,11 @@ import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
+import DemoPage from 'src/pages/demo/DemoPage';
 import { Route, Switch, useLocation } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
 import ThemeCanvas from './ThemeCanvas';
-
-const DemoPageLazy = lazy(async () => {
-    return { default: (await import('src/pages/demo/DemoPage')).default };
-});
 
 const UserSettingsLazy = lazy(async () => {
     return { default: (await import('src/pages/user-settings/UserSettings')).default };
@@ -81,7 +78,7 @@ const App: FC = () => {
                 </Route>
                 <Route path={ROUTES.demo}>
                     {/** Demo page is faster without Suspense */}
-                    <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
+                    <DemoPage onSuccessfulLogin={handleLoginSuccess} />
                 </Route>
                 <Route path={ROUTES.userSettings}>
                     {isLoading ? <LoadingSpinner /> :
