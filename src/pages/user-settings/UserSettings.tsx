@@ -1,6 +1,5 @@
 import './user-settings.css';
 import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
-import { useTheme } from "src/themes/use-theme";
 import { useEffect, useRef, useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import Page from "../Page";
@@ -22,7 +21,6 @@ const SETTINGS_SECTIONS = [
 type SettingsSectionId = typeof SETTINGS_SECTIONS[number]['id'];
 
 function UserSettings() {
-    useTheme();
     const {
         googleCalendarEnabled,
         updateEnableCalendar,

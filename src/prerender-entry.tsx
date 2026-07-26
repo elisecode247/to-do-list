@@ -14,6 +14,7 @@ import type { ToastContextType } from "src/toast/types";
 import { DemoContext } from "src/pages/demo/DemoContext";
 import { DemoTaskContext, type DemoTaskContextType } from "src/pages/demo/demo-task-context";
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
+import { ThemeProvider } from "src/themes/ThemeProvider";
 
 const noop = () => undefined;
 const asyncNoop = async () => undefined;
@@ -76,6 +77,7 @@ const toast: ToastContextType = {
 
 function PublicProviders({ children }: { children: React.ReactNode }) {
     return (
+        <ThemeProvider>
         <AuthenticationContext.Provider value={authentication}>
             <UserSettingsContext.Provider value={settings}>
                 <TaskContext.Provider value={tasks}>
@@ -89,6 +91,7 @@ function PublicProviders({ children }: { children: React.ReactNode }) {
                 </TaskContext.Provider>
             </UserSettingsContext.Provider>
         </AuthenticationContext.Provider>
+        </ThemeProvider>
     );
 }
 

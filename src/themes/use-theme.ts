@@ -1,191 +1,22 @@
-import { useLayoutEffect, useEffect, useState, useEffectEvent } from 'react';
-import type { ThemeMode, ThemeStyle, Density, ThemeState, ThemeGraphic } from './types';
-import {
-    removePersistentSetting,
-    readPersistentSetting,
-    requestPersistentStorage,
-    writePersistentSetting,
-} from 'src/utilities/persistent-storage';
-import { CALM_STYLE, COMFORTABLE_DENSITY, DARK_MODE, GRAPHICS_FALSE } from './constants';
+import { useContext } from 'react';
+import { ThemeContext } from './theme-context';
 
-const THEME_CUSTOM_COLORS_KEY = 'theme-custom-colors';
-const THEME_CHANGE_EVENT = 'daily-reset-list-theme-change';
-const LOADING_THEME: ThemeState = {
-    mode: DARK_MODE,
-    style: CALM_STYLE,
-    density: COMFORTABLE_DENSITY,
-    graphics: GRAPHICS_FALSE,
-    toggleIconText: 'true',
-};
+function useThemeContext() {
+    const context = useContext(ThemeContext);
 
-const readStoredCustomColors = (): Record<string, string> => {
-    const stored = readPersistentSetting(THEME_CUSTOM_COLORS_KEY);
-
-    if (!stored) {
-        return {};
+    if (!context) {
+        throw new Error('useTheme must be used within a ThemeProvider');
     }
 
-    try {
-        const parsed = JSON.parse(stored) as unknown;
-
-        if (parsed && typeof parsed === 'object') {
-            return Object.fromEntries(
-                Object.entries(parsed).filter((entry): entry is [string, string] =>
-                    typeof entry[0] === 'string' && typeof entry[1] === 'string',
-                ),
-            );
-        }
-    } catch {
-        // Ignore malformed stored values and fall back to an empty custom palette.
-    }
-
-    return {};
-};
-
-const getStoredTheme = (): ThemeState => ({
-    mode: (readPersistentSetting('theme-mode') as ThemeMode) || 'system',
-    style: (readPersistentSetting('theme-style') as ThemeStyle) || 'calm',
-    density: (readPersistentSetting('theme-density') as Density) || 'comfortable',
-    graphics: (readPersistentSetting('theme-graphics') as ThemeGraphic) ?? 'true',
-    customColors: readStoredCustomColors(),
-    toggleIconText: (readPersistentSetting('theme-toggle-icon-text') as 'true' | 'false') ?? 'true',
-});
-
-export function useTheme(
-    overrideMode?: ThemeMode,
-    overrideStyle?: ThemeStyle,
-    overrideDensity?: Density,
-    overrideGraphics?: ThemeGraphic,
-    isLoading?: boolean,
-) {
-    const hasOverride =
-        overrideMode !== undefined &&
-        overrideStyle !== undefined &&
-        overrideDensity !== undefined &&
-        overrideGraphics !== undefined;
-
-    const [theme, setTheme] = useState<ThemeState>(
-        hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics!, toggleIconText: 'true' }
-            : getStoredTheme(),
-    );
-
-    const applyTheme = useEffectEvent(({ mode, style, density, graphics, customColors }: ThemeState) => {
-        const root = document.documentElement;
-
-        // Mode
-        if (mode === 'system') {
-            root.removeAttribute('data-theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            root.style.colorScheme = prefersDark ? 'dark' : 'light';
-        } else {
-            root.setAttribute('data-theme', mode);
-            root.style.colorScheme = mode;
-        }
-
-        // Style
-        if (style === 'calm') {
-            root.removeAttribute('data-theme-style');
-        } else {
-            root.setAttribute('data-theme-style', style);
-        }
-
-        if (style === 'custom' && customColors) {
-            for (const variable in customColors) {
-                document.documentElement.style.setProperty(variable, customColors[variable]);
-            }
-        } else if (style !== 'custom') {
-            const storedCustomColors = readStoredCustomColors();
-
-            for (const variable of Object.keys(storedCustomColors)) {
-                document.documentElement.style.removeProperty(variable);
-            }
-        }
-
-        // Density
-        root.setAttribute('data-density', density);
-
-        // Graphics
-        root.setAttribute('data-graphics', graphics);
-    });
-
-    // Apply theme whenever stored theme or override changes
-    useLayoutEffect(() => {
-        const nextTheme = isLoading
-            ? LOADING_THEME
-            : hasOverride
-            ? { mode: overrideMode!, style: overrideStyle!, density: overrideDensity!, graphics: overrideGraphics!, toggleIconText: 'true' as const }
-            : theme;
-
-        applyTheme(nextTheme);
-    }, [theme, isLoading, hasOverride, overrideMode, overrideStyle, overrideDensity, overrideGraphics]);
-
-
-    useEffect(() => {
-        requestPersistentStorage();
-    }, []);
-
-    useEffect(() => {
-        if (isLoading || hasOverride) return;
-
-        // Persist
-        writePersistentSetting('theme-mode', theme.mode);
-        writePersistentSetting('theme-style', theme.style);
-        writePersistentSetting('theme-density', theme.density);
-        writePersistentSetting('theme-graphics', theme.graphics);
-        writePersistentSetting('theme-toggle-icon-text', theme.toggleIconText);
-
-        if (theme.customColors) {
-            writePersistentSetting(THEME_CUSTOM_COLORS_KEY, JSON.stringify(theme.customColors));
-        } else {
-            removePersistentSetting(THEME_CUSTOM_COLORS_KEY);
-        }
-
-        // System mode listener
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleSystemChange = () => {
-            if (theme.mode === 'system') {
-                applyTheme(theme);
-            }
-        };
-
-        // Storage listener
-        const handleStorage = (e: StorageEvent) => {
-            if (
-                e.key === 'theme-mode' ||
-                e.key === 'theme-style' ||
-                e.key === 'theme-density' ||
-                e.key === 'theme-graphics' ||
-                e.key === 'theme-toggle-icon-text' ||
-                e.key === THEME_CUSTOM_COLORS_KEY
-            ) {
-                setTheme(getStoredTheme());
-            }
-        };
-        const handleThemeChange = (event: Event) => {
-            setTheme((event as CustomEvent<ThemeState>).detail);
-        };
-
-        mediaQuery.addEventListener('change', handleSystemChange);
-        window.addEventListener('storage', handleStorage);
-        window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
-
-        return () => {
-            mediaQuery.removeEventListener('change', handleSystemChange);
-            window.removeEventListener('storage', handleStorage);
-            window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
-        };
-    }, [theme, isLoading, hasOverride]);
-
-
-    const updateTheme = (updates: Partial<ThemeState>) => {
-        if (isLoading || hasOverride) return;
-        const nextTheme = { ...theme, ...updates };
-        setTheme(nextTheme);
-        window.dispatchEvent(new CustomEvent<ThemeState>(THEME_CHANGE_EVENT, {
-            detail: nextTheme,
-        }));
-    };
-
-    return { ...(isLoading ? LOADING_THEME : theme), updateTheme };
+    return context;
 }
+
+export function useTheme() {
+    const context = useThemeContext();
+
+    return {
+        ...context.theme,
+        updateTheme: context.updateTheme,
+    };
+}
+

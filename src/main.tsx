@@ -12,6 +12,7 @@ import { DemoProvider } from 'src/pages/demo/demo-provider';
 import { DemoTaskProvider } from 'src/pages/demo/demo-task-provider';
 import { AppRouter } from 'src/router';
 import { MotionConfig } from 'framer-motion';
+import { ThemeProvider } from 'src/themes/ThemeProvider';
 
 type ProviderComponent = ComponentType<{ children: ReactNode }>;
 
@@ -32,6 +33,7 @@ const combineComponents = (components: ProviderComponent[]): ProviderComponent =
 
 const providers = [
     AppRouter,
+    ThemeProvider,
     AuthenticationProvider,
     ToastProvider,
     UserSettingsProvider,

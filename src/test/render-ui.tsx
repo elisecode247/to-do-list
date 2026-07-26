@@ -1,5 +1,6 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { ThemeProvider } from 'src/themes/ThemeProvider';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -15,7 +16,7 @@ export async function renderUi(node: ReactNode): Promise<RenderedUi> {
     const root = createRoot(container);
 
     await act(async () => {
-        root.render(node);
+        root.render(<ThemeProvider>{node}</ThemeProvider>);
     });
 
     return {

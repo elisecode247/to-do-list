@@ -37,7 +37,7 @@ import ErrorState from "src/error-state/ErrorState";
 import { useToast } from "src/toast/use-toast";
 import Toast from "src/toast/Toast";
 import SparklesOverlay from "src/app/SparklesOverlay";
-import { useTheme } from "src/themes/use-theme";
+import { useThemeOverride } from "src/themes/use-theme-override";
 import AppToolBar from "src/app-toolbar/AppToolbar";
 import {
     MOBILE_TAB_LABELS,
@@ -84,7 +84,7 @@ interface DemoPageProps {
 const DemoPage: React.FC<DemoPageProps> = ({
     onSuccessfulLogin,
 }) => {
-    useTheme(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
+    useThemeOverride(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
     const now = new Date();
     const dayOfWeekName = `${daysOfWeek[now.getDay()]}, `;
 

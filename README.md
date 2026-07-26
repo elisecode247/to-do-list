@@ -15,6 +15,6 @@ Live: https://dailyresetlist.com
 * Artist to create manifest and og images, and landing page images
 * review landing page language
 * Create alerts for elevated authentication and API failures
-* Decide how user data will be recovered after accidental loss
+* automate encrypted PostgreSQL backups stored outside Railway
 * bug: subtasks shown from shared task in today when parent task is shared.
 

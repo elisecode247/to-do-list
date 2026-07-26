@@ -10,7 +10,7 @@ import {
 import { Link } from "wouter";
 import { useLayoutEffect } from "react";
 import GoogleLoginButton from "src/authentication/google-login-button";
-import { useTheme } from "src/themes/use-theme";
+import { useThemeOverride } from "src/themes/use-theme-override";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
 import { ROUTES } from "src/router";
 import "./logged-out.css";
@@ -72,7 +72,7 @@ export default function LoggedOut({
 }) {
     // Preserve a returning user's saved theme while their session is resolving.
     // Once they are confirmed signed out, public pages use the Space presentation.
-    useTheme(
+    useThemeOverride(
         isCheckingSession ? undefined : DARK_MODE,
         isCheckingSession ? undefined : SPACE_STYLE,
         isCheckingSession ? undefined : COMFORTABLE_DENSITY,

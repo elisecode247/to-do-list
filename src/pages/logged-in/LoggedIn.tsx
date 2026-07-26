@@ -7,7 +7,6 @@ import ErrorState from 'src/error-state/ErrorState';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import SparklesOverlay from 'src/app/SparklesOverlay';
-import { useTheme } from 'src/themes/use-theme';
 import AccountMenu from 'app/AccountMenu';
 import NewForm from 'src/task-form/NewForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
@@ -104,7 +103,6 @@ const readStoredFilters = (storageKey: string): Partial<StoredFilters> => {
 };
 
 const LoggedIn: React.FC = () => {
-    useTheme();
     const now = new Date();
     const dayOfWeekName = daysOfWeek[now.getDay()] + ", ";
     const { showToast } = useToast();

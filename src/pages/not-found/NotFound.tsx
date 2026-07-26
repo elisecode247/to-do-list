@@ -2,13 +2,13 @@ import { Link } from 'wouter';
 import { ROUTES } from 'src/router';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import './not-found.css';
-import { useTheme } from 'src/themes/use-theme';
+import { useThemeOverride } from 'src/themes/use-theme-override';
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from 'src/themes/constants';
 
 export function NotFound() {
     const { isAuthenticated, isLoading } = useAuthentication();
     const isPublicPage = !isLoading && !isAuthenticated;
-    useTheme(
+    useThemeOverride(
         isPublicPage ? DARK_MODE : undefined,
         isPublicPage ? SPACE_STYLE : undefined,
         isPublicPage ? COMFORTABLE_DENSITY : undefined,
