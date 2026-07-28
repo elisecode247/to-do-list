@@ -147,47 +147,73 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateItem = async (updatedItem: ChecklistItem) => {
-        let previousItem: ChecklistItem | undefined;
+        let originalItem: ChecklistItem | undefined;
 
         setItems(prev => {
-            previousItem = prev.find(i => i.id === updatedItem.id);
-            return prev.map(i => i.id === updatedItem.id ? { ...updatedItem } : i);
+            originalItem = prev.find(item => item.id === updatedItem.id);
+
+            return prev.map(item =>
+                item.id === updatedItem.id
+                    ? { ...updatedItem }
+                    : item
+            );
         });
 
         try {
+            const serverTask = await updateTask(updatedItem);
+
             let updatedTask: ChecklistItem = {
                 ...updatedItem,
-                ...await updateTask(updatedItem),
+                ...serverTask,
             };
-            if (previousItem?.lastCompleted !== updatedItem.lastCompleted) {
+
+            if (originalItem?.lastCompleted !== updatedItem.lastCompleted) {
                 const completion = await updateTaskCompletion(
                     updatedItem.id,
                     updatedItem.lastCompleted
                         ? new Date(updatedItem.lastCompleted).toISOString()
                         : null,
                 );
+
                 updatedTask = {
                     ...updatedTask,
-                    lastCompleted: completion.lastCompleted ?? '',
+                    lastCompleted: completion.lastCompleted ?? "",
                     nextDue: completion.nextDue,
                 };
             }
-            setItems(prev => {
-                previousItem = prev.find(i => i.id === updatedItem.id);
-                return prev.map(i => i.id === updatedItem.id ? {
-                    ...i,
-                    ...updatedTask,
-                    done: isDateToday(updatedTask.lastCompleted),
-                    itemType: 'checklist-item',
-                } : i);
-            });
+
+            setItems(prev =>
+                prev.map(item => {
+                    if (item.id !== updatedItem.id) {
+                        return item;
+                    }
+
+                    return {
+                        ...item,
+                        ...updatedTask,
+                        done: isDateToday(updatedTask.lastCompleted),
+                        itemType: "checklist-item" as const,
+                        upcoming:
+                            !isDateToday(updatedTask.lastCompleted) &&
+                            updatedTask.nextDue != null &&
+                            new Date(updatedTask.nextDue) >
+                            getLocalTodayAtMidnight(),
+                    };
+                })
+            );
         } catch (error) {
-            // rollback only that item
-            if (previousItem) {
+            console.error("[updateItem] Error", error);
+
+            if (originalItem) {
                 setItems(prev =>
-                    prev.map(i => i.id === previousItem!.id ? previousItem! : i)
+                    prev.map(item =>
+                        item.id === originalItem!.id
+                            ? originalItem!
+                            : item
+                    )
                 );
             }
+
             throw error;
         }
     };
