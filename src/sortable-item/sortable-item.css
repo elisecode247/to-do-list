@@ -64,14 +64,23 @@
 }
 
 /* Drag Handle */
-.sortable-item_drag-handle {
+.sortable-item_drag-handle,
+.sortable-item_main-button {
     grid-area: drag;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-xs);
-    background: transparent;
-    border: none;
+    gap: 5px;
+    padding: 4px 10px;
+    background-color: transparent;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    font-size: 12px;
+    cursor: pointer;
+    color: inherit;
+}
+
+.sortable-item_drag-handle {
     color: contrast-color(var(--color-surface--transparent));
     cursor: grab;
     transition: color var(--transition-fast);
@@ -107,7 +116,7 @@
     grid-area: checkbox;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .sortable-item_checkbox {
@@ -601,14 +610,6 @@
 /** Main button override for priority */
 .sortable-item_main-button {
     display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    font-size: 12px;
-    cursor: pointer;
-    color: inherit;
 }
 
 /* Priority Mode Task */
