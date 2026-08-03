@@ -269,6 +269,10 @@
         width: 100%;
     }
 
+    .demo-app_header .mobile-action-rail {
+        grid-area: filter;
+    }
+
     .demo-header-actions {
         grid-area: actions;
     }

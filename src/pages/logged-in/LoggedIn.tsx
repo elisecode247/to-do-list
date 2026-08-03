@@ -10,6 +10,7 @@ import SparklesOverlay from 'src/app/SparklesOverlay';
 import AccountMenu from 'app/AccountMenu';
 import NewForm from 'src/task-form/NewForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
+import ViewBreadcrumb from 'src/app-toolbar/ViewBreadcrumb';
 import {
     LIST_TABS,
     VIEW_JOURNAL,
@@ -152,6 +153,13 @@ const LoggedIn: React.FC = () => {
     const onboardingStorageKey = `${ONBOARDING_CHOICE_KEY}:${email ?? 'current-user'}`;
     const { sharedUsers } = useShareTasks({ enabled: isAuthenticated });
     const hasSharedUsers = sharedUsers.some(user => user.status === 'accepted');
+    const appliedFilterCount = activeView === VIEW_LIST
+        ? Number(hideCompleted) +
+            Number(modeFilter !== ALL_MODES) +
+            Number(filterCategory !== ALL_CATEGORIES) +
+            Number(sharedByMe) +
+            Number(sharedByOthers)
+        : 0;
 
     useEffect(() => {
         const filters: StoredFilters = {
@@ -461,6 +469,12 @@ const LoggedIn: React.FC = () => {
             <header className="app_header">
 
                 <div className="mobile-action-rail">
+                    <ViewBreadcrumb
+                        activeView={activeView}
+                        activeTab={activeTab}
+                        appliedFilterCount={appliedFilterCount}
+                        placement="mobile"
+                    />
                     <IconButton
                         className="filter-toggle-button"
                         onClick={toggleLeft}

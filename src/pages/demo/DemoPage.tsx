@@ -37,6 +37,7 @@ import Toast from "src/toast/Toast";
 import SparklesOverlay from "src/app/SparklesOverlay";
 import { useThemeOverride } from "src/themes/use-theme-override";
 import AppToolBar from "src/app-toolbar/AppToolbar";
+import ViewBreadcrumb from "src/app-toolbar/ViewBreadcrumb";
 import {
     VIEW_JOURNAL,
     VIEW_SEARCH,
@@ -111,6 +112,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const lastUpdatedDate = lastUpdatedRaw ? new Date(lastUpdatedRaw) : null;
     const itemLength = items?.length ?? 0;
     const sparkles = <SparklesOverlay />;
+    const appliedFilterCount = activeView === VIEW_LIST
+        ? Number(hideCompleted) +
+            Number(modeFilter !== ALL_MODES) +
+            Number(filterCategory !== ALL_CATEGORIES)
+        : 0;
 
     useEffect(() => {
         if (!isLoading && !readPersistentSetting(DEMO_ONBOARDING_CHOICE_KEY)) {
@@ -280,9 +286,15 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 )}
 
                 <header className="app_header demo-app_header">
-                    {activeView === VIEW_LIST && (
-                        <>
-                            <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
+                    <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
+                        <ViewBreadcrumb
+                            activeView={activeView}
+                            activeTab={activeTab}
+                            appliedFilterCount={appliedFilterCount}
+                            placement="mobile"
+                        />
+                        {activeView === VIEW_LIST && (
+                            <>
                                 <IconButton
                                     className="filter-toggle-button"
                                     onClick={toggleLeft}
@@ -292,7 +304,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     showLabel={true}
                                     isPriority={false}
                                 />
-                                {!isDesktop && (
+                                {!isDesktop ? (
                                     <IconButton
                                         className="show-completed-toggle-button"
                                         onClick={() => setHideCompleted(current => !current)}
@@ -302,8 +314,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                         showLabel={true}
                                         isPriority={false}
                                     />
-                                )}
-                            </div>
+                                ) : null}
+                            </>
+                        )}
+                    </div>
+                    {activeView === VIEW_LIST && (
                             <IconButton
                                 className="new-task-form-toggle-button"
                                 onClick={toggleAddForm}
@@ -313,7 +328,6 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 isPriority
                                 showLabel={false}
                             />
-                        </>
                     )}
 
                     <div className="app_header_title">
