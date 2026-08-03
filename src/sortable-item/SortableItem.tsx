@@ -415,7 +415,10 @@ export const SortableItem: FC<SortableItemProps> = ({
             ref={setDragWrapperRef}
         >
             <motion.div
-                className={`sortable-item_container ${isPriority ? 'mode-priority' : ''}`}
+                className={`sortable-item_container
+                    ${isPriority ? 'mode-priority' : ''}
+                    ${isSubChore ? 'sortable-item_container--subchore' : ''}
+                `}
                 initial={{
                     opacity: 0,
                     scale: 0.95,
@@ -490,9 +493,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                         <div className="sortable-item_text">
                             <h2 className="sortable-item_text-heading">
-                                {isSubChore && checklistType !== 'search-results' && (
-                                    <span className="sortable-item_subtask-indicator">Subtask: </span>
-                                )}
                                 {categoryDefinition ? (
                                     <span
                                         className="sortable-item_category-icon"
@@ -792,6 +792,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             isArchived={subtask.isArchived}
                                             isHidden={subtask.isHidden}
                                             isHideCompleted={isHideCompleted}
+                                            isSubChore={!!subtask.parentUuid}
                                             checked={subtask.done}
                                             deleteItem={deleteItem}
                                             prioritizeItem={prioritizeItem}

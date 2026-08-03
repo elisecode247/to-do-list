@@ -36,8 +36,10 @@
         position: relative;
         gap: 0;
         margin: 1px var(--spacing-sm);
-        z-index: 1;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, background-color 0.3s ease;
+        z-index: 4;
+        transition:
+            box-shadow 160ms ease-out,
+            background-color 160ms ease-out;
         box-sizing: border-box;
     }
 
@@ -45,8 +47,11 @@
         border-color: var(--color-border);
         box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
         outline: 1px solid var(--color-primary);
-        z-index: 4;
         background-color: var(--color-surface);
+    }
+
+    .sortable-item_container--subchore {
+        margin: 0;
     }
 
     .sortable-item_main-content {
@@ -173,13 +178,6 @@
         display: inline-flex;
         margin-inline-end: 6px;
         vertical-align: bottom;
-    }
-
-    .sortable-item_subtask-indicator {
-        font-size: 0.8em;
-        font-weight: 500;
-        color: inherit;
-        margin-inline-start: 4px;
     }
 }
 
@@ -529,17 +527,6 @@
 .sortable-item_show-upcoming-button {
     margin: var(--spacing-xs) auto;
     color: inherit;
-}
-
-/* Reduce font size and padding for nested items */
-.sortable-item_subtasks-container .sortable-item_container {
-    font-size: 0.95em;
-    margin: var(--spacing-xs) 2px;
-}
-
-.sortable-item_subtasks-container .sortable-item_subtasks-container {
-    margin-inline-start: var(--spacing-lg);
-    /* Each nested level indents more */
 }
 
 .sortable-item_note {
