@@ -635,12 +635,12 @@
 .mode-priority::before {
     content: "";
     position: absolute;
-    inset: 0 auto 0 0;
+    inset: 1px auto 1px -1px;
     width: var(--priority-stripe-width);
     background: linear-gradient(180deg,
             var(--color-primary),
             var(--color-accent));
-    border-radius: 16px 0 0 16px;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
 }
 
 /* make star the main priority cue */
