@@ -134,6 +134,7 @@ body {
             contrast-color(var(--color-background)) 92%,
             var(--color-primary));
     font-family: "Outfit", Arial, sans-serif;
+    text-align: center;
 }
 
 .app_subtitle_last-updated--fresh {

@@ -22,6 +22,7 @@
     height: var(--app-header-height);
     padding: 0 16px;
     width: 100%;
+    margin: auto;
 }
 
 .app_header_title {
@@ -78,6 +79,8 @@
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .mobile-action-rail {
@@ -219,6 +222,7 @@
 
 .main_content_page {
     height: 100%;
+    margin-top: var(--spacing-sm);
 }
 
 /* Shared bottom-sheet styles */
@@ -502,6 +506,7 @@
         height: 100px;
         padding: 0 16px;
         width: 100%;
+        margin: auto;
     }
 
     .app_header_title {

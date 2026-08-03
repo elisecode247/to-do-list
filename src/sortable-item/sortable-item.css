@@ -27,9 +27,9 @@
         grid-template-rows: minmax(55px, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
         grid-template-columns: 44px 44px minmax(0, 1fr);
         grid-template-areas: "drag checkbox text"
-            "blank notes notes"
-            "blank subtasks subtasks"
-            "blank add-task add-task";
+            "notes notes notes"
+            "subtasks subtasks subtasks"
+            "add-task add-task add-task";
         align-items: stretch;
         padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) calc(var(--spacing-sm) + var(--priority-stripe-width));
         background-color: var(--color-surface--transparent);
@@ -476,9 +476,9 @@
         grid-template-columns: 44px 44px minmax(0, 1fr) auto;
         grid-template-areas:
             "drag checkbox text text"
-            "blank notes notes notes"
-            "blank subtasks subtasks subtasks"
-            "blank add-task add-task add-task";
+            "notes notes notes notes"
+            "subtasks subtasks subtasks subtasks"
+            "add-task add-task add-task add-task";
     }
 
     .sortable-item_drag-handle {

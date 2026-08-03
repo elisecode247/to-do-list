@@ -57,6 +57,8 @@
     margin: 0;
     color: contrast-color(var(--color-background));
     font-size: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .page_h2 {
