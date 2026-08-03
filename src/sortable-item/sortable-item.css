@@ -148,6 +148,7 @@
 
     /* Text Container */
     .sortable-item_text-container {
+        flex: 1 0 100%;
         display: flex;
         flex-direction: column;
         gap: 4px;
@@ -487,6 +488,20 @@
 
     .sortable-item_text {
         font-size: 15px;
+    }
+
+    .sortable-item_main-content {
+        flex-wrap: nowrap;
+    }
+
+    .sortable-item_text-container {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .sortable-item_button-group-container {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
     }
 
     .sortable-item_archive-button,
