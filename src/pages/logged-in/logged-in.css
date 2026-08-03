@@ -109,9 +109,9 @@
         height: 40px;
         margin: 0;
         padding: 0 10px;
-        border: 0;
+        border: 1px solid color-mix(in srgb, currentColor 38%, var(--color-border));
         border-radius: var(--radius-md);
-        background: transparent;
+        background: color-mix(in srgb, var(--color-surface) 42%, transparent);
         color: inherit;
         box-shadow: none;
         backdrop-filter: none;

@@ -311,7 +311,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                         label={hideCompleted ? "Show completed" : "Hide completed"}
                                         ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
                                         icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                                        showLabel={true}
+                                        showLabel={false}
                                         isPriority={false}
                                     />
                                 ) : null}

@@ -479,6 +479,7 @@ const LoggedIn: React.FC = () => {
                         className="filter-toggle-button"
                         onClick={toggleLeft}
                         label="Filters"
+                        ariaLabel="Open filters"
                         icon={<ListFilter size={24} />}
                         showLabel={true}
                         isPriority={false}
@@ -490,7 +491,7 @@ const LoggedIn: React.FC = () => {
                             label={hideCompleted ? "Show completed" : "Hide completed"}
                             ariaLabel={hideCompleted ? "Show completed tasks" : "Hide completed tasks"}
                             icon={hideCompleted ? <EyeOff size={24} /> : <Eye size={24} />}
-                            showLabel={true}
+                            showLabel={false}
                             isPriority={false}
                         />
                     )}
