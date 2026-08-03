@@ -9,7 +9,7 @@ import 'checklist/checklist.css';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
-import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
+import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, TAB_TODAY, TAB_UPCOMING, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
@@ -37,6 +37,7 @@ interface ChecklistProps {
     clearFilters: () => void;
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
+    itemsOverride?: ChecklistItem[];
 }
 
 const DemoChecklist: FC<ChecklistProps> = ({
@@ -46,7 +47,8 @@ const DemoChecklist: FC<ChecklistProps> = ({
     filterCategory,
     clearFilters,
     onEditItem,
-    sparkles
+    sparkles,
+    itemsOverride,
 }) => {
     const {
         items,
@@ -67,23 +69,24 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const completedDayRef = useRef(false);
 
     const filteredItems = useMemo(() => {
-        return filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory })
+        const visibleItems = itemsOverride ?? filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory });
+        return visibleItems
             .sort((a, b) => {
-                if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
+                if (activeTab === TAB_PRIORITY || activeTab === TAB_HIDDEN || activeTab === TAB_ARCHIVED) {
                     return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
-                } else if (activeTab === TABS.upcoming) {
+                } else if (activeTab === TAB_UPCOMING) {
                     const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
                     const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
                     return aDue - bDue;
                 }
                 return a.sortOrder - b.sortOrder;
             });
-    }, [items, modeFilter, activeTab, hideCompleted, filterCategory]);
+    }, [items, itemsOverride, modeFilter, activeTab, hideCompleted, filterCategory]);
 
-    const filteredEvents = events.filter(event => {
-        if (activeTab === TABS.today) {
+    const filteredEvents = itemsOverride ? [] : events.filter(event => {
+        if (activeTab === TAB_TODAY) {
             return isTodayOrBefore(event.startDate);
-        } else if (activeTab === TABS.upcoming) {
+        } else if (activeTab === TAB_UPCOMING) {
             return isTomorrowOrLater(event.startDate);
         }
         return false;
@@ -100,7 +103,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     };
 
     const allItems = [...filteredEvents, ...filteredItems].sort((a, b) => {
-        if (activeTab === TABS.upcoming) {
+        if (activeTab === TAB_UPCOMING) {
             const aDate = getItemDate(a as ChecklistItem | GoogleEvent);
             const bDate = getItemDate(b as ChecklistItem | GoogleEvent);
             return aDate - bDate;
@@ -109,7 +112,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         return 1;
     });
     const completedDay = items.filter(i => i.done).length &&
-        filteredItems.length === 0 && activeTab === TABS.today;
+        filteredItems.length === 0 && activeTab === TAB_TODAY;
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -227,7 +230,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     }, []);
 
     useEffect(() => {
-        if (!completedDayRef.current && completedDay && activeTab === TABS.today) {
+        if (!completedDayRef.current && completedDay && activeTab === TAB_TODAY) {
             setTimeout(() => {
                 displaySparkles()
                 completedDayRef.current = !!completedDay;

@@ -3,7 +3,7 @@ import Page from "src/pages/Page";
 import { useTask } from "src/app/use-task";
 import { useToast } from "src/toast/use-toast";
 import type { ChecklistItem, Mode } from "src/app/types";
-import { TABS, type Tab } from "src/app-toolbar/tabs/types";
+import { TAB_TODAY, type Tab } from "src/app-toolbar/tabs/types";
 import Checklist from "src/checklist/Checklist";
 import EditTaskForm from "src/edit-task-form/EditTaskForm";
 import { useAuthentication } from "src/authentication/use-authentication";
@@ -316,7 +316,7 @@ export default function TemplatesPage() {
                     <Checklist
                         checklistType="template"
                         controller={controller}
-                        activeTab={TABS.today}
+                        activeTab={TAB_TODAY}
                         modeFilter="all"
                         hideCompleted={false}
                         filterCategory="all"

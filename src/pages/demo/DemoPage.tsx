@@ -1,10 +1,8 @@
 import React, {
     useCallback,
     useEffect,
-    useMemo,
     useRef,
     useState,
-    type SetStateAction,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -40,11 +38,17 @@ import SparklesOverlay from "src/app/SparklesOverlay";
 import { useThemeOverride } from "src/themes/use-theme-override";
 import AppToolBar from "src/app-toolbar/AppToolbar";
 import {
-    MOBILE_TAB_LABELS,
-    TABS,
+    VIEW_JOURNAL,
+    VIEW_SEARCH,
+    TAB_TODAY,
+    VIEW_LABELS,
+    VIEWS,
     type Tab,
+    type View,
+    VIEW_LIST,
 } from "src/app-toolbar/tabs/types";
-import MobileTabContent from "src/app-toolbar/tabs/MobileTabContent";
+import MobileViewContent from "src/app-toolbar/tabs/MobileViewContent";
+import Search from "src/app-toolbar/Search";
 import { ALL_CATEGORIES, DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { ALL_MODES } from "src/checklist/constants";
 import useIsDesktop from "src/pages/use-is-desktop";
@@ -93,7 +97,8 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const [, setLocation] = useLocation();
     const isDesktop = useIsDesktop();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
-    const [activeTab, setActiveTab] = useState<Tab>(TABS.today);
+    const [activeView, setActiveView] = useState<View>(VIEW_LIST);
+    const [activeTab, setActiveTab] = useState<Tab>(TAB_TODAY);
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
@@ -136,7 +141,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
         completeGettingStarted();
         reset();
         setEditingItem(null);
-        setActiveTab(TABS.today);
+        setActiveTab(TAB_TODAY);
         setRightOpen(false);
     }
 
@@ -163,7 +168,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
         setRightOpen(true);
         if (!isDesktop) setLeftOpen(false);
     }
-    function handleTabChange(tab: SetStateAction<Tab>) {
+    function handleViewChange(view: View) {
+        setActiveView(view);
+    }
+
+    function handleTabChange(tab: Tab) {
         setActiveTab(tab);
     }
     function clearFilters() {
@@ -203,7 +212,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
     function handleReset() {
         reset();
         setEditingItem(null);
-        setActiveTab(TABS.today);
+        setActiveTab(TAB_TODAY);
         setRightOpen(false);
         showToast("Demo tasks restored", "success");
     }
@@ -216,24 +225,19 @@ const DemoPage: React.FC<DemoPageProps> = ({
         showToast("Demo tasks cleared", "success");
     }
 
-    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived;
-    const mobileTabs = useMemo<Tab[]>(() => {
-        return isSecondaryTabActive
-            ? [TABS.journal, TABS.priority, TABS.today, activeTab]
-            : [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
-    }, [activeTab, isSecondaryTabActive]);
+    const mobileViews: View[] = [VIEWS.search, VIEWS.journal, VIEWS.list];
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
-    const mobileTabButtonRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+    const mobileTabButtonRefs = useRef<Partial<Record<View, HTMLButtonElement | null>>>({});
     const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0 });
     const updateMobileIndicator = useCallback(() => {
         const barElement = mobileTabBarRef.current;
-        const activeElement = mobileTabButtonRefs.current[activeTab];
+        const activeElement = mobileTabButtonRefs.current[activeView];
         if (!barElement || !activeElement) return;
         setMobileIndicator({
             x: activeElement.offsetLeft + 6,
             width: Math.max(0, activeElement.offsetWidth - 12),
         });
-    }, [activeTab]);
+    }, [activeView]);
     useEffect(() => {
         updateMobileIndicator();
         window.addEventListener("resize", updateMobileIndicator);
@@ -243,7 +247,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
         if (isDesktop || leftOpen || rightOpen) return;
         const frameId = window.requestAnimationFrame(updateMobileIndicator);
         return () => window.cancelAnimationFrame(frameId);
-    }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
+    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
     useEffect(() => {
         const maybeCloseLeftPanel = () => {
             const width = window.innerWidth;
@@ -256,8 +260,6 @@ const DemoPage: React.FC<DemoPageProps> = ({
         window.addEventListener('resize', maybeCloseLeftPanel);
         return () => window.removeEventListener('resize', maybeCloseLeftPanel);
     }, [leftOpen, rightOpen]);
-    const pageTransitionKey = isLoading ? "loading" : taskError ? "error" : activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? "empty" : activeTab;
-    const isJournal = activeTab === TABS.journal;
 
     return (
         <>
@@ -278,7 +280,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 )}
 
                 <header className="app_header demo-app_header">
-                    {!isJournal && (
+                    {activeView === VIEW_LIST && (
                         <>
                             <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
                                 <IconButton
@@ -363,7 +365,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
                     <div className="demo-header-actions">
                         <GoogleLoginButton onSuccess={onSuccessfulLogin} />
-                        {!isJournal && (
+                        {activeView === VIEW_LIST && (
                             <Menu>
                                 <MenuButton className="icon-button">
                                     Demo
@@ -404,7 +406,9 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 <aside className="left_panel">
                     <AppToolBar
                         categories={DEFAULT_CATEGORIES}
+                        activeView={activeView}
                         activeTab={activeTab}
+                        handleViewChange={handleViewChange}
                         handleTabChange={handleTabChange}
                         modeFilter={modeFilter}
                         setModeFilter={setModeFilter}
@@ -414,14 +418,13 @@ const DemoPage: React.FC<DemoPageProps> = ({
                         setFilterCategory={setFilterCategory}
                         setLeftOpen={setLeftOpen}
                         isDesktop={isDesktop}
-                        showSearch={false}
                     />
                 </aside>
 
                 <main className="main_content">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
-                            key={pageTransitionKey}
+                            key={activeView}
                             className="main_content_page"
                             initial={{
                                 opacity: 0,
@@ -457,10 +460,28 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                         loadTasks
                                     }
                                 />
-                            ) : isJournal ? (
+                            ) : activeView === VIEW_JOURNAL ? (
                                 <DemoJournalProvider>
                                     <Journal />
                                 </DemoJournalProvider>
+                            ) : activeView === VIEW_SEARCH ? (
+                                <Search
+                                    items={items}
+                                    onEditItem={handleEditItem}
+                                    sparkles={sparkles}
+                                    renderResults={searchResults => (
+                                        <DemoChecklist
+                                            itemsOverride={searchResults}
+                                            onEditItem={handleEditItem}
+                                            sparkles={sparkles}
+                                            activeTab={TAB_TODAY}
+                                            modeFilter={ALL_MODES}
+                                            hideCompleted={false}
+                                            filterCategory={ALL_CATEGORIES}
+                                            clearFilters={clearFilters}
+                                        />
+                                    )}
+                                />
                             ) : itemLength ===
                                 0 ? (
                                 <div className="empty-state">
@@ -511,10 +532,10 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 {!isDesktop && !leftOpen && !rightOpen && (
                     <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
                         <motion.span className="mobile-tab-motion" animate={{ x: mobileIndicator.x, width: mobileIndicator.width }} transition={{ type: "spring", stiffness: 580, damping: 44 }} />
-                        {mobileTabs.map(tab => (
-                            <button aria-label={MOBILE_TAB_LABELS[tab]} key={tab} ref={element => { mobileTabButtonRefs.current[tab] = element; }} className={["mobile-tab-button", activeTab === tab ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleTabChange(tab)}>
+                        {mobileViews.map(view => (
+                            <button aria-label={VIEW_LABELS[view]} key={view} ref={element => { mobileTabButtonRefs.current[view] = element; }} className={["mobile-tab-button", activeView === view ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleViewChange(view)}>
                                 <span className="mobile-tab-button-content">
-                                    <MobileTabContent tab={tab} />
+                                    <MobileViewContent view={view} />
                                 </span>
                             </button>
                         ))}

@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
-import { TAB_ARCHIVED, TABS } from 'src/app-toolbar/tabs/types';
+import { TAB_ARCHIVED, TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import NoteEditor from 'src/editor/LazyNoteEditor';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
@@ -192,7 +192,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const filteredTasks = subtasks?.filter((t) => {
         if (t.isHidden || t.isArchived) return false;
         if (isHideCompleted && t.done) return false;
-        if (activeTab === TABS.today && t.upcoming) {
+        if (activeTab === TAB_TODAY && t.upcoming) {
             return false;
         }
         return true;
@@ -537,7 +537,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             : 'View only'}
                                     </span>
                                 )}
-                            {(activeTab === TABS.today) && (
+                            {(activeTab === TAB_TODAY) && (
                                 <span className="sortable-item_metadata-text sortable-item_recurrence-text">
                                     {mode === 'one-time' ?
                                         (<Calendar1 aria-hidden="true" size={12} />) :
@@ -551,7 +551,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     {lastCompletedDate}
                                 </span>
                             )}
-                            {(activeTab === TABS.upcoming && nextDue) || (isUpcomingSubtask && nextDue) ? (
+                            {(activeTab === TAB_UPCOMING && nextDue) || (isUpcomingSubtask && nextDue) ? (
                                 <span className="sortable-item_metadata-text">
                                     {nextDueDate}
                                 </span>
@@ -592,7 +592,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
                             />
                         )}
-                        {activeTab === TABS.archived || checklistType === 'template' ? null : (
+                        {activeTab === TAB_ARCHIVED || checklistType === 'template' ? null : (
                             <IconButton
                                 className="sortable-item_main-button sortable-item_hide-button"
                                 onClick={delayHide}
@@ -823,7 +823,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </motion.div>
                             )}
 
-                            {!collapsed && activeTab === TABS.today && upcomingTasks && upcomingTasks?.length > 0 && (
+                            {!collapsed && activeTab === TAB_TODAY && upcomingTasks && upcomingTasks?.length > 0 && (
                                 <motion.div
                                     key={`upcoming-subtasks-${id}`}
                                     className="sortable-item_upcoming-subtasks"

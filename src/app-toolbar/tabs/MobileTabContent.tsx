@@ -3,15 +3,19 @@ import {
     CalendarCheck,
     CalendarDays,
     EyeOff,
-    PencilLine,
     Search,
     Star,
 } from 'lucide-react';
 import {
-    MOBILE_TAB_LABELS,
-    TABS,
-    type Tab,
+    TAB_LABELS,
+    TAB_ARCHIVED,
+    TAB_HIDDEN,
+    TAB_PRIORITY,
+    TAB_TODAY,
+    TAB_UPCOMING,
+    type Tab
 } from './types';
+import type { ReactNode } from 'react';
 
 type MobileTabContentProps = {
     tab: Tab;
@@ -24,21 +28,20 @@ export default function MobileTabContent({ tab }: MobileTabContentProps) {
         'aria-hidden': true,
     };
 
-    const icons = {
-        [TABS.journal]: <PencilLine {...iconProps} />,
-        [TABS.priority]: <Star {...iconProps} />,
-        [TABS.today]: <CalendarCheck {...iconProps} />,
-        [TABS.upcoming]: <CalendarDays {...iconProps} />,
-        [TABS.hidden]: <EyeOff {...iconProps} />,
-        [TABS.archived]: <Archive {...iconProps} />,
-    } as const;
+    const icons: Partial<Record<Tab, ReactNode>> = {
+        [TAB_PRIORITY]: <Star {...iconProps} />,
+        [TAB_TODAY]: <CalendarCheck {...iconProps} />,
+        [TAB_UPCOMING]: <CalendarDays {...iconProps} />,
+        [TAB_HIDDEN]: <EyeOff {...iconProps} />,
+        [TAB_ARCHIVED]: <Archive {...iconProps} />,
+    };
 
     const icon = icons[tab] ?? <Search {...iconProps} />;
 
     return (
         <>
             {icon}
-            <span>{MOBILE_TAB_LABELS[tab]}</span>
+            <span>{TAB_LABELS[tab]}</span>
         </>
     );
 }

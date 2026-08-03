@@ -1,25 +1,28 @@
 import { Input, Checkbox, Field, Label } from '@headlessui/react';
 import { SearchIcon, X } from 'lucide-react';
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import type { ChecklistItem, SearchScope } from 'src/app/types';
 import { useTask } from 'src/app/use-task';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import TaskContextChecklist from 'src/pages/logged-in/TaskContextChecklist';
-import { TABS } from './tabs/types';
+import { TAB_TODAY } from './tabs/types';
 import './search.css';
 
 interface SearchProps {
     onEditItem: (item: ChecklistItem) => void;
     sparkles?: ReactElement;
+    items?: ChecklistItem[];
+    renderResults?: (items: ChecklistItem[]) => ReactNode;
 }
 
-const Search = ({ onEditItem, sparkles }: SearchProps) => {
+const Search = ({ onEditItem, sparkles, items: providedItems, renderResults }: SearchProps) => {
     const [hideSubtasks, setHideSubtasks] = useState(false);
     const [hideArchived, setHideArchived] = useState(false);
     const [searchScope, setSearchScope] = useState<SearchScope>('all');
     const [searchQuery, setSearchQuery] = useState('');
-    const { items } = useTask();
+    const { items: taskItems } = useTask();
+    const items = providedItems ?? taskItems;
     const inputRef = useRef<HTMLInputElement | null>(null);
     const deferredSearchQuery = useDeferredValue(searchQuery);
     const normalizedQuery = deferredSearchQuery.trim();
@@ -169,20 +172,22 @@ const Search = ({ onEditItem, sparkles }: SearchProps) => {
                 </div>
             ) : (
                 <div className="search-results">
-                    <TaskContextChecklist
-                        items={searchResults}
-                        checklistType="search-results"
-                        activeTab={TABS.search}
-                        modeFilter={ALL_MODES}
-                        hideCompleted={false}
-                        filterCategory={ALL_CATEGORIES}
-                        clearFilters={clearFilters}
-                        onEditItem={onEditItem}
-                        expandedNoteItemIds={expandedNoteItemIds}
-                        itemLookup={itemLookup}
-                        sparkles={sparkles}
-                        enablePullToRefresh={false}
-                    />
+                    {renderResults ? renderResults(searchResults) : (
+                        <TaskContextChecklist
+                            items={searchResults}
+                            checklistType="search-results"
+                            activeTab={TAB_TODAY}
+                            modeFilter={ALL_MODES}
+                            hideCompleted={false}
+                            filterCategory={ALL_CATEGORIES}
+                            clearFilters={clearFilters}
+                            onEditItem={onEditItem}
+                            expandedNoteItemIds={expandedNoteItemIds}
+                            itemLookup={itemLookup}
+                            sparkles={sparkles}
+                            enablePullToRefresh={false}
+                        />
+                    )}
                 </div>
             )}
         </section>

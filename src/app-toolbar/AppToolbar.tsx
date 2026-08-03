@@ -4,15 +4,37 @@ import { ALL_CATEGORIES, getCategoryOptions } from 'src/category-select/category
 import { CategoryIcon } from 'src/category-select/category-icons';
 import './app-toolbar.css';
 import type { Mode } from 'src/app/types';
-import { TABS, type Tab } from './tabs/types';
+import {
+    TAB_ARCHIVED,
+    TAB_HIDDEN,
+    TAB_PRIORITY,
+    TAB_TODAY,
+    TAB_UPCOMING,
+    VIEW_JOURNAL,
+    VIEW_SEARCH,
+    VIEW_LIST,
+    type Tab,
+    type View,
+} from './tabs/types';
 import CloseButton from 'components/close-button/CloseButton';
 import type { CategoryDefinition } from 'src/category-select/types';
 import { Select } from '@headlessui/react'
-import { PencilLine, Search, Star } from 'lucide-react';
+import { ListTodo, PencilLine, Search } from 'lucide-react';
 
+const navigationItems: Array<{
+    value: View;
+    label: string;
+    icon: React.ReactNode;
+}> = [
+    { value: VIEW_SEARCH, label: 'Search', icon: <Search size={16} aria-hidden="true" /> },
+    { value: VIEW_JOURNAL, label: 'Journal', icon: <PencilLine size={16} aria-hidden="true" /> },
+    { value: VIEW_LIST, label: 'List', icon: <ListTodo size={16} aria-hidden="true" /> },
+];
 interface AppToolbarProps {
     categories: CategoryDefinition[];
+    activeView: View;
     activeTab: Tab;
+    handleViewChange: (view: View) => void;
     handleTabChange: (tab: Tab) => void;
     modeFilter: Mode | typeof ALL_MODES;
     setModeFilter: (mode: Mode | typeof ALL_MODES) => void;
@@ -28,10 +50,13 @@ interface AppToolbarProps {
     setLeftOpen: (open: boolean) => void;
     isDesktop?: boolean;
     showSearch?: boolean;
+    listTab?: Tab;
 }
 const AppToolbar = ({
+    activeView,
     activeTab,
     handleTabChange,
+    handleViewChange,
     modeFilter,
     setModeFilter,
     hideCompleted,
@@ -45,7 +70,6 @@ const AppToolbar = ({
     setSharedByOthers,
     setLeftOpen,
     categories,
-    showSearch = true
 }: AppToolbarProps) => {
 
     const activeFilterCount =
@@ -60,18 +84,13 @@ const AppToolbar = ({
         includeNone: true,
         includeId: filterCategory,
     });
-    const navigationItems = [
-        { value: TABS.journal, label: 'Journal', icon: <PencilLine size={16} aria-hidden="true" /> },
-        ...(showSearch
-            ? [{ value: TABS.search, label: 'Search', icon: <Search size={16} aria-hidden="true" /> }]
-            : []),
-        { value: TABS.priority, label: 'Priority', icon: <Star size={16} aria-hidden="true" /> },
-    ];
-    const timeframeItems = [
-        { value: TABS.today, label: 'Today' },
-        { value: TABS.upcoming, label: 'Upcoming' },
-        { value: TABS.hidden, label: 'Not Today' },
-        { value: TABS.archived, label: 'Archived' },
+
+    const timeframeItems: Array<{ value: Tab; label: string }> = [
+        { value: TAB_PRIORITY, label: 'Priority' },
+        { value: TAB_TODAY, label: 'Today' },
+        { value: TAB_UPCOMING, label: 'Upcoming' },
+        { value: TAB_ARCHIVED, label: 'Archived' },
+        { value: TAB_HIDDEN, label: 'Not Today' },
     ];
 
     return (
@@ -90,15 +109,15 @@ const AppToolbar = ({
             </div>
 
             <div className="drawer-section">
-                <div className="drawer-section-label">View</div>
+                <div className="drawer-section-label">Views</div>
                 <nav className="drawer-nav-list" aria-label="App destinations">
                     {navigationItems.map(item => (
                         <button
                             key={item.value}
                             type="button"
-                            className={`drawer-nav-item ${activeTab === item.value ? 'active' : ''}`}
-                            aria-current={activeTab === item.value ? 'page' : undefined}
-                            onClick={() => handleTabChange(item.value)}
+                            className={`drawer-nav-item ${activeView === item.value ? 'active' : ''}`}
+                            aria-current={activeView === item.value ? 'page' : undefined}
+                            onClick={() => handleViewChange(item.value)}
                         >
                             {item.icon}
                             <span>{item.label}</span>
@@ -106,24 +125,26 @@ const AppToolbar = ({
                     ))}
                 </nav>
             </div>
-            <div className="drawer-section">
-                <div className="drawer-section-label">Timeframe</div>
-                <div className="drawer-timeframe-chips" role="radiogroup" aria-label="Task timeframe">
-                    {timeframeItems.map(item => (
-                        <button
-                            key={item.value}
-                            type="button"
-                            role="radio"
-                            aria-checked={activeTab === item.value}
-                            className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
-                            onClick={() => handleTabChange(item.value)}
-                        >
-                            {item.label}
-                        </button>
-                    ))}
+            {activeView === VIEW_LIST ? (
+                <div className="drawer-section">
+                    <div className="drawer-section-label">Tabs</div>
+                    <div className="drawer-timeframe-chips" role="radiogroup" aria-label="List tabs">
+                        {timeframeItems.map(item => (
+                            <button
+                                key={item.value}
+                                type="button"
+                                role="radio"
+                                aria-checked={activeTab === item.value}
+                                className={`drawer-timeframe-chip ${activeTab === item.value ? 'active' : ''}`}
+                                onClick={() => handleTabChange(item.value)}
+                            >
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            {activeTab !== 'search' && activeTab !== 'journal' ? (
+            ) : null}
+            {activeView === VIEW_LIST ? (
                 <div className="drawer-section">
                     <div className="drawer-section-label">Mode</div>
                     <Select
@@ -146,7 +167,7 @@ const AppToolbar = ({
                     </Select>
                 </div>
             ) : null}
-            {activeTab !== 'search' && activeTab !== 'journal' ? (
+            {activeView === VIEW_LIST ? (
                 <div className="drawer-section">
                     <div className="drawer-section-label">Category</div>
                     <div className="drawer-category-pills">
@@ -169,7 +190,7 @@ const AppToolbar = ({
                     </div>
                 </div>
             ) : null}
-            {activeTab !== 'search' && activeTab !== 'journal' ? (
+            {activeView === VIEW_LIST ? (
                 <div className="drawer-section drawer-section--compact">
                     <div className="drawer-section-label">Completed</div>
                     <div className="drawer-toggle-row">
@@ -187,7 +208,7 @@ const AppToolbar = ({
                     </div>
                 </div>
             ) : null}
-            {activeTab !== 'search' && activeTab !== 'journal' ? (
+            {activeView === VIEW_LIST ? (
                 hasSharedUsers ? (
                     <div className="drawer-section">
                         <div className="drawer-section-label">Sharing</div>

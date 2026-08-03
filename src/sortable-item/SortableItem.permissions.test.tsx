@@ -3,7 +3,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, type ComponentProps, type ReactNode } from 'react';
 import { SortableItem } from './SortableItem';
-import { TABS } from 'src/app-toolbar/tabs/types';
+import { TAB_TODAY } from 'src/app-toolbar/tabs/types';
 import type { ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
@@ -57,7 +57,7 @@ let rendered: RenderedUi | undefined;
 function propsFor(accessRole: ChoreAccessRole): ComponentProps<typeof SortableItem> {
     return {
         id: `task-${accessRole}`,
-        activeTab: TABS.today,
+        activeTab: TAB_TODAY,
         isHidden: false,
         isHideCompleted: false,
         checked: false,

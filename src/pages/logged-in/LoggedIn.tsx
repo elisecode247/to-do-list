@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useRef, useState, type SetStateAction } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
@@ -10,8 +10,18 @@ import SparklesOverlay from 'src/app/SparklesOverlay';
 import AccountMenu from 'app/AccountMenu';
 import NewForm from 'src/task-form/NewForm';
 import AppToolBar from 'src/app-toolbar/AppToolbar';
-import { MOBILE_TAB_LABELS, TABS, type Tab } from 'src/app-toolbar/tabs/types';
-import MobileTabContent from 'src/app-toolbar/tabs/MobileTabContent';
+import {
+    LIST_TABS,
+    VIEW_JOURNAL,
+    VIEW_SEARCH,
+    TAB_TODAY,
+    VIEW_LABELS,
+    VIEWS,
+    VIEW_LIST,
+    type Tab,
+    type View,
+} from 'src/app-toolbar/tabs/types';
+import MobileViewContent from 'src/app-toolbar/tabs/MobileViewContent';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
@@ -71,10 +81,9 @@ const readStoredFilters = (storageKey: string): Partial<StoredFilters> => {
 
         const values = parsed as Record<string, unknown>;
         const filters: Partial<StoredFilters> = {};
-        const validTabs = Object.values(TABS) as Tab[];
         const validModes: Array<Mode | typeof ALL_MODES> = [ALL_MODES, ...MODES];
 
-        if (validTabs.includes(values.activeTab as Tab)) {
+        if (LIST_TABS.includes(values.activeTab as Tab)) {
             filters.activeTab = values.activeTab as Tab;
         }
         if (validModes.includes(values.modeFilter as Mode | typeof ALL_MODES)) {
@@ -124,7 +133,9 @@ const LoggedIn: React.FC = () => {
     const filterStorageKey = `${FILTER_STORAGE_KEY}:${email ?? 'current-user'}`;
     const [storedFilters] = useState(() => readStoredFilters(filterStorageKey));
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
-    const [activeTab, setActiveTab] = useState<Tab>(storedFilters.activeTab ?? TABS.today);
+    const [activeTab, setActiveTab] = useState<Tab>(storedFilters.activeTab ?? TAB_TODAY);
+    const [activeView, setActiveView] = useState<View>(VIEW_LIST);
+    const [lastListTab, setLastListTab] = useState<Tab>(() => storedFilters.activeTab ? storedFilters.activeTab : TAB_TODAY);
     const [hideCompleted, setHideCompleted] = useState(storedFilters.hideCompleted ?? false);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(storedFilters.modeFilter ?? ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(storedFilters.filterCategory ?? ALL_CATEGORIES);
@@ -289,22 +300,21 @@ const LoggedIn: React.FC = () => {
         setRightOpen(true);
     }
 
-    const handleTabChange = (tab: SetStateAction<Tab>) => {
+    const handleTabChange = (tab: Tab) => {
+        setLastListTab(tab);
         setActiveTab(tab);
     }
-    const isSecondaryTabActive = activeTab === TABS.hidden || activeTab === TABS.archived || activeTab === TABS.search;
-    const mobileTabs: Tab[] = useMemo(() => {
-        return isSecondaryTabActive
-            ? [TABS.journal, TABS.priority, TABS.today, activeTab]
-            : [TABS.journal, TABS.priority, TABS.today, TABS.upcoming];
-    }, [activeTab, isSecondaryTabActive]);
+    const handleViewChange = (view: View) => {
+        setActiveView(view);
+    };
+    const mobileViews: View[] = [VIEWS.search, VIEWS.journal, VIEWS.list];
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0, y: 0, height: 0 });
 
     const updateMobileIndicator = useCallback(() => {
         const barEl = mobileTabBarRef.current;
-        const activeEl = mobileTabButtonRefs.current[activeTab];
+        const activeEl = mobileTabButtonRefs.current[activeView];
         if (!barEl || !activeEl) return;
 
         setMobileIndicator({
@@ -313,7 +323,7 @@ const LoggedIn: React.FC = () => {
             y: activeEl.offsetTop,
             height: activeEl.offsetHeight
         });
-    }, [activeTab]);
+    }, [activeView]);
 
     useEffect(() => {
         if (!isAuthenticated) return;
@@ -359,7 +369,7 @@ const LoggedIn: React.FC = () => {
 
         const frameId = window.requestAnimationFrame(updateMobileIndicator);
         return () => window.cancelAnimationFrame(frameId);
-    }, [isDesktop, leftOpen, rightOpen, mobileTabs, updateMobileIndicator]);
+    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
 
     useEffect(() => {
         const maybeCloseLeftPanel = () => {
@@ -424,9 +434,6 @@ const LoggedIn: React.FC = () => {
         setMenuOpen(false);
     }
 
-    const pageTransitionKey = isLoading ? 'loading' : taskError ? 'error' :
-        activeTab === TABS.journal ? TABS.journal : itemLength === 0 ? 'empty' : activeTab;
-
     return (<>
         <GettingStartedDialog
             isOpen={showGettingStarted}
@@ -462,7 +469,7 @@ const LoggedIn: React.FC = () => {
                         showLabel={true}
                         isPriority={false}
                     />
-                    {!isDesktop && (activeTab !== 'search' && activeTab !== 'journal') && (
+                    {!isDesktop && (activeView === VIEW_LIST) && (
                         <IconButton
                             className="show-completed-toggle-button"
                             onClick={() => setHideCompleted(prev => !prev)}
@@ -474,7 +481,7 @@ const LoggedIn: React.FC = () => {
                         />
                     )}
                 </div>
-                {activeTab !== 'journal' ? (
+                {activeView === VIEW_LIST ? (
                     <IconButton
                         className="new-task-form-toggle-button"
                         onClick={toggleAddForm}
@@ -504,8 +511,10 @@ const LoggedIn: React.FC = () => {
             </header>
             <aside className="left_panel">
                 <AppToolBar
+                    activeView={activeView}
                     activeTab={activeTab}
                     handleTabChange={handleTabChange}
+                    handleViewChange={handleViewChange}
                     modeFilter={modeFilter}
                     setModeFilter={setModeFilter}
                     hideCompleted={hideCompleted}
@@ -520,12 +529,13 @@ const LoggedIn: React.FC = () => {
                     setLeftOpen={setLeftOpen}
                     isDesktop={isDesktop}
                     categories={categories}
+                    listTab={lastListTab}
                 />
             </aside>
             <main className="main_content">
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.div
-                        key={pageTransitionKey}
+                        key={activeView}
                         className="main_content_page"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -542,11 +552,11 @@ const LoggedIn: React.FC = () => {
                                 message={taskError}
                                 onRetry={loadTasks}
                             />
-                        ) : activeTab === TABS.journal ? (
+                        ) : activeView === VIEW_JOURNAL ? (
                             <JournalProvider>
                                 <Journal />
                             </JournalProvider>
-                        ) : activeTab === TABS.search ? (
+                        ) : activeView === VIEW_SEARCH ? (
                             <Search onEditItem={handleEditItem} sparkles={sparkles} />
                         ) : itemLength === 0 ? (
                             <div className="empty-state">
@@ -613,18 +623,20 @@ const LoggedIn: React.FC = () => {
                         }}
                         transition={{ type: 'spring', stiffness: 580, damping: 44 }}
                     />
-                    {mobileTabs.map(tab => (
+                    {mobileViews.map(view => (
                         <button
-                            aria-label={MOBILE_TAB_LABELS[tab]}
-                            key={tab}
+                            aria-label={VIEW_LABELS[view]}
+                            key={view}
                             ref={el => {
-                                mobileTabButtonRefs.current[tab] = el;
+                                mobileTabButtonRefs.current[view] = el;
                             }}
-                            className={`mobile-tab-button ${activeTab === tab ? "mobile-tab-button--active" : ""}`}
-                            onClick={() => handleTabChange(tab)}
+                            className={`mobile-tab-button ${activeView === view ? "mobile-tab-button--active" : ""}`}
+                            onClick={() => handleTabChange(
+                                (view === VIEWS.list ? lastListTab : view) as Tab
+                            )}
                         >
                             <span className="mobile-tab-button-content">
-                                <MobileTabContent tab={tab} />
+                                <MobileViewContent view={view} />
                             </span>
                         </button>
                     ))}

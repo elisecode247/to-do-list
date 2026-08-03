@@ -1,5 +1,5 @@
 import type { ChecklistItem } from "../types";
-import { type Tab, TABS } from "src/app-toolbar/tabs/types";
+import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, type Tab } from "src/app-toolbar/tabs/types";
 import { arrayMove } from "@dnd-kit/sortable";
 
 interface ReorderParams {
@@ -38,9 +38,9 @@ export function getReorderedItems({
 
     if (
         !isSubtask && (
-        activeTab === TABS.priority ||
-        activeTab === TABS.hidden ||
-        activeTab === TABS.archived)
+        activeTab === TAB_PRIORITY ||
+        activeTab === TAB_HIDDEN ||
+        activeTab === TAB_ARCHIVED)
     ) {
         const sorted = [...filteredItems].sort(
             (a, b) =>

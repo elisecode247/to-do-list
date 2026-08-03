@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getReorderedItems } from "app/utilities/get-reorder-items";
-import { TABS } from "src/app-toolbar/tabs/types";
+import { TAB_TODAY } from "src/app-toolbar/tabs/types";
 import { type ChecklistItem } from "app/types";
 
 const makeTask = (overrides: Partial<ChecklistItem> = {}): ChecklistItem => ({
@@ -41,7 +41,7 @@ describe("Guard conditions", () => {
         const result = getReorderedItems({
             allItems: filteredItems,
             filteredItems,
-            activeTab: TABS.today,
+            activeTab: TAB_TODAY,
             activeId: "Z",
             overId: "A",
         });
@@ -55,7 +55,7 @@ describe("Guard conditions", () => {
         const result = getReorderedItems({
             allItems: filteredItems,
             filteredItems,
-            activeTab: TABS.today,
+            activeTab: TAB_TODAY,
             activeId: "A",
             overId: "Z",
         });
@@ -69,7 +69,7 @@ describe("Guard conditions", () => {
         const result = getReorderedItems({
             allItems: filteredItems,
             filteredItems,
-            activeTab: TABS.today,
+            activeTab: TAB_TODAY,
             activeId: "B",
             overId: "B",
         });
@@ -84,7 +84,7 @@ describe("Guard conditions", () => {
         const result = getReorderedItems({
             allItems: filteredItems,
             filteredItems,
-            activeTab: TABS.today,
+            activeTab: TAB_TODAY,
             activeId: "C",
             overId: "C",
         });
@@ -143,7 +143,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "B",
                 overId: "A",
             });
@@ -160,7 +160,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "D",
                 overId: "C",
             });
@@ -179,7 +179,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "C",
                 overId: "B",
             });
@@ -194,7 +194,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "B",
                 overId: "C",
             });
@@ -210,7 +210,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "B",
                 overId: "placeholder-A",
             });
@@ -232,7 +232,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "C",
                 overId: "placeholder-C", // move under itself (simulate root)
             });
@@ -250,7 +250,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "B",
                 overId: "placeholder-A",
             });
@@ -266,7 +266,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "C",
                 overId: "B",
             });
@@ -280,7 +280,7 @@ describe("Reordering logic", () => {
             const result = getReorderedItems({
                 allItems: filteredItems,
                 filteredItems,
-                activeTab: TABS.today,
+                activeTab: TAB_TODAY,
                 activeId: "C",
                 overId: "B",
             });

@@ -7,7 +7,7 @@ import { SortableItem } from 'sortable-item/SortableItem';
 import 'checklist/checklist.css';
 import type { ChecklistController } from 'checklist/types';
 import CalendarEventItem from 'src/google-authorization/calendar-event-item';
-import { TABS, type Tab } from 'src/app-toolbar/tabs/types';
+import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, TAB_TODAY, TAB_UPCOMING, type Tab } from 'src/app-toolbar/tabs/types';
 import EmptyStateFilters from 'src/checklist/empty-state/EmptyStateFilters';
 import { filterTasks } from 'src/app/utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
@@ -121,9 +121,9 @@ const Checklist: FC<ChecklistProps> = ({
         sharedByOthers,
     })
         .sort((a, b) => {
-            if (activeTab === TABS.priority || activeTab === TABS.hidden || activeTab === TABS.archived) {
+            if (activeTab === TAB_PRIORITY || activeTab === TAB_HIDDEN || activeTab === TAB_ARCHIVED) {
                 return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
-            } else if (activeTab === TABS.upcoming) {
+            } else if (activeTab === TAB_UPCOMING) {
                 const aDue = a.nextDue ? new Date(a.nextDue).getTime() : Infinity;
                 const bDue = b.nextDue ? new Date(b.nextDue).getTime() : Infinity;
                 return aDue - bDue;
@@ -132,12 +132,12 @@ const Checklist: FC<ChecklistProps> = ({
         });
 
     const filteredEvents = (sharedByMe || sharedByOthers) ? [] : events?.filter(event => {
-        if (activeTab === TABS.hidden) return event.isHidden;
+        if (activeTab === TAB_HIDDEN) return event.isHidden;
         if (event.isHidden) return false;
-        if (activeTab === TABS.today) {
+        if (activeTab === TAB_TODAY) {
             return eventIncludesToday(event.startDate, event.endDate);
         }
-        if (activeTab === TABS.upcoming) {
+        if (activeTab === TAB_UPCOMING) {
             return eventIncludesAfterToday(event.startDate, event.endDate);
         }
         return false;
@@ -154,7 +154,7 @@ const Checklist: FC<ChecklistProps> = ({
     };
 
     const allItems = [...filteredEvents, ...filteredItems].sort((a, b) => {
-        if (activeTab === TABS.upcoming) {
+        if (activeTab === TAB_UPCOMING) {
             const aDate = getItemDate(a as ChecklistItem | GoogleEvent);
             const bDate = getItemDate(b as ChecklistItem | GoogleEvent);
             return aDate - bDate;
@@ -168,7 +168,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const completedDay = (items.some(item => item.done) || items.some(item => item.isHidden))
         && items.length !== 0
-        && activeTab === TABS.today
+        && activeTab === TAB_TODAY
         && (hideCompleted ? filteredItems.length === 0 : allFilteredItemsAreCompletedOrSkipped);
 
     const sensors = useSensors(
@@ -350,7 +350,7 @@ const Checklist: FC<ChecklistProps> = ({
             return;
         }
 
-        if (!completedDayRef.current && completedDay && noOtherFilters && activeTab === TABS.today) {
+        if (!completedDayRef.current && completedDay && noOtherFilters && activeTab === TAB_TODAY) {
             setTimeout(() => {
                 displaySparkles();
             }, 0);
@@ -400,7 +400,7 @@ const Checklist: FC<ChecklistProps> = ({
                         ref={listContentRef}
                     >
                         <SortableContext items={allItems.map(i => i.id)}>
-                            {activeTab === TABS.today && !allItems.length && (
+                            {activeTab === TAB_TODAY && !allItems.length && (
                                 <EmptyStateFilters
                                     modeFilter={modeFilter}
                                     onClearFilters={clearFilters}
