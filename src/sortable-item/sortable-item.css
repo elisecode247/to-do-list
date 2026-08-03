@@ -55,7 +55,7 @@
     }
 
     .sortable-item_container--subchore {
-        margin: 0;
+        margin: var(--spacing-xs) 1px;
     }
 
     .sortable-item_main-content {
