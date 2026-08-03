@@ -469,7 +469,8 @@
     .sortable-item_container {
         padding-block-start: var(--spacing-md);
         padding-block-end: var(--spacing-md);
-        padding-inline: var(--spacing-sm);
+        padding-inline-start: calc(var(--spacing-sm) + var(--priority-stripe-width));
+        padding-inline-end: var(--spacing-sm);
         display: grid;
         grid-template-rows: auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
         grid-template-columns: 44px 44px minmax(0, 1fr) auto;
