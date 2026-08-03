@@ -67,7 +67,6 @@
         gap: var(--spacing-xs);
         flex: 1;
         min-width: 0;
-        flex-basis: 100%;
     }
 }
 
@@ -149,7 +148,6 @@
 
     /* Text Container */
     .sortable-item_text-container {
-        flex: 1 0 100%;
         display: flex;
         flex-direction: column;
         gap: 4px;
@@ -277,8 +275,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-end;
     gap: 4px;
     flex-wrap: wrap;
+    margin-left: auto;
 }
 
 /* menu wrapper stays inline with the row */
