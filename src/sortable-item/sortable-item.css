@@ -132,8 +132,9 @@
 .sortable-item_checkbox-container {
     grid-area: checkbox;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-top: var(--spacing-sm);
 }
 
 .sortable-item_checkbox {
@@ -491,17 +492,22 @@
     }
 
     .sortable-item_main-content {
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
+    }
+
+    .sortable-item_checkbox-container {
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .sortable-item_text-container {
         flex: 1 1 0;
-        min-width: 0;
+        min-width: 200px;
     }
 
     .sortable-item_button-group-container {
-        flex: 0 0 auto;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
     }
 
     .sortable-item_archive-button,
