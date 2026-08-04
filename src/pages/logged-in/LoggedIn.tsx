@@ -646,9 +646,7 @@ const LoggedIn: React.FC = () => {
                                 mobileTabButtonRefs.current[view] = el;
                             }}
                             className={`mobile-tab-button ${activeView === view ? "mobile-tab-button--active" : ""}`}
-                            onClick={() => handleTabChange(
-                                (view === VIEWS.list ? lastListTab : view) as Tab
-                            )}
+                            onClick={() => handleViewChange(view)}
                         >
                             <span className="mobile-tab-button-content">
                                 <MobileViewContent view={view} />
