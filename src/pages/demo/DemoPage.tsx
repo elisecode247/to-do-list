@@ -1,6 +1,7 @@
 import React, {
     useCallback,
     useEffect,
+    useLayoutEffect,
     useRef,
     useState,
 } from "react";
@@ -234,26 +235,33 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const mobileViews: View[] = [VIEWS.search, VIEWS.journal, VIEWS.list];
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Partial<Record<View, HTMLButtonElement | null>>>({});
-    const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0 });
+    const [mobileIndicator, setMobileIndicator] = useState<{ x: number; width: number } | null>(null);
     const updateMobileIndicator = useCallback(() => {
         const barElement = mobileTabBarRef.current;
         const activeElement = mobileTabButtonRefs.current[activeView];
         if (!barElement || !activeElement) return;
-        setMobileIndicator({
+        const nextIndicator = {
             x: activeElement.offsetLeft + 6,
             width: Math.max(0, activeElement.offsetWidth - 12),
-        });
+        };
+
+        setMobileIndicator(current =>
+            current?.x === nextIndicator.x && current.width === nextIndicator.width
+                ? current
+                : nextIndicator
+        );
     }, [activeView]);
+
+    useLayoutEffect(() => {
+        if (!isDesktop && !leftOpen && !rightOpen) {
+            updateMobileIndicator();
+        }
+    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
+
     useEffect(() => {
-        updateMobileIndicator();
         window.addEventListener("resize", updateMobileIndicator);
         return () => window.removeEventListener("resize", updateMobileIndicator);
     }, [updateMobileIndicator]);
-    useEffect(() => {
-        if (isDesktop || leftOpen || rightOpen) return;
-        const frameId = window.requestAnimationFrame(updateMobileIndicator);
-        return () => window.cancelAnimationFrame(frameId);
-    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
     useEffect(() => {
         const maybeCloseLeftPanel = () => {
             const width = window.innerWidth;
@@ -545,7 +553,14 @@ const DemoPage: React.FC<DemoPageProps> = ({
                 </aside>
                 {!isDesktop && !leftOpen && !rightOpen && (
                     <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
-                        <motion.span className="mobile-tab-motion" animate={{ x: mobileIndicator.x, width: mobileIndicator.width }} transition={{ type: "spring", stiffness: 580, damping: 44 }} />
+                        {mobileIndicator ? (
+                            <motion.span
+                                className="mobile-tab-motion"
+                                initial={false}
+                                animate={{ x: mobileIndicator.x, width: mobileIndicator.width }}
+                                transition={{ type: "spring", stiffness: 580, damping: 44 }}
+                            />
+                        ) : null}
                         {mobileViews.map(view => (
                             <button aria-label={VIEW_LABELS[view]} key={view} ref={element => { mobileTabButtonRefs.current[view] = element; }} className={["mobile-tab-button", activeView === view ? "mobile-tab-button--active" : ""].filter(Boolean).join(" ")} onClick={() => handleViewChange(view)}>
                                 <span className="mobile-tab-button-content">

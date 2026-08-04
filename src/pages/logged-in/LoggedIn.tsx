@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
@@ -320,19 +320,23 @@ const LoggedIn: React.FC = () => {
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const feedbackButtonRef = useRef<HTMLButtonElement>(null);
-    const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0, y: 0, height: 0 });
+    const [mobileIndicator, setMobileIndicator] = useState<{ x: number; width: number } | null>(null);
 
     const updateMobileIndicator = useCallback(() => {
         const barEl = mobileTabBarRef.current;
         const activeEl = mobileTabButtonRefs.current[activeView];
         if (!barEl || !activeEl) return;
 
-        setMobileIndicator({
+        const nextIndicator = {
             x: activeEl.offsetLeft + 6,
             width: Math.max(0, activeEl.offsetWidth - 12),
-            y: activeEl.offsetTop,
-            height: activeEl.offsetHeight
-        });
+        };
+
+        setMobileIndicator(current =>
+            current?.x === nextIndicator.x && current.width === nextIndicator.width
+                ? current
+                : nextIndicator
+        );
     }, [activeView]);
 
     useEffect(() => {
@@ -365,11 +369,15 @@ const LoggedIn: React.FC = () => {
     }, [isAuthenticated, googleCalendarEnabled, loadDate, loadTasks, loadCalendarEvents]);
 
 
+    useLayoutEffect(() => {
+        if (!isDesktop && !leftOpen && !rightOpen) {
+            updateMobileIndicator();
+        }
+    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
+
     useEffect(() => {
-        updateMobileIndicator();
-        const onResize = () => updateMobileIndicator();
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
+        window.addEventListener('resize', updateMobileIndicator);
+        return () => window.removeEventListener('resize', updateMobileIndicator);
     }, [updateMobileIndicator]);
 
     useEffect(() => {
@@ -377,15 +385,6 @@ const LoggedIn: React.FC = () => {
 
         return Sentry.getFeedback()?.attachTo(feedbackButtonRef.current);
     }, []);
-
-    useEffect(() => {
-        if (isDesktop || leftOpen || rightOpen) {
-            return;
-        }
-
-        const frameId = window.requestAnimationFrame(updateMobileIndicator);
-        return () => window.cancelAnimationFrame(frameId);
-    }, [isDesktop, leftOpen, rightOpen, updateMobileIndicator]);
 
     useEffect(() => {
         const maybeCloseLeftPanel = () => {
@@ -649,14 +648,17 @@ const LoggedIn: React.FC = () => {
             </aside>
             {!isDesktop && !leftOpen && !rightOpen && (
                 <nav className="mobile-tab-bar" ref={mobileTabBarRef}>
-                    <motion.span
-                        className="mobile-tab-motion"
-                        animate={{
-                            x: mobileIndicator.x,
-                            width: mobileIndicator.width
-                        }}
-                        transition={{ type: 'spring', stiffness: 580, damping: 44 }}
-                    />
+                    {mobileIndicator ? (
+                        <motion.span
+                            className="mobile-tab-motion"
+                            initial={false}
+                            animate={{
+                                x: mobileIndicator.x,
+                                width: mobileIndicator.width
+                            }}
+                            transition={{ type: 'spring', stiffness: 580, damping: 44 }}
+                        />
+                    ) : null}
                     {mobileViews.map(view => (
                         <button
                             aria-label={VIEW_LABELS[view]}
