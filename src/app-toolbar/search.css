@@ -235,7 +235,7 @@
 }
 
 .search-results .placeholder {
-    display: none;
+    height: 250px;
 }
 
 @media (min-width: 900px) {

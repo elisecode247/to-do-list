@@ -3,12 +3,14 @@ export const TAB_TODAY = 'today';
 export const TAB_UPCOMING = 'upcoming';
 export const TAB_HIDDEN = 'hidden';
 export const TAB_ARCHIVED = 'archived';
+export const TAB_ALL = 'all';
+
 export const VIEW_JOURNAL = 'journal';
 export const VIEW_SEARCH = 'search';
 export const VIEW_LIST = 'list';
 
 export type Tab = typeof TAB_PRIORITY | typeof TAB_TODAY | typeof TAB_UPCOMING |
- typeof TAB_HIDDEN | typeof TAB_ARCHIVED;
+ typeof TAB_HIDDEN | typeof TAB_ARCHIVED | typeof TAB_ALL;
 
 export const LIST_TABS = [
     TAB_PRIORITY,
@@ -32,7 +34,7 @@ export const VIEW_LABELS: Record<View, string> = {
     [VIEW_LIST]: 'List',
 };
 
-export const TAB_LABELS: Record<Tab, string> = {
+export const TAB_LABELS: Record<typeof LIST_TABS[number], string> = {
     [TAB_PRIORITY]: 'Priority',
     [TAB_TODAY]: 'Today',
     [TAB_UPCOMING]: 'Upcoming',

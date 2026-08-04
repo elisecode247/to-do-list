@@ -6,7 +6,7 @@ import { useTask } from 'src/app/use-task';
 import { ALL_CATEGORIES } from 'src/category-select/category-constants';
 import { ALL_MODES } from 'src/checklist/constants';
 import TaskContextChecklist from 'src/pages/logged-in/TaskContextChecklist';
-import { TAB_TODAY } from './tabs/types';
+import { TAB_ALL } from './tabs/types';
 import './search.css';
 
 interface SearchProps {
@@ -176,7 +176,7 @@ const Search = ({ onEditItem, sparkles, items: providedItems, renderResults }: S
                         <TaskContextChecklist
                             items={searchResults}
                             checklistType="search-results"
-                            activeTab={TAB_TODAY}
+                            activeTab={TAB_ALL}
                             modeFilter={ALL_MODES}
                             hideCompleted={false}
                             filterCategory={ALL_CATEGORIES}

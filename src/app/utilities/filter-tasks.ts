@@ -1,7 +1,7 @@
 import type { ChecklistItem, FilterParams } from 'app/types';
 import type { Mode } from 'src/app/types';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
-import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
+import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, TAB_TODAY, TAB_UPCOMING, TAB_ALL } from 'src/app-toolbar/tabs/types';
 import { ALL_MODES } from 'src/checklist/constants';
 
 export function filterTasks({
@@ -39,6 +39,8 @@ export function getLocalTodayAtMidnight(): Date {
 function matchTab(task: ChecklistItem, activeTab: string): boolean {
     const isCompletedToday = task.done && getLocalTodayAtMidnight().toDateString() === new Date(task.lastCompleted).toDateString();
     switch (activeTab) {
+        case TAB_ALL:
+            return true;
         case TAB_TODAY:
             return !task.isArchived && !task.isHidden && !isSubtask(task) &&
                 (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday);
