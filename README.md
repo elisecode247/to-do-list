@@ -11,10 +11,8 @@ Live: https://dailyresetlist.com
 * includes an interstitial journal with optional end-to-end encryption of entry text to combat context switching and procrastination
 
 ## Todo
-* Add production error monitoring with release/version information, availability checks, and a way for testers to report feedback.
 * Artist to create manifest and og images, and landing page images
 * review landing page language
-* Create alerts for elevated authentication and API failures
 * automate encrypted PostgreSQL backups stored outside Railway
 * bug: subtasks shown from shared task in today when parent task is shared.
-
+* add template link in new task form

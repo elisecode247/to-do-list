@@ -28,7 +28,7 @@ import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Check, Eye, EyeOff, ListFilter, Plus } from 'lucide-react';
+import { Bug, Check, Eye, EyeOff, ListFilter, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -45,6 +45,7 @@ import { useLocation } from 'wouter';
 import { addTask, isChoreAccessChangedError } from 'src/app/api';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { hasModifiedDemoTasks } from 'src/pages/demo/demo-tasks';
+import * as Sentry from '@sentry/react';
 
 // preload pages
 import('src/pages/user-settings/UserSettings');
@@ -318,6 +319,7 @@ const LoggedIn: React.FC = () => {
     const mobileViews: View[] = [VIEWS.search, VIEWS.journal, VIEWS.list];
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+    const feedbackButtonRef = useRef<HTMLButtonElement>(null);
     const [mobileIndicator, setMobileIndicator] = useState({ x: 0, width: 0, y: 0, height: 0 });
 
     const updateMobileIndicator = useCallback(() => {
@@ -369,6 +371,12 @@ const LoggedIn: React.FC = () => {
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, [updateMobileIndicator]);
+
+    useEffect(() => {
+        if (!feedbackButtonRef.current) return;
+
+        return Sentry.getFeedback()?.attachTo(feedbackButtonRef.current);
+    }, []);
 
     useEffect(() => {
         if (isDesktop || leftOpen || rightOpen) {
@@ -518,11 +526,22 @@ const LoggedIn: React.FC = () => {
                         </span>
                     </p>
                 </div>
-                <AccountMenu
-                    isMenuOpen={menuOpen}
-                    onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
-                    onMenuClose={handleCloseAccountMenu}
-                />
+                <div className="header-menu-actions">
+                    <IconButton
+                        ref={feedbackButtonRef}
+                        className="feedback-button"
+                        label="Report a bug"
+                        ariaLabel="Report a bug"
+                        icon={<Bug size={19} />}
+                        showLabel={false}
+                        isPriority={false}
+                    />
+                    <AccountMenu
+                        isMenuOpen={menuOpen}
+                        onMenuToggleOpen={() => setMenuOpen(prev => !prev)}
+                        onMenuClose={handleCloseAccountMenu}
+                    />
+                </div>
             </header>
             <aside className="left_panel">
                 <AppToolBar

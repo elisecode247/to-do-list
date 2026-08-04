@@ -9,6 +9,18 @@ import { Route, Switch, useLocation } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
 import ThemeCanvas from './ThemeCanvas';
+import * as Sentry from "@sentry/react";
+
+Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    integrations: [
+        Sentry.feedbackIntegration({
+            submitButtonLabel: "Send Feedback",
+            formTitle: "Send Feedback",
+            autoInject: false,
+        }),
+    ],
+});
 
 const UserSettingsLazy = lazy(async () => {
     return { default: (await import('src/pages/user-settings/UserSettings')).default };

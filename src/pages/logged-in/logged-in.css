@@ -36,6 +36,27 @@
     gap: 3px;
 }
 
+.header-menu-actions {
+    grid-area: menu;
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: 16px;
+}
+
+.feedback-button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+}
+
+.feedback-button:hover {
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
 @media (max-width: 899px) {
     .app_container > .left_panel,
     .app_container > .right_panel {
@@ -411,7 +432,7 @@
 
     .app_container {
         grid-template-columns: var(--filters-panel-width) minmax(0, 1fr) 420px;
-        grid-template-rows: 140px 1fr;
+        grid-template-rows: 100px 1fr;
         grid-template-areas:
             "left header header"
             "left main   right";
@@ -461,6 +482,9 @@
         grid-area: main;
     }
 
+    .main_content_page {
+        margin-top: 0;
+    }
 
     /* Independent collapse behavior */
 
