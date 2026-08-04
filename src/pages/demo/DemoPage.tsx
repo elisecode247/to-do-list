@@ -44,7 +44,7 @@ import {
     TAB_TODAY,
     VIEW_LABELS,
     VIEWS,
-    type Tab,
+    type ListTab,
     type View,
     VIEW_LIST,
 } from "src/app-toolbar/tabs/types";
@@ -99,7 +99,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
     const isDesktop = useIsDesktop();
     const [editingItem, setEditingItem] = useState<ChecklistItem | null>(null);
     const [activeView, setActiveView] = useState<View>(VIEW_LIST);
-    const [activeTab, setActiveTab] = useState<Tab>(TAB_TODAY);
+    const [activeTab, setActiveTab] = useState<ListTab>(TAB_TODAY);
     const [hideCompleted, setHideCompleted] = useState(true);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(ALL_CATEGORIES);
@@ -178,7 +178,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
         setActiveView(view);
     }
 
-    function handleTabChange(tab: Tab) {
+    function handleTabChange(tab: ListTab) {
         setActiveTab(tab);
     }
     function clearFilters() {

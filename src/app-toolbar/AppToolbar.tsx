@@ -13,7 +13,7 @@ import {
     VIEW_JOURNAL,
     VIEW_SEARCH,
     VIEW_LIST,
-    type Tab,
+    type ListTab,
     type View,
 } from './tabs/types';
 import CloseButton from 'components/close-button/CloseButton';
@@ -33,9 +33,9 @@ const navigationItems: Array<{
 interface AppToolbarProps {
     categories: CategoryDefinition[];
     activeView: View;
-    activeTab: Tab;
+    activeTab: ListTab;
     handleViewChange: (view: View) => void;
-    handleTabChange: (tab: Tab) => void;
+    handleTabChange: (tab: ListTab) => void;
     modeFilter: Mode | typeof ALL_MODES;
     setModeFilter: (mode: Mode | typeof ALL_MODES) => void;
     hideCompleted: boolean;
@@ -50,7 +50,7 @@ interface AppToolbarProps {
     setLeftOpen: (open: boolean) => void;
     isDesktop?: boolean;
     showSearch?: boolean;
-    listTab?: Tab;
+    listTab?: ListTab;
 }
 const AppToolbar = ({
     activeView,
@@ -85,7 +85,7 @@ const AppToolbar = ({
         includeId: filterCategory,
     });
 
-    const timeframeItems: Array<{ value: Tab; label: string }> = [
+    const timeframeItems: Array<{ value: ListTab; label: string }> = [
         { value: TAB_PRIORITY, label: 'Priority' },
         { value: TAB_TODAY, label: 'Today' },
         { value: TAB_UPCOMING, label: 'Upcoming' },

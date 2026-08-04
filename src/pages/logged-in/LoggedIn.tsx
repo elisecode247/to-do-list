@@ -19,7 +19,7 @@ import {
     VIEW_LABELS,
     VIEWS,
     VIEW_LIST,
-    type Tab,
+    type ListTab,
     type View,
 } from 'src/app-toolbar/tabs/types';
 import MobileViewContent from 'src/app-toolbar/tabs/MobileViewContent';
@@ -61,7 +61,7 @@ const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
 const FILTER_STORAGE_KEY = 'daily-reset-list-filters-v1';
 
 type StoredFilters = {
-    activeTab: Tab;
+    activeTab: ListTab;
     modeFilter: Mode | typeof ALL_MODES;
     hideCompleted: boolean;
     filterCategory: string;
@@ -84,8 +84,8 @@ const readStoredFilters = (storageKey: string): Partial<StoredFilters> => {
         const filters: Partial<StoredFilters> = {};
         const validModes: Array<Mode | typeof ALL_MODES> = [ALL_MODES, ...MODES];
 
-        if (LIST_TABS.includes(values.activeTab as Tab)) {
-            filters.activeTab = values.activeTab as Tab;
+        if (LIST_TABS.includes(values.activeTab as ListTab)) {
+            filters.activeTab = values.activeTab as ListTab;
         }
         if (validModes.includes(values.modeFilter as Mode | typeof ALL_MODES)) {
             filters.modeFilter = values.modeFilter as Mode | typeof ALL_MODES;
@@ -134,9 +134,9 @@ const LoggedIn: React.FC = () => {
     const filterStorageKey = `${FILTER_STORAGE_KEY}:${email ?? 'current-user'}`;
     const [storedFilters] = useState(() => readStoredFilters(filterStorageKey));
     const [editingItem, setEditingItem] = useState<ChecklistItem | GoogleEvent | null>(null);
-    const [activeTab, setActiveTab] = useState<Tab>(storedFilters.activeTab ?? TAB_TODAY);
+    const [activeTab, setActiveTab] = useState<ListTab>(storedFilters.activeTab ?? TAB_TODAY);
     const [activeView, setActiveView] = useState<View>(VIEW_LIST);
-    const [lastListTab, setLastListTab] = useState<Tab>(() => storedFilters.activeTab ? storedFilters.activeTab : TAB_TODAY);
+    const [lastListTab, setLastListTab] = useState<ListTab>(() => storedFilters.activeTab ? storedFilters.activeTab : TAB_TODAY);
     const [hideCompleted, setHideCompleted] = useState(storedFilters.hideCompleted ?? false);
     const [modeFilter, setModeFilter] = useState<Mode | typeof ALL_MODES>(storedFilters.modeFilter ?? ALL_MODES);
     const [filterCategory, setFilterCategory] = useState<string>(storedFilters.filterCategory ?? ALL_CATEGORIES);
@@ -308,7 +308,7 @@ const LoggedIn: React.FC = () => {
         setRightOpen(true);
     }
 
-    const handleTabChange = (tab: Tab) => {
+    const handleTabChange = (tab: ListTab) => {
         setLastListTab(tab);
         setActiveTab(tab);
     }

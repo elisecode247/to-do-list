@@ -12,13 +12,16 @@ export const VIEW_LIST = 'list';
 export type Tab = typeof TAB_PRIORITY | typeof TAB_TODAY | typeof TAB_UPCOMING |
  typeof TAB_HIDDEN | typeof TAB_ARCHIVED | typeof TAB_ALL;
 
+export type ListTab = typeof TAB_PRIORITY | typeof TAB_TODAY | typeof TAB_UPCOMING |
+    typeof TAB_HIDDEN | typeof TAB_ARCHIVED;
+
 export const LIST_TABS = [
     TAB_PRIORITY,
     TAB_TODAY,
     TAB_UPCOMING,
     TAB_ARCHIVED,
     TAB_HIDDEN,
-] as const satisfies readonly Tab[];
+] as const satisfies readonly ListTab[];
 
 export type View = typeof VIEW_SEARCH | typeof VIEW_JOURNAL | typeof VIEW_LIST;
 

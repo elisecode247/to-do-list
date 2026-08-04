@@ -2,14 +2,14 @@ import {
     TAB_LABELS,
     VIEW_LABELS,
     VIEW_LIST,
-    type Tab,
+    type ListTab,
     type View,
 } from './tabs/types';
 import './view-breadcrumb.css';
 
 interface ViewBreadcrumbProps {
     activeView: View;
-    activeTab: Tab;
+    activeTab: ListTab;
     appliedFilterCount?: number;
     placement: 'desktop' | 'mobile';
 }

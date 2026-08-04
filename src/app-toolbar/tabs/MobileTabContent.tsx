@@ -13,12 +13,12 @@ import {
     TAB_PRIORITY,
     TAB_TODAY,
     TAB_UPCOMING,
-    type Tab
+    type ListTab
 } from './types';
 import type { ReactNode } from 'react';
 
 type MobileTabContentProps = {
-    tab: Tab;
+    tab: ListTab;
 };
 
 export default function MobileTabContent({ tab }: MobileTabContentProps) {
@@ -28,7 +28,7 @@ export default function MobileTabContent({ tab }: MobileTabContentProps) {
         'aria-hidden': true,
     };
 
-    const icons: Partial<Record<Tab, ReactNode>> = {
+    const icons: Partial<Record<ListTab, ReactNode>> = {
         [TAB_PRIORITY]: <Star {...iconProps} />,
         [TAB_TODAY]: <CalendarCheck {...iconProps} />,
         [TAB_UPCOMING]: <CalendarDays {...iconProps} />,
