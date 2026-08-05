@@ -18,6 +18,9 @@ import {
     type IntervalRecurrence
 } from 'app/types';
 import type { CategoryDefinition } from 'src/category-select/types';
+import { LayoutTemplate } from 'lucide-react';
+import { Link } from 'wouter';
+import { ROUTES } from 'src/router';
 
 type Inputs = {
     taskName: string;
@@ -133,6 +136,18 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleAddItem)}>
                 <div className="task-form-drawer__body">
+                    <Link
+                        className="new-task-form__template-link"
+                        href={ROUTES.templates}
+                        onClick={() => setRightOpen(false)}
+                    >
+                        <LayoutTemplate aria-hidden="true" size={20} />
+                        <span>
+                            <strong>Browse task templates</strong>
+                            <small>Start with a ready-made routine.</small>
+                        </span>
+                    </Link>
+
                     <div className="task-form-field">
                         <label className="task-form-field__label" htmlFor="new-task-form-text-input">Task name</label>
                         <input

@@ -15,4 +15,3 @@ Live: https://dailyresetlist.com
 * review landing page language
 * automate encrypted PostgreSQL backups stored outside Railway
 * bug: subtasks shown from shared task in today when parent task is shared.
-* add template link in new task form
