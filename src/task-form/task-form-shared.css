@@ -44,7 +44,6 @@
 
 .task-form-drawer > :last-child {
     min-height: 0;
-    flex: 1;
 }
 
 .task-form-drawer > :last-child > form {

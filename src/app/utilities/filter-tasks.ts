@@ -14,9 +14,10 @@ export function filterTasks({
     sharedByOthers = false,
 }: FilterParams): ChecklistItem[] {
     if (!items.length) return [];
+    const availableTaskIds = new Set(items.map(item => item.id));
 
     return items.filter(task =>
-        matchTab(task, activeTab) &&
+        matchTab(task, activeTab, availableTaskIds) &&
         matchCommonFilters(task, {
             modeFilter,
             hideCompleted,
@@ -36,18 +37,18 @@ export function getLocalTodayAtMidnight(): Date {
 }
 
 /** Helper: Tab filter logic */
-function matchTab(task: ChecklistItem, activeTab: string): boolean {
+function matchTab(task: ChecklistItem, activeTab: string, availableTaskIds: ReadonlySet<string>): boolean {
     const isCompletedToday = task.done && getLocalTodayAtMidnight().toDateString() === new Date(task.lastCompleted).toDateString();
     switch (activeTab) {
         case TAB_ALL:
             return true;
         case TAB_TODAY:
-            return !task.isArchived && !task.isHidden && !isSubtask(task) &&
+            return !task.isArchived && !task.isHidden && !isSubtask(task, availableTaskIds) &&
                 (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday);
 
         case TAB_UPCOMING:
             return (!!task.nextDue && new Date(task.nextDue) > getLocalTodayAtMidnight()) &&
-                !task.isHidden && !isSubtask(task) && !task.isArchived;
+                !task.isHidden && !isSubtask(task, availableTaskIds) && !task.isArchived;
 
         case TAB_HIDDEN:
             return task.isHidden;
@@ -86,9 +87,11 @@ function matchCommonFilters(
     return true;
 }
 
-const isSubtask = (task: ChecklistItem): boolean => {
-    if (!task.isOwner && task.accessRole !== 'owner') return false;
-    return !!task.parentUuid;
+const isSubtask = (task: ChecklistItem, availableTaskIds: ReadonlySet<string>): boolean => {
+    if (!task.parentUuid) return false;
+
+    const isSharedByOthers = !task.isOwner && task.accessRole !== 'owner';
+    return !isSharedByOthers || availableTaskIds.has(task.parentUuid);
 };
 const isCompleted = (hideCompleted: boolean, task: ChecklistItem): boolean => hideCompleted && task.done;
 const isCategory = (selectedCategory: string, task: ChecklistItem): boolean => isCategoryIncluded(selectedCategory, task.category);

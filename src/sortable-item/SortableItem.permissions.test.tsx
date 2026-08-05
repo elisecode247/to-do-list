@@ -99,6 +99,27 @@ afterEach(async () => {
 });
 
 describe('SortableItem role permissions', () => {
+    it('only applies subchore styling below the top render level', async () => {
+        rendered = await renderUi(
+            <SortableItem {...propsFor('owner')} isSubChore={true} />,
+        );
+
+        expect(rendered.container.querySelector('.sortable-item_container--subchore'))
+            .toBeNull();
+
+        await rendered.unmount();
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                isSubChore={true}
+                isTopLevel={false}
+            />,
+        );
+
+        expect(rendered.container.querySelector('.sortable-item_container--subchore'))
+            .not.toBeNull();
+    });
+
     it('prevents viewers from completing tasks or opening an action menu', async () => {
         rendered = await renderUi(<SortableItem {...propsFor('viewer')} />);
 

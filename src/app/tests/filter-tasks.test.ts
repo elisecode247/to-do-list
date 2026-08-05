@@ -377,7 +377,7 @@ describe('filterTasks – subtask rules', () => {
 
         expect(result).toHaveLength(1);
     });
-    it('allows subtasks if shared by others', () => {
+    it('allows a subtask shared by others when its parent is not shared', () => {
         const subtask = makeTask({
             parentUuid: 'parent-1',
             accessRole: 'editor',
@@ -393,6 +393,28 @@ describe('filterTasks – subtask rules', () => {
         );
 
         expect(result).toHaveLength(1);
+    });
+
+    it('excludes a subtask shared by others when its parent is also shared', () => {
+        const parent = makeTask({
+            id: 'parent-1',
+            accessRole: 'editor',
+            isOwner: false,
+        });
+        const subtask = makeTask({
+            parentUuid: parent.id,
+            accessRole: 'editor',
+            isOwner: false,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [parent, subtask],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toEqual([parent]);
     });
 });
 

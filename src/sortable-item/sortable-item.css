@@ -1,5 +1,9 @@
 :root {
-    --priority-stripe-width: 9px;
+    --priority-stripe-width: 4px;
+    --sortable-item-touch-target-min: 44px;
+    --sortable-item-touch-target-mobile: 48px;
+    --sortable-item-control-gap: 8px;
+    --sortable-item-checkbox-size: 18px;
 }
 
 /* Item Container */
@@ -24,33 +28,35 @@
 @layer base {
     .sortable-item_container {
         display: grid;
-        grid-template-rows: minmax(55px, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
-        grid-template-columns: 44px 44px minmax(0, 1fr);
-        grid-template-areas: "drag checkbox text"
+        grid-template-rows: auto auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
+        grid-template-columns: 20px minmax(0, 1fr) var(--sortable-item-touch-target-min);
+        grid-template-areas: "checkbox text drag"
+            "button-group button-group button-group"
             "notes notes notes"
             "subtasks subtasks subtasks"
             "add-task add-task add-task";
-        align-items: stretch;
-        padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) calc(var(--spacing-sm) + var(--priority-stripe-width));
-        background-color: var(--color-surface--transparent);
+        align-items: start;
+        column-gap: 12px;
+        row-gap: 0;
+        padding: 16px 20px 16px calc(20px + var(--priority-stripe-width));
+        background-color: color-mix(in srgb, var(--color-surface) 88%, transparent);
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-xl);
-        color: contrast-color(var(--color-surface--transparent));
-        flex-wrap: wrap;
+        border-radius: 12px;
+        color: contrast-color(var(--color-surface));
         position: relative;
-        gap: 0;
-        margin: 1px var(--spacing-sm);
+        margin: 4px var(--spacing-sm);
         z-index: 4;
         transition:
+            border-color 160ms ease-out,
             box-shadow 160ms ease-out,
-            background-color 160ms ease-out;
+            background-color 160ms ease-out,
+            transform 160ms ease-out;
         box-sizing: border-box;
     }
 
     .sortable-item_container:hover {
-        border-color: var(--color-border);
-        box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
-        outline: 1px solid var(--color-primary);
+        border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+        box-shadow: 0 6px 18px rgb(0 0 0 / 0.12);
         background-color: var(--color-surface);
     }
 
@@ -59,7 +65,6 @@
     }
 
     .sortable-item_main-content {
-        grid-area: text;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -89,15 +94,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    padding: 4px 10px;
+    width: var(--sortable-item-touch-target-min);
+    height: var(--sortable-item-touch-target-min);
+    padding: 0;
     background-color: transparent;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
-    font-size: 12px;
-    cursor: pointer;
-    color: contrast-color(var(--color-surface--transparent));
+    color: inherit;
     cursor: grab;
+    opacity: 0.72;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -107,12 +112,17 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-appearance: none;
     appearance: none;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
+}
+
+.sortable-item_drag-handle svg {
+    width: 16px;
+    height: 16px;
 }
 
 .sortable-item_drag-handle:hover {
-    background-color: rgba(59, 130, 246, 0.1);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+    opacity: 1;
 }
 
 .sortable-item_drag-handle:active,
@@ -121,10 +131,8 @@
 }
 
 .sortable-item_container:has(.sortable-item_drag-handle:hover) {
-    /* container hover style */
-    border-color: var(--color-border);
-    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
-    outline: 1px solid var(--color-primary);
+    border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.12);
     background-color: var(--color-surface);
 }
 
@@ -132,15 +140,21 @@
 .sortable-item_checkbox-container {
     grid-area: checkbox;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding-top: var(--spacing-sm);
+    align-items: center;
+    justify-content: center;
+    width: var(--sortable-item-touch-target-min);
+    height: var(--sortable-item-touch-target-min);
+    margin-block-start: -10px;
+    margin-inline-start: -12px;
+    padding: 0;
+    cursor: pointer;
+    border-radius: var(--radius-md);
 }
 
 .sortable-item_checkbox {
-    grid-area: checkbox;
-    width: 24px;
-    height: 24px;
+    width: var(--sortable-item-checkbox-size);
+    height: var(--sortable-item-checkbox-size);
+    margin: 0;
     cursor: pointer;
     accent-color: var(--color-success);
 }
@@ -149,12 +163,13 @@
 
     /* Text Container */
     .sortable-item_text-container {
-        flex: 1 0 100%;
+        grid-area: text;
+        min-width: 0;
         display: flex;
         flex-direction: column;
         gap: 4px;
         align-items: flex-start;
-        padding: var(--spacing-xs);
+        padding: 0;
     }
 
     .sortable-item_text {
@@ -188,10 +203,10 @@
 .sortable-item_text-heading {
     min-width: 0px;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.35;
     overflow-wrap: anywhere;
-    font-size: var(--font-size-md);
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .sortable-item_parent-breadcrumb {
@@ -238,6 +253,12 @@
     opacity: 0.62;
 }
 
+.sortable-item_metadata-text + .sortable-item_metadata-text:not(.sortable-item_sharing-status)::before {
+    content: "·";
+    margin-inline-end: 2px;
+    opacity: 0.7;
+}
+
 .sortable-item_recurrence-text {
     opacity: 0.72;
 }
@@ -277,10 +298,31 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-end;
-    gap: 4px;
+    justify-content: flex-start;
+    gap: var(--sortable-item-control-gap);
     flex-wrap: wrap;
-    margin-left: auto;
+    margin: 12px 0 0;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button {
+    min-width: var(--sortable-item-touch-target-min);
+    min-height: var(--sortable-item-touch-target-min);
+    padding: 6px 10px;
+    gap: 6px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1;
+    backdrop-filter: none;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button:hover {
+    box-shadow: none;
+    border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
 }
 
 /* menu wrapper stays inline with the row */
@@ -466,48 +508,14 @@
     margin-inline: 0 var(--spacing-xs);
 }
 
-/* Responsive adjustments for larger screens */
+/* Preserve the mockup's content-first hierarchy on larger screens. */
 @media (min-width: 900px) {
     .sortable-item_container {
-        padding-block-start: var(--spacing-md);
-        padding-block-end: var(--spacing-md);
-        padding-inline-start: calc(var(--spacing-sm) + var(--priority-stripe-width));
-        padding-inline-end: var(--spacing-sm);
-        display: grid;
-        grid-template-rows: auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
-        grid-template-columns: 44px 44px minmax(0, 1fr) auto;
-        grid-template-areas:
-            "drag checkbox text text"
-            "notes notes notes notes"
-            "subtasks subtasks subtasks subtasks"
-            "add-task add-task add-task add-task";
-    }
-
-    .sortable-item_drag-handle {
-        padding: var(--spacing-md);
+        padding: 16px 20px 16px calc(20px + var(--priority-stripe-width));
     }
 
     .sortable-item_text {
         font-size: 15px;
-    }
-
-    .sortable-item_main-content {
-        flex-wrap: wrap;
-    }
-
-    .sortable-item_checkbox-container {
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    }
-
-    .sortable-item_text-container {
-        flex: 1 1 0;
-        min-width: 200px;
-    }
-
-    .sortable-item_button-group-container {
-        flex-wrap: wrap;
     }
 
     .sortable-item_archive-button,
@@ -517,7 +525,29 @@
     .sortable-item_delete-button,
     .sortable-item_priority-button,
     .sortable-item_menu-button {
-        padding: var(--spacing-sm);
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 899px) {
+    .sortable-item_container {
+        grid-template-columns: 20px minmax(0, 1fr) var(--sortable-item-touch-target-mobile);
+    }
+
+    .sortable-item_drag-handle,
+    .sortable-item_checkbox-container {
+        width: var(--sortable-item-touch-target-mobile);
+        height: var(--sortable-item-touch-target-mobile);
+    }
+
+    .sortable-item_checkbox-container {
+        margin-block-start: -12px;
+        margin-inline-start: -14px;
+    }
+
+    .sortable-item_button-group-container .sortable-item_main-button {
+        min-width: var(--sortable-item-touch-target-mobile);
+        min-height: var(--sortable-item-touch-target-mobile);
     }
 }
 
@@ -639,14 +669,12 @@
 /* Priority Mode Task */
 
 .mode-priority {
-    padding-inline-start: calc(var(--spacing-sm) + var(--priority-stripe-width));
     background:
         linear-gradient(90deg,
             color-mix(in srgb, var(--color-accent) 10%, var(--color-surface)),
             var(--color-surface),
             color-mix(in srgb, var(--color-accent) 6%, var(--color-surface)));
     border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
-    transform: translateY(-1px);
     box-shadow: 0 6px 18px rgb(0 0 0 / .25),
         0 0 22px color-mix(in srgb, var(--color-accent) 18%, transparent);
     color: contrast-color(color-mix(in srgb, var(--color-accent) 18%, var(--color-surface) 88%));
@@ -656,7 +684,7 @@
 .mode-priority::before {
     content: "";
     position: absolute;
-    inset: 1px auto 1px -1px;
+    inset: 2px auto 2px -1px;
     width: var(--priority-stripe-width);
     background: linear-gradient(180deg,
             var(--color-primary),
