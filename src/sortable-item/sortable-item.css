@@ -27,6 +27,8 @@
 
 @layer base {
     .sortable-item_container {
+        container-name: sortable-item;
+        container-type: inline-size;
         display: grid;
         grid-template-rows: auto auto minmax(0, auto) minmax(0, auto) minmax(0, auto);
         grid-template-columns: 20px minmax(0, 1fr) var(--sortable-item-touch-target-min);
@@ -521,11 +523,31 @@
 @media (min-width: 900px) {
     .sortable-item_container {
         padding: 16px 20px 16px calc(20px + var(--priority-stripe-width));
-        grid-template-columns: 20px minmax(0, 1fr) minmax(0, auto) var(--sortable-item-touch-target-min);
+        grid-template-columns: 20px minmax(200px, 1fr) minmax(0, auto) var(--sortable-item-touch-target-min);
         grid-template-areas: "checkbox text button-group drag"
             "notes notes notes notes"
             "subtasks subtasks subtasks subtasks"
             "add-task add-task add-task add-task";
+    }
+
+    @container sortable-item (inline-size < 613px) {
+        .sortable-item_button-group-container {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            margin-block-start: 12px;
+        }
+
+        .sortable-item_note {
+            grid-row: 3;
+        }
+
+        .sortable-item_subtasks-container {
+            grid-row: 4;
+        }
+
+        .sortable-item_new-item-form {
+            grid-row: 5;
+        }
     }
 
     .sortable-item_text {
