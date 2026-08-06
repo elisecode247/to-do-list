@@ -285,7 +285,7 @@
     border: 1px solid color-mix(in srgb, var(--color-accent) 68%, transparent);
     border-radius: var(--radius-rounded);
     background: color-mix(in srgb, var(--color-accent) 20%, transparent);
-    color: var(--color-accent-text);
+    color: var(--color-accent);
     font-weight: 650;
     opacity: 1;
 }
