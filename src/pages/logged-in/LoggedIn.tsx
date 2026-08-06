@@ -483,16 +483,18 @@ const LoggedIn: React.FC = () => {
                         onTabChange={handleTabChange}
                         placement="mobile"
                     />
-                    <IconButton
-                        className="filter-toggle-button"
-                        onClick={toggleLeft}
-                        label="Filters"
-                        ariaLabel="Open filters"
-                        icon={<ListFilter size={24} />}
-                        showLabel={true}
-                        isPriority={false}
-                    />
-                    {!isDesktop && (activeView === VIEW_LIST) && (
+                    {isDesktop || (!isDesktop && activeView === VIEW_LIST) ? (
+                        <IconButton
+                            className="filter-toggle-button"
+                            onClick={toggleLeft}
+                            label="Filters"
+                            ariaLabel="Open filters"
+                            icon={<ListFilter size={24} />}
+                            showLabel={true}
+                            isPriority={false}
+                        />
+                    ) : null}
+                    {!isDesktop && (activeView === VIEW_LIST) ? (
                         <IconButton
                             className="show-completed-toggle-button"
                             onClick={() => setHideCompleted(prev => !prev)}
@@ -502,7 +504,7 @@ const LoggedIn: React.FC = () => {
                             showLabel={false}
                             isPriority={false}
                         />
-                    )}
+                    ) : null}
                 </div>
                 {activeView === VIEW_LIST ? (
                     <IconButton
