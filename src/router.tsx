@@ -2,9 +2,10 @@ import { Router } from 'wouter';
 
 export const ROUTES = {
     home: '/',
+    app: '/app',
     demo: '/demo',
-    userSettings: '/settings',
-    bulkEdit: '/bulk-edit',
+    userSettings: '/app/settings',
+    bulkEdit: '/app/bulk-edit',
     privacyPolicy: '/privacy-policy',
     themePlayground: '/theme-playground',
     templates: '/templates',

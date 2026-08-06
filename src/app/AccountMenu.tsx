@@ -33,7 +33,7 @@ function AccountMenu({
     function handleLogout() {
         logout();
         reset();
-        setLocation("/");
+        setLocation(ROUTES.home);
     }
 
     const handleLogoutClick = () => {

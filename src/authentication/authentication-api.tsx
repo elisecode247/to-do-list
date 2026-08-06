@@ -9,6 +9,17 @@ let accessToken: string | null = null;
 let expiresAtMs: number | null = null;
 let emailAddress: string | null = null;
 
+export function hasAuthSessionHint(): boolean {
+    if (typeof window === "undefined") return false;
+
+    try {
+        return window.localStorage.getItem(AUTH_SESSION_HINT_KEY) === "true" ||
+            document.cookie.split(";").some(entry => entry.trim() === `${AUTH_SESSION_HINT_KEY}=true`);
+    } catch {
+        return false;
+    }
+}
+
 function clearAuthState(): void {
     accessToken = null;
     expiresAtMs = null;

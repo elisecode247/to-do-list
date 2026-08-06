@@ -1,11 +1,11 @@
-import { lazy, useLayoutEffect, type FC } from 'react';
+import { lazy, type FC } from 'react';
 import './app.css';
 import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import LoggedIn from 'src/pages/logged-in/LoggedIn';
 import DemoPage from 'src/pages/demo/DemoPage';
-import { Route, Switch, useLocation } from "wouter";
+import { Redirect, Route, Switch, useLocation } from "wouter";
 import { ROUTES } from 'src/router';
 import 'app/app.css';
 import ThemeCanvas from './ThemeCanvas';
@@ -59,18 +59,12 @@ const App: FC = () => {
     const handleLoginSuccess = async (token: string) => {
         try {
             await login(token);
-            setLocation(ROUTES.home);
+            setLocation(ROUTES.app);
         }
         catch (err) {
             console.error(err);
         }
     };
-
-    useLayoutEffect(() => {
-        if (!isLoading) {
-            document.documentElement.removeAttribute('data-auth-session-hint');
-        }
-    }, [isLoading]);
 
     return (
 
@@ -78,15 +72,16 @@ const App: FC = () => {
             <ThemeCanvas />
             <Switch>
                 <Route path={ROUTES.home}>
-                    {!isAuthenticated ? (
-                            <LoggedOut
-                                isCheckingSession={isLoading}
-                                onSuccessfulLogin={handleLoginSuccess}
-                            />
-                        ) : (
+                    <LoggedOut
+                        hasAuthenticatedSession={isAuthenticated}
+                        onSuccessfulLogin={handleLoginSuccess}
+                    />
+                </Route>
+                <Route path={ROUTES.app}>
+                    {isLoading ? <LoadingSpinner /> :
+                        isAuthenticated ? (
                             <LoggedIn />
-                        )
-                    }
+                        ) : <Redirect to={ROUTES.home} replace />}
                 </Route>
                 <Route path={ROUTES.demo}>
                     {/** Demo page is faster without Suspense */}
@@ -96,13 +91,19 @@ const App: FC = () => {
                     {isLoading ? <LoadingSpinner /> :
                         isAuthenticated ? (
                             <UserSettingsLazy />
-                        ) : <NotFoundLazy />}
+                        ) : <Redirect to={ROUTES.home} replace />}
                 </Route>
                 <Route path={ROUTES.bulkEdit}>
                     {isLoading ? <LoadingSpinner /> :
                         isAuthenticated ? (
                             <BulkEditLazy />
-                        ) : <NotFoundLazy />}
+                        ) : <Redirect to={ROUTES.home} replace />}
+                </Route>
+                <Route path="/settings">
+                    <Redirect to={ROUTES.userSettings} replace />
+                </Route>
+                <Route path="/bulk-edit">
+                    <Redirect to={ROUTES.bulkEdit} replace />
                 </Route>
                 <Route path={ROUTES.privacyPolicy}>
                     <PrivacyPolicyLazy />

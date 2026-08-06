@@ -25,7 +25,7 @@ export function NotFound() {
                 </h2>
 
                 {isAuthenticated ? (
-                    <Link href={ROUTES.home}>
+                    <Link href={ROUTES.app}>
                         <button className="btn btn--primary">
                             Back to today
                         </button>

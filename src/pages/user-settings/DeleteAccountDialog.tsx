@@ -5,6 +5,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { deleteAccount, verifyGoogleReauth } from 'src/authentication/authentication-api';
 import { useToast } from 'src/toast/use-toast';
 import { useLocation } from "wouter";
+import { ROUTES } from 'src/router';
 
 const DeleteAccountModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     const [isConfirmed, setIsConfirmed] = React.useState(false);
@@ -41,7 +42,7 @@ const DeleteAccountModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             logout();
             showToast('Account deleted successfully.', 'success');
 
-            setLocation("/");
+            setLocation(ROUTES.home);
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Account deletion failed';
             setErrorMessage(message);

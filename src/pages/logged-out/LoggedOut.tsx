@@ -8,12 +8,13 @@ import {
     Sparkles,
 } from "lucide-react";
 import { Link } from "wouter";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
 import GoogleLoginButton from "src/authentication/google-login-button";
 import { useThemeOverride } from "src/themes/use-theme-override";
 import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
 import { ROUTES } from "src/router";
 import "./logged-out.css";
+import { hasAuthSessionHint } from "src/authentication/authentication-api";
 
 const features = [
     {
@@ -63,21 +64,27 @@ const previewTasks = [
     { text: "Reset the kitchen", detail: "Last completed 4 days ago", done: false },
 ];
 
+const subscribeToSessionHint = () => () => undefined;
+
 export default function LoggedOut({
     onSuccessfulLogin,
-    isCheckingSession = false,
+    hasAuthenticatedSession = false,
 }: {
     onSuccessfulLogin: (token: string) => Promise<void>;
-    isCheckingSession?: boolean;
+    hasAuthenticatedSession?: boolean;
 }) {
-    // Preserve a returning user's saved theme while their session is resolving.
-    // Once they are confirmed signed out, public pages use the Space presentation.
+    const hasPersistedSession = useSyncExternalStore(
+        subscribeToSessionHint,
+        hasAuthSessionHint,
+        () => false,
+    );
+    const canOpenApp = hasAuthenticatedSession || hasPersistedSession;
+
     useThemeOverride(
-        isCheckingSession ? undefined : DARK_MODE,
-        isCheckingSession ? undefined : SPACE_STYLE,
-        isCheckingSession ? undefined : COMFORTABLE_DENSITY,
-        isCheckingSession ? undefined : GRAPHICS_TRUE,
-        isCheckingSession,
+        DARK_MODE,
+        SPACE_STYLE,
+        COMFORTABLE_DENSITY,
+        GRAPHICS_TRUE,
     );
 
     useLayoutEffect(() => {
@@ -98,7 +105,9 @@ export default function LoggedOut({
                 <nav className="landing-nav" aria-label="Main navigation">
                     <a href="#how-it-works">How it works</a>
                     <Link href={ROUTES.templates}>Templates</Link>
-                    <Link className="landing-nav-demo" href={ROUTES.demo}>Try the demo</Link>
+                    <Link className="landing-nav-demo" href={canOpenApp ? ROUTES.app : ROUTES.demo}>
+                        {canOpenApp ? "Open app" : "Try the demo"}
+                    </Link>
                 </nav>
             </header>
 
@@ -117,12 +126,19 @@ export default function LoggedOut({
                                 Try the demo
                                 <span aria-hidden="true">→</span>
                             </Link>
-                            <div className="landing-sign-in" id="landing-sign-in">
-                                <span>Or continue with Google</span>
-                                <div className="google-shell">
-                                    <GoogleLoginButton onSuccess={onSuccessfulLogin} />
+                            {canOpenApp ? (
+                                <Link className="landing-primary-action" href={ROUTES.app}>
+                                    Open your list
+                                    <span aria-hidden="true">→</span>
+                                </Link>
+                            ) : (
+                                <div className="landing-sign-in" id="landing-sign-in">
+                                    <span>Or continue with Google</span>
+                                    <div className="google-shell">
+                                        <GoogleLoginButton onSuccess={onSuccessfulLogin} />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                         <p className="landing-reassurance">No goals to miss. No streaks to break. Just a softer place to begin.</p>
                     </div>
@@ -255,12 +271,6 @@ export default function LoggedOut({
                 </nav>
             </footer>
         </div>
-        {isCheckingSession && (
-            <div className="returning-user-loading" role="status" aria-label="Restoring your session">
-                <div aria-hidden="true" className="returning-user-loading__spinner" />
-                <span className="visually-hidden">Restoring your session</span>
-            </div>
-        )}
         </>
     );
 }

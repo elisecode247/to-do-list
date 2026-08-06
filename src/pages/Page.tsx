@@ -26,6 +26,7 @@ function Page({ title, children, privacyLink = true }: PageProps) {
     const [location] = useLocation();
     const search = useSearch();
     const isDemoFlow = new URLSearchParams(search).get('demo') === '1';
+    const homeRoute = isAuthenticated ? ROUTES.app : ROUTES.home;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     function toggleMenu() {
@@ -39,8 +40,8 @@ function Page({ title, children, privacyLink = true }: PageProps) {
                         <ArrowLeft size={18} aria-hidden="true" />
                         Back to demo
                     </Link>
-                ) : location !== ROUTES.home && (
-                    <Link href={ROUTES.home} className="page-btn page-btn--primary page-home-btn">
+                ) : location !== homeRoute && (
+                    <Link href={homeRoute} className="page-btn page-btn--primary page-home-btn">
                         <Home size={24} />
                     </Link>
                 )}

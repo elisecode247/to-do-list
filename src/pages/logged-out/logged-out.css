@@ -12,39 +12,6 @@
     height: 100dvh;
 }
 
-.returning-user-loading {
-    display: none;
-    min-height: 100vh;
-    place-items: center;
-    align-content: center;
-    gap: 16px;
-    color: #aeb4cf;
-    background: #080a18;
-}
-
-.returning-user-loading__spinner {
-    width: 34px;
-    height: 34px;
-    border: 2px solid rgba(174, 184, 255, 0.2);
-    border-top-color: #dce1ff;
-    border-radius: 50%;
-    animation: returning-user-spin 800ms linear infinite;
-}
-
-html[data-auth-session-hint="true"] .logged-out-root {
-    display: none;
-}
-
-html[data-auth-session-hint="true"] .returning-user-loading {
-    display: grid;
-}
-
-@keyframes returning-user-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
 .landing-header,
 .landing-hero,
 .landing-promise,

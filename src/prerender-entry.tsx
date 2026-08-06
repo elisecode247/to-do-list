@@ -100,7 +100,7 @@ export function render(path: string): string {
 
     switch (path) {
         case "/":
-            page = <LoggedOut isCheckingSession onSuccessfulLogin={asyncNoop} />;
+            page = <LoggedOut onSuccessfulLogin={asyncNoop} />;
             break;
         case "/privacy-policy":
             page = <PrivacyPolicy />;
