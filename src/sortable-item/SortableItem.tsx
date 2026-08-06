@@ -508,6 +508,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </h2>
                     </div>
                     <div className="sortable-item_metadata">
+                        {isPriority && (
+                            <span
+                                className="sortable-item_metadata-text sortable-item_priority-status"
+                                title="Priority task"
+                            >
+                                <Star aria-hidden="true" size={12} fill="currentColor" />
+                                Priority
+                            </span>
+                        )}
                         {accessRole && accessRole !== 'owner' && (
                             <span
                                 className="sortable-item_metadata-text sortable-item_sharing-status"

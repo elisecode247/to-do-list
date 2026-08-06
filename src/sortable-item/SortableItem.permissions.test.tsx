@@ -99,6 +99,17 @@ afterEach(async () => {
 });
 
 describe('SortableItem role permissions', () => {
+    it('shows a priority badge in the metadata for priority tasks', async () => {
+        rendered = await renderUi(
+            <SortableItem {...propsFor('owner')} isPriority={true} />,
+        );
+
+        const badge = rendered.container.querySelector('.sortable-item_priority-status');
+
+        expect(badge?.textContent).toContain('Priority');
+        expect(badge?.getAttribute('title')).toBe('Priority task');
+    });
+
     it('only applies subchore styling below the top render level', async () => {
         rendered = await renderUi(
             <SortableItem {...propsFor('owner')} isSubChore={true} />,
