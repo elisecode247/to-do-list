@@ -572,7 +572,16 @@ export const SortableItem: FC<SortableItemProps> = ({
                             showLabel={true}
                         />
                     )}
-
+                    {activeTab === TAB_ARCHIVED || checklistType === 'template' ? null : (
+                        <IconButton
+                            className="sortable-item_main-button sortable-item_hide-button"
+                            onClick={delayHide}
+                            aria-label={isHidden ? "Do task today" : "Skip task today"}
+                            title={isHidden ? "Do task today" : "Skip task today"}
+                            icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
+                            label={isHidden ? "Do Today" : "Skip Today"}
+                        />
+                    )}
                     {hasSubChores && (
                         <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
@@ -592,16 +601,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                             title={showNotes ? "Hide notes" : "Show notes"}
                             label="Notes"
                             icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
-                        />
-                    )}
-                    {activeTab === TAB_ARCHIVED || checklistType === 'template' ? null : (
-                        <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
-                            onClick={delayHide}
-                            aria-label={isHidden ? "Do task today" : "Skip task today"}
-                            title={isHidden ? "Do task today" : "Skip task today"}
-                            icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
-                            label={isHidden ? "Do Today" : "Skip Today"}
                         />
                     )}
                     {hasMenuActions && (
@@ -710,7 +709,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </div>
                     )}
                 </div>
-                                <button
+                <button
                     ref={setActivatorNodeRef}
                     {...attributes}
                     {...listeners}
