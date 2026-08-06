@@ -455,12 +455,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <GripVertical size={24} />
                 </button>
                 <label
-                    className="sortable-item_checkbox-container"
+                    className={`sortable-item_checkbox-container ${!canComplete ? 'sortable-item_checkbox-container--disabled' : ''}`}
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                 >
                     <input
-                        className="sortable-item_checkbox"
+                        className={`sortable-item_checkbox ${!canComplete ? 'sortable-item_checkbox--disabled' : ''}`}
                         type="checkbox"
                         checked={checked}
                         onChange={handleCheck}
@@ -470,6 +470,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                         title={!canComplete
                             ? 'Viewer access cannot change completion'
                             : checked ? "Mark as not done" : "Mark as done"}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
                     />
                 </label>
                 <div className="sortable-item_text-container">
@@ -708,6 +710,19 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </div>
                     )}
                 </div>
+                                <button
+                    ref={setActivatorNodeRef}
+                    {...attributes}
+                    {...listeners}
+                    className="sortable-item_drag-handle"
+                    aria-label="Hold to move and reorder task"
+                    title="Hold to move and reorder task"
+                    type="button"
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                >
+                    <GripVertical size={24} />
+                </button>
                 <AnimatePresence initial={false}>
                     {showNotes && (
                         <motion.div
