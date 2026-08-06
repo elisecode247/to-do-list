@@ -46,6 +46,7 @@ export default function ViewBreadcrumb({
                     <span className="view-breadcrumb__separator" aria-hidden="true">·</span>
                     <span className="view-breadcrumb__part view-breadcrumb__part--tab">
                         <select
+                            id="view-breadcrumb__tab-select"
                             className="view-breadcrumb__tab-select"
                             aria-label="Change list tab"
                             value={activeTab}

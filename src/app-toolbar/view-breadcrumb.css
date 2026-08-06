@@ -36,7 +36,7 @@
     field-sizing: content;
     min-width: 0;
     min-height: var(--view-breadcrumb-touch-target);
-    margin: 4px 0;
+    margin: 4px;
     padding: 0 24px 0 8px;
     appearance: none;
     border: 0;
