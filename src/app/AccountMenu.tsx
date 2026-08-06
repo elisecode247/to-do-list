@@ -11,6 +11,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import IconButton from 'src/components/icon-button/IconButton';
 import { useUserSettings } from "src/user-settings/use-user-settings";
 import { AnimatePresence, motion } from 'framer-motion';
+import './settings.css';
 
 interface AccountMenuProps {
     isMenuOpen: boolean;

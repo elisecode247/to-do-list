@@ -1,26 +1,13 @@
-import { lazy, type FC } from 'react';
+import { lazy, Suspense, useEffect, type FC } from 'react';
 import './app.css';
-import './settings.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
-import LoggedIn from 'src/pages/logged-in/LoggedIn';
-import DemoPage from 'src/pages/demo/DemoPage';
 import { Redirect, Route, Switch, useLocation } from "wouter";
 import { ROUTES } from 'src/router';
-import 'app/app.css';
 import ThemeCanvas from './ThemeCanvas';
-import * as Sentry from "@sentry/react";
 
-Sentry.init({
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    integrations: [
-        Sentry.feedbackIntegration({
-            submitButtonLabel: "Send Feedback",
-            formTitle: "Send Feedback",
-            autoInject: false,
-        }),
-    ],
-});
+const LoggedInLazy = lazy(() => import('src/pages/logged-in/LoggedIn'));
+const DemoPageLazy = lazy(() => import('src/pages/demo/DemoPage'));
 
 const UserSettingsLazy = lazy(async () => {
     return { default: (await import('src/pages/user-settings/UserSettings')).default };
@@ -66,10 +53,27 @@ const App: FC = () => {
         }
     };
 
+    useEffect(() => {
+        const idleWindow = window as Window & {
+            requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+            cancelIdleCallback?: (handle: number) => void;
+        };
+        const initializeSentry = () => void import('./initialize-sentry');
+
+        if (idleWindow.requestIdleCallback) {
+            const handle = idleWindow.requestIdleCallback(initializeSentry, { timeout: 3000 });
+            return () => idleWindow.cancelIdleCallback?.(handle);
+        }
+
+        const handle = window.setTimeout(initializeSentry, 2000);
+        return () => window.clearTimeout(handle);
+    }, []);
+
     return (
 
         <>
             <ThemeCanvas />
+            <Suspense fallback={<LoadingSpinner />}>
             <Switch>
                 <Route path={ROUTES.home}>
                     <LoggedOut
@@ -80,12 +84,11 @@ const App: FC = () => {
                 <Route path={ROUTES.app}>
                     {isLoading ? <LoadingSpinner /> :
                         isAuthenticated ? (
-                            <LoggedIn />
+                            <LoggedInLazy />
                         ) : <Redirect to={ROUTES.home} replace />}
                 </Route>
                 <Route path={ROUTES.demo}>
-                    {/** Demo page is faster without Suspense */}
-                    <DemoPage onSuccessfulLogin={handleLoginSuccess} />
+                    <DemoPageLazy onSuccessfulLogin={handleLoginSuccess} />
                 </Route>
                 <Route path={ROUTES.userSettings}>
                     {isLoading ? <LoadingSpinner /> :
@@ -118,6 +121,7 @@ const App: FC = () => {
                     <NotFoundLazy />
                 </Route>
             </Switch>
+            </Suspense>
         </>
     );
 };

@@ -40,12 +40,15 @@ export default defineConfig({
                         return 'react-core-vendor';
                     }
 
+                    if (id.includes('/node_modules/wouter/')) {
+                        return 'router-vendor';
+                    }
+
                     if (
                         id.includes('/node_modules/@dnd-kit/') ||
-                        id.includes('/node_modules/wouter/') ||
                         id.includes('/node_modules/usehooks-ts/')
                     ) {
-                        return 'ui-vendor';
+                        return 'interaction-vendor';
                     }
 
                     // Leave feature dependencies to Rollup. Explicitly

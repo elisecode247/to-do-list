@@ -7,6 +7,13 @@ const templatePath = resolve(root, "dist/index.html");
 const rendererPath = resolve(root, ".prerender/prerender-entry.js");
 const template = await readFile(templatePath, "utf8");
 const { render } = await import(pathToFileURL(rendererPath).href);
+const mainStylesheetMatch = template.match(
+    /<link rel="stylesheet" crossorigin href="(\/assets\/index-[^"]+\.css)">/,
+);
+const mainStylesheetTag = mainStylesheetMatch?.[0];
+const mainStyles = mainStylesheetMatch
+    ? await readFile(resolve(root, `dist${mainStylesheetMatch[1]}`), "utf8")
+    : null;
 
 const routes = [
     {
@@ -65,7 +72,7 @@ for (const route of routes) {
             })}</script>`,
         ].join("\n")
         : "";
-    const html = template
+    let html = template
         .replace(/<title>.*?<\/title>/, `<title>${route.title}</title>`)
         .replace(
             "</head>",
@@ -75,6 +82,10 @@ for (const route of routes) {
             "</head>",
         )
         .replace('<div id="app-root"></div>', `<div id="app-root">${appHtml}</div>`);
+
+    if (route.path === "/" && mainStylesheetTag && mainStyles) {
+        html = html.replace(mainStylesheetTag, `<style>${mainStyles}</style>`);
+    }
 
     await mkdir(dirname(outputPath), { recursive: true });
     await writeFile(outputPath, html);

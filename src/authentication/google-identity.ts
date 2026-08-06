@@ -18,14 +18,9 @@ const loadGoogleIdentity = (): Promise<typeof window.google> => {
     if (sdkPromise) return sdkPromise;
 
     sdkPromise = new Promise((resolve, reject) => {
-        const script = document.querySelector<HTMLScriptElement>(
+        let script = document.querySelector<HTMLScriptElement>(
             'script[src="https://accounts.google.com/gsi/client"]',
         );
-
-        if (!script) {
-            reject(new Error('Google Identity Services script is missing'));
-            return;
-        }
 
         const handleLoad = () => {
             if (window.google?.accounts?.id) {
@@ -36,8 +31,19 @@ const loadGoogleIdentity = (): Promise<typeof window.google> => {
         };
         const handleError = () => reject(new Error('Google Identity Services failed to load'));
 
+        if (!script) {
+            script = document.createElement('script');
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.defer = true;
+        }
+
         script.addEventListener('load', handleLoad, { once: true });
         script.addEventListener('error', handleError, { once: true });
+
+        if (!script.isConnected) {
+            document.head.append(script);
+        }
     });
 
     return sdkPromise;
