@@ -480,6 +480,7 @@ const LoggedIn: React.FC = () => {
                         activeView={activeView}
                         activeTab={activeTab}
                         appliedFilterCount={appliedFilterCount}
+                        onTabChange={handleTabChange}
                         placement="mobile"
                     />
                     <IconButton
