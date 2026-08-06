@@ -61,7 +61,6 @@
     opacity: 0;
     animation-fill-mode: forwards;
     animation-timing-function: linear;
-    will-change: transform, opacity;
 }
 
 /* Space: bright four-point stars falling through the viewport. */

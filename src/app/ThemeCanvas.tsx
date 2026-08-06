@@ -229,6 +229,17 @@ function createSunRays(count: number): OceanSunRay[] {
 }
 const OCEAN_LAYER_INSET = 0.2;
 const OCEAN_SUN_RAYS = createSunRays(14);
+const MAX_CANVAS_DPR = 2;
+const MAX_CANVAS_PIXELS = 8_388_608;
+
+const getCanvasDpr = (width: number, height: number) => {
+    const deviceDpr = Math.max(1, window.devicePixelRatio || 1);
+    const pixelBudgetDpr = Math.sqrt(
+        MAX_CANVAS_PIXELS / Math.max(1, width * height),
+    );
+
+    return Math.min(deviceDpr, MAX_CANVAS_DPR, pixelBudgetDpr);
+};
 
 const drawOceanLightField = (
     context: CanvasRenderingContext2D,
@@ -286,6 +297,7 @@ const drawOceanLightField = (
 
     }
 
+    context.restore();
 };
 
 const oceanTheme: ThemeDefinition<OceanSpeck> = defineTheme<OceanSpeck>({
@@ -394,7 +406,6 @@ const ThemeParticlesCanvas: FC = () => {
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
         let width = 0;
         let height = 0;
         let frameId = 0;
@@ -403,6 +414,7 @@ const ThemeParticlesCanvas: FC = () => {
         const resize = () => {
             width = window.innerWidth;
             height = window.innerHeight;
+            const dpr = getCanvasDpr(width, height);
             canvas.width = Math.floor(width * dpr);
             canvas.height = Math.floor(height * dpr);
             canvas.style.width = `${width}px`;
