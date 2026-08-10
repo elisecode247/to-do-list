@@ -159,8 +159,8 @@
     .mobile-action-rail .view-breadcrumb__menu-button:focus-visible,
     .mobile-action-rail>.filter-toggle-button:focus-visible,
     .mobile-action-rail>.show-completed-toggle-button:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 1px;
+        outline: 0;
+        box-shadow: inset 0 0 0 2px var(--color-primary);
     }
 
     .app_header>.new-task-form-toggle-button {
@@ -455,8 +455,8 @@
     .mobile-action-rail .view-breadcrumb__menu-button:focus-visible,
     .mobile-action-rail > .filter-toggle-button:focus-visible,
     .mobile-action-rail > .show-completed-toggle-button:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 1px;
+        outline: 0;
+        box-shadow: inset 0 0 0 2px var(--color-primary);
     }
 
     .app_container {
