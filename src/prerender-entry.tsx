@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { renderToString } from "react-dom/server";
+import { Suspense } from "react";
 import { Router } from "wouter";
 import LoggedOut from "src/pages/logged-out/LoggedOut";
 import PrivacyPolicy from "src/pages/PrivacyPolicy";
@@ -9,8 +10,7 @@ import { AuthenticationContext, type AuthenticationContextType } from "src/authe
 import { UserSettingsContext, type UserSettingsContextValue } from "src/user-settings/user-settings-context";
 import { TaskContext } from "src/app/task-context";
 import type { TaskContextType } from "src/app/types";
-import { ToastContext } from "src/toast/toast-context";
-import type { ToastContextType } from "src/toast/types";
+import { ToastProvider } from "src/toast/toast-provider";
 import { DemoContext } from "src/pages/demo/DemoContext";
 import { DemoTaskContext, type DemoTaskContextType } from "src/pages/demo/demo-task-context";
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
@@ -69,25 +69,19 @@ const demoTasks: DemoTaskContextType = {
     clear: noop,
 };
 
-const toast: ToastContextType = {
-    toasts: [],
-    showToast: noop,
-    removeToast: noop,
-};
-
 function PublicProviders({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider>
         <AuthenticationContext.Provider value={authentication}>
             <UserSettingsContext.Provider value={settings}>
                 <TaskContext.Provider value={tasks}>
-                    <ToastContext.Provider value={toast}>
+                    <ToastProvider>
                         <DemoContext.Provider value={{ items: [], setItems: noop, resetDemo: noop }}>
                             <DemoTaskContext.Provider value={demoTasks}>
                                 {children}
                             </DemoTaskContext.Provider>
                         </DemoContext.Provider>
-                    </ToastContext.Provider>
+                    </ToastProvider>
                 </TaskContext.Provider>
             </UserSettingsContext.Provider>
         </AuthenticationContext.Provider>
@@ -116,7 +110,9 @@ export function render(path: string): string {
         <Router ssrPath={path}>
             <PublicProviders>
                 <ThemeCanvas />
-                {page}
+                {/* Keep this boundary in sync with App.tsx so the client can
+                    hydrate the prerendered route instead of replacing it. */}
+                <Suspense>{page}</Suspense>
             </PublicProviders>
         </Router>,
     );
