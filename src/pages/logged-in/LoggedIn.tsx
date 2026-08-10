@@ -481,6 +481,7 @@ const LoggedIn: React.FC = () => {
                         activeTab={activeTab}
                         appliedFilterCount={appliedFilterCount}
                         onTabChange={handleTabChange}
+                        onViewChange={handleViewChange}
                         placement="mobile"
                     />
                     {isDesktop || (!isDesktop && activeView === VIEW_LIST) ? (

@@ -300,6 +300,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                             activeTab={activeTab}
                             appliedFilterCount={appliedFilterCount}
                             onTabChange={handleTabChange}
+                            onViewChange={handleViewChange}
                             placement="mobile"
                         />
                         {activeView === VIEW_LIST && (
