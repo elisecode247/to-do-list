@@ -298,7 +298,6 @@ const DemoPage: React.FC<DemoPageProps> = ({
                         <ViewBreadcrumb
                             activeView={activeView}
                             activeTab={activeTab}
-                            appliedFilterCount={appliedFilterCount}
                             onTabChange={handleTabChange}
                             onViewChange={handleViewChange}
                             placement="mobile"
@@ -309,11 +308,17 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     className="filter-toggle-button"
                                     onClick={toggleLeft}
                                     label="Filters"
-                                    ariaLabel="Toggle filters"
+                                    ariaLabel={`Toggle filters${appliedFilterCount > 0 ? `, ${appliedFilterCount} applied` : ''}`}
                                     icon={<ListFilter size={24} />}
                                     showLabel={true}
                                     isPriority={false}
-                                />
+                                >
+                                    {appliedFilterCount > 0 ? (
+                                        <span className="filter-toggle-button__badge" aria-hidden="true">
+                                            {appliedFilterCount}
+                                        </span>
+                                    ) : null}
+                                </IconButton>
                                 {!isDesktop ? (
                                     <IconButton
                                         className="show-completed-toggle-button"

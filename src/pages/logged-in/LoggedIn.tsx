@@ -479,7 +479,6 @@ const LoggedIn: React.FC = () => {
                     <ViewBreadcrumb
                         activeView={activeView}
                         activeTab={activeTab}
-                        appliedFilterCount={appliedFilterCount}
                         onTabChange={handleTabChange}
                         onViewChange={handleViewChange}
                         placement="mobile"
@@ -489,11 +488,17 @@ const LoggedIn: React.FC = () => {
                             className="filter-toggle-button"
                             onClick={toggleLeft}
                             label="Filters"
-                            ariaLabel="Open filters"
+                            ariaLabel={`Open filters${appliedFilterCount > 0 ? `, ${appliedFilterCount} applied` : ''}`}
                             icon={<ListFilter size={24} />}
                             showLabel={true}
                             isPriority={false}
-                        />
+                        >
+                            {appliedFilterCount > 0 ? (
+                                <span className="filter-toggle-button__badge" aria-hidden="true">
+                                    {appliedFilterCount}
+                                </span>
+                            ) : null}
+                        </IconButton>
                     ) : null}
                     {!isDesktop && (activeView === VIEW_LIST) ? (
                         <IconButton

@@ -14,7 +14,6 @@ import './view-breadcrumb.css';
 interface ViewBreadcrumbProps {
     activeView: View;
     activeTab: ListTab;
-    appliedFilterCount?: number;
     onTabChange: (tab: ListTab) => void;
     onViewChange: (view: View) => void;
     placement: 'desktop' | 'mobile';
@@ -23,7 +22,6 @@ interface ViewBreadcrumbProps {
 export default function ViewBreadcrumb({
     activeView,
     activeTab,
-    appliedFilterCount = 0,
     onTabChange,
     onViewChange,
     placement,
@@ -32,9 +30,6 @@ export default function ViewBreadcrumb({
 
     if (activeView === VIEW_LIST) {
         parts.push(TAB_LABELS[activeTab]);
-        if (appliedFilterCount > 0) {
-            parts.push(`${appliedFilterCount} ${appliedFilterCount === 1 ? 'filter' : 'filters'}`);
-        }
     }
 
     return (
@@ -95,20 +90,6 @@ export default function ViewBreadcrumb({
                             </MenuItems>
                         </Menu>
                     </span>
-                    {appliedFilterCount > 0 ? (
-                        <>
-                            <span className="view-breadcrumb__separator" aria-hidden="true">·</span>
-                            <span
-                                className="view-breadcrumb__part view-breadcrumb__part--context view-breadcrumb__part--filters"
-                                aria-label={`${appliedFilterCount} ${appliedFilterCount === 1 ? 'filter' : 'filters'}`}
-                            >
-                                <span>{appliedFilterCount}</span>
-                                <span className="view-breadcrumb__filter-label" aria-hidden="true">
-                                    {' '}{appliedFilterCount === 1 ? 'filter' : 'filters'}
-                                </span>
-                            </span>
-                        </>
-                    ) : null}
                 </>
             ) : null}
         </div>

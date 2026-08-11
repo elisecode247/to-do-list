@@ -21,7 +21,6 @@ describe('ViewBreadcrumb', () => {
             <ViewBreadcrumb
                 activeView={VIEW_LIST}
                 activeTab={TAB_TODAY}
-                appliedFilterCount={1}
                 onTabChange={onTabChange}
                 onViewChange={onViewChange}
                 placement="mobile"
