@@ -443,9 +443,12 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                     <div className="task-form-field">
                         <label className="task-form-field__label">Starting</label>
                         <input
-                            {...register('startDate')}
+                            {...register('startDate', {
+                                required: 'Start date is required',
+                            })}
                             className="task-form-input task-form-recurrence-start-date"
                             type="date"
+                            aria-invalid={errors.startDate ? 'true' : 'false'}
                             onClick={(e) => e.currentTarget.showPicker?.()}
                             disabled={!canEdit}
                             aria-describedby={!canEdit ? readOnlyDescriptionId : undefined}

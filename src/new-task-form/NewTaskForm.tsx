@@ -211,11 +211,14 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                                 Starting
                             </label>
                             <input
-                                {...register("startDate")}
+                                {...register("startDate", {
+                                    required: "Start date is required",
+                                })}
                                 name="startDate"
                                 id="new-task-form_recurrence-start-date"
                                 className="task-form-input task-form-recurrence-start-date"
                                 type="date"
+                                aria-invalid={errors.startDate ? 'true' : 'false'}
                                 onFocus={(e) => e.currentTarget.showPicker?.()}
                                 onClick={(e) => e.currentTarget.showPicker?.()}
                             />
@@ -235,7 +238,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                     )}
                     {errors.startDate && (
                         <div className="task-form-drawer__error">
-                            Error: {errors.startDate.message || 'start date is required'}
+                            Error: {errors.startDate.message || 'Start date is required'}
                         </div>
                     )}
                     {errors.endDate && (
