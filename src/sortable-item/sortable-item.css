@@ -213,7 +213,7 @@
     .sortable-item_category-icon {
         display: inline-flex;
         margin-inline-end: 6px;
-        vertical-align: bottom;
+        vertical-align: text-bottom;
     }
 }
 
