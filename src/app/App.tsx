@@ -41,7 +41,7 @@ const LoadingSpinner = () => {
 
 const App: FC = () => {
     const { isAuthenticated, isLoading, login } = useAuthentication();
-    const [, setLocation] = useLocation();
+    const [location, setLocation] = useLocation();
 
     const handleLoginSuccess = async (token: string) => {
         try {
@@ -54,6 +54,8 @@ const App: FC = () => {
     };
 
     useEffect(() => {
+        if (location === ROUTES.home) return;
+
         const idleWindow = window as Window & {
             requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
             cancelIdleCallback?: (handle: number) => void;
@@ -67,7 +69,7 @@ const App: FC = () => {
 
         const handle = window.setTimeout(initializeSentry, 2000);
         return () => window.clearTimeout(handle);
-    }, []);
+    }, [location]);
 
     return (
 

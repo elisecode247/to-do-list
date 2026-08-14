@@ -101,7 +101,7 @@ export default function LoggedOut({
                 <header className="landing-header">
                     <Link className="landing-brand" href={ROUTES.home} aria-label="Daily Reset List home">
                         <span className="landing-brand-mark">
-                            <img src="./mag6png.webp" width="32px" />
+                            <img src="./mag6png.webp" width="32px" height="32px" />
                         </span>
                         <span>Daily Reset List</span>
                     </Link>
