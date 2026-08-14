@@ -107,7 +107,7 @@ export default function LoggedOut({
                     <nav className="landing-nav" aria-label="Main navigation">
                         <Link href={ROUTES.templates}>Templates</Link>
                         <Link className="landing-nav-demo" href={canOpenApp ? ROUTES.app : ROUTES.demo}>
-                            {canOpenApp ? "Open app" : "Try the demo"}
+                            {canOpenApp ? "Open app" : "Try Demo"}
                         </Link>
                     </nav>
                 </header>
@@ -115,16 +115,19 @@ export default function LoggedOut({
                 <main>
                     <section className="landing-hero" aria-labelledby="landing-title">
                         <div className="landing-hero-copy">
-                            <img src="./mag6png.png" />
+                            <img src="./mag6png.png" width="210px" height="210px" />
                             <p className="landing-eyebrow"><Sparkles size={15} aria-hidden="true" /> A daily list without the daily pressure</p>
                             <h1 id="landing-title">Daily Reset List</h1>
+                            <p className="landing-free-badge">
+                                <span aria-hidden="true">&#10003;</span>
+                                Completely free to use
+                            </p>
                             <p className="landing-lede">
-                                Daily Reset List combines a list for recurring responsibilities,
-                                one-time tasks, and google calendar events.
+                                Daily Reset List brings together recurring tasks, one-time to-dos, and Google Calendar events. Easily skip, postpone, prioritize, and share them with others.
                             </p>
                             <div className="landing-actions">
                                 <Link className="landing-primary-action" href={ROUTES.demo}>
-                                    Try the demo
+                                    Try Demo
                                     <span aria-hidden="true">→</span>
                                 </Link>
                                 {canOpenApp ? (
@@ -134,7 +137,6 @@ export default function LoggedOut({
                                     </Link>
                                 ) : (
                                     <div className="landing-sign-in" id="landing-sign-in">
-                                        <span>Or continue with Google</span>
                                         <div className="google-shell">
                                             <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                                         </div>

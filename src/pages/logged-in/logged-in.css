@@ -44,6 +44,15 @@
     gap: 16px;
 }
 
+.app_subtitle {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+}
+
 .feedback-button {
     width: 40px;
     min-width: 40px;
@@ -97,12 +106,13 @@
     }
 
     .app_subtitle {
+        display: flex;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;
         flex-wrap: wrap;
         justify-content: center;
-
+        gap: 4px;
         span {
             text-align: center;
         }
