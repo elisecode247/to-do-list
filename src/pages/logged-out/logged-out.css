@@ -382,6 +382,24 @@
         transform: none;
     }
 
+    .logged-out-root > .footer {
+        position: static;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding: 12px 0;
+        background: transparent;
+    }
+
+    .logged-out-root > .footer .footer-nav {
+        justify-content: center;
+        padding-inline: 16px;
+    }
+
+    .logged-out-root > .footer .footer-link {
+        font-size: 0.72rem;
+    }
+
 }
 
 @media (max-width: 680px) {
@@ -413,7 +431,7 @@
 
     .landing-hero {
         min-height: auto;
-        padding-block: 28px 70px;
+        padding-block: 28px 0;
     }
 
     .landing-hero h1 {
