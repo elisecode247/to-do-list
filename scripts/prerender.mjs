@@ -14,6 +14,17 @@ const mainStylesheetTag = mainStylesheetMatch?.[0];
 const mainStyles = mainStylesheetMatch
     ? await readFile(resolve(root, `dist${mainStylesheetMatch[1]}`), "utf8")
     : null;
+const mainScriptMatch = template.match(
+    /<script type="module" crossorigin src="([^"]+)"><\/script>/,
+);
+const mainScriptTag = mainScriptMatch?.[0];
+const mainScriptSource = mainScriptMatch?.[1];
+const modulePreloadTags = template.match(
+    /\s*<link rel="modulepreload"[^>]*>/g,
+) ?? [];
+const manifestTag = template.match(
+    /\s*<link rel="manifest"[^>]*>/,
+)?.[0];
 
 const routes = [
     {
@@ -85,6 +96,29 @@ for (const route of routes) {
 
     if (route.path === "/" && mainStylesheetTag && mainStyles) {
         html = html.replace(mainStylesheetTag, `<style>${mainStyles}</style>`);
+    }
+
+    if (route.path === "/" && mainScriptTag && mainScriptSource) {
+        html = html.replace(mainScriptTag, "");
+        for (const preloadTag of modulePreloadTags) {
+            html = html.replace(preloadTag, "");
+        }
+        if (manifestTag) {
+            html = html.replace(manifestTag, "");
+        }
+
+        const deferredBootstrap = [
+            "<script>",
+            "window.addEventListener('load', () => {",
+            manifestTag
+                ? "const manifest = document.createElement('link'); manifest.rel = 'manifest'; manifest.href = '/manifest.json'; document.head.append(manifest);"
+                : "",
+            `import(${JSON.stringify(mainScriptSource)});`,
+            "}, { once: true });",
+            "</script>",
+        ].filter(Boolean).join("");
+
+        html = html.replace("</body>", `    ${deferredBootstrap}\n</body>`);
     }
 
     await mkdir(dirname(outputPath), { recursive: true });
