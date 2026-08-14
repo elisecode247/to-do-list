@@ -96,12 +96,12 @@ export default function LoggedOut({
     return (
         <>
             <div className="logged-out-root parallax" ref={landingRootRef}>
-                <img id="clouds" src="/pastel-paws-border.png" className="parallax-bg" />
+                <img id="clouds" src="/pastel-paws-border.webp" className="parallax-bg" />
                 <div className="stars" aria-hidden="true" />
                 <header className="landing-header">
                     <Link className="landing-brand" href={ROUTES.home} aria-label="Daily Reset List home">
                         <span className="landing-brand-mark">
-                            <img src="./favicon-32x32.png" />
+                            <img src="./mag6png.webp" width="32px" />
                         </span>
                         <span>Daily Reset List</span>
                     </Link>
@@ -116,7 +116,7 @@ export default function LoggedOut({
                 <main>
                     <section className="landing-hero" aria-labelledby="landing-title">
                         <div className="landing-hero-copy">
-                            <img className="landing-hero-mark" src="./mag6png.png" width="160" height="160" alt="logo" />
+                            <img className="landing-hero-mark" src="./mag6png.webp" width="160" height="160" alt="logo" />
                             <p className="landing-eyebrow"><Sparkles size={15} aria-hidden="true" /> A daily list without the daily pressure</p>
                             <h1 id="landing-title">Daily Reset List</h1>
                             <p className="landing-free-badge">
@@ -154,7 +154,7 @@ export default function LoggedOut({
                         <div className="landing-product-preview" aria-label="Example Daily Reset List">
                             <div className="landing-preview-glow" aria-hidden="true" />
                             <div className="landing-preview-window">
-                                <img className="landing-preview-checklist" src="./checklist.png" />
+                                <img className="landing-preview-checklist" src="./checklist.webp" />
                             </div>
                         </div>
                     </section>
