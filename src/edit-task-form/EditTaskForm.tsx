@@ -481,7 +481,8 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                             <img
                                                 className="edit-task-member__avatar"
                                                 src={member.avatarUrl}
-                                                alt=""
+                                                role="img"
+                                                alt={`${getUserLabel(member)} avatar`}
                                             />
                                         ) : (
                                             <span

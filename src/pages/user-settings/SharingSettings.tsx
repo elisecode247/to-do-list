@@ -187,6 +187,7 @@ const SharingSettings = function () {
                             {!!user.avatarUrl && (
                                 <img
                                     src={user.avatarUrl}
+                                    role="img"
                                     alt={user.displayName || 'Avatar'}
                                     className="shared-user-avatar"
                                 />

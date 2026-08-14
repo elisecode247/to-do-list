@@ -522,7 +522,7 @@ const LoggedIn: React.FC = () => {
                         showLabel={false}
                     />) : null}
                 <div className="app_header_brand">
-                    <img className="app_header_logo" src="/android-chrome-192x192.png" alt="" />
+                    <img className="app_header_logo" src="/android-chrome-192x192.png" role="presentation" alt="" />
                     <div className="app_header_title">
                         <h1 className="app_h1">Daily Reset List</h1>
                         <p className="app_subtitle">
