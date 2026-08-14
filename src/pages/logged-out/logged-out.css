@@ -92,30 +92,35 @@
     min-height: min(760px, calc(100vh - 84px));
     min-height: min(760px, calc(100dvh - 84px));
     grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-    align-items: center;
-    gap: clamp(44px, 7vw, 100px);
-    padding-block: 72px 88px;
+    align-items: flex-start;
+    gap: clamp(44px, 6vw, 88px);
+    padding-block: 24px 88px;
 }
 
 .landing-eyebrow {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 0 22px;
+    margin: 0 0 14px;
     color: var(--landing-accent-bright);
     font-size: 0.72rem;
     font-weight: 650;
     letter-spacing: 0.18em;
     text-transform: uppercase;
+    margin: 16px 0 0;
+    border: 1px solid rgba(196, 177, 255, 0.2);
+    border-radius: 999px;
+    padding: 9px 16px;
+    background-color: rgba(0, 0, 0, 0.42);
 }
 
 .landing-hero h1 {
     max-width: 720px;
     margin: 0;
     font-size: clamp(3.15rem, 6vw, 6.3rem);
-    font-weight: 340;
-    letter-spacing: -0.055em;
-    line-height: 0.96;
+    font-weight: 620;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
     text-wrap: balance;
 }
 
@@ -123,21 +128,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
+}
+
+.landing-hero-mark {
+    display: block;
+    margin: 0 0 -4px;
 }
 
 .landing-free-badge {
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    margin: 22px 0 0;
-    border: 1px solid rgba(220, 225, 255, 0.45);
+    margin: 16px 0 0;
+    border: 1px solid rgba(196, 177, 255, 0.2);
     border-radius: 999px;
     padding: 9px 16px;
-    color: #11152d;
-    background: var(--landing-accent-bright);
-    box-shadow: 0 10px 32px rgba(113, 127, 255, 0.24);
-    font-size: 0.9rem;
-    font-weight: 720;
+    color: #c4b5fd;
+    background: #663399;
+    box-shadow: none;
+    font-size: 0.86rem;
+    font-weight: 600;
     letter-spacing: 0.015em;
 }
 
@@ -147,27 +158,28 @@
     height: 20px;
     place-items: center;
     border-radius: 50%;
-    color: var(--landing-accent-bright);
-    background: #11152d;
+    color: #ddd4ff;
+    background: rgba(177, 153, 255, 0.16);
 }
 
 .landing-lede {
     max-width: 620px;
     text-align: center;
-    margin: 22px 0 0;
+    margin: 16px 0 0;
     color: var(--landing-muted);
     font-size: clamp(1.05rem, 1.7vw, 1.24rem);
-    line-height: 1.7;
+    line-height: 1.58;
 }
 
 .landing-actions {
     display: flex;
     align-items: flex-end;
-    gap: 24px;
-    margin-top: 38px;
+    gap: 14px;
+    margin-top: 28px;
 }
 
-.landing-primary-action {
+.landing-primary-action,
+.landing-secondary-action {
     display: inline-flex;
     min-height: 48px;
     align-items: center;
@@ -178,7 +190,8 @@
     font-size: 0.95rem;
     font-weight: 650;
     text-decoration: none;
-    transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    border: 1px solid transparent;
+    transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
 .landing-primary-action {
@@ -192,15 +205,37 @@
     box-shadow: 0 16px 46px rgba(113, 127, 255, 0.3);
 }
 
-.landing-sign-in {
-    display: grid;
-    gap: 6px;
+.landing-secondary-action {
+    color: rgba(233, 235, 255, 0.82);
+    border-color: rgba(220, 225, 255, 0.2);
+    background: rgba(220, 225, 255, 0.055);
 }
 
-.landing-sign-in>span {
-    color: var(--landing-muted);
-    font-size: 0.7rem;
-    text-align: center;
+.landing-secondary-action:hover {
+    border-color: rgba(220, 225, 255, 0.34);
+    background: rgba(220, 225, 255, 0.09);
+    transform: translateY(-2px);
+}
+
+.landing-sign-in {
+    display: grid;
+    gap: 7px;
+    min-width: 234px;
+    justify-items: center;
+    border: 1px solid rgba(220, 225, 255, 0.38);
+    border-radius: 24px;
+    padding: 9px 7px 7px;
+    background: var(--landing-accent-bright);
+    box-shadow: 0 12px 40px rgba(113, 127, 255, 0.2);
+}
+
+.landing-sign-in-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    color: #11152d;
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 .logged-out-root .google-shell {
@@ -209,13 +244,12 @@
     min-height: 44px;
     padding: 3px;
     border-radius: 999px;
-    background: rgba(174, 184, 255, 0.08);
-    filter: drop-shadow(0 0 18px rgba(120, 140, 255, 0.18));
+    background: rgba(17, 21, 45, 0.08);
     color-scheme: light;
 }
 
 .landing-reassurance {
-    margin: 24px 0 0;
+    margin: 18px 0 0;
     color: rgba(215, 219, 240, 0.62);
     font-size: 0.82rem;
 }
@@ -227,10 +261,10 @@
 
 .landing-preview-glow {
     position: absolute;
-    inset: 8% 4%;
+    inset: 3% -2%;
     border-radius: 50%;
-    background: rgba(101, 116, 255, 0.26);
-    filter: blur(90px);
+    background: radial-gradient(ellipse, rgba(137, 146, 255, 0.2) 0%, rgba(107, 119, 255, 0.1) 46%, transparent 74%);
+    filter: blur(112px);
 }
 
 .landing-preview-window {
@@ -267,28 +301,37 @@
     margin: auto;
 }
 
+@media (min-width: 921px) {
+    .landing-hero {
+        height: calc(100vh - 84px);
+        height: calc(100dvh - 84px);
+        min-height: 0;
+        align-items: center;
+        padding-block: 20px;
+    }
+
+    .landing-hero-copy > .landing-eyebrow,
+    .landing-hero-copy > .landing-free-badge,
+    .landing-hero-copy > .landing-lede,
+    .landing-hero-copy > .landing-actions,
+    .landing-hero-copy > .landing-reassurance {
+        margin-block: 0;
+    }
+
+    .landing-preview-checklist {
+        width: auto;
+        height: min(620px, calc(100dvh - 190px));
+        max-width: 100%;
+        object-fit: contain;
+    }
+}
+
 @media (min-width: 921px) and (max-height: 800px) {
     .landing-hero {
         height: calc(100vh - 84px);
         height: calc(100dvh - 84px);
         min-height: 0;
-        padding-block: 24px 32px;
-    }
-
-    .landing-hero .landing-eyebrow {
-        margin-bottom: 14px;
-    }
-
-    .landing-hero .landing-lede {
-        margin-top: 18px;
-    }
-
-    .landing-hero .landing-actions {
-        margin-top: 22px;
-    }
-
-    .landing-hero .landing-reassurance {
-        margin-top: 14px;
+        padding-block: 16px;
     }
 
     .landing-hero .landing-preview-window {
@@ -312,7 +355,7 @@
 
     .landing-hero {
         grid-template-columns: 1fr;
-        padding-top: 90px;
+        padding-top: 32px;
         text-align: center;
     }
 
@@ -370,7 +413,7 @@
 
     .landing-hero {
         min-height: auto;
-        padding-block: 68px 70px;
+        padding-block: 28px 70px;
     }
 
     .landing-hero h1 {
@@ -382,7 +425,8 @@
         align-items: center;
     }
 
-    .landing-primary-action {
+    .landing-primary-action,
+    .landing-secondary-action {
         width: min(100%, 330px);
     }
 

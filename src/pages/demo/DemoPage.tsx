@@ -345,51 +345,54 @@ const DemoPage: React.FC<DemoPageProps> = ({
                             />
                     )}
 
-                    <div className="app_header_title">
-                        <h1 className="app_h1">
-                            Daily Reset List
-                        </h1>
+                    <div className="app_header_brand">
+                        <img className="app_header_logo" src="/android-chrome-192x192.png" alt="" />
+                        <div className="app_header_title">
+                            <h1 className="app_h1">
+                                Daily Reset List
+                            </h1>
 
-                        <p className="app_subtitle">
-                            <span>
-                                {
-                                    dayOfWeekName
-                                }
-                                {now.toLocaleDateString(
-                                    undefined,
+                            <p className="app_subtitle">
+                                <span>
                                     {
-                                        month:
-                                            "long",
-                                        day:
-                                            "numeric",
-                                    },
-                                )}
-                            </span>
-
-                            <span className="app_subtitle_last-updated">
-                                {lastUpdatedDate
-                                    ? `Updated ${lastUpdatedDate.toLocaleTimeString(
-                                        [],
+                                        dayOfWeekName
+                                    }
+                                    {now.toLocaleDateString(
+                                        undefined,
                                         {
-                                            hour:
-                                                "2-digit",
-                                            minute:
-                                                "2-digit",
+                                            month:
+                                                "long",
+                                            day:
+                                                "numeric",
                                         },
-                                    )}`
-                                    : ""}
+                                    )}
+                                </span>
 
-                                {lastUpdatedDate && (
-                                    <Check
-                                        className="app_subtitle_last-updated_fresh_icon"
-                                        size={12}
-                                        strokeWidth={
-                                            3
-                                        }
-                                    />
-                                )}
-                            </span>
-                        </p>
+                                <span className="app_subtitle_last-updated">
+                                    {lastUpdatedDate
+                                        ? `Updated ${lastUpdatedDate.toLocaleTimeString(
+                                            [],
+                                            {
+                                                hour:
+                                                    "2-digit",
+                                                minute:
+                                                    "2-digit",
+                                            },
+                                        )}`
+                                        : ""}
+
+                                    {lastUpdatedDate && (
+                                        <Check
+                                            className="app_subtitle_last-updated_fresh_icon"
+                                            size={12}
+                                            strokeWidth={
+                                                3
+                                            }
+                                        />
+                                    )}
+                                </span>
+                            </p>
+                        </div>
                     </div>
 
                     <div className="demo-header-actions">

@@ -290,4 +290,35 @@
         padding: 0 16px;
         width: 100%;
     }
+
+    .app_container.left-open > .demo-app_header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "title actions"
+            "filter create";
+        grid-template-rows: 68px 60px;
+        column-gap: 12px;
+        row-gap: 0;
+        height: 128px;
+    }
+
+    .app_container.left-open:has(> .demo-app_header) {
+        grid-template-rows: 128px 1fr;
+    }
+
+    .app_container.left-open > .demo-app_header .app_header_brand {
+        justify-self: start;
+    }
+
+    .app_container.left-open > .demo-app_header .app_header_title {
+        align-items: flex-start;
+    }
+
+    .app_container.left-open > .demo-app_header .app_subtitle {
+        justify-content: flex-start;
+    }
+
+    .app_container.left-open > .demo-app_header .mobile-action-rail {
+        justify-self: start;
+    }
 }

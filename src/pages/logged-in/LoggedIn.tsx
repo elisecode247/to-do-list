@@ -521,18 +521,21 @@ const LoggedIn: React.FC = () => {
                         isPriority={true}
                         showLabel={false}
                     />) : null}
-                <div className="app_header_title">
-                    <h1 className="app_h1">Daily Reset List</h1>
-                    <p className="app_subtitle">
-                        <span>
-                            {dayOfWeekName}
-                            {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-                        </span>
-                        <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
-                            {isUpdatedDate ? "Updated just now" : lastUpdatedDate ? `Updated ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
-                            {isUpdatedDate ? <Check className="app_subtitle_last-updated_fresh_icon" size={12} strokeWidth={3} /> : null}
-                        </span>
-                    </p>
+                <div className="app_header_brand">
+                    <img className="app_header_logo" src="/android-chrome-192x192.png" alt="" />
+                    <div className="app_header_title">
+                        <h1 className="app_h1">Daily Reset List</h1>
+                        <p className="app_subtitle">
+                            <span>
+                                {dayOfWeekName}
+                                {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
+                            </span>
+                            <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
+                                {isUpdatedDate ? "Updated just now" : lastUpdatedDate ? `Updated ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                                {isUpdatedDate ? <Check className="app_subtitle_last-updated_fresh_icon" size={12} strokeWidth={3} /> : null}
+                            </span>
+                        </p>
+                    </div>
                 </div>
                 <div className="header-menu-actions">
                     <IconButton

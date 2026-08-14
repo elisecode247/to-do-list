@@ -7,6 +7,7 @@ import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/
 import { ROUTES } from "src/router";
 import "./logged-out.css";
 import { hasAuthSessionHint } from "src/authentication/authentication-api";
+import Footer from "src/footer/Footer";
 
 const subscribeToSessionHint = () => () => undefined;
 
@@ -107,7 +108,7 @@ export default function LoggedOut({
                     <nav className="landing-nav" aria-label="Main navigation">
                         <Link href={ROUTES.templates}>Templates</Link>
                         <Link className="landing-nav-demo" href={canOpenApp ? ROUTES.app : ROUTES.demo}>
-                            {canOpenApp ? "Open app" : "Try Demo"}
+                            {canOpenApp ? "Open your list" : "Try Demo"}
                         </Link>
                     </nav>
                 </header>
@@ -115,7 +116,7 @@ export default function LoggedOut({
                 <main>
                     <section className="landing-hero" aria-labelledby="landing-title">
                         <div className="landing-hero-copy">
-                            <img src="./mag6png.png" width="210px" height="210px" />
+                            <img className="landing-hero-mark" src="./mag6png.png" width="160" height="160" alt="logo" />
                             <p className="landing-eyebrow"><Sparkles size={15} aria-hidden="true" /> A daily list without the daily pressure</p>
                             <h1 id="landing-title">Daily Reset List</h1>
                             <p className="landing-free-badge">
@@ -126,10 +127,6 @@ export default function LoggedOut({
                                 Daily Reset List brings together recurring tasks, one-time to-dos, and Google Calendar events. Easily skip, postpone, prioritize, and share them with others.
                             </p>
                             <div className="landing-actions">
-                                <Link className="landing-primary-action" href={ROUTES.demo}>
-                                    Try Demo
-                                    <span aria-hidden="true">→</span>
-                                </Link>
                                 {canOpenApp ? (
                                     <Link className="landing-primary-action" href={ROUTES.app}>
                                         Open your list
@@ -137,11 +134,19 @@ export default function LoggedOut({
                                     </Link>
                                 ) : (
                                     <div className="landing-sign-in" id="landing-sign-in">
+                                        <span className="landing-sign-in-label">
+                                            Open your list
+                                            <span aria-hidden="true">→</span>
+                                        </span>
                                         <div className="google-shell">
                                             <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                                         </div>
                                     </div>
                                 )}
+                                <Link className="landing-secondary-action" href={ROUTES.demo}>
+                                    Try Demo
+                                    <span aria-hidden="true">→</span>
+                                </Link>
                             </div>
                             <p className="landing-reassurance">No goals to miss. No streaks to break. Just a softer place to begin.</p>
                         </div>
@@ -154,6 +159,7 @@ export default function LoggedOut({
                         </div>
                     </section>
                 </main>
+                <Footer />
             </div>
         </>
     );
