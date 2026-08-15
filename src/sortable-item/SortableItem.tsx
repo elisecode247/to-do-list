@@ -30,6 +30,7 @@ import {
     ChevronRight,
     Users,
 } from 'lucide-react';
+import { Checkbox } from '@headlessui/react';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItemPlaceholder from './SortableItemPlaceholder';
 import { TAB_ARCHIVED, TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
@@ -314,8 +315,7 @@ export const SortableItem: FC<SortableItemProps> = ({
         }, 334);
     }
 
-    async function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
-        const checked = e.target.checked;
+    function handleCheck(checked: boolean) {
         if (checked && isHideCompleted) {
             scheduleExitAnimation(() => {
                 toggleChecked(id, checked);
@@ -459,9 +459,8 @@ export const SortableItem: FC<SortableItemProps> = ({
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                 >
-                    <input
+                    <Checkbox
                         className={`sortable-item_checkbox ${!canComplete ? 'sortable-item_checkbox--disabled' : ''}`}
-                        type="checkbox"
                         checked={checked}
                         onChange={handleCheck}
                         disabled={!canComplete}
@@ -472,7 +471,21 @@ export const SortableItem: FC<SortableItemProps> = ({
                             : checked ? "Mark as not done" : "Mark as done"}
                         onPointerDown={(e) => e.stopPropagation()}
                         onTouchStart={(e) => e.stopPropagation()}
-                    />
+                    >
+                        <svg
+                            className="sortable-item_checkbox-icon"
+                            viewBox="0 0 14 14"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M3 8L6 11L11 3.5"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </Checkbox>
                 </label>
                 <div className="sortable-item_text-container">
                     {checklistType === 'search-results' && (

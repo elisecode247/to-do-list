@@ -137,9 +137,9 @@ describe('SortableItem role permissions', () => {
         const completion = byLabel(
             rendered.container,
             'Mark task "viewer task" as done',
-        ) as HTMLInputElement;
+        ) as HTMLElement;
 
-        expect(completion.disabled).toBe(true);
+        expect(completion.getAttribute('aria-disabled')).toBe('true');
         expect(completion.getAttribute('title')).toBe(
             'Viewer access cannot change completion',
         );
@@ -154,9 +154,9 @@ describe('SortableItem role permissions', () => {
         const completion = byLabel(
             rendered.container,
             'Mark task "doer task" as done',
-        ) as HTMLInputElement;
+        ) as HTMLElement;
 
-        expect(completion.disabled).toBe(false);
+        expect(completion.getAttribute('aria-disabled')).toBeNull();
         expect(byLabel(rendered.container, 'More task actions')).toBeNull();
 
         await click(completion);

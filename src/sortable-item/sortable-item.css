@@ -2,7 +2,7 @@
     --sortable-item-touch-target-min: 44px;
     --sortable-item-touch-target-mobile: 48px;
     --sortable-item-control-gap: 8px;
-    --sortable-item-checkbox-size: 18px;
+    --sortable-item-checkbox-size: 22px;
     --sortable-item-shadow-clearance-block: 8px;
     --sortable-item-shadow-clearance-inline: 16px;
 }
@@ -164,16 +164,119 @@
 }
 
 .sortable-item_checkbox {
+    --checkbox-background: color-mix(in srgb, var(--color-surface) 88%, var(--color-primary));
+    --checkbox-border: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+    --checkbox-checked-background: var(--color-accent);
+    --checkbox-checked-border: var(--color-accent-border);
+    --checkbox-checkmark: contrast-color(var(--checkbox-checked-background));
+    --checkbox-highlight: color-mix(in srgb, var(--color-surface) 78%, transparent);
+    --checkbox-shadow: color-mix(in srgb, var(--color-primary) 32%, transparent);
+
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
     width: var(--sortable-item-checkbox-size);
     height: var(--sortable-item-checkbox-size);
     margin: 0;
+    padding: 0;
+    border: 2px solid var(--checkbox-border);
+    border-radius: calc(var(--radius-sm) + 2px);
+    background:
+        linear-gradient(145deg, var(--checkbox-highlight), transparent 48%),
+        var(--checkbox-background);
+    color: transparent;
+    box-shadow:
+        0 3px 0 var(--checkbox-shadow),
+        0 5px 10px color-mix(in srgb, var(--color-shadow) 32%, transparent),
+        inset 0 1px 0 var(--checkbox-highlight);
     cursor: pointer;
-    accent-color: var(--color-success);
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.sortable-item_checkbox::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 3px;
+    inset-inline-start: 4px;
+    width: 6px;
+    height: 3px;
+    border-radius: var(--radius-rounded);
+    background: var(--checkbox-highlight);
+    transform: rotate(-18deg);
+    pointer-events: none;
+}
+
+.sortable-item_checkbox-icon {
+    position: relative;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    opacity: 0;
+    transform: scale(0.75);
+    filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--color-shadow) 28%, transparent));
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.sortable-item_checkbox[data-checked] {
+    border-color: var(--checkbox-checked-border);
+    background: var(--checkbox-checked-background);
+    color: var(--checkbox-checkmark);
+    box-shadow:
+        0 3px 0 color-mix(in srgb, var(--checkbox-checked-background) 72%, var(--color-border)),
+        0 6px 12px color-mix(in srgb, var(--checkbox-checked-background) 30%, transparent),
+        inset 0 1px 0 var(--checkbox-highlight);
+    animation: sortable-checkbox-pop 280ms ease-out;
+}
+
+.sortable-item_checkbox[data-checked]::after {
+    display: none;
+}
+
+.sortable-item_checkbox[data-checked] .sortable-item_checkbox-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.sortable-item_checkbox:hover:not(.sortable-item_checkbox--disabled) {
+    border-color: var(--checkbox-checked-background);
+    transform: translateY(-1px) scale(1.08) rotate(-2deg);
+}
+
+.sortable-item_checkbox:active:not(.sortable-item_checkbox--disabled) {
+    transform: translateY(2px) scale(0.94);
+    box-shadow: 0 1px 0 var(--checkbox-shadow);
+}
+
+.sortable-item_checkbox:focus-visible {
+    outline: 2px solid var(--checkbox-checked-background);
+    outline-offset: 2px;
 }
 
 .sortable-item_checkbox--disabled {
     cursor: not-allowed;
     opacity: .4;
+}
+
+@keyframes sortable-checkbox-pop {
+    0% {
+        transform: scale(0.78) rotate(-8deg);
+    }
+
+    60% {
+        transform: scale(1.14) rotate(3deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+    }
 }
 
 @layer base {
