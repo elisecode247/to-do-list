@@ -39,7 +39,7 @@
     height: 20px;
     margin-inline-start: 8px;
     padding: 0 6px;
-    border-radius: var(--radius-rounded);
+    border-radius: var(--radius-pillowy);
     background: var(--color-filter-selected);
     color: contrast-color(var(--color-filter-selected));
     font-size: 11px;
@@ -81,7 +81,7 @@
     min-height: var(--panel-control-height);
     padding: 7px 10px;
     border: 1px solid transparent;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pillowy);
     background: transparent;
     color: inherit;
     font-size: var(--panel-control-font-size);
@@ -118,7 +118,7 @@
     min-height: 36px;
     padding: 6px 11px;
     border: 1px solid var(--color-filter-border);
-    border-radius: var(--radius-rounded);
+    border-radius: var(--radius-pillowy);
     background: var(--color-filter-surface);
     color: inherit;
     font-size: var(--panel-label-font-size);
@@ -156,7 +156,7 @@
     min-height: var(--panel-control-height);
     padding: 7px 36px 7px 11px;
     border: 1px solid var(--color-filter-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pillowy);
     background: var(--color-filter-surface);
     color: contrast-color(var(--color-filter-surface));
     font-size: var(--panel-control-font-size);
@@ -206,7 +206,7 @@
     flex: 0 0 auto;
     padding: 0;
     border: 1px solid var(--color-filter-selected);
-    border-radius: var(--radius-rounded);
+    border-radius: var(--radius-pillowy);
     background: var(--color-filter-selected);
     cursor: pointer;
     transition: background-color 0.15s ease, border-color 0.15s ease;

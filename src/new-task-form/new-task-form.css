@@ -7,7 +7,7 @@
     opacity: 0.9;
     color: contrast-color(var(--color-primary));
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-pillowy);
     box-sizing: border-box;
     cursor: pointer;
     display: flex;
@@ -30,7 +30,7 @@
 
 .new-task-form-toggle-button:active {
     box-shadow: 0 4px 12px var(--color-accent);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pillowy);
 }
 
 .task-form-field__error {
@@ -95,7 +95,7 @@
         height: 44px;
         position: static;
         z-index: 0;
-        border-radius: var(--radius-md);
+        border-radius: var(--radius-pillowy);
         opacity: 1;
         width: fit-content;
     }

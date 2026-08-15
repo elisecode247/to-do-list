@@ -6,7 +6,7 @@
 
 .edit-task-chip {
     padding: 5px 12px;
-    border-radius: 20px;
+    border-radius: var(--radius-pillowy);
     border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
     background: var(--color-shadow);
     font-size: 12px;
@@ -50,7 +50,7 @@
     align-items: center;
     gap: 7px;
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-pillowy);
     border: 1.5px dashed color-mix(in srgb, var(--color-border) 90%, #d1d5db 10%);
     background: transparent;
     font-size: 13px;
@@ -144,7 +144,7 @@
 
 .edit-task-member__role {
     padding: 3px 7px;
-    border-radius: 999px;
+    border-radius: var(--radius-pillowy);
     background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
     font-size: 10px;
     text-transform: capitalize;
@@ -167,7 +167,7 @@
     min-height: 30px;
     padding: 5px 7px;
     border: 1px solid color-mix(in srgb, var(--form-error-color) 45%, var(--color-border));
-    border-radius: 7px;
+    border-radius: var(--radius-pillowy);
     background: transparent;
     color: var(--form-error-color);
     cursor: pointer;

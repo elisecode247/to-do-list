@@ -7,7 +7,7 @@
     border: none;
     padding: 0;
     margin-left: 12px;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pillowy);
     cursor: pointer;
     color: inherit;
 }
