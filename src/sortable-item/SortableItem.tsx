@@ -517,7 +517,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     <CategoryIcon iconKey={categoryDefinition.icon} size={16} color={categoryDefinition.color} />
                                 </span>
                             ) : null}
-                            {text}
+                            <span className="sortable-item_task-label">{text}</span>
                         </h2>
                     </div>
                     <div className="sortable-item_metadata">

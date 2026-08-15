@@ -3,6 +3,7 @@
     --sortable-item-touch-target-mobile: 48px;
     --sortable-item-control-gap: 8px;
     --sortable-item-checkbox-size: 22px;
+    --sortable-item-title-line-height: 22px;
     --sortable-item-card-padding-block: 18px;
     --sortable-item-card-padding-inline: 22px;
     --sortable-item-card-shadow:
@@ -158,7 +159,9 @@
     justify-content: center;
     width: var(--sortable-item-touch-target-min);
     height: var(--sortable-item-touch-target-min);
-    margin-block-start: -10px;
+    margin-block-start: calc(
+        (var(--sortable-item-title-line-height) - var(--sortable-item-touch-target-min)) / 2
+    );
     margin-inline-start: -12px;
     padding: 0;
     cursor: pointer;
@@ -321,19 +324,28 @@
 
     .sortable-item_category-icon {
         display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
         margin-inline-end: 6px;
-        vertical-align: text-bottom;
     }
 }
 
 .sortable-item_text-heading {
+    display: flex;
+    align-items: center;
     font-family: var(--font-family-body);
-    min-width: 0px;
+    min-width: 0;
+    min-height: var(--sortable-item-title-line-height);
     margin: 0;
-    line-height: 1.35;
+    line-height: var(--sortable-item-title-line-height);
     overflow-wrap: anywhere;
     font-size: 15px;
     font-weight: 500;
+}
+
+.sortable-item_task-label {
+    min-width: 0;
 }
 
 .sortable-item_parent-breadcrumb {
@@ -712,7 +724,9 @@
     }
 
     .sortable-item_checkbox-container {
-        margin-block-start: -12px;
+        margin-block-start: calc(
+            (var(--sortable-item-title-line-height) - var(--sortable-item-touch-target-mobile)) / 2
+        );
         margin-inline-start: -14px;
     }
 
