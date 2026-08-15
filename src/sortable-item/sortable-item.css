@@ -3,6 +3,11 @@
     --sortable-item-touch-target-mobile: 48px;
     --sortable-item-control-gap: 8px;
     --sortable-item-checkbox-size: 22px;
+    --sortable-item-card-padding-block: 18px;
+    --sortable-item-card-padding-inline: 22px;
+    --sortable-item-card-shadow:
+        0 5px 16px color-mix(in srgb, var(--color-shadow) 38%, transparent),
+        0 1px 3px color-mix(in srgb, var(--color-shadow) 24%, transparent);
     --sortable-item-shadow-clearance-block: 8px;
     --sortable-item-shadow-clearance-inline: 16px;
 }
@@ -47,10 +52,11 @@
         align-items: start;
         column-gap: 12px;
         row-gap: 0;
-        padding: 16px 20px;
+        padding: var(--sortable-item-card-padding-block) var(--sortable-item-card-padding-inline);
         background-color: color-mix(in srgb, var(--color-surface) 88%, transparent);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-pillowy);
+        box-shadow: var(--sortable-item-card-shadow);
         color: contrast-color(var(--color-surface));
         position: relative;
         margin: var(--sortable-item-shadow-clearance-block) var(--sortable-item-shadow-clearance-inline);
@@ -645,7 +651,7 @@
 /* Preserve the mockup's content-first hierarchy on larger screens. */
 @media (min-width: 900px) {
     .sortable-item_container {
-        padding: 16px 20px;
+        padding: var(--sortable-item-card-padding-block) var(--sortable-item-card-padding-inline);
         grid-template-columns: 20px minmax(200px, 1fr) minmax(0, auto) var(--sortable-item-touch-target-min);
         grid-template-areas: "checkbox text button-group drag"
             "notes notes notes notes"
