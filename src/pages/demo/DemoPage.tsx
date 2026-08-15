@@ -36,7 +36,7 @@ import ErrorState from "src/error-state/ErrorState";
 import { useToast } from "src/toast/use-toast";
 import Toast from "src/toast/Toast";
 import SparklesOverlay from "src/app/SparklesOverlay";
-import { useThemeOverride } from "src/themes/use-theme-override";
+import { useTheme } from "src/themes/use-theme";
 import AppToolBar from "src/app-toolbar/AppToolbar";
 import ViewBreadcrumb from "src/app-toolbar/ViewBreadcrumb";
 import {
@@ -66,7 +66,7 @@ import AppearanceSettings from "src/pages/user-settings/AppearanceSettings";
 import "src/pages/user-settings/user-settings.css";
 import "src/pages/logged-in/logged-in.css";
 import "./demo.css";
-import { DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE } from "src/themes/constants";
+import { DARK_MODE, SPACE_STYLE } from "src/themes/constants";
 import GettingStartedDialog from "src/onboarding/GettingStartedDialog";
 import { readPersistentSetting, writePersistentSetting } from "src/utilities/persistent-storage";
 import { ROUTES } from "src/router";
@@ -90,7 +90,7 @@ interface DemoPageProps {
 const DemoPage: React.FC<DemoPageProps> = ({
     onSuccessfulLogin,
 }) => {
-    useThemeOverride(DARK_MODE, SPACE_STYLE, COMFORTABLE_DENSITY, GRAPHICS_TRUE);
+    const { updateTheme } = useTheme();
     const now = new Date();
     const dayOfWeekName = `${daysOfWeek[now.getDay()]}, `;
 
@@ -118,6 +118,10 @@ const DemoPage: React.FC<DemoPageProps> = ({
             Number(modeFilter !== ALL_MODES) +
             Number(filterCategory !== ALL_CATEGORIES)
         : 0;
+
+    useLayoutEffect(() => {
+        updateTheme({ mode: DARK_MODE, style: SPACE_STYLE });
+    }, [updateTheme]);
 
     useEffect(() => {
         if (!isLoading && !readPersistentSetting(DEMO_ONBOARDING_CHOICE_KEY)) {
