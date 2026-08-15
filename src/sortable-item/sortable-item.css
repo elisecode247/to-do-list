@@ -327,6 +327,7 @@
 }
 
 .sortable-item_text-heading {
+    font-family: var(--font-family-body);
     min-width: 0px;
     margin: 0;
     line-height: 1.35;

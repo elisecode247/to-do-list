@@ -124,7 +124,7 @@ export default function LoggedOut({
                                 Completely free to use
                             </p>
                             <p className="landing-lede">
-                                Daily Reset List brings together recurring tasks, one-time to-dos, and Google Calendar events. Easily skip, postpone, prioritize, and share them with others.
+                                Daily Reset List keeps your recurring chores, one time tasks, and Google Calendar events all in one place. Skip, postpone, prioritize, or share tasks with others.
                             </p>
                             <div className="landing-actions">
                                 {canOpenApp ? (
@@ -148,7 +148,7 @@ export default function LoggedOut({
                                     <span aria-hidden="true">→</span>
                                 </Link>
                             </div>
-                            <p className="landing-reassurance">No goals to miss. No streaks to break. Just a softer place to begin.</p>
+                            <p className="landing-reassurance">No goals to miss. No streaks to break. No pressure.</p>
                         </div>
 
                         <div className="landing-product-preview" aria-label="Example Daily Reset List">
