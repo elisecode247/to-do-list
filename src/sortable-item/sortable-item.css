@@ -298,7 +298,7 @@
         flex-direction: column;
         gap: 4px;
         align-items: flex-start;
-        padding: 0;
+        padding: 0 0 4px 0;
     }
 
     .sortable-item_text {
@@ -670,7 +670,6 @@
             "notes notes notes notes"
             "subtasks subtasks subtasks subtasks"
             "add-task add-task add-task add-task";
-        gap: 4px;
     }
 
     @container sortable-item (inline-size < 613px) {
