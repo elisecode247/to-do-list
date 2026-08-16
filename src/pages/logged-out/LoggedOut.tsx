@@ -96,7 +96,7 @@ export default function LoggedOut({
     return (
         <>
             <div className="logged-out-root parallax" ref={landingRootRef}>
-                <img id="clouds" src="/pastel-paws-border.webp" className="parallax-bg" role="presentation" alt="" />
+                <img id="clouds" src="/clouds.webp" className="parallax-bg" role="presentation" alt="" />
                 <div className="stars" aria-hidden="true" />
                 <header className="landing-header">
                     <Link className="landing-brand" href={ROUTES.home} aria-label="Daily Reset List home">
