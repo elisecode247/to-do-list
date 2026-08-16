@@ -85,7 +85,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }), [loadTasks, showToast]);
 
     const partialUpdateItem = async (partialItem: Partial<ChecklistItem>) => {
-        let previousItem: ChecklistItem | undefined;
+        let previousItem = items.find(i => i.id === partialItem.id);
 
         try {
             const updatedItem = { ...previousItem, ...partialItem } as ChecklistItem;
