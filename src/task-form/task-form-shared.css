@@ -24,8 +24,9 @@
 
 .task-form-drawer__title {
     margin: 0;
+    font-family: var(--font-family-display);
     font-size: var(--panel-title-font-size);
-    font-weight: 650;
+    font-weight: 500;
     text-transform: none;
     letter-spacing: 0;
 }
@@ -66,6 +67,7 @@
 }
 
 .task-form-field__label {
+    font-family: var(--font-family-display);
     font-size: var(--panel-label-font-size);
     font-weight: 500;
 }
@@ -128,8 +130,9 @@
 .task-form-section-divider {
     width: 100%;
     color: color-mix(in srgb, currentColor 66%, transparent);
+    font-family: var(--font-family-display);
     font-size: var(--panel-section-label-font-size);
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding-top: 6px;

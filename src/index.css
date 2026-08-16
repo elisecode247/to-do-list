@@ -30,6 +30,7 @@ h4,
 h5,
 h6 {
     font-family: var(--font-family-display);
+    font-weight: 500;
 }
 
 button,
