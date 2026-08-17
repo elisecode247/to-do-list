@@ -398,7 +398,7 @@ Work from high surfaces to low ones so fallen dust can be cleaned last.
 
 **Minimum version:** Dust the most visible surface or one shelf.
 
-> Turn off ceiling fans before cleaning. Use a stable step stool, and spray cleaner onto a cloth—not directly onto electronics.`
+> Turn off ceiling fans before cleaning. Use a stable step stool, and spray cleaner onto a cloth, not directly onto electronics.`
     ),
     livingRoomTask("c5aa20d0-6590-430f-b11b-e8d49959f977", "Wipe the coffee table and lamps", 5, 1, FrequencyType.Weekly,
         `* [ ] Move loose items into one spot
@@ -582,7 +582,7 @@ You can stop after one batch. The sink does not have to be completely empty.`
     ),
     kitchenTask("6a1351af-e123-4031-96e0-a65006b05fb6", "Wipe knobs, switches, and outlet covers", 4, 1, FrequencyType.Weekly,
         `* [ ] Turn off or unplug nearby appliances if needed
-* [ ] Spray cleaner onto a cloth—not onto electrical fixtures
+* [ ] Spray cleaner onto a cloth, not onto electrical fixtures
 * [ ] Wipe cabinet and appliance knobs
 * [ ] Wipe light switches
 * [ ] Carefully wipe outlet covers
@@ -1030,7 +1030,7 @@ You do not need to fold everything or create a perfect system.`
 
 **Minimum version:** Fill one donation bag or deep-clean one shelf.
 
-Stop before emptying another section. A usable closet is the goal—not finishing it all at once.`
+Stop before emptying another section. A usable closet is the goal, not finishing it all at once.`
     ),
     bedroomTask("769345ad-1492-43bf-a1bb-7b75dbc542a4", "Clean the windows", 14, 2, FrequencyType.Monthly,
         `Choose **one window** to start:
@@ -1114,7 +1114,7 @@ You can **skip any task** to hide it from Today.`,
 
 **Minimum version:** Grab a basket, trash bag, and cleaning cloth.
 
-Keep supplies together on a level landing—never on the stairs.`
+Keep supplies together on a level landing, never on the stairs.`
     ),
     hallsAndStairsTask("d8ad45c8-e8ae-41bb-8308-5bedddfc00e2", "Clear trip hazards", 1, 1, FrequencyType.Weekly,
         `Walk through the area before cleaning:
@@ -1340,7 +1340,7 @@ Block access to anything dangerous until it can be repaired.`
 Wear gloves and do not handle sharp, hazardous, or unknown items with bare hands.`
     ),
     outsideTask("1c412e45-9fad-49d2-af7f-12099e5b3984", "Sweep the porch, patio, and driveway", 3, 3, FrequencyType.Weekly,
-        `Choose **one surface**—you do not need to sweep all three:
+        `Choose **one surface**, you do not need to sweep all three:
 
 * [ ] Move only lightweight items that block the area
 * [ ] Sweep debris away from the house and doors

@@ -44,7 +44,7 @@ const Guide: React.FC<{ onGuideOpen: React.Dispatch<React.SetStateAction<boolean
                     </div>
                     <div className="guide-popup-hint">
                         <span className="guide-popup-hint-icon">!</span>
-                        If distracted — log it, then return
+                        If distracted, log it, then return
                     </div>
                 </div>
             </div>

@@ -31,7 +31,7 @@ const routes = [
         path: "/",
         output: "dist/index.html",
         title: "Daily Reset List | A Calmer Daily Task List",
-        description: "A calm daily task list for recurring responsibilities and one-time reminders—without streaks, scores, or overdue guilt.",
+        description: "A calm daily task list for recurring responsibilities and one-time reminders without streaks, scores, or overdue guilt.",
         social: true,
     },
     {

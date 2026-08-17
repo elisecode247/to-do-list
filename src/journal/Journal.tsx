@@ -311,7 +311,7 @@ export default function Journal() {
                         </div>
                         <div className="journal-popup-hint">
                             <span className="journal-popup-hint-icon">!</span>
-                            If distracted — log it, then return
+                            If distracted, log it, then return
                         </div>
                     </div>
                 )}
