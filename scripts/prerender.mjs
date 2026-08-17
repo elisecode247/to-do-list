@@ -30,7 +30,7 @@ const routes = [
     {
         path: "/",
         output: "dist/index.html",
-        title: "Daily Reset List",
+        title: "Daily Reset List | A Calmer Daily Task List",
         description: "A calm daily task list for recurring responsibilities and one-time reminders—without streaks, scores, or overdue guilt.",
         social: true,
     },
@@ -54,15 +54,18 @@ for (const route of routes) {
     const outputPath = resolve(root, route.output);
     const socialTags = route.social
         ? [
-            `    <meta property="og:type" content="website">`,
+            `    <meta property="og:type" content="product">`,
             `    <meta property="og:site_name" content="Daily Reset List">`,
+            `    <meta property="product:price:amount" content="0.00">`,
+            `    <meta property="product:price:currency" content="USD">`,
+            `    <meta property="og:availability" content="instock">`,
             `    <meta property="og:title" content="${route.title}">`,
             `    <meta property="og:description" content="${route.description}">`,
             `    <meta property="og:url" content="${canonicalUrl}">`,
             `    <meta property="og:image" content="https://dailyresetlist.com/og.png">`,
             `    <meta property="og:image:width" content="1200">`,
             `    <meta property="og:image:height" content="630">`,
-            `    <meta property="og:image:alt" content="Daily Reset List — A gentler way to remember what matters today.">`,
+            `    <meta property="og:image:alt" content="Daily Reset List: A calmer way to remember what matters today.">`,
             `    <meta name="twitter:card" content="summary_large_image">`,
             `    <meta name="twitter:title" content="${route.title}">`,
             `    <meta name="twitter:description" content="${route.description}">`,
