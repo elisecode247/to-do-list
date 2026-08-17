@@ -162,6 +162,13 @@ const LoggedIn: React.FC = () => {
             Number(sharedByOthers)
         : 0;
 
+    const loadTasksAndEvents = useCallback(() => {
+        loadTasks();
+        if (googleCalendarEnabled) {
+            void loadCalendarEvents();
+        }
+    }, [googleCalendarEnabled, loadCalendarEvents, loadTasks]);
+
     useEffect(() => {
         const filters: StoredFilters = {
             activeTab,
@@ -607,7 +614,7 @@ const LoggedIn: React.FC = () => {
                         ) : taskError ? (
                             <ErrorState
                                 message={taskError}
-                                onRetry={loadTasks}
+                                onRetry={loadTasksAndEvents}
                             />
                         ) : activeView === VIEW_JOURNAL ? (
                             <JournalProvider>
