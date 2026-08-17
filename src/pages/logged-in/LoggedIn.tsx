@@ -381,9 +381,21 @@ const LoggedIn: React.FC = () => {
     }, [updateMobileIndicator]);
 
     useEffect(() => {
-        if (!feedbackButtonRef.current) return;
+        let detachFeedback: (() => void) | undefined;
 
-        return Sentry.getFeedback()?.attachTo(feedbackButtonRef.current);
+        const attachFeedback = () => {
+            if (detachFeedback || !feedbackButtonRef.current) return;
+
+            detachFeedback = Sentry.getFeedback()?.attachTo(feedbackButtonRef.current);
+        };
+
+        window.addEventListener('sentry-feedback-ready', attachFeedback);
+        attachFeedback();
+
+        return () => {
+            window.removeEventListener('sentry-feedback-ready', attachFeedback);
+            detachFeedback?.();
+        };
     }, []);
 
     useEffect(() => {

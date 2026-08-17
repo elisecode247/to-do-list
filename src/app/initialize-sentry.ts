@@ -10,3 +10,5 @@ Sentry.init({
         }),
     ],
 });
+
+window.dispatchEvent(new Event('sentry-feedback-ready'));
