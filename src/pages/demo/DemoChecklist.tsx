@@ -16,6 +16,7 @@ import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { useReducedMotion } from 'framer-motion';
+import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 
 function isTodayOrBefore(date: Date) {
   const today = new Date();
@@ -38,6 +39,7 @@ interface ChecklistProps {
     onEditItem: (item: ChecklistItem) => void;
     sparkles: ReactElement;
     itemsOverride?: ChecklistItem[];
+    sortCompletedTasksLast: boolean;
 }
 
 const DemoChecklist: FC<ChecklistProps> = ({
@@ -49,6 +51,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     onEditItem,
     sparkles,
     itemsOverride,
+    sortCompletedTasksLast,
 }) => {
     const {
         items,
@@ -72,6 +75,9 @@ const DemoChecklist: FC<ChecklistProps> = ({
         const visibleItems = itemsOverride ?? filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory });
         return visibleItems
             .sort((a, b) => {
+                const completionOrder = compareCompletedTasksLast(a, b, sortCompletedTasksLast);
+                if (completionOrder !== 0) return completionOrder;
+
                 if (activeTab === TAB_PRIORITY || activeTab === TAB_HIDDEN || activeTab === TAB_ARCHIVED) {
                     return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
                 } else if (activeTab === TAB_UPCOMING) {
@@ -81,7 +87,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                 }
                 return a.sortOrder - b.sortOrder;
             });
-    }, [items, itemsOverride, modeFilter, activeTab, hideCompleted, filterCategory]);
+    }, [items, itemsOverride, modeFilter, activeTab, hideCompleted, filterCategory, sortCompletedTasksLast]);
 
     const filteredEvents = itemsOverride ? [] : events.filter(event => {
         if (activeTab === TAB_TODAY) {

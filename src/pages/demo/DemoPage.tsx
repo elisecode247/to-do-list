@@ -90,7 +90,7 @@ interface DemoPageProps {
 const DemoPage: React.FC<DemoPageProps> = ({
     onSuccessfulLogin,
 }) => {
-    const { updateTheme } = useTheme();
+    const { toggleSortCompleted, updateTheme } = useTheme();
     const now = new Date();
     const dayOfWeekName = `${daysOfWeek[now.getDay()]}, `;
 
@@ -508,6 +508,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     renderResults={searchResults => (
                                         <DemoChecklist
                                             itemsOverride={searchResults}
+                                            sortCompletedTasksLast={toggleSortCompleted === 'false'}
                                             onEditItem={handleEditItem}
                                             sparkles={sparkles}
                                             activeTab={TAB_TODAY}
@@ -546,6 +547,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 </div>
                             ) : (
                                 <DemoChecklist
+                                    sortCompletedTasksLast={toggleSortCompleted === 'false'}
                                     onEditItem={handleEditItem}
                                     sparkles={sparkles}
                                     activeTab={activeTab}
