@@ -50,6 +50,8 @@ import {
     canEditTask,
 } from 'src/sharing/chore-access';
 import { isChoreAccessChangedError } from 'src/app/api';
+import { useTheme } from 'src/themes/use-theme';
+import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
@@ -130,6 +132,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 }) => {
     const { showToast } = useToast();
     const { categories } = useUserSettings();
+    const { toggleSortCompleted } = useTheme();
     const {
         attributes,
         listeners,
@@ -199,7 +202,7 @@ export const SortableItem: FC<SortableItemProps> = ({
             return false;
         }
         return true;
-    });
+    }).sort((a, b) => compareCompletedTasksLast(a, b, toggleSortCompleted === 'true'));
 
     const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
 

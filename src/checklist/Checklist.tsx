@@ -17,6 +17,8 @@ import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.ts
 import { motion, useReducedMotion } from 'framer-motion';
 import { canEditTask } from 'src/sharing/chore-access';
 import { isChoreAccessChangedError } from 'src/app/api';
+import { useTheme } from 'src/themes/use-theme';
+import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -101,6 +103,8 @@ const Checklist: FC<ChecklistProps> = ({
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
     const hasInitializedCompletedDayRef = useRef(false);
+    const { toggleSortCompleted } = useTheme();
+    const sortCompletedTasksLast = toggleSortCompleted === 'true';
     const {
         refreshContainerRef,
         pullRefreshContainerClassName,
@@ -121,6 +125,9 @@ const Checklist: FC<ChecklistProps> = ({
         sharedByOthers,
     })
         .sort((a, b) => {
+            const completionOrder = compareCompletedTasksLast(a, b, sortCompletedTasksLast);
+            if (completionOrder !== 0) return completionOrder;
+
             if (activeTab === TAB_PRIORITY || activeTab === TAB_HIDDEN || activeTab === TAB_ARCHIVED) {
                 return (a.tabSortOrder?.[activeTab] ?? 0) - (b.tabSortOrder?.[activeTab] ?? 0);
             } else if (activeTab === TAB_UPCOMING) {
