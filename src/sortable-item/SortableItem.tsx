@@ -52,6 +52,7 @@ import {
 import { isChoreAccessChangedError } from 'src/app/api';
 import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
+import { formatDate } from 'src/app/utilities/format-date';
 
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
@@ -315,6 +316,28 @@ export const SortableItem: FC<SortableItemProps> = ({
     async function delayHide() {
         scheduleExitAnimation(() => {
             handleHideItem(id, isHidden);
+        }, 334);
+    }
+
+    function delayDoToday() {
+        if (!partialUpdateItem) {
+            showToast('This task cannot be moved to today.', 'error');
+            return;
+        }
+
+        const todayOverrideDate = formatDate(new Date());
+        scheduleExitAnimation(() => {
+            void Promise.resolve(partialUpdateItem({
+                id,
+                todayOverrideDate,
+            })).then(() => {
+                showToast(`"${text}" moved to today`, 'success');
+            }).catch((error: unknown) => {
+                console.error('Failed to move task to today:', error);
+                if (!isChoreAccessChangedError(error)) {
+                    showToast('Failed to move task to today. Please try again.', 'error');
+                }
+            });
         }, 334);
     }
 
@@ -600,11 +623,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                     {activeTab === TAB_ARCHIVED || checklistType === 'template' ? null : (
                         <IconButton
                             className="sortable-item_main-button sortable-item_hide-button"
-                            onClick={delayHide}
-                            aria-label={isHidden ? "Do task today" : "Skip task today"}
-                            title={isHidden ? "Do task today" : "Skip task today"}
-                            icon={isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
-                            label={isHidden ? "Do Today" : "Skip Today"}
+                            onClick={activeTab === TAB_UPCOMING ? delayDoToday : delayHide}
+                            aria-label={activeTab === TAB_UPCOMING || isHidden ? "Do task today" : "Skip task today"}
+                            title={activeTab === TAB_UPCOMING || isHidden ? "Do task today" : "Skip task today"}
+                            icon={activeTab === TAB_UPCOMING || isHidden ? <CalendarPlus2 size={24} /> : <SkipForward size={24} />}
+                            label={activeTab === TAB_UPCOMING || isHidden ? "Do Today" : "Skip Today"}
                         />
                     )}
                     {hasSubChores && (

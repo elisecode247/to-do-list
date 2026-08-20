@@ -56,6 +56,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const {
         items,
         deleteItem,
+        partialUpdateItem,
         toggleItem,
         prioritizeItem,
         archiveItem,
@@ -295,6 +296,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         onMoveItem={handleMoveItem}
                                         onSuccess={displaySparkles}
                                         nextDue={checklistItem.nextDue}
+                                        partialUpdateItem={partialUpdateItem}
                                         recurrence={checklistItem.recurrence}
                                         hasMembers={false}
                                     />

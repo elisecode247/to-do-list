@@ -73,6 +73,7 @@ export type UpdateTaskRequest = Pick<
     | "isArchived"
     | "category"
     | "recurrence"
+    | "todayOverrideDate"
 >;
 
 export type UpdateTaskResponse = UpdateTaskRequest & Pick<
@@ -214,6 +215,7 @@ export async function updateTask(task: UpdateTaskRequest): Promise<UpdateTaskRes
             isArchived: task.isArchived,
             category: task.category,
             recurrence: task.recurrence,
+            todayOverrideDate: task.todayOverrideDate,
         };
         const response = await fetch(`${API_CHORES_URL}`, {
             method: "PUT",
@@ -236,6 +238,7 @@ export async function updateTask(task: UpdateTaskRequest): Promise<UpdateTaskRes
             isArchived: data.isArchived,
             category: data.category,
             recurrence: data.recurrence,
+            todayOverrideDate: data.todayOverrideDate,
             nextDue: data.nextDue,
             updatedAt: data.updatedAt,
         };

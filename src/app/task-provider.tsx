@@ -101,6 +101,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 'isArchived',
                 'category',
                 'recurrence',
+                'todayOverrideDate',
             ].some(key => Object.prototype.hasOwnProperty.call(partialItem, key));
             let updatedTask = updatedItem;
 

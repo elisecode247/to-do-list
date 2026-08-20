@@ -86,6 +86,7 @@ export interface ChecklistItem {
     parentUuid: string | null;
     recurrence: IntervalRecurrence | OneTimeRecurrence | null;
     nextDue: string | null;
+    todayOverrideDate?: string | null;
     hasMembers: boolean;
     createdAt?: string;
     updatedAt?: string;

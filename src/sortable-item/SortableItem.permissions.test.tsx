@@ -3,7 +3,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, type ComponentProps, type ReactNode } from 'react';
 import { SortableItem } from './SortableItem';
-import { TAB_TODAY } from 'src/app-toolbar/tabs/types';
+import { TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
 import type { ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
@@ -190,6 +190,34 @@ describe('SortableItem role permissions', () => {
         expect(byLabel(rendered.container, 'Archive task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Delete task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Add subtask')).not.toBeNull();
+    });
+
+    it('moves an upcoming task to today through the hide-button action', async () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2026-08-20T16:30:00.000Z'));
+        const partialUpdateItem = vi.fn().mockResolvedValue(undefined);
+
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                activeTab={TAB_UPCOMING}
+                nextDue="2026-08-22T16:30:00.000Z"
+                partialUpdateItem={partialUpdateItem}
+            />,
+        );
+
+        const doToday = byLabel(rendered.container, 'Do task today');
+        expect(doToday?.textContent).toContain('Do Today');
+
+        await click(doToday!);
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(400);
+        });
+
+        expect(partialUpdateItem).toHaveBeenCalledWith({
+            id: 'task-owner',
+            todayOverrideDate: '2026-08-20',
+        });
     });
 
     it('closes the action menu when its task scrolls out of view', async () => {
