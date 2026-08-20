@@ -583,7 +583,7 @@
     color: var(--color-success);
 }
 
-/* Restore Button */
+/* Unarchive Button */
 .sortable-item_restore-button {
     color: var(--color-success);
 }

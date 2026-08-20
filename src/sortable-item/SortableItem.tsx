@@ -708,12 +708,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         <button
                                             className="sortable-item_restore-button"
                                             onClick={() => onMoveItem(id, true)}
-                                            aria-label="Restore archived task"
-                                            title="Restore archived task"
+                                            aria-label="Unarchive task"
+                                            title="Unarchive task"
                                             type="button"
                                         >
                                             <ListPlus size={24} />
-                                            <span className="sortable-item_button-text-span">Restore</span>
+                                            <span className="sortable-item_button-text-span">Unarchive</span>
                                         </button>
                                     )}
 

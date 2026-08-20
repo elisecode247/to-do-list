@@ -508,7 +508,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     renderResults={searchResults => (
                                         <DemoChecklist
                                             itemsOverride={searchResults}
-                                            sortCompletedTasksLast={toggleSortCompleted === 'false'}
+                                            sortCompletedTasksLast={toggleSortCompleted === 'true'}
                                             onEditItem={handleEditItem}
                                             sparkles={sparkles}
                                             activeTab={TAB_TODAY}
@@ -547,7 +547,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                 </div>
                             ) : (
                                 <DemoChecklist
-                                    sortCompletedTasksLast={toggleSortCompleted === 'false'}
+                                    sortCompletedTasksLast={toggleSortCompleted === 'true'}
                                     onEditItem={handleEditItem}
                                     sparkles={sparkles}
                                     activeTab={activeTab}
