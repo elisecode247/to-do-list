@@ -28,7 +28,7 @@ import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Bug, Check, Eye, EyeOff, ListFilter, Plus } from 'lucide-react';
+import { Bug, Check, Eye, EyeOff, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -508,7 +508,7 @@ const LoggedIn: React.FC = () => {
                             onClick={toggleLeft}
                             label="Filters"
                             ariaLabel={`Open filters${appliedFilterCount > 0 ? `, ${appliedFilterCount} applied` : ''}`}
-                            icon={<ListFilter size={24} />}
+                            icon={<img src="/filter-icon.svg" alt="" width={48} height={48} />}
                             showLabel={true}
                             isPriority={false}
                         >

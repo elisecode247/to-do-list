@@ -22,7 +22,6 @@ import {
     Eraser,
     Eye,
     EyeOff,
-    ListFilter,
     PencilIcon,
     Palette,
     Plus,
@@ -313,7 +312,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     onClick={toggleLeft}
                                     label="Filters"
                                     ariaLabel={`Toggle filters${appliedFilterCount > 0 ? `, ${appliedFilterCount} applied` : ''}`}
-                                    icon={<ListFilter size={24} />}
+                                    icon={<img src="/filter-icon.svg" alt="" width={48} height={48} />}
                                     showLabel={true}
                                     isPriority={false}
                                 >
