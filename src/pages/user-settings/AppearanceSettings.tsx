@@ -79,6 +79,10 @@ function AppearanceSettings() {
         getStored('theme-toggle-icon-text', 'true')
     );
 
+    const [toggleSortCompleted, setSortCompleted]  = useState<'true' | 'false'>(() =>
+        getStored('theme-toggle-sort-completed', 'false')
+    );
+
     const [customColors, setCustomColors] = useState<Record<string, string>>(() => readStoredCustomColors());
     const [resolvedThemeColors, setResolvedThemeColors] = useState<Record<string, string>>({});
     const [resolvedCustomBackgroundColors, setResolvedCustomBackgroundColors] = useState<Record<string, string>>({});
@@ -115,6 +119,11 @@ function AppearanceSettings() {
     function handleSetToggleIconText(newToggleIconText: 'true' | 'false') {
         setToggleIconText(newToggleIconText);
         updateTheme({ toggleIconText: newToggleIconText });
+    }
+
+    function handleSetToggleSortCompleted(toggleSortCompleted: 'true' | 'false') {
+        setSortCompleted(toggleSortCompleted);
+        updateTheme({ toggleSortCompleted: toggleSortCompleted });
     }
 
     function handleResetAllColorsToBackground() {
@@ -272,6 +281,18 @@ function AppearanceSettings() {
                     name="theme-toggle-icon-text"
                     value={toggleIconText}
                     onChange={handleSetToggleIconText}
+                    options={[
+                        { value: 'true', label: 'Enabled' },
+                        { value: 'false', label: 'Disabled' },
+                    ]}
+                />
+            </fieldset>
+            <fieldset>
+                <legend>Move Completed Tasks To the Bottom</legend>
+                <RadioGroup
+                    name="theme-toggle-sort-completed"
+                    value={toggleSortCompleted}
+                    onChange={handleSetToggleSortCompleted}
                     options={[
                         { value: 'true', label: 'Enabled' },
                         { value: 'false', label: 'Disabled' },

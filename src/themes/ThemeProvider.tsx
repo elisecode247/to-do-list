@@ -48,6 +48,7 @@ const getStoredTheme = (): ThemeState => ({
     graphics: (readPersistentSetting('theme-graphics') as ThemeGraphic) ?? 'true',
     customColors: readStoredCustomColors(),
     toggleIconText: (readPersistentSetting('theme-toggle-icon-text') as 'true' | 'false') ?? 'true',
+    toggleSortCompleted: (readPersistentSetting('theme-toggle-sort-completed') as 'true' | 'false') ?? 'false',
 });
 
 const applyTheme = ({ mode, style, density, graphics, customColors }: ThemeState) => {
@@ -123,6 +124,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         writePersistentSetting('theme-density', theme.density);
         writePersistentSetting('theme-graphics', theme.graphics);
         writePersistentSetting('theme-toggle-icon-text', theme.toggleIconText);
+        writePersistentSetting('theme-toggle-sort-completed', theme.toggleSortCompleted);
 
         if (theme.customColors) {
             writePersistentSetting(THEME_CUSTOM_COLORS_KEY, JSON.stringify(theme.customColors));
@@ -145,6 +147,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
                 event.key === 'theme-density' ||
                 event.key === 'theme-graphics' ||
                 event.key === 'theme-toggle-icon-text' ||
+                event.key === 'theme-toggle-sort-completed' ||
                 event.key === THEME_CUSTOM_COLORS_KEY
             ) {
                 setTheme(getStoredTheme());

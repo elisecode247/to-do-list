@@ -9,6 +9,7 @@ const LOADING_THEME: ThemeState = {
     density: COMFORTABLE_DENSITY,
     graphics: GRAPHICS_FALSE,
     toggleIconText: 'true',
+    toggleSortCompleted: 'false',
 };
 
 const ignoreThemeUpdate = () => undefined;
@@ -50,6 +51,7 @@ export function useThemeOverride(
                 density: overrideDensity!,
                 graphics: overrideGraphics!,
                 toggleIconText: 'true',
+                toggleSortCompleted: 'false'
             };
         }
 

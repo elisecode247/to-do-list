@@ -10,6 +10,7 @@ export interface ThemeState {
     style: ThemeStyle;
     graphics: ThemeGraphic;
     toggleIconText: 'true' | 'false';
+    toggleSortCompleted: 'true' | 'false';
 }
 
 export interface ThemeState {
