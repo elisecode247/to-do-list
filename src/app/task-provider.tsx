@@ -89,6 +89,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
         try {
             const updatedItem = { ...previousItem, ...partialItem } as ChecklistItem;
+            if (updatedItem.note === null) {
+                updatedItem.note = '';
+            }
+            if (updatedItem.recurrence && updatedItem.recurrence.startDate === null) {
+                updatedItem.recurrence.startDate = '';
+            }
             const hasCompletionUpdate = Object.prototype.hasOwnProperty.call(
                 partialItem,
                 'lastCompleted',
@@ -161,6 +167,12 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         });
 
         try {
+            if (updatedItem.note === null) {
+                updatedItem.note = '';
+            }
+            if (updatedItem.recurrence && updatedItem.recurrence.startDate === null) {
+                updatedItem.recurrence.startDate = '';
+            }
             const serverTask = await updateTask(updatedItem);
 
             let updatedTask: ChecklistItem = {
