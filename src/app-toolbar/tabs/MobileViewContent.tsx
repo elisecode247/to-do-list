@@ -1,4 +1,3 @@
-import { ListTodo, PencilLine, Search } from 'lucide-react';
 import { VIEW_LABELS, VIEWS, type View } from './types';
 
 type MobileViewContentProps = {
@@ -13,9 +12,9 @@ export default function MobileViewContent({ view }: MobileViewContentProps) {
     };
 
     const icons = {
-        [VIEWS.search]: <Search {...iconProps} />,
-        [VIEWS.journal]: <PencilLine {...iconProps} />,
-        [VIEWS.list]: <ListTodo {...iconProps} />,
+        [VIEWS.search]: <img src="./magnifier.svg" width={24} {...iconProps} />,
+        [VIEWS.journal]: <img src="./feather-pen.svg" width={24} {...iconProps} />,
+        [VIEWS.list]: <img src="./list.svg" width={24} {...iconProps} />,
     };
 
     return (

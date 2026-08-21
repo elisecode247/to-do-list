@@ -28,7 +28,7 @@ import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Bug, Check, Eye, EyeOff, Plus } from 'lucide-react';
+import { Check, Eye, EyeOff, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
