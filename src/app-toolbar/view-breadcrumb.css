@@ -78,6 +78,58 @@
     box-shadow: inset 0 0 0 2px var(--color-primary);
 }
 
+.view-breadcrumb .view-breadcrumb__menu-button.view-breadcrumb__menu-button--today {
+    --today-pill-edge: color-mix(in srgb, var(--color-primary-hover) 82%, var(--color-shadow));
+    --today-pill-center: color-mix(in srgb, var(--color-accent) 88%, var(--color-primary) 12%);
+    --today-pill-highlight: color-mix(in srgb, var(--color-accent) 62%, var(--color-surface));
+
+    min-width: 78px;
+    height: 44px;
+    padding-inline: calc(var(--spacing-sm) + 4px);
+    border-color: color-mix(in srgb, var(--color-accent-border) 76%, transparent);
+    background:
+        radial-gradient(
+            circle at 22% 8%,
+            var(--today-pill-highlight) 0%,
+            transparent 38%
+        ),
+        linear-gradient(
+            120deg,
+            var(--today-pill-edge) 0%,
+            var(--color-primary) 27%,
+            var(--today-pill-center) 52%,
+            var(--color-accent-border) 74%,
+            var(--today-pill-edge) 100%
+        );
+    background-position: center, 0% center;
+    background-size: 100% 100%, 180% 100%;
+    color: contrast-color(var(--today-pill-center));
+    font-weight: 750;
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--color-surface) 42%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
+        0 0 14px color-mix(in srgb, var(--color-accent) 48%, transparent),
+        0 5px 9px color-mix(in srgb, var(--color-shadow) 88%, transparent);
+}
+
+.view-breadcrumb .view-breadcrumb__menu-button.view-breadcrumb__menu-button--today:hover {
+    background-position: center, 100% center;
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--color-surface) 52%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent),
+        0 0 17px color-mix(in srgb, var(--color-accent) 58%, transparent),
+        0 6px 11px var(--color-shadow);
+}
+
+.view-breadcrumb .view-breadcrumb__menu-button.view-breadcrumb__menu-button--today:focus-visible {
+    box-shadow:
+        inset 0 0 0 2px contrast-color(var(--today-pill-center)),
+        inset 0 1px 0 color-mix(in srgb, var(--color-surface) 42%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
+        0 0 14px color-mix(in srgb, var(--color-accent) 48%, transparent),
+        0 5px 9px color-mix(in srgb, var(--color-shadow) 88%, transparent);
+}
+
 .view-breadcrumb__menu-items {
     --anchor-gap: 4px;
     z-index: 1200;
@@ -131,7 +183,7 @@
     flex: 1 1 0;
     margin-right: auto;
     padding: 0px;
-    overflow: hidden;
+    overflow: visible;
     text-align: left;
     text-overflow: ellipsis;
 }

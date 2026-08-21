@@ -1,6 +1,7 @@
 import {
     LIST_TABS,
     TAB_LABELS,
+    TAB_TODAY,
     VIEW_LABELS,
     VIEW_LIST,
     VIEWS,
@@ -67,7 +68,13 @@ export default function ViewBreadcrumb({
                     <span className="view-breadcrumb__separator" aria-hidden="true">·</span>
                     <span className="view-breadcrumb__part view-breadcrumb__part--tab">
                         <Menu>
-                            <MenuButton className="view-breadcrumb__menu-button" aria-label="Change list tab">
+                            <MenuButton
+                                className={`view-breadcrumb__menu-button ${activeTab === TAB_TODAY ? 'view-breadcrumb__menu-button--today' : ''}`}
+                                aria-label="Change list tab"
+                            >
+                                {activeTab === TAB_TODAY ? (
+                                    <img src="/sun.svg" alt="" width={24} height={24} aria-hidden="true" />
+                                ) : null}
                                 {TAB_LABELS[activeTab]}
                                 <ChevronDown size={14} strokeWidth={2.25} aria-hidden="true" />
                             </MenuButton>
