@@ -73,7 +73,7 @@ export default function ViewBreadcrumb({
                                 aria-label="Change list tab"
                             >
                                 {activeTab === TAB_TODAY ? (
-                                    <img src="/sun.svg" alt="" width={24} height={24} aria-hidden="true" />
+                                    <img src="/earth.svg" alt="" width={24} height={24} aria-hidden="true" />
                                 ) : null}
                                 {TAB_LABELS[activeTab]}
                                 <ChevronDown size={14} strokeWidth={2.25} aria-hidden="true" />
