@@ -442,30 +442,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                 ${isMenuOpen ? 'sortable-item_drag-wrapper--menu-open' : ''}`}
             ref={setDragWrapperRef}
         >
-            <motion.div
+            <div
                 className={`sortable-item_container
                     ${isPriority ? 'mode-priority' : ''}
                     ${isSubChore && !isTopLevel ? 'sortable-item_container--subchore' : ''}
+                    ${isExiting ? 'sortable-item_container--exiting' : ''}
                 `}
-                initial={{
-                    opacity: 0,
-                    scale: 0.95,
-                    filter: "blur(2px)",
-                }}
-                animate={
-                    isExiting
-                        ? {
-                            opacity: [1, 0.3, 0],
-                            scale: [1, 0.5, 0],
-                            filter: "blur(2px)",
-                        }
-                        : {
-                            opacity: 1,
-                            scale: 1,
-                            filter: "blur(0px)",
-                        }
-                }
-                transition={{ duration: 0.32 }}
             >
                 <button
                     ref={setActivatorNodeRef}
@@ -774,28 +756,30 @@ export const SortableItem: FC<SortableItemProps> = ({
                     {showNotes && (
                         <motion.div
                             key={`notes-${id}`}
-                            className="sortable-item_note"
-                            initial={{ height: 0, opacity: 0, y: -4 }}
-                            animate={{ height: 'auto', opacity: 1, y: 0 }}
+                            className="sortable-item_note-layout"
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
                             exit={{ height: 0, opacity: 0, y: -4 }}
                             transition={{ duration: 0.22, ease: 'easeOut' }}
                         >
-                            {checklistType === 'search-results' ? (
-                                <div
-                                    className="sortable-item_note-preview"
-                                    role="note"
-                                    aria-label={`Note for ${text}`}
-                                >
-                                    {note}
-                                </div>
-                            ) : (
-                                <NoteEditor
-                                    ref={noteRef}
-                                    initialMarkdown={note ?? ''}
-                                    onChange={canEdit ? handleNoteChange : undefined}
-                                    readOnly={!canEdit}
-                                />
-                            )}
+                            <div className="sortable-item_note">
+                                {checklistType === 'search-results' ? (
+                                    <div
+                                        className="sortable-item_note-preview"
+                                        role="note"
+                                        aria-label={`Note for ${text}`}
+                                    >
+                                        {note}
+                                    </div>
+                                ) : (
+                                    <NoteEditor
+                                        ref={noteRef}
+                                        initialMarkdown={note ?? ''}
+                                        onChange={canEdit ? handleNoteChange : undefined}
+                                        readOnly={!canEdit}
+                                    />
+                                )}
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -807,28 +791,32 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {canEdit && !hasSubChores && dropZoneOpen && (
                                 <motion.div
                                     key={`placeholder-${id}`}
-                                    className="sortable-item_subtasks-motion-shell"
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
+                                    className="sortable-item_subtasks-motion-layout"
+                                    initial={{ height: 0 }}
+                                    animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <SortableItemPlaceholder id={id as string} />
+                                    <div className="sortable-item_subtasks-motion-shell">
+                                        <SortableItemPlaceholder id={id as string} />
+                                    </div>
                                 </motion.div>
                             )}
 
                             {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
                                 <motion.div
                                     key={`empty-subtasks-${id}`}
-                                    className="sortable-item_subtasks-motion-shell"
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
+                                    className="sortable-item_subtasks-motion-layout"
+                                    initial={{ height: 0 }}
+                                    animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_no-subtasks">
-                                        No subtasks to show. You have hidden or completed subtasks.<br />
-                                        Adjust filters or go to "Not Today" tab to see all subtasks.
+                                    <div className="sortable-item_subtasks-motion-shell">
+                                        <div className="sortable-item_no-subtasks">
+                                            No subtasks to show. You have hidden or completed subtasks.<br />
+                                            Adjust filters or go to "Not Today" tab to see all subtasks.
+                                        </div>
                                     </div>
                                 </motion.div>
                             )}
@@ -836,13 +824,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {!collapsed && (filteredTasks?.length ?? 0) > 0 && (
                                 <motion.div
                                     key={`subtasks-${id}`}
-                                    className="sortable-item_subtasks-motion-shell"
-                                    initial={{ height: 0, opacity: 0, y: -4 }}
-                                    animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                    className="sortable-item_subtasks-motion-layout"
+                                    initial={{ height: 0 }}
+                                    animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0, y: -4 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    {filteredTasks?.map((subtask) => (
+                                    <div className="sortable-item_subtasks-motion-shell">
+                                        {filteredTasks?.map((subtask) => (
                                         <SortableItem
                                             checklistType={checklistType}
                                             key={subtask.id}
@@ -880,8 +869,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             hasMembers={subtask.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
                                             itemLookup={itemLookup}
-                                        />
-                                    ))}
+                                            />
+                                        ))}
+                                    </div>
                                 </motion.div>
                             )}
 
@@ -906,13 +896,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {showUpcoming && (
                                             <motion.div
                                                 key={`upcoming-list-${id}`}
-                                                className="sortable-item_subtasks-motion-shell"
-                                                initial={{ height: 0, opacity: 0, y: -4 }}
-                                                animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                                className="sortable-item_subtasks-motion-layout"
+                                                initial={{ height: 0 }}
+                                                animate={{ height: 'auto' }}
                                                 exit={{ height: 0, opacity: 0, y: -4 }}
                                                 transition={{ duration: 0.22, ease: 'easeOut' }}
                                             >
-                                                {upcomingTasks.map((subtask) => (
+                                                <div className="sortable-item_subtasks-motion-shell">
+                                                    {upcomingTasks.map((subtask) => (
                                                     <SortableItem
                                                         checklistType={checklistType}
                                                         key={subtask.id}
@@ -951,8 +942,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                         hasMembers={subtask.hasMembers}
                                                         expandedNoteItemIds={expandedNoteItemIds}
                                                         itemLookup={itemLookup}
-                                                    />
-                                                ))}
+                                                        />
+                                                    ))}
+                                                </div>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -997,7 +989,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </div>
                     </div>
                 ) : null}
-            </motion.div>
+            </div>
         </div>
     );
 };

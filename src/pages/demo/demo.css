@@ -70,19 +70,6 @@
 }
 
 
-.demo-link {
-    margin-top: 12px;
-    font-size: 0.8rem;
-    letter-spacing: 0.18em;
-    color: contrast-color(var(--color-background));
-    cursor: pointer;
-    transition: opacity 0.3s ease, text-shadow 0.3s ease;
-    background: none;
-    border: none;
-    outline: none;
-    text-decoration: none;
-}
-
 .demo-header-actions {
     grid-area: demo-actions;
     display: flex;

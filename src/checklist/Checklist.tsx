@@ -14,7 +14,7 @@ import { useToast } from 'src/toast/use-toast';
 import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { usePullToRefresh } from 'src/checklist/utilities/use-pull-to-refresh.tsx';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import { canEditTask } from 'src/sharing/chore-access';
 import { isChoreAccessChangedError } from 'src/app/api';
 import { useTheme } from 'src/themes/use-theme';
@@ -471,15 +471,12 @@ const Checklist: FC<ChecklistProps> = ({
 
                                     if (checklistType === 'search-results') {
                                         return (
-                                            <motion.div
+                                            <div
                                                 className="search-result-item"
                                                 key={checklistItem.id}
-                                                initial={shouldReduceMotion ? false : { opacity: 0, y: 4 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: shouldReduceMotion ? 0 : 0.14, ease: 'easeOut' }}
                                             >
                                                 {checklistItemElement}
-                                            </motion.div>
+                                            </div>
                                         );
                                     }
 

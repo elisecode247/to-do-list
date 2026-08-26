@@ -232,6 +232,18 @@
 
 .search-result-item {
     min-width: 0;
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 140ms ease-out,
+        transform 140ms ease-out;
+}
+
+@starting-style {
+    .search-result-item {
+        opacity: 0;
+        transform: translateY(4px);
+    }
 }
 
 .search-results .placeholder {
