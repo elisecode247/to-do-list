@@ -13,7 +13,7 @@ export default function MobileViewContent({ view }: MobileViewContentProps) {
 
     const icons = {
         [VIEWS.search]: <img src="./magnifying-glass.svg" width={24} {...iconProps} />,
-        [VIEWS.journal]: <img src="./pen.svg" width={24} {...iconProps} />,
+        [VIEWS.journal]: <img src="./pen1.svg" width={24} {...iconProps} />,
         [VIEWS.list]: <img src="./task-list.svg" width={24} {...iconProps} />,
     };
 
