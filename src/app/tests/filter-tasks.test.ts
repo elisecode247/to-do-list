@@ -156,6 +156,39 @@ describe('filterTasks – tab filtering', () => {
         expect(result).toHaveLength(0);
     });
 
+    it('Today tab includes tasks overridden to today', () => {
+        const today = getTodayAtMidnight();
+        const overriddenTask = makeTask({
+            nextDue: getDateRelativeToToday(1),
+            todayOverrideDate: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [overriddenTask],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toEqual([overriddenTask]);
+    });
+
+    it('Today tab excludes future tasks overridden on another date', () => {
+        const overriddenTask = makeTask({
+            nextDue: getDateRelativeToToday(1),
+            todayOverrideDate: '2000-01-01',
+        });
+
+        const result = filterTasks(
+            makeParams({
+                items: [overriddenTask],
+                activeTab: TAB_TODAY,
+            })
+        );
+
+        expect(result).toHaveLength(0);
+    });
+
     it('Today tab includes tasks without due dates', () => {
         const noDueDate = makeTask({ nextDue: null });
 

@@ -56,6 +56,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             const formattedItems = data.map((item: ChecklistItem): ChecklistItem => {
                 return {
                     ...item,
+                    todayOverrideDate: item?.todayOverrideDate?.slice(0, 10) ?? null,
                     done: isDateToday(item.lastCompleted),
                     itemType: 'checklist-item',
                     // and if it was completed today, it is not upcoming, otherwise it is upcoming if nextDue is in the future

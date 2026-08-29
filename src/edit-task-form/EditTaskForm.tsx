@@ -666,6 +666,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                                 </span>
                             </div>
                         )}
+                        {formData.id}
                     </div>
                 </div>
 

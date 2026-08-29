@@ -3,6 +3,7 @@ import type { Mode } from 'src/app/types';
 import { isCategoryIncluded } from 'src/category-select/category-constants';
 import { TAB_ARCHIVED, TAB_HIDDEN, TAB_PRIORITY, TAB_TODAY, TAB_UPCOMING, TAB_ALL } from 'src/app-toolbar/tabs/types';
 import { ALL_MODES } from 'src/checklist/constants';
+import { formatDate } from './format-date';
 
 export function filterTasks({
     items,
@@ -39,16 +40,17 @@ export function getLocalTodayAtMidnight(): Date {
 /** Helper: Tab filter logic */
 function matchTab(task: ChecklistItem, activeTab: string, availableTaskIds: ReadonlySet<string>): boolean {
     const isCompletedToday = task.done && getLocalTodayAtMidnight().toDateString() === new Date(task.lastCompleted).toDateString();
+    const isTodayOverride = task.todayOverrideDate === formatDate(getLocalTodayAtMidnight());
     switch (activeTab) {
         case TAB_ALL:
             return true;
         case TAB_TODAY:
             return !task.isArchived && !task.isHidden && !isSubtask(task, availableTaskIds) &&
-                (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday);
+                (!task.nextDue || new Date(task.nextDue) <= getLocalTodayAtMidnight() || isCompletedToday || isTodayOverride);
 
         case TAB_UPCOMING:
             return (!!task.nextDue && new Date(task.nextDue) > getLocalTodayAtMidnight()) &&
-                !task.isHidden && !isSubtask(task, availableTaskIds) && !task.isArchived;
+                !task.isHidden && !isSubtask(task, availableTaskIds) && !task.isArchived && !isTodayOverride;
 
         case TAB_HIDDEN:
             return task.isHidden;
