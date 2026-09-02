@@ -633,6 +633,19 @@ export const SortableItem: FC<SortableItemProps> = ({
                             icon={showNotes ? <BookMinus size={24} /> : <BookPlus size={24} />}
                         />
                     )}
+                    {canEdit && (
+                        <IconButton
+                            className="sortable-item_main-button sortable-item_edit-button"
+                            onClick={() => {
+                                handleEdit(id);
+                            }}
+                            aria-label="Edit task"
+                            title="Edit task"
+                            label="Edit"
+                            icon={<Edit size={24} />}
+                        />
+                    )}
+
                     {hasMenuActions && (
                         <div className="sortable-item_menu-wrapper">
                             <IconButton
@@ -679,22 +692,6 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             <span className="sortable-item_button-text-span">
                                                 {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
                                             </span>
-                                        </button>
-                                    )}
-
-                                    {canEdit && (
-                                        <button
-                                            className="sortable-item_edit-button"
-                                            onClick={() => {
-                                                handleEdit(id);
-                                                setIsMenuOpen(false);
-                                            }}
-                                            aria-label="Edit task"
-                                            title="Edit task"
-                                            type="button"
-                                        >
-                                            <Edit size={24} />
-                                            <span className="sortable-item_button-text-span">Edit</span>
                                         </button>
                                     )}
 
@@ -832,43 +829,43 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 >
                                     <div className="sortable-item_subtasks-motion-shell">
                                         {filteredTasks?.map((subtask) => (
-                                        <SortableItem
-                                            checklistType={checklistType}
-                                            key={subtask.id}
-                                            id={subtask.id}
-                                            activeTab={activeTab}
-                                            hasSubChores={subtask.hasSubChores}
-                                            parentUuid={subtask.parentUuid}
-                                            isArchived={subtask.isArchived}
-                                            isHidden={subtask.isHidden}
-                                            isHideCompleted={isHideCompleted}
-                                            isSubChore={!!subtask.parentUuid}
-                                            isTopLevel={false}
-                                            checked={subtask.done}
-                                            deleteItem={deleteItem}
-                                            prioritizeItem={prioritizeItem}
-                                            text={subtask.text}
-                                            note={subtask.note}
-                                            mode={subtask.mode}
-                                            category={subtask.category}
-                                            lastCompleted={subtask.lastCompleted}
-                                            toggleChecked={toggleChecked}
-                                            handleEdit={handleEdit}
-                                            handleHideItem={handleHideItem}
-                                            onMoveItem={onMoveItem}
-                                            isPriority={subtask.isPriority}
-                                            onSuccess={onSuccess}
-                                            subtasks={getSubtasks(subtask.id)}
-                                            nextDue={subtask.nextDue}
-                                            addItem={addItem}
-                                            partialUpdateItem={partialUpdateItem}
-                                            getSubtasks={getSubtasks}
-                                            recurrence={subtask.recurrence}
-                                            accessRole={subtask.accessRole}
-                                            ownerName={subtask.ownerName}
-                                            hasMembers={subtask.hasMembers}
-                                            expandedNoteItemIds={expandedNoteItemIds}
-                                            itemLookup={itemLookup}
+                                            <SortableItem
+                                                checklistType={checklistType}
+                                                key={subtask.id}
+                                                id={subtask.id}
+                                                activeTab={activeTab}
+                                                hasSubChores={subtask.hasSubChores}
+                                                parentUuid={subtask.parentUuid}
+                                                isArchived={subtask.isArchived}
+                                                isHidden={subtask.isHidden}
+                                                isHideCompleted={isHideCompleted}
+                                                isSubChore={!!subtask.parentUuid}
+                                                isTopLevel={false}
+                                                checked={subtask.done}
+                                                deleteItem={deleteItem}
+                                                prioritizeItem={prioritizeItem}
+                                                text={subtask.text}
+                                                note={subtask.note}
+                                                mode={subtask.mode}
+                                                category={subtask.category}
+                                                lastCompleted={subtask.lastCompleted}
+                                                toggleChecked={toggleChecked}
+                                                handleEdit={handleEdit}
+                                                handleHideItem={handleHideItem}
+                                                onMoveItem={onMoveItem}
+                                                isPriority={subtask.isPriority}
+                                                onSuccess={onSuccess}
+                                                subtasks={getSubtasks(subtask.id)}
+                                                nextDue={subtask.nextDue}
+                                                addItem={addItem}
+                                                partialUpdateItem={partialUpdateItem}
+                                                getSubtasks={getSubtasks}
+                                                recurrence={subtask.recurrence}
+                                                accessRole={subtask.accessRole}
+                                                ownerName={subtask.ownerName}
+                                                hasMembers={subtask.hasMembers}
+                                                expandedNoteItemIds={expandedNoteItemIds}
+                                                itemLookup={itemLookup}
                                             />
                                         ))}
                                     </div>
@@ -904,44 +901,44 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             >
                                                 <div className="sortable-item_subtasks-motion-shell">
                                                     {upcomingTasks.map((subtask) => (
-                                                    <SortableItem
-                                                        checklistType={checklistType}
-                                                        key={subtask.id}
-                                                        id={subtask.id}
-                                                        isArchived={subtask.isArchived}
-                                                        activeTab={activeTab}
-                                                        hasSubChores={subtask.hasSubChores}
-                                                        isSubChore={!!subtask.parentUuid}
-                                                        isTopLevel={false}
-                                                        parentUuid={subtask.parentUuid}
-                                                        isHidden={subtask.isHidden}
-                                                        isHideCompleted={isHideCompleted}
-                                                        checked={subtask.done}
-                                                        deleteItem={deleteItem}
-                                                        prioritizeItem={prioritizeItem}
-                                                        text={subtask.text}
-                                                        note={subtask.note}
-                                                        mode={subtask.mode}
-                                                        category={subtask.category}
-                                                        lastCompleted={subtask.lastCompleted}
-                                                        toggleChecked={toggleChecked}
-                                                        handleEdit={handleEdit}
-                                                        handleHideItem={handleHideItem}
-                                                        onMoveItem={onMoveItem}
-                                                        isPriority={subtask.isPriority}
-                                                        onSuccess={onSuccess}
-                                                        subtasks={getSubtasks(subtask.id)}
-                                                        nextDue={subtask.nextDue}
-                                                        isUpcomingSubtask={true}
-                                                        addItem={addItem}
-                                                        partialUpdateItem={partialUpdateItem}
-                                                        getSubtasks={getSubtasks}
-                                                        recurrence={subtask.recurrence}
-                                                        accessRole={subtask.accessRole}
-                                                        ownerName={subtask.ownerName}
-                                                        hasMembers={subtask.hasMembers}
-                                                        expandedNoteItemIds={expandedNoteItemIds}
-                                                        itemLookup={itemLookup}
+                                                        <SortableItem
+                                                            checklistType={checklistType}
+                                                            key={subtask.id}
+                                                            id={subtask.id}
+                                                            isArchived={subtask.isArchived}
+                                                            activeTab={activeTab}
+                                                            hasSubChores={subtask.hasSubChores}
+                                                            isSubChore={!!subtask.parentUuid}
+                                                            isTopLevel={false}
+                                                            parentUuid={subtask.parentUuid}
+                                                            isHidden={subtask.isHidden}
+                                                            isHideCompleted={isHideCompleted}
+                                                            checked={subtask.done}
+                                                            deleteItem={deleteItem}
+                                                            prioritizeItem={prioritizeItem}
+                                                            text={subtask.text}
+                                                            note={subtask.note}
+                                                            mode={subtask.mode}
+                                                            category={subtask.category}
+                                                            lastCompleted={subtask.lastCompleted}
+                                                            toggleChecked={toggleChecked}
+                                                            handleEdit={handleEdit}
+                                                            handleHideItem={handleHideItem}
+                                                            onMoveItem={onMoveItem}
+                                                            isPriority={subtask.isPriority}
+                                                            onSuccess={onSuccess}
+                                                            subtasks={getSubtasks(subtask.id)}
+                                                            nextDue={subtask.nextDue}
+                                                            isUpcomingSubtask={true}
+                                                            addItem={addItem}
+                                                            partialUpdateItem={partialUpdateItem}
+                                                            getSubtasks={getSubtasks}
+                                                            recurrence={subtask.recurrence}
+                                                            accessRole={subtask.accessRole}
+                                                            ownerName={subtask.ownerName}
+                                                            hasMembers={subtask.hasMembers}
+                                                            expandedNoteItemIds={expandedNoteItemIds}
+                                                            itemLookup={itemLookup}
                                                         />
                                                     ))}
                                                 </div>
