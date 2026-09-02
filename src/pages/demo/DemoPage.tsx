@@ -70,6 +70,7 @@ import GettingStartedDialog from "src/onboarding/GettingStartedDialog";
 import { readPersistentSetting, writePersistentSetting } from "src/utilities/persistent-storage";
 import { ROUTES } from "src/router";
 import { useLocation } from "wouter";
+import ThemeModeToggle from "src/themes/ThemeModeToggle";
 
 const daysOfWeek = [
     "Sunday",
@@ -399,6 +400,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     </div>
 
                     <div className="demo-header-actions">
+                        <ThemeModeToggle />
                         <GoogleLoginButton onSuccess={onSuccessfulLogin} />
                         {activeView === VIEW_LIST && (
                             <Menu>
