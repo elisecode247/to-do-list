@@ -48,18 +48,6 @@
     font-family: var(--font-family-display);
 }
 
-.app_subtitle {
-    display: flex;
-    gap: 4px;
-    align-items: flex-start;
-    opacity: 0.75;
-    margin: 0;
-    color: contrast-color(var(--color-background));
-    font-size: 12px;
-    flex-wrap: nowrap;
-    justify-content: center;
-}
-
 .page_h2 {
     font-size: 20px;
     font-weight: 300;

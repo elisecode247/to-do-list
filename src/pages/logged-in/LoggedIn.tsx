@@ -1,5 +1,6 @@
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { flushSync } from 'react-dom';
 import { useGoogleCalendar } from 'src/google-authorization/use-google-calendar';
 import EditTaskForm from 'src/edit-task-form/EditTaskForm';
 import type { ChecklistItem } from 'app/types';
@@ -28,7 +29,7 @@ import { ALL_MODES, MODES } from 'src/checklist/constants';
 import type { Mode } from 'src/app/types';
 import './logged-in.css';
 import useIsDesktop from 'src/pages/use-is-desktop';
-import { Check, Eye, EyeOff, Plus } from 'lucide-react';
+import { Check, Eye, EyeOff, Moon, Sun, Plus } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { JournalProvider } from 'src/journal/journal-provider';
 import Journal from 'src/journal/Journal';
@@ -46,6 +47,7 @@ import { addTask, isChoreAccessChangedError } from 'src/app/api';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
 import { hasModifiedDemoTasks } from 'src/pages/demo/demo-tasks';
 import * as Sentry from '@sentry/react';
+import { useTheme } from 'src/themes/use-theme';
 
 // preload pages
 import('src/pages/user-settings/UserSettings');
@@ -60,6 +62,7 @@ import { useShareTasks } from 'src/sharing/use-share-tasks';
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const ONBOARDING_CHOICE_KEY = 'daily-reset-list-onboarding-choice-v1';
 const FILTER_STORAGE_KEY = 'daily-reset-list-filters-v1';
+const SYSTEM_DARK_MODE_QUERY = '(prefers-color-scheme: dark)';
 
 type StoredFilters = {
     activeTab: ListTab;
@@ -70,6 +73,22 @@ type StoredFilters = {
     sharedByOthers: boolean;
     leftOpen: boolean;
 };
+
+const subscribeToSystemMode = (onChange: () => void) => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+        return () => undefined;
+    }
+
+    const mediaQuery = window.matchMedia(SYSTEM_DARK_MODE_QUERY);
+    mediaQuery.addEventListener('change', onChange);
+
+    return () => mediaQuery.removeEventListener('change', onChange);
+};
+
+const systemPrefersDark = () =>
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(SYSTEM_DARK_MODE_QUERY).matches;
 
 const readStoredFilters = (storageKey: string): Partial<StoredFilters> => {
     if (typeof window === 'undefined') return {};
@@ -126,6 +145,10 @@ const LoggedIn: React.FC = () => {
         itemLength,
         isUpdatedDate,
     } = useTask();
+    const { mode, updateTheme } = useTheme();
+    const prefersDarkMode = useSyncExternalStore(subscribeToSystemMode, systemPrefersDark, () => false);
+    const resolvedMode = mode === 'system' ? (prefersDarkMode ? 'dark' : 'light') : mode;
+    const nextMode = resolvedMode === 'light' ? 'dark' : 'light';
     const { isAuthenticated, email } = useAuthentication();
     const { categories, googleCalendarEnabled } = useUserSettings();
     const { loadCalendarEvents, updateEvent } = useGoogleCalendar();
@@ -326,6 +349,7 @@ const LoggedIn: React.FC = () => {
     const mobileViews: View[] = [VIEWS.search, VIEWS.journal, VIEWS.list];
     const mobileTabBarRef = useRef<HTMLElement | null>(null);
     const mobileTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+    const themeToggleButtonRef = useRef<HTMLButtonElement>(null);
     const feedbackButtonRef = useRef<HTMLButtonElement>(null);
     const [mobileIndicator, setMobileIndicator] = useState<{ x: number; width: number } | null>(null);
 
@@ -468,6 +492,47 @@ const LoggedIn: React.FC = () => {
         setMenuOpen(false);
     }
 
+    function handleSetMode() {
+        const button = themeToggleButtonRef.current;
+        const prefersReducedMotion = typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!button || prefersReducedMotion || typeof document.startViewTransition !== 'function') {
+            updateTheme({ mode: nextMode });
+            return;
+        }
+
+        const buttonBounds = button.getBoundingClientRect();
+        const originX = buttonBounds.left + buttonBounds.width / 2;
+        const originY = buttonBounds.top + buttonBounds.height / 2;
+        const revealRadius = Math.hypot(
+            Math.max(originX, window.innerWidth - originX),
+            Math.max(originY, window.innerHeight - originY),
+        );
+
+        const transition = document.startViewTransition(() => {
+            flushSync(() => updateTheme({ mode: nextMode }));
+        });
+
+        void transition.ready.then(() => {
+            document.documentElement.animate(
+                {
+                    clipPath: [
+                        `circle(0 at ${originX}px ${originY}px)`,
+                        `circle(${revealRadius}px at ${originX}px ${originY}px)`,
+                    ],
+                },
+                {
+                    duration: 300,
+                    easing: 'linear',
+                    pseudoElement: '::view-transition-new(root)',
+                },
+            );
+        }).catch(() => {
+            // The theme has already changed if the browser skips the transition.
+        });
+    }
+
     return (<>
         <GettingStartedDialog
             isOpen={showGettingStarted}
@@ -557,6 +622,16 @@ const LoggedIn: React.FC = () => {
                     </div>
                 </div>
                 <div className="header-menu-actions">
+                    <IconButton
+                        ref={themeToggleButtonRef}
+                        className="dark-light-toggle-button"
+                        label={`Switch to ${nextMode} theme`}
+                        ariaLabel={`Switch to ${nextMode} theme`}
+                        icon={resolvedMode === 'light' ? <Sun width={24} /> : <Moon width={24} />}
+                        showLabel={false}
+                        isPriority={false}
+                        onClick={handleSetMode}
+                    />
                     <IconButton
                         ref={feedbackButtonRef}
                         className="feedback-button"
