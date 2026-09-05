@@ -4,6 +4,7 @@ import { getEventDateString } from "./utilities/get-event-date-string";
 import type { GoogleEvent } from "./types";
 import { sanitizeUserHtml } from "src/utilities/sanitize-html";
 import { Ban, CalendarPlus2, BookMinus, BookPlus, Edit } from "lucide-react";
+import NoteEditor from 'src/editor/LazyNoteEditor';
 
 interface CalendarEventItemProps {
     event: GoogleEvent;
@@ -72,9 +73,10 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
 
             {/* Description */}
             {!event.description ? '' : !collapsed && (
-                <div
+                <NoteEditor
                     className="calendar-event-description"
-                    dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+                    initialMarkdown={sanitizedHTML ?? ''}
+                    readOnly={true}
                 />
             )}
         </div>

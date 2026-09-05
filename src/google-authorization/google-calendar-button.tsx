@@ -1,5 +1,6 @@
 import { API_AUTH_URL } from "src/app/constants";
 import { authHeaders } from "src/authentication/authentication-api";
+import { loadGoogleIdentity } from "src/authentication/google-identity";
 import { GOOGLE_CALENDAR_SCOPE_REQUEST } from "./google-calendar-scopes";
 import { useGoogleCalendar } from "./use-google-calendar";
 
@@ -11,18 +12,20 @@ interface Props {
 const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
     const { clientId } = useGoogleCalendar();
 
-    const connectCalendar = () => {
+    const connectCalendar = async () => {
         if (!clientId) {
-                onError?.(new Error("Google API client ID is missing"));
-            return;
-        }
-        if (!window.google) {
-            onError?.(new Error("Google API client not loaded"));
+            onError?.(new Error("Google API client ID is missing"));
             return;
         }
 
-        window.google.accounts.oauth2
-            .initCodeClient({
+        try {
+            const google = await loadGoogleIdentity();
+
+            if (!google.accounts?.oauth2) {
+                throw new Error("Google OAuth client failed to initialize");
+            }
+
+            google.accounts.oauth2.initCodeClient({
                 client_id: clientId,
                 scope: GOOGLE_CALENDAR_SCOPE_REQUEST,
                 include_granted_scopes: false,
@@ -46,8 +49,10 @@ const GoogleCalendarConnectButton = ({ onSuccess, onError }: Props) => {
                         onError?.(err);
                     }
                 },
-            })
-            .requestCode();
+            }).requestCode();
+        } catch (err) {
+            onError?.(err);
+        }
     };
 
     return (

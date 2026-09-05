@@ -10,7 +10,7 @@ let initializedClientId: string | null = null;
 let defaultCredentialHandler: CredentialHandler | null = null;
 let pendingCredentialHandler: CredentialHandler | null = null;
 
-const loadGoogleIdentity = (): Promise<typeof window.google> => {
+export const loadGoogleIdentity = (): Promise<typeof window.google> => {
     if (window.google?.accounts?.id) {
         return Promise.resolve(window.google);
     }
