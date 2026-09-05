@@ -70,15 +70,6 @@
     font-weight: 500;
 }
 
-.edit-task-notes-wrap {
-    border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
-    border-radius: 8px;
-    overflow: hidden;
-    background: color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%);
-    color: contrast-color(color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%));
-    width: 100%;
-}
-
 .edit-task-member-list {
     display: flex;
     flex-direction: column;

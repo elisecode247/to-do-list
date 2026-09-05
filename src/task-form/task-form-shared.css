@@ -72,6 +72,15 @@
     font-weight: 500;
 }
 
+.edit-task-notes-wrap {
+    border: 1px solid color-mix(in srgb, var(--color-border) 92%, #d1d5db 8%);
+    border-radius: 8px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%);
+    color: contrast-color(color-mix(in srgb, var(--color-background) 70%, #f9fafb 30%));
+    width: 100%;
+}
+
 .task-form-input {
     width: 100%;
     min-height: var(--panel-control-height);
@@ -159,7 +168,10 @@
 
 .task-form-drawer__footer {
     width: 100%;
-    padding: 10px 16px max(10px, env(safe-area-inset-bottom));
+    padding-top: 10px;
+    padding-right: 16px;
+    padding-left: 16px;
+    padding-bottom: 22px;
     border-top: 1px solid var(--color-form-border);
     background: var(--color-form-surface);
     display: flex;

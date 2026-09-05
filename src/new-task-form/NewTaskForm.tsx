@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { type MDXEditorMethods } from '@mdxeditor/editor';
 import FrequencyButtonGroup from 'src/new-task-form/frequency-button-group';
 import CategorySelect from 'category-select/CategorySelect';
+import NoteEditor from 'src/editor/LazyNoteEditor';
 import { useTask } from 'src/app/use-task';
 import { useToast } from 'src/toast/use-toast';
 import './new-task-form.css';
@@ -9,7 +11,7 @@ import { OCCASIONAL_MODE, ONE_TIME_MODE, DAILY_MODE } from 'src/checklist/consta
 import { type ChecklistItem, FrequencyType, type OneTimeRecurrence } from 'app/types';
 import { formatDate } from 'src/app/utilities/format-date';
 import { localDateWithNowTime } from 'src/app/utilities/add-now-to-local-date';
-import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import {
     IntervalOptions,
     INTERVAL_RECURRENCE,
@@ -25,6 +27,7 @@ import { ROUTES } from 'src/router';
 type Inputs = {
     taskName: string;
     category: string;
+    note: string;
     numberOfRepetitions: number;
     frequency: FrequencyType;
 }
@@ -44,10 +47,12 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
     const { showToast } = useToast();
     const [mode, setMode] = useState<Mode>(ONE_TIME_MODE);
     const panelRef = useRef<HTMLDivElement | null>(null);
+    const noteRef = useRef<MDXEditorMethods>(null);
 
     const defaultValues = {
         taskName: '',
         category: '',
+        note: '',
         startDate: formatDate(new Date()),
         endDate: formatDate(new Date()),
         isRepeating: false,
@@ -55,7 +60,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
         frequency: FrequencyType.Daily,
     }
     const methods = useForm<NewTaskFormValues>({ defaultValues });
-    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = methods;
+    const { register, handleSubmit, reset, control, formState: { errors, isSubmitSuccessful } } = methods;
     const handleAddItem: SubmitHandler<NewTaskFormValues> = async (data): Promise<void> => {
         let recurrence: OneTimeRecurrence | IntervalRecurrence;
         if (mode === ONE_TIME_MODE) {
@@ -123,6 +128,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
             reset({
                 taskName: '',
                 category: '',
+                note: '',
                 startDate: formatDate(new Date()),
                 endDate: formatDate(new Date()),
                 isRepeating: false,
@@ -222,6 +228,24 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                                 onFocus={(e) => e.currentTarget.showPicker?.()}
                                 onClick={(e) => e.currentTarget.showPicker?.()}
                             />
+                        </div>
+
+                        <div className="task-form-field">
+                            <label className="task-form-field__label">Notes</label>
+                            <div className="edit-task-notes-wrap">
+                                <Controller
+                                    name="note"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <NoteEditor
+                                            ref={noteRef}
+                                            initialMarkdown={field.value}
+                                            onChange={field.onChange}
+                                            readOnly={false}
+                                        />
+                                    )}
+                                />
+                            </div>
                         </div>
                 </div>
 
