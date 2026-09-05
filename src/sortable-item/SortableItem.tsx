@@ -194,6 +194,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const lastCompletedDate = getDaysAgo(new Date(lastCompleted));
     const nextDueDate = nextDue ? getDaysFromNow(new Date(nextDue)) : null;
     const categoryDefinition = getCategoryById(categories, category);
+    const isNotParent = !!parentUuid;
     const parentTask = parentUuid ? itemLookup?.get(parentUuid) : undefined;
 
     const filteredTasks = subtasks?.filter((t) => {
@@ -499,12 +500,16 @@ export const SortableItem: FC<SortableItemProps> = ({
                     {checklistType === 'search-results' && (
                         <div
                             className="sortable-item_parent-breadcrumb"
-                            aria-label={`Parent task: ${parentTask?.text ?? 'Unknown task'}`}
+                            aria-label={!isNotParent ? 'Base Task' :
+                                parentTask?.text ? `Subtask of "${parentTask?.text}"` :
+                                'Subtask of unknown task'}
                         >
-                            <span className="sortable-item_parent-label">Parent</span>
-                            <ChevronRight size={12} aria-hidden="true" />
+                            <span className="sortable-item_parent-label">
+                                {isNotParent ? 'Subtask Of' : 'Base Task'}
+                            </span>
+                            {isNotParent && <ChevronRight size={12} aria-hidden="true" />}
                             <span className="sortable-item_parent-name">
-                                {parentTask?.text ?? 'Unknown task'}
+                                {!isNotParent ? '' : parentTask?.text ?? 'Unknown task'}
                             </span>
                             {(parentTask?.isArchived || isArchived) && (
                                 <span className="sortable-item_parent-status">Archived</span>
