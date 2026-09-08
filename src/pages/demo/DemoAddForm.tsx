@@ -140,7 +140,7 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
                             {...register('taskName', { required: true })}
                             id="new-task-form-text-input"
                             className="task-form-input"
-                            placeholder="New item..."
+                            placeholder="New task..."
                         />
                     </div>
 
@@ -275,7 +275,7 @@ const DemoAddForm = ({ setRightOpen, categories }: DemoAddFormProps) => {
                 <h2 className="task-form-drawer__title">New item</h2>
                 <CloseButton
                     onClick={() => setRightOpen(false)}
-                    label="Close new item form"
+                    label="Close new task form"
                 />
             </div>
 

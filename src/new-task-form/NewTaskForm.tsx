@@ -161,7 +161,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                             name="taskName"
                             id="new-task-form-text-input"
                             className="task-form-input"
-                            placeholder="New item..."
+                            placeholder="New task..."
                         />
                     </div>
 

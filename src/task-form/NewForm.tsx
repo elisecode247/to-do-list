@@ -21,10 +21,10 @@ const NewForm = ({ setRightOpen, categories }: NewFormProps) => {
     return (
         <div className="task-form-drawer">
             <div className="task-form-drawer__header">
-                <h2 className="task-form-drawer__title">New item</h2>
+                <h2 className="task-form-drawer__title">New Task</h2>
                 <CloseButton
                     onClick={() => setRightOpen(false)}
-                    label="Close new item form"
+                    label="Close new task form"
                 />
             </div>
 
