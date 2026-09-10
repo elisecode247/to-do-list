@@ -14,7 +14,7 @@ export default function MobileViewContent({ view }: MobileViewContentProps) {
     const icons = {
         [VIEWS.search]: <img src="./magnifying-glass2.svg" width={24} {...iconProps} />,
         [VIEWS.journal]: <img src="./pen2.svg" width={24} {...iconProps} />,
-        [VIEWS.list]: <img src="./task-list.svg" width={24} {...iconProps} />,
+        [VIEWS.list]: <img src="./task-list2.svg" width={24} {...iconProps} />,
     };
 
     return (
