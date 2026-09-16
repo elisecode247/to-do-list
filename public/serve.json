@@ -1,4 +1,30 @@
 {
+  "rewrites": [
+    {
+      "source": "/app",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/app/**",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/demo",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/theme-playground",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/app-shell.html"
+    },
+    {
+      "source": "/bulk-edit",
+      "destination": "/app-shell.html"
+    }
+  ],
   "headers": [
     {
       "source": "**/*.@(avif|gif|ico|jpg|jpeg|png|svg|webp)",

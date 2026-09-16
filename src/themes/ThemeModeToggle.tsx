@@ -1,6 +1,5 @@
 import { useRef, useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
-import { Moon, Sun } from 'lucide-react';
 import IconButton from 'src/components/icon-button/IconButton';
 import { useTheme } from './use-theme';
 import './theme-mode-toggle.css';
@@ -77,7 +76,9 @@ export default function ThemeModeToggle() {
             className="dark-light-toggle-button"
             label={`Switch to ${nextMode} theme`}
             ariaLabel={`Switch to ${nextMode} theme`}
-            icon={resolvedMode === 'light' ? <Sun width={24} /> : <Moon width={24} />}
+            icon={resolvedMode === 'light' ?
+                <img src="/sun.svg" alt="" width={28} height={28} aria-hidden="true"/> :
+                <img src="/moon.svg" alt="" width={24} height={24} aria-hidden="true"/>}
             showLabel={false}
             isPriority={false}
             onClick={handleToggle}

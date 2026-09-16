@@ -14,7 +14,7 @@
     "type-check": "tsc --noEmit -p tsconfig.app.json",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "start": "serve -s dist"
+    "start": "serve dist"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

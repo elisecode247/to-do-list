@@ -7,6 +7,12 @@ const templatePath = resolve(root, "dist/index.html");
 const rendererPath = resolve(root, ".prerender/prerender-entry.js");
 const template = await readFile(templatePath, "utf8");
 const { render } = await import(pathToFileURL(rendererPath).href);
+
+// Keep a client-only document for authenticated and other non-prerendered
+// routes. The production server must not fall back to the prerendered landing
+// page for these URLs, or the landing page will be painted before React loads.
+await writeFile(resolve(root, "dist/app-shell.html"), template);
+
 const mainStylesheetMatch = template.match(
     /<link rel="stylesheet" crossorigin href="(\/assets\/index-[^"]+\.css)">/,
 );
