@@ -564,7 +564,7 @@ const LoggedIn: React.FC = () => {
                         className="feedback-button"
                         label="Report a bug"
                         ariaLabel="Report a bug"
-                        icon={<img src="./ladybug.svg" width={30} />}
+                        icon={<img src="./ladybug.svg" width={24} />}
                         showLabel={false}
                         isPriority={false}
                     />
