@@ -11,3 +11,7 @@
 ::view-transition-new(root) {
     z-index: 2;
 }
+
+.dark-light-toggle-button {
+    border: 0;
+}
