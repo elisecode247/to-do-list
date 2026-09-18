@@ -20,6 +20,7 @@ import {
     type IntervalRecurrence
 } from 'app/types';
 import type { CategoryDefinition } from 'src/category-select/types';
+import { NO_CATEGORY_ID } from 'src/category-select/category-constants';
 import { LayoutTemplate } from 'lucide-react';
 import { Link } from 'wouter';
 import { ROUTES } from 'src/router';
@@ -51,7 +52,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
 
     const defaultValues = {
         taskName: '',
-        category: '',
+        category: NO_CATEGORY_ID,
         note: '',
         startDate: formatDate(new Date()),
         endDate: formatDate(new Date()),
@@ -99,7 +100,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
             note: '',
             sortOrder: 0,
             tabSortOrder: {},
-            category: '',
+            category: NO_CATEGORY_ID,
             mode,
             isPriority: false,
             isArchived: false,
@@ -127,7 +128,7 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
         if (isSubmitSuccessful) {
             reset({
                 taskName: '',
-                category: '',
+                category: NO_CATEGORY_ID,
                 note: '',
                 startDate: formatDate(new Date()),
                 endDate: formatDate(new Date()),
@@ -168,7 +169,11 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                     <div className="task-form-field">
                         <label className="task-form-field__label">Category</label>
                         <div className="task-form-category-wrap">
-                            <CategorySelect id="new-task-form" categories={categories} />
+                            <CategorySelect
+                                id="new-task-form"
+                                categories={categories}
+                                isRequired={false}
+                            />
                         </div>
                     </div>
 
@@ -253,11 +258,6 @@ const NewTaskForm = ({ setRightOpen, categories }: { setRightOpen: (open: boolea
                     {errors.taskName && (
                         <div className="task-form-drawer__error">
                             Error: {errors.taskName.message || 'task name is required'}
-                        </div>
-                    )}
-                    {errors.category && (
-                        <div className="task-form-drawer__error">
-                            Error: {errors.category.message || 'category is required'}
                         </div>
                     )}
                     {errors.startDate && (

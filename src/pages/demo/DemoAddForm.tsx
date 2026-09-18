@@ -21,6 +21,7 @@ import 'src/new-task-form/new-task-form.css';
 import 'src/task-form/new-form.css';
 import 'src/task-form/task-form-shared.css';
 import type { CategoryDefinition } from 'src/category-select/types';
+import { NO_CATEGORY_ID } from 'src/category-select/category-constants';
 
 type RecurrenceFormValues = {
     startDate: string;
@@ -50,7 +51,7 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
 
     const defaultValues: DemoAddFormValues = {
         taskName: '',
-        category: '',
+        category: NO_CATEGORY_ID,
         startDate: formatDate(new Date()),
         isRepeating: false,
         numberOfRepetitions: 1,
@@ -150,6 +151,7 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
                             <CategorySelect
                                 id="new-task-form"
                                 categories={categories}
+                                isRequired={false}
                             />
                         </div>
                     </div>
@@ -212,11 +214,6 @@ const DemoTaskForm = ({ setRightOpen, categories }: Pick<DemoAddFormProps, 'setR
                     {errors.taskName && (
                         <div className="task-form-drawer__error">
                             Error: {errors.taskName.message || 'task name is required'}
-                        </div>
-                    )}
-                    {errors.category && (
-                        <div className="task-form-drawer__error">
-                            Error: {errors.category.message || 'category is required'}
                         </div>
                     )}
                     {errors.startDate && (

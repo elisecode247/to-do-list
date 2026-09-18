@@ -5,6 +5,7 @@ import type { CategoryDefinition } from './types';
 interface CategorySelectProps {
     id: string;
     isFilter?: boolean;
+    isRequired?: boolean;
     selectedCategory?: string;
     onChange?: (value: string) => void;
     categories: CategoryDefinition[];
@@ -15,6 +16,7 @@ interface CategorySelectProps {
 const CategorySelect = ({
     id,
     isFilter = false,
+    isRequired = true,
     selectedCategory,
     onChange,
     categories,
@@ -23,7 +25,7 @@ const CategorySelect = ({
 }: CategorySelectProps) => {
     const methods = useFormContext();
     const registration = methods?.register
-        ? methods.register('category', { required: true })
+        ? methods.register('category', { required: isRequired })
         : undefined;
     const categoryOptions = getCategoryOptions(categories, {
         includeAll: isFilter,
