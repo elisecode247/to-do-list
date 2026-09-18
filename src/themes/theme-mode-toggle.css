@@ -15,4 +15,6 @@
 .dark-light-toggle-button {
     border: 0;
     padding: 0px 8px 0px 8px;
+    height: 44px;
+    width: 44px;
 }
