@@ -54,6 +54,11 @@ import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { formatDate } from 'src/app/utilities/format-date';
 
+export interface SubtaskDragPreview {
+    item: ChecklistItem;
+    parentId: string;
+}
+
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
     id: string;
@@ -91,7 +96,20 @@ interface SortableItemProps {
     hasMembers: boolean;
     expandedNoteItemIds?: ReadonlySet<string>;
     itemLookup?: ReadonlyMap<string, ChecklistItem>;
+    subtaskDragPreview?: SubtaskDragPreview | null;
 }
+
+const SubtaskDragPreviewCard = ({ item }: { item: ChecklistItem }) => (
+    <div
+        className="sortable-item_subtask-drag-preview"
+        role="status"
+        aria-label={`${item.text} will become a subtask`}
+    >
+        <GripVertical aria-hidden="true" size={20} />
+        <span className="sortable-item_subtask-drag-preview-text">{item.text}</span>
+        <span className="sortable-item_subtask-drag-preview-label">New subtask</span>
+    </div>
+);
 
 export const SortableItem: FC<SortableItemProps> = ({
     checklistType = 'task',
@@ -130,6 +148,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     hasMembers,
     expandedNoteItemIds,
     itemLookup,
+    subtaskDragPreview,
 }) => {
     const { showToast } = useToast();
     const { categories } = useUserSettings();
@@ -154,6 +173,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const exitTimerRef = useRef<number | null>(null);
     const [showUpcoming, setShowUpcoming] = useState(false);
+    const previouslyHadSubtasksRef = useRef(hasSubChores);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
     const menuDropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -175,6 +195,15 @@ export const SortableItem: FC<SortableItemProps> = ({
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
     }
+
+    useEffect(() => {
+        if (!previouslyHadSubtasksRef.current && hasSubChores) {
+            setCollapsed(false);
+            setDropZoneOpen(false);
+        }
+
+        previouslyHadSubtasksRef.current = hasSubChores;
+    }, [hasSubChores]);
 
     useEffect(() => {
         const node = dragWrapperRef.current;
@@ -207,6 +236,13 @@ export const SortableItem: FC<SortableItemProps> = ({
     }).sort((a, b) => compareCompletedTasksLast(a, b, toggleSortCompleted === 'true'));
 
     const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
+    const isReceivingFirstSubtask = !previouslyHadSubtasksRef.current && hasSubChores;
+    const subtaskDragPreviewItem = subtaskDragPreview?.parentId === id
+        ? subtaskDragPreview.item
+        : null;
+    const subtasksExpanded = !collapsed
+        || isReceivingFirstSubtask
+        || !!subtaskDragPreviewItem;
 
     const saveNote = async () => {
         if (!canEdit) return;
@@ -786,7 +822,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                 </AnimatePresence>
                 {/* RECURSIVE SUBTASKS */}
-                <div className={`sortable-item_subtasks-container ${collapsed ? 'sortable-item_subtasks-container--collapsed' : ''}`}>
+                <div className={`sortable-item_subtasks-container ${!subtasksExpanded ? 'sortable-item_subtasks-container--collapsed' : ''}`}>
 
                     <SortableContext items={filteredTasks?.map(i => i.id) || []}>
                         <AnimatePresence initial={false}>
@@ -800,12 +836,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
                                     <div className="sortable-item_subtasks-motion-shell">
-                                        <SortableItemPlaceholder id={id as string} />
+                                        <SortableItemPlaceholder
+                                            id={id as string}
+                                            previewText={subtaskDragPreviewItem?.text}
+                                        />
                                     </div>
                                 </motion.div>
                             )}
 
-                            {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
+                            {subtasksExpanded && hasSubChores && filteredTasks?.length === 0 && (
                                 <motion.div
                                     key={`empty-subtasks-${id}`}
                                     className="sortable-item_subtasks-motion-layout"
@@ -823,7 +862,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </motion.div>
                             )}
 
-                            {!collapsed && (filteredTasks?.length ?? 0) > 0 && (
+                            {subtasksExpanded && (filteredTasks?.length ?? 0) > 0 && (
                                 <motion.div
                                     key={`subtasks-${id}`}
                                     className="sortable-item_subtasks-motion-layout"
@@ -832,7 +871,11 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     exit={{ height: 0, opacity: 0, y: -4 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_subtasks-motion-shell">
+                                    <div
+                                        className="sortable-item_subtasks-motion-shell sortable-item_subtasks-motion-shell--list"
+                                        role="group"
+                                        aria-label={`Subtasks for ${text}`}
+                                    >
                                         {filteredTasks?.map((subtask) => (
                                             <SortableItem
                                                 checklistType={checklistType}
@@ -871,13 +914,19 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 hasMembers={subtask.hasMembers}
                                                 expandedNoteItemIds={expandedNoteItemIds}
                                                 itemLookup={itemLookup}
+                                                subtaskDragPreview={subtaskDragPreview}
                                             />
                                         ))}
+                                        {subtaskDragPreviewItem
+                                            && !filteredTasks?.some(task => task.id === subtaskDragPreviewItem.id)
+                                            && (
+                                                <SubtaskDragPreviewCard item={subtaskDragPreviewItem} />
+                                            )}
                                     </div>
                                 </motion.div>
                             )}
 
-                            {!collapsed && activeTab === TAB_TODAY && upcomingTasks && upcomingTasks?.length > 0 && (
+                            {subtasksExpanded && activeTab === TAB_TODAY && upcomingTasks && upcomingTasks?.length > 0 && (
                                 <motion.div
                                     key={`upcoming-subtasks-${id}`}
                                     className="sortable-item_upcoming-subtasks"
@@ -944,6 +993,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             hasMembers={subtask.hasMembers}
                                                             expandedNoteItemIds={expandedNoteItemIds}
                                                             itemLookup={itemLookup}
+                                                            subtaskDragPreview={subtaskDragPreview}
                                                         />
                                                     ))}
                                                 </div>

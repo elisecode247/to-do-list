@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { act, type ComponentProps, type ReactNode } from 'react';
+import { act, useState, type ComponentProps, type ReactNode } from 'react';
 import { SortableItem } from './SortableItem';
 import { TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
-import type { ChoreAccessRole } from 'app/types';
+import type { ChecklistItem, ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
 const { useOnClickOutsideMock } = vi.hoisted(() => ({
@@ -90,6 +90,29 @@ function byLabel(container: HTMLElement, label: string): HTMLElement | null {
         .find(element => element.getAttribute('aria-label') === label) ?? null;
 }
 
+const movedSubtask: ChecklistItem = {
+    itemType: 'checklist-item',
+    isOwner: true,
+    accessRole: 'owner',
+    isHidden: false,
+    id: 'moved-subtask',
+    text: 'Moved task',
+    done: false,
+    lastCompleted: '',
+    note: '',
+    sortOrder: 0,
+    tabSortOrder: {},
+    category: '',
+    mode: 'one-time',
+    isPriority: false,
+    isArchived: false,
+    hasSubChores: false,
+    parentUuid: 'task-owner',
+    recurrence: null,
+    nextDue: null,
+    hasMembers: false,
+};
+
 afterEach(async () => {
     vi.useRealTimers();
     toggleChecked.mockReset();
@@ -129,6 +152,67 @@ describe('SortableItem role permissions', () => {
 
         expect(rendered.container.querySelector('.sortable-item_container--subchore'))
             .not.toBeNull();
+    });
+
+    it('expands an empty parent when a task is moved into its subtask list', async () => {
+        const Harness = () => {
+            const [hasMovedSubtask, setHasMovedSubtask] = useState(false);
+
+            return (
+                <>
+                    <button
+                        type="button"
+                        onClick={() => setHasMovedSubtask(true)}
+                    >
+                        Move task into parent
+                    </button>
+                    <SortableItem
+                        {...propsFor('owner')}
+                        hasSubChores={hasMovedSubtask}
+                        subtasks={hasMovedSubtask ? [movedSubtask] : []}
+                    />
+                </>
+            );
+        };
+
+        rendered = await renderUi(<Harness />);
+
+        expect(byLabel(rendered.container, 'Subtasks for owner task')).toBeNull();
+
+        await click(rendered.container.querySelector('button')!);
+
+        const subtaskGroup = byLabel(rendered.container, 'Subtasks for owner task');
+        expect(subtaskGroup).not.toBeNull();
+        expect(subtaskGroup?.textContent).toContain('Moved task');
+        expect(rendered.container.textContent).toContain('Subtasks');
+    });
+
+    it('shows a stable visual proxy while a task is dragged into a subtask list', async () => {
+        const existingSubtask = {
+            ...movedSubtask,
+            id: 'existing-subtask',
+            text: 'Existing subtask',
+        };
+
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                hasSubChores={true}
+                subtasks={[existingSubtask]}
+                subtaskDragPreview={{
+                    item: movedSubtask,
+                    parentId: 'task-owner',
+                }}
+            />,
+        );
+
+        const preview = byLabel(
+            rendered.container,
+            'Moved task will become a subtask',
+        );
+        expect(preview).not.toBeNull();
+        expect(preview?.textContent).toContain('Moved task');
+        expect(preview?.textContent).toContain('New subtask');
     });
 
     it('prevents viewers from completing tasks or opening an action menu', async () => {

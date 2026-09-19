@@ -2,8 +2,8 @@ import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, useCa
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { SortableItem } from 'sortable-item/SortableItem';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { SortableItem, type SubtaskDragPreview } from 'sortable-item/SortableItem';
 import { ONE_TIME_MODE } from 'checklist/constants';
 import 'checklist/checklist.css';
 import { useDemoTask } from 'src/pages/demo/use-demo-task';
@@ -18,6 +18,7 @@ import type { GoogleEvent } from 'src/google-authorization/types';
 import { useReducedMotion } from 'framer-motion';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
+import { getDropParentId, getTaskDragPreview } from 'src/checklist/utilities/get-task-drag-preview';
 
 function isTodayOrBefore(date: Date) {
   const today = new Date();
@@ -62,19 +63,23 @@ const DemoChecklist: FC<ChecklistProps> = ({
         prioritizeItem,
         archiveItem,
         sortItems,
-        getSubtasks,
         hideForToday,
         unhideForToday,
     } = useDemoTask();
     const { events } = useGoogleCalendar();
     const shouldReduceMotion = useReducedMotion();
     const [showSparkles, setShowSparkles] = useState(false);
+    const [subtaskDragPreview, setSubtaskDragPreview] = useState<SubtaskDragPreview | null>(null);
     const sparkleTimeoutRef = useRef<number | null>(null);
+    const subtaskDragPreviewRef = useRef<SubtaskDragPreview | null>(null);
+    const dragSourceFilteredItemsRef = useRef<ChecklistItem[] | null>(null);
+    const lastDragOverIdRef = useRef<string | null>(null);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
 
     const filteredItems = useMemo(() => {
-        const visibleItems = itemsOverride ?? filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory });
+        const visibleItems = itemsOverride
+            ?? filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory });
         return visibleItems
             .sort((a, b) => {
                 const completionOrder = compareCompletedTasksLast(a, b, sortCompletedTasksLast);
@@ -90,6 +95,12 @@ const DemoChecklist: FC<ChecklistProps> = ({
                 return a.sortOrder - b.sortOrder;
             });
     }, [items, itemsOverride, modeFilter, activeTab, hideCompleted, filterCategory, sortCompletedTasksLast]);
+
+    const getRenderedSubtasks = useCallback((parentId: string) => (
+        items
+            .filter(item => item.parentUuid === parentId)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+    ), [items]);
 
     const filteredEvents = itemsOverride ? [] : events.filter(event => {
         if (activeTab === TAB_TODAY) {
@@ -127,19 +138,87 @@ const DemoChecklist: FC<ChecklistProps> = ({
             activationConstraint: {
                 distance: 5,
                 delay: 100,
+                tolerance: 5,
             },
         })
     );
     function handleDragStart(event: DragStartEvent) {
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
+
+        dragSourceFilteredItemsRef.current = filteredItems;
+        subtaskDragPreviewRef.current = null;
+        lastDragOverIdRef.current = null;
     }
-    const handleDragEnd = useCallback((event: DragEndEvent) => {
+
+    const handleDragOver = useCallback((event: DragOverEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        sortItems(filteredItems, activeTab, active.id as string, over.id as string);
-    }, [activeTab, filteredItems, sortItems]);
+        const activeId = String(active.id);
+        const overId = String(over.id);
+        const previewItems = getTaskDragPreview({
+            items,
+            activeTab,
+            activeId,
+            overId,
+        });
+        const activeItem = items.find(item => item.id === activeId);
+        const dropParentId = getDropParentId(items, overId);
+
+        lastDragOverIdRef.current = overId;
+
+        const nextPreview = activeItem
+            && previewItems !== items
+            && dropParentId !== null
+            && dropParentId !== undefined
+            ? { item: activeItem, parentId: dropParentId }
+            : null;
+        const currentPreview = subtaskDragPreviewRef.current;
+
+        if (
+            currentPreview?.item.id === nextPreview?.item.id
+            && currentPreview?.parentId === nextPreview?.parentId
+        ) {
+            return;
+        }
+
+        subtaskDragPreviewRef.current = nextPreview;
+        setSubtaskDragPreview(nextPreview);
+    }, [activeTab, items]);
+
+    const clearDragPreview = useCallback(() => {
+        const hadPreview = subtaskDragPreviewRef.current !== null;
+        subtaskDragPreviewRef.current = null;
+        dragSourceFilteredItemsRef.current = null;
+        lastDragOverIdRef.current = null;
+        if (hadPreview) setSubtaskDragPreview(null);
+    }, []);
+
+    const handleDragEnd = useCallback((event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over) {
+            clearDragPreview();
+            return;
+        }
+
+        const overId = active.id === over.id
+            ? lastDragOverIdRef.current
+            : String(over.id);
+
+        if (!overId || String(active.id) === overId) {
+            clearDragPreview();
+            return;
+        }
+
+        sortItems(
+            dragSourceFilteredItemsRef.current ?? filteredItems,
+            activeTab,
+            String(active.id),
+            overId,
+        );
+        clearDragPreview();
+    }, [activeTab, clearDragPreview, filteredItems, sortItems]);
 
     const toggleChecked = async (id: string, checked: boolean) => {
         const selectedItem = items.find(item => item.id === id);
@@ -252,7 +331,9 @@ const DemoChecklist: FC<ChecklistProps> = ({
             <DndContext
                 collisionDetection={taskCollisionDetection}
                 onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
                 onDragStart={handleDragStart}
+                onDragCancel={clearDragPreview}
                 sensors={sensors}
             >
                 <div className="checklist_list-container">
@@ -298,13 +379,14 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         toggleChecked={toggleChecked}
                                         handleEdit={handleEdit}
                                         handleHideItem={handleHide}
-                                        subtasks={getSubtasks(checklistItem.id)}
+                                        subtasks={getRenderedSubtasks(checklistItem.id)}
                                         onMoveItem={handleMoveItem}
                                         onSuccess={displaySparkles}
                                         nextDue={checklistItem.nextDue}
                                         partialUpdateItem={partialUpdateItem}
                                         recurrence={checklistItem.recurrence}
                                         hasMembers={false}
+                                        subtaskDragPreview={subtaskDragPreview}
                                     />
                                 );
                             }
