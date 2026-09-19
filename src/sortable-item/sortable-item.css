@@ -798,43 +798,6 @@
         transform 220ms ease-out;
 }
 
-.sortable-item_subtasks-motion-shell--list {
-    margin-block-start: 4px;
-    margin-inline-start: 4px;
-}
-
-.sortable-item_subtask-drag-preview {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin: 6px 0 6px 6px;
-    padding: var(--spacing-sm) var(--spacing-md);
-    min-height: 56px;
-    border: 2px dashed color-mix(in srgb, var(--color-primary) 70%, var(--color-border));
-    border-radius: var(--radius-xl);
-    color: contrast-color(var(--color-surface));
-    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
-    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-shadow) 24%, transparent);
-    pointer-events: none;
-}
-
-.sortable-item_subtask-drag-preview-text {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 600;
-}
-
-.sortable-item_subtask-drag-preview-label {
-    color: var(--color-primary);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
 @starting-style {
     .sortable-item_subtasks-motion-shell {
         opacity: 0;

@@ -2,13 +2,7 @@ import { useDndContext, useDroppable } from "@dnd-kit/core";
 import { Sparkles, ArrowDownToLine } from "lucide-react";
 import "./placeholder.css";
 
-const SortableItemPlaceholder = ({
-    id,
-    previewText,
-}: {
-    id: string;
-    previewText?: string;
-}) => {
+const SortableItemPlaceholder = ({ id }: { id: string }) => {
     const { active } = useDndContext();
     const isDraggingParent = active?.id === id;
     const { setNodeRef, isOver } = useDroppable({
@@ -35,15 +29,6 @@ const SortableItemPlaceholder = ({
                                 A task can’t be its own subtask.
                             </span>
                         </>
-                    ) : previewText ? (
-                        <>
-                            <span className="sortable-item_subtask-dropzone-title">
-                                {previewText}
-                            </span>
-                            <span className="sortable-item_subtask-dropzone-subtitle">
-                                New subtask
-                            </span>
-                        </>
                     ) : isOver ? (
                         <>
                             <span className="sortable-item_subtask-dropzone-title">
@@ -65,7 +50,7 @@ const SortableItemPlaceholder = ({
                     )}
                 </div>
                 <div className="sortable-item_subtask-dropzone-icon">
-                    {isOver || previewText ? <Sparkles size={18} /> : <ArrowDownToLine size={18} />}
+                    {isOver ? <Sparkles size={18} /> : <ArrowDownToLine size={18} />}
                 </div>
             </div>
         </div>

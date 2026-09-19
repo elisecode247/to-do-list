@@ -222,24 +222,6 @@ describe("Reordering logic", () => {
             expect(children[0].id).toBe("B");
         });
 
-        it("uses structural nesting instead of tab sorting in special tabs", () => {
-            const filteredItems = makeBaseItems().map((item, index) => ({
-                ...item,
-                isPriority: true,
-                tabSortOrder: { priority: index },
-            }));
-
-            const result = getReorderedItems({
-                allItems: filteredItems,
-                filteredItems,
-                activeTab: "priority",
-                activeId: "B",
-                overId: "placeholder-A",
-            });
-
-            expect(result.find(item => item.id === "B")?.parentUuid).toBe("A");
-        });
-
         it("does not allow a task to become its own subtask", () => {
             const filteredItems = makeBaseItems();
 

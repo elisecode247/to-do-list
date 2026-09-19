@@ -36,18 +36,8 @@ export function getReorderedItems({
 
     if (!overItem) return allItems;
 
-    const oldParent = activeItem.parentUuid ?? null;
-
-    // If placeholder is used, newParent becomes the *parent task itself*
-    const newParent = isFirstSubTask
-        ? overItem.id
-        : overItem.parentUuid ?? null;
-
     if (
-        !isSubtask
-        && oldParent === newParent
-        && !isFirstSubTask
-        && (
+        !isSubtask && (
         activeTab === TAB_PRIORITY ||
         activeTab === TAB_HIDDEN ||
         activeTab === TAB_ARCHIVED)
@@ -79,6 +69,13 @@ export function getReorderedItems({
     }
 
     // STRUCTURAL REORDER
+    const oldParent = activeItem.parentUuid ?? null;
+
+    // If placeholder is used, newParent becomes the *parent task itself*
+    const newParent = isFirstSubTask
+        ? overItem.id
+        : overItem.parentUuid ?? null;
+
     // A task cannot contain itself, directly or through one of its descendants.
     // Besides corrupting the tree, a self-parented task disappears from the root list.
     const wouldCreateCycle = (candidateParentId: string | null) => {
