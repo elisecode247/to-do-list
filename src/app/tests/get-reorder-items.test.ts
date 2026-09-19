@@ -221,11 +221,57 @@ describe("Reordering logic", () => {
 
             expect(children[0].id).toBe("B");
         });
+
+        it("does not allow a task to become its own subtask", () => {
+            const filteredItems = makeBaseItems();
+
+            const result = getReorderedItems({
+                allItems: filteredItems,
+                filteredItems,
+                activeTab: TAB_TODAY,
+                activeId: "B",
+                overId: "placeholder-B",
+            });
+
+            expect(result).toBe(filteredItems);
+            expect(result.find(item => item.id === "B")?.parentUuid).toBeNull();
+        });
+
+        it("does not allow a task to be nested under its descendant", () => {
+            const filteredItems = makeBaseItems();
+
+            const result = getReorderedItems({
+                allItems: filteredItems,
+                filteredItems,
+                activeTab: TAB_TODAY,
+                activeId: "A",
+                overId: "placeholder-C",
+            });
+
+            expect(result).toBe(filteredItems);
+            expect(result.find(item => item.id === "A")?.parentUuid).toBeNull();
+        });
+
+        it("does not allow a parent to be reordered into its own child group", () => {
+            const filteredItems = makeBaseItems();
+
+            const result = getReorderedItems({
+                allItems: filteredItems,
+                filteredItems,
+                activeTab: TAB_TODAY,
+                activeId: "A",
+                overId: "C",
+            });
+
+            expect(result).toBe(filteredItems);
+            expect(result.find(item => item.id === "A")?.parentUuid).toBeNull();
+        });
     });
     describe("hasSubChores recalculation", () => {
         it("removes hasSubChores when last child removed", () => {
             const filteredItems: ChecklistItem[] = [
                 makeTask({ id: "A", parentUuid: null, sortOrder: 0, hasSubChores: true }),
+                makeTask({ id: "B", parentUuid: null, sortOrder: 1 }),
                 makeTask({ id: "C", parentUuid: "A", sortOrder: 0 }),
             ];
 
@@ -234,7 +280,7 @@ describe("Reordering logic", () => {
                 filteredItems,
                 activeTab: TAB_TODAY,
                 activeId: "C",
-                overId: "placeholder-C", // move under itself (simulate root)
+                overId: "B",
             });
 
             const parent = result.find(i => i.id === "A");

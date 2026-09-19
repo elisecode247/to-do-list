@@ -1,40 +1,38 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useDndContext, useDroppable } from "@dnd-kit/core";
 import { Sparkles, ArrowDownToLine } from "lucide-react";
 import "./placeholder.css";
 
 const SortableItemPlaceholder = ({ id }: { id: string }) => {
-    const { attributes, setNodeRef, transform, transition, isDragging, isOver } =
-        useSortable({ id: 'placeholder-' + id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.7 : 1,
-    };
+    const { active } = useDndContext();
+    const isDraggingParent = active?.id === id;
+    const { setNodeRef, isOver } = useDroppable({
+        id: `placeholder-${id}`,
+        disabled: isDraggingParent,
+    });
 
     return (
         <div
             ref={setNodeRef}
-            style={style}
-            {...attributes}
-            className={`sortable-item_subtask-dropzone ${isOver ? "sortable-item_subtask-dropzone-over" : ""
-                }`}
+            role="region"
+            aria-label="Subtask drop target"
+            aria-disabled={isDraggingParent}
+            className={`sortable-item_subtask-dropzone${isOver ? " sortable-item_subtask-dropzone-over" : ""}${isDraggingParent ? " sortable-item_subtask-dropzone-disabled" : ""}`}
         >
             <div className="sortable-item_subtask-dropzone-inner">
-                <div className="sortable-item_subtask-dropzone-icon">
-                    {isDragging ? <Sparkles size={18} /> : <ArrowDownToLine size={18} />}
-                </div>
-
-                <div className="sortable-item_subtask-dropzone-text">
-                    {isDragging ? (
-                        <span className="sortable-item_subtask-dropzone-title">
-                            Moving task…
-                        </span>
+                <div className="sortable-item_subtask-dropzone-text" aria-live="polite">
+                    {isDraggingParent ? (
+                        <>
+                            <span className="sortable-item_subtask-dropzone-title">
+                                Choose another task
+                            </span>
+                            <span className="sortable-item_subtask-dropzone-subtitle">
+                                A task can’t be its own subtask.
+                            </span>
+                        </>
                     ) : isOver ? (
                         <>
                             <span className="sortable-item_subtask-dropzone-title">
-                                Release to nest as a subtask
+                                Release to make a subtask
                             </span>
                             <span className="sortable-item_subtask-dropzone-subtitle">
                                 It will be grouped under this task.
@@ -43,13 +41,16 @@ const SortableItemPlaceholder = ({ id }: { id: string }) => {
                     ) : (
                         <>
                             <span className="sortable-item_subtask-dropzone-title">
-                                Drop here to make a subtask
+                                Drop a task here
                             </span>
                             <span className="sortable-item_subtask-dropzone-subtitle">
-                                Drag a task onto this zone to nest it.
+                                It will become this task’s first subtask.
                             </span>
                         </>
                     )}
+                </div>
+                <div className="sortable-item_subtask-dropzone-icon">
+                    {isOver ? <Sparkles size={18} /> : <ArrowDownToLine size={18} />}
                 </div>
             </div>
         </div>

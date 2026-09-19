@@ -1,14 +1,14 @@
 .sortable-item_subtask-dropzone {
     margin-top: var(--spacing-sm);
-    border-radius: 14px;
-    border: 2px dashed rgba(99, 102, 241, 0.35);
-    background: rgba(99, 102, 241, 0.06);
-    padding: 14px;
-    min-height: 92px;
+    border-radius: var(--radius-lg);
+    border: 2px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface--transparent));
+    padding: var(--spacing-sm);
+    min-height: 72px;
 
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-end;
 
     transition:
         background 180ms ease,
@@ -19,17 +19,15 @@
 
 .sortable-item_subtask-dropzone-inner {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: flex-end;
     gap: 12px;
     width: 100%;
-    max-width: 420px;
-    padding: 10px 12px;
-    border-radius: 12px;
-
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(8px);
-
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    max-width: 460px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    border: 2px dotted color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+    background: color-mix(in srgb, var(--color-surface) 72%, transparent);
 }
 
 .sortable-item_subtask-dropzone-icon {
@@ -41,43 +39,50 @@
     align-items: center;
     justify-content: center;
 
-    color: rgba(99, 102, 241, 0.9);
-    background: rgba(99, 102, 241, 0.12);
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
 }
 
 .sortable-item_subtask-dropzone-text {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    text-align: right;
 }
 
 .sortable-item_subtask-dropzone-title {
     font-size: 0.95rem;
     font-weight: 600;
-    color: rgba(30, 41, 59, 0.95);
+    color: contrast-color(var(--color-surface));
 }
 
 .sortable-item_subtask-dropzone-subtitle {
     font-size: 0.82rem;
     font-weight: 500;
-    color: rgba(100, 116, 139, 0.9);
+    color: color-mix(in srgb, contrast-color(var(--color-surface)) 72%, transparent);
 }
 
 /* Hover/Active drop state */
 .sortable-item_subtask-dropzone-over {
-    border-color: rgba(99, 102, 241, 0.85);
-    background: rgba(99, 102, 241, 0.14);
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 
     box-shadow:
-        0 0 0 4px rgba(99, 102, 241, 0.18),
-        0 12px 24px rgba(99, 102, 241, 0.12);
+        0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent),
+        var(--shadow-sm);
 
     transform: scale(1.01);
 }
 
 .sortable-item_subtask-dropzone-over .sortable-item_subtask-dropzone-icon {
-    background: rgba(99, 102, 241, 0.2);
-    color: rgba(99, 102, 241, 1);
+    background: color-mix(in srgb, var(--color-primary) 24%, transparent);
+    color: var(--color-primary);
+}
+
+.sortable-item_subtask-dropzone-disabled {
+    border-color: var(--color-border);
+    opacity: 0.55;
 }
 
 .sortable-item_subtask-dropzone-over .sortable-item_subtask-dropzone-inner {
@@ -95,5 +100,13 @@
 
     100% {
         transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sortable-item_subtask-dropzone,
+    .sortable-item_subtask-dropzone-inner {
+        transition: none;
+        animation: none;
     }
 }

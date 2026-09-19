@@ -76,6 +76,23 @@ export function getReorderedItems({
         ? overItem.id
         : overItem.parentUuid ?? null;
 
+    // A task cannot contain itself, directly or through one of its descendants.
+    // Besides corrupting the tree, a self-parented task disappears from the root list.
+    const wouldCreateCycle = (candidateParentId: string | null) => {
+        let currentId = candidateParentId;
+        const visited = new Set<string>();
+
+        while (currentId) {
+            if (currentId === activeId || visited.has(currentId)) return true;
+            visited.add(currentId);
+            currentId = allItems.find(item => item.id === currentId)?.parentUuid ?? null;
+        }
+
+        return false;
+    };
+
+    if (wouldCreateCycle(newParent)) return allItems;
+
     const getSiblings = (parentUuid: string | null) =>
         allItems
             .filter(i => (i.parentUuid ?? null) === parentUuid)

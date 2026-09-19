@@ -199,7 +199,11 @@ const Checklist: FC<ChecklistProps> = ({
         if (!over || active.id === over.id) return;
 
         const activeItem = items.find(item => item.id === active.id);
-        const overItem = items.find(item => item.id === over.id);
+        const overId = String(over.id);
+        const overTaskId = overId.startsWith('placeholder-')
+            ? overId.slice('placeholder-'.length)
+            : overId;
+        const overItem = items.find(item => item.id === overTaskId);
         if (
             activeItem
             && overItem
@@ -210,7 +214,7 @@ const Checklist: FC<ChecklistProps> = ({
             return;
         }
 
-        sortItems(filteredItems, activeTab, active.id as string, over.id as string);
+        sortItems(filteredItems, activeTab, active.id as string, overId);
     };
 
     const handleDragCancel = () => {
