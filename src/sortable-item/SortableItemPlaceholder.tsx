@@ -5,10 +5,14 @@ import "./placeholder.css";
 const SortableItemPlaceholder = ({ id }: { id: string }) => {
     const { active } = useDndContext();
     const isDraggingParent = active?.id === id;
+    const activeTaskText = typeof active?.data.current?.taskText === 'string'
+        ? active.data.current.taskText
+        : null;
     const { setNodeRef, isOver } = useDroppable({
         id: `placeholder-${id}`,
         disabled: isDraggingParent,
     });
+    const showTaskPreview = isOver && !isDraggingParent && !!activeTaskText;
 
     return (
         <div
@@ -18,7 +22,7 @@ const SortableItemPlaceholder = ({ id }: { id: string }) => {
             aria-disabled={isDraggingParent}
             className={`sortable-item_subtask-dropzone${isOver ? " sortable-item_subtask-dropzone-over" : ""}${isDraggingParent ? " sortable-item_subtask-dropzone-disabled" : ""}`}
         >
-            <div className="sortable-item_subtask-dropzone-inner">
+            <div className={`sortable-item_subtask-dropzone-inner${showTaskPreview ? " sortable-item_subtask-dropzone-inner--task-preview" : ""}`}>
                 <div className="sortable-item_subtask-dropzone-text" aria-live="polite">
                     {isDraggingParent ? (
                         <>
@@ -27,6 +31,18 @@ const SortableItemPlaceholder = ({ id }: { id: string }) => {
                             </span>
                             <span className="sortable-item_subtask-dropzone-subtitle">
                                 A task can’t be its own subtask.
+                            </span>
+                        </>
+                    ) : showTaskPreview ? (
+                        <>
+                            <span className="sortable-item_subtask-dropzone-preview-label">
+                                New subtask
+                            </span>
+                            <span className="sortable-item_subtask-dropzone-preview-task">
+                                {activeTaskText}
+                            </span>
+                            <span className="sortable-item_subtask-dropzone-subtitle">
+                                Release to place it here.
                             </span>
                         </>
                     ) : isOver ? (

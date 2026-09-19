@@ -143,7 +143,12 @@ export const SortableItem: FC<SortableItemProps> = ({
         transition,
         isDragging,
         isOver,
-    } = useSortable({ id });
+    } = useSortable({
+        id,
+        data: {
+            taskText: text,
+        },
+    });
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ? true : false);
@@ -832,7 +837,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                     exit={{ height: 0, opacity: 0, y: -4 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_subtasks-motion-shell">
+                                    <div className="sortable-item_subtasks-motion-shell sortable-item_subtasks-list-dropzone">
                                         {filteredTasks?.map((subtask) => (
                                             <SortableItem
                                                 checklistType={checklistType}

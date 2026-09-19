@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
-import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
+import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
@@ -20,6 +20,7 @@ import { isChoreAccessChangedError } from 'src/app/api';
 import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
+import { TaskDragOverlay } from 'src/sortable-item/TaskDragOverlay';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -98,6 +99,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const [showSparkles, setShowSparkles] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [activeDragItem, setActiveDragItem] = useState<ChecklistItem | null>(null);
     const shouldReduceMotion = useReducedMotion();
     const sparkleTimeoutRef = useRef<number | null>(null);
     const listContentRef = useRef<HTMLDivElement>(null);
@@ -184,6 +186,7 @@ const Checklist: FC<ChecklistProps> = ({
             activationConstraint: {
                 distance: 5,
                 delay: 100,
+                tolerance: 5,
             },
         })
     );
@@ -191,10 +194,12 @@ const Checklist: FC<ChecklistProps> = ({
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
 
+        setActiveDragItem(active);
         setIsDragging(true);
     }
     const handleDragEnd = (event: DragEndEvent) => {
         setIsDragging(false);
+        setActiveDragItem(null);
 
         const { active, over } = event;
         if (!over || active.id === over.id) return;
@@ -220,6 +225,7 @@ const Checklist: FC<ChecklistProps> = ({
 
     const handleDragCancel = () => {
         setIsDragging(false);
+        setActiveDragItem(null);
     };
 
     const toggleChecked = async (id: string, checked: boolean) => {
@@ -495,6 +501,9 @@ const Checklist: FC<ChecklistProps> = ({
                         </SortableContext>
                     </div>
                 </div>
+                <DragOverlay adjustScale={false}>
+                    {activeDragItem ? <TaskDragOverlay item={activeDragItem} /> : null}
+                </DragOverlay>
             </DndContext>
         </>
     )

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
-import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
+import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableItem } from 'sortable-item/SortableItem';
@@ -18,6 +18,7 @@ import type { GoogleEvent } from 'src/google-authorization/types';
 import { useReducedMotion } from 'framer-motion';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
+import { TaskDragOverlay } from 'src/sortable-item/TaskDragOverlay';
 
 function isTodayOrBefore(date: Date) {
   const today = new Date();
@@ -69,6 +70,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const { events } = useGoogleCalendar();
     const shouldReduceMotion = useReducedMotion();
     const [showSparkles, setShowSparkles] = useState(false);
+    const [activeDragItem, setActiveDragItem] = useState<ChecklistItem | null>(null);
     const sparkleTimeoutRef = useRef<number | null>(null);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
@@ -127,14 +129,19 @@ const DemoChecklist: FC<ChecklistProps> = ({
             activationConstraint: {
                 distance: 5,
                 delay: 100,
+                tolerance: 5,
             },
         })
     );
     function handleDragStart(event: DragStartEvent) {
         const active = items.find(t => t.id === event.active.id) || items.find(i => i.id === event.active.id);
         if (!active) return;
+
+        setActiveDragItem(active);
     }
     const handleDragEnd = useCallback((event: DragEndEvent) => {
+        setActiveDragItem(null);
+
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
@@ -253,6 +260,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                 collisionDetection={taskCollisionDetection}
                 onDragEnd={handleDragEnd}
                 onDragStart={handleDragStart}
+                onDragCancel={() => setActiveDragItem(null)}
                 sensors={sensors}
             >
                 <div className="checklist_list-container">
@@ -314,6 +322,9 @@ const DemoChecklist: FC<ChecklistProps> = ({
                         <div className="demo-placeholder" />
                     </SortableContext>
                 </div>
+                <DragOverlay adjustScale={false}>
+                    {activeDragItem ? <TaskDragOverlay item={activeDragItem} /> : null}
+                </DragOverlay>
             </DndContext>
         </>
     )
