@@ -17,6 +17,7 @@ import { ALL_MODES } from 'src/checklist/constants';
 import type { GoogleEvent } from 'src/google-authorization/types';
 import { useReducedMotion } from 'framer-motion';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
+import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
 
 function isTodayOrBefore(date: Date) {
   const today = new Date();
@@ -248,7 +249,12 @@ const DemoChecklist: FC<ChecklistProps> = ({
     return (
         <>
             {showSparkles && sparkles}
-            <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
+            <DndContext
+                collisionDetection={taskCollisionDetection}
+                onDragEnd={handleDragEnd}
+                onDragStart={handleDragStart}
+                sensors={sensors}
+            >
                 <div className="checklist_list-container">
                     <SortableContext items={allItems.map(i => i.id)}>
                         {!allItems.length && (

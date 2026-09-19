@@ -19,6 +19,7 @@ import { canEditTask } from 'src/sharing/chore-access';
 import { isChoreAccessChangedError } from 'src/app/api';
 import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
+import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -391,6 +392,7 @@ const Checklist: FC<ChecklistProps> = ({
         <>
             {showSparkles && sparkles}
             <DndContext
+                collisionDetection={taskCollisionDetection}
                 onDragEnd={handleDragEnd}
                 onDragStart={handleDragStart}
                 onDragCancel={handleDragCancel}

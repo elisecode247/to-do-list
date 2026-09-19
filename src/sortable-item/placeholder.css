@@ -5,8 +5,8 @@
     background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface--transparent));
     padding: var(--spacing-sm);
     min-height: 72px;
-
     display: flex;
+    align-self: flex-end;
     align-items: flex-end;
     justify-content: flex-end;
 
@@ -67,12 +67,9 @@
 .sortable-item_subtask-dropzone-over {
     border-color: var(--color-primary);
     background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
-
     box-shadow:
         0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent),
         var(--shadow-sm);
-
-    transform: scale(1.01);
 }
 
 .sortable-item_subtask-dropzone-over .sortable-item_subtask-dropzone-icon {
