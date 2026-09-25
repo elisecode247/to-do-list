@@ -314,12 +314,14 @@
 
 .main_content {
     grid-area: main;
+    min-height: 0;
     overflow: hidden;
 }
 
 .main_content_page {
     height: 100%;
     margin-top: var(--spacing-sm);
+    min-height: 0;
 }
 
 /* Shared bottom-sheet styles */

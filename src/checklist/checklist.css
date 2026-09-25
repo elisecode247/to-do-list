@@ -9,6 +9,7 @@
     height: 100%;
     flex: 1;
     width: 100%;
+    overscroll-behavior-y: none;
 }
 
 /* Embedded template previews should use the page's scroll container. */
