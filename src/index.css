@@ -14,6 +14,7 @@ body {
     line-height: 1.5;
     color: contrast-color(var(--color-background));
     background-color: var(--color-background);
+    overscroll-behavior-y: none;
     min-width: 375px;
     padding: 0;
     display: flex;
