@@ -23,6 +23,7 @@ function TaskContextChecklist({ items, ...props }: TaskContextChecklistProps) {
         toggleItem: task.toggleItem,
         prioritizeItem: task.prioritizeItem,
         archiveItem: task.archiveItem,
+        moveItem: task.moveItem,
         sortItems: task.sortItems,
         getSubtasks: task.getSubtasks,
         hideForToday: task.hideForToday,

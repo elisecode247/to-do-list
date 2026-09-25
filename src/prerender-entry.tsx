@@ -56,6 +56,7 @@ const tasks: TaskContextType = {
     toggleItem: noop,
     prioritizeItem: noop,
     archiveItem: noop,
+    moveItem: noop,
     sortItems: noop,
     reset: noop,
     getSubtasks: () => [],

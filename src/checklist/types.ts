@@ -33,6 +33,7 @@ export interface ChecklistController {
     toggleItem: (id: string, checked: boolean) => Promise<void> | void;
     prioritizeItem: (id: string) => Promise<void> | void;
     archiveItem: (id: string) => Promise<void> | void;
+    moveItem: (id: string, parentUuid: string | null) => Promise<void> | void;
     sortItems: (
         filteredItems: ChecklistItem[],
         activeTab: Tab,

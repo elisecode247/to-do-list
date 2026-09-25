@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FC, type ReactElement, useCallback } from 'react';
+import { useState, useRef, useEffect, useMemo, type FC, type ReactElement, useCallback } from 'react';
 import type { ChecklistItem, Mode } from 'app/types';
 import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -86,6 +86,7 @@ const Checklist: FC<ChecklistProps> = ({
         toggleItem,
         prioritizeItem,
         archiveItem,
+        moveItem,
         sortItems,
         getSubtasks,
         hideForToday,
@@ -108,6 +109,10 @@ const Checklist: FC<ChecklistProps> = ({
     const hasInitializedCompletedDayRef = useRef(false);
     const { toggleSortCompleted } = useTheme();
     const sortCompletedTasksLast = toggleSortCompleted === 'true';
+    const effectiveItemLookup = useMemo(
+        () => itemLookup ?? new Map(items.map(item => [item.id, item])),
+        [itemLookup, items],
+    );
     const {
         refreshContainerRef,
         pullRefreshContainerClassName,
@@ -467,6 +472,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             handleHideItem={handleHide}
                                             subtasks={getSubtasks(checklistItem.id)}
                                             onMoveItem={handleMoveItem}
+                                            onMoveTo={moveItem}
                                             onSuccess={displaySparkles}
                                             nextDue={checklistItem.nextDue}
                                             addItem={addItem}
@@ -477,7 +483,7 @@ const Checklist: FC<ChecklistProps> = ({
                                             ownerName={checklistItem.ownerName}
                                             hasMembers={checklistItem.hasMembers}
                                             expandedNoteItemIds={expandedNoteItemIds}
-                                            itemLookup={itemLookup}
+                                            itemLookup={effectiveItemLookup}
                                         />
                                     );
 

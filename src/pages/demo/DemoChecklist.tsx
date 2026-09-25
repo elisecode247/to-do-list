@@ -62,6 +62,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
         toggleItem,
         prioritizeItem,
         archiveItem,
+        moveItem,
         sortItems,
         getSubtasks,
         hideForToday,
@@ -74,6 +75,10 @@ const DemoChecklist: FC<ChecklistProps> = ({
     const sparkleTimeoutRef = useRef<number | null>(null);
     const { showToast } = useToast();
     const completedDayRef = useRef(false);
+    const itemLookup = useMemo(
+        () => new Map(items.map(item => [item.id, item])),
+        [items],
+    );
 
     const filteredItems = useMemo(() => {
         const visibleItems = itemsOverride ?? filterTasks({ items, modeFilter, activeTab, hideCompleted, filterCategory });
@@ -290,6 +295,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         activeTab={activeTab}
                                         hasSubChores={checklistItem.hasSubChores}
                                         isSubChore={!!checklistItem.parentUuid}
+                                        parentUuid={checklistItem.parentUuid}
                                         isPriority={checklistItem.isPriority}
                                         checked={checklistItem.done}
                                         key={checklistItem.id}
@@ -308,11 +314,14 @@ const DemoChecklist: FC<ChecklistProps> = ({
                                         handleHideItem={handleHide}
                                         subtasks={getSubtasks(checklistItem.id)}
                                         onMoveItem={handleMoveItem}
+                                        onMoveTo={moveItem}
                                         onSuccess={displaySparkles}
                                         nextDue={checklistItem.nextDue}
                                         partialUpdateItem={partialUpdateItem}
+                                        getSubtasks={getSubtasks}
                                         recurrence={checklistItem.recurrence}
                                         hasMembers={false}
+                                        itemLookup={itemLookup}
                                     />
                                 );
                             }

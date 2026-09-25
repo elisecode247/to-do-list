@@ -29,6 +29,7 @@ import {
     RefreshCw,
     ChevronRight,
     Users,
+    FolderInput,
 } from 'lucide-react';
 import { Checkbox } from '@headlessui/react';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -53,6 +54,7 @@ import { isChoreAccessChangedError } from 'src/app/api';
 import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { formatDate } from 'src/app/utilities/format-date';
+import { MoveTaskDialog } from './MoveTaskDialog';
 
 interface SortableItemProps {
     checklistType?: 'task' | 'template' | 'search-results';
@@ -77,6 +79,7 @@ interface SortableItemProps {
     handleEdit: (id: string) => void;
     handleHideItem: (id: string, isHiddenItem: boolean) => void;
     onMoveItem: (id: string, isArchived: boolean) => void;
+    onMoveTo?: (id: string, parentUuid: string | null) => Promise<void> | void;
     onSuccess: Dispatch<SetStateAction<boolean>>;
     isPriority: boolean;
     subtasks: ChecklistItem[];
@@ -116,6 +119,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     handleEdit,
     handleHideItem,
     onMoveItem,
+    onMoveTo,
     isPriority,
     onSuccess,
     subtasks,
@@ -157,6 +161,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [menuPosition, setMenuPosition] = useState<React.CSSProperties>({});
     const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
     const exitTimerRef = useRef<number | null>(null);
     const [showUpcoming, setShowUpcoming] = useState(false);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
@@ -371,6 +376,18 @@ export const SortableItem: FC<SortableItemProps> = ({
             if (!isChoreAccessChangedError(err)) {
                 showToast('Failed to delete task. Please try again.', 'error');
             }
+        }
+    }
+
+    async function handleMoveTask(destinationParentUuid: string | null) {
+        if (!onMoveTo) return;
+
+        try {
+            await onMoveTo(id, destinationParentUuid);
+            showToast(`"${text}" moved successfully`, 'success');
+        } catch (error) {
+            console.error('Failed to move task:', error);
+            throw error;
         }
     }
 
@@ -705,6 +722,22 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         </button>
                                     )}
 
+                                    {canEdit && onMoveTo && itemLookup && (
+                                        <button
+                                            className="sortable-item_edit-button sortable-item_move-button"
+                                            onClick={() => {
+                                                setIsMenuOpen(false);
+                                                setIsMoveDialogOpen(true);
+                                            }}
+                                            aria-label="Move task"
+                                            title="Move task"
+                                            type="button"
+                                        >
+                                            <FolderInput size={24} />
+                                            <span className="sortable-item_button-text-span">Move to…</span>
+                                        </button>
+                                    )}
+
                                     {!canEdit || checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
                                         <button
                                             className="sortable-item_archive-button"
@@ -863,6 +896,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 handleEdit={handleEdit}
                                                 handleHideItem={handleHideItem}
                                                 onMoveItem={onMoveItem}
+                                                onMoveTo={onMoveTo}
                                                 isPriority={subtask.isPriority}
                                                 onSuccess={onSuccess}
                                                 subtasks={getSubtasks(subtask.id)}
@@ -935,6 +969,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                             handleEdit={handleEdit}
                                                             handleHideItem={handleHideItem}
                                                             onMoveItem={onMoveItem}
+                                                            onMoveTo={onMoveTo}
                                                             isPriority={subtask.isPriority}
                                                             onSuccess={onSuccess}
                                                             subtasks={getSubtasks(subtask.id)}
@@ -997,6 +1032,18 @@ export const SortableItem: FC<SortableItemProps> = ({
                     </div>
                 ) : null}
             </div>
+            {itemLookup && (
+                <MoveTaskDialog
+                    key={`${id}-${parentUuid ?? 'top-level'}-${isMoveDialogOpen ? 'open' : 'closed'}`}
+                    isOpen={isMoveDialogOpen}
+                    taskId={id}
+                    taskName={text}
+                    parentUuid={parentUuid ?? null}
+                    itemLookup={itemLookup}
+                    onClose={() => setIsMoveDialogOpen(false)}
+                    onMove={handleMoveTask}
+                />
+            )}
         </div>
     );
 };

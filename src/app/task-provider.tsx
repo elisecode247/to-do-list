@@ -2,6 +2,7 @@ import { useAuthentication } from 'src/authentication/use-authentication';
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from './utilities/get-reorder-items';
+import { getMovedItems } from './utilities/get-moved-items';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
 import {
     fetchTasks,
@@ -30,6 +31,7 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { TaskContext } from './task-context';
 import { getLocalTodayAtMidnight } from './utilities/filter-tasks';
 import { useToast } from 'src/toast/use-toast';
+import { canEditTask } from 'src/sharing/chore-access';
 
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
@@ -434,6 +436,38 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             )
         );
     }
+
+    const moveItem = async (id: string, parentUuid: string | null) => {
+        const activeItem = items.find(item => item.id === id);
+        if (!activeItem) return;
+        if (!canEditTask(activeItem.accessRole)) {
+            throw new Error('Owner or editor access is required to move tasks between groups.');
+        }
+
+        const movedItems = getMovedItems(items, id, parentUuid);
+        if (movedItems === items) return;
+
+        const orders = movedItems.flatMap((item): TaskOrderUpdate[] => {
+            const previousItem = items.find(candidate => candidate.id === item.id);
+            if (!previousItem) return [];
+
+            const order: TaskOrderUpdate = { id: item.id };
+            if (previousItem.sortOrder !== item.sortOrder) {
+                order.sortOrder = item.sortOrder;
+            }
+            if ((previousItem.parentUuid ?? null) !== (item.parentUuid ?? null)) {
+                order.parentUuid = item.parentUuid ?? null;
+            }
+
+            return Object.keys(order).length > 1 ? [order] : [];
+        });
+
+        if (orders.length === 0) return;
+
+        await updateTasksOrder(orders);
+        setItems(currentItems => getMovedItems(currentItems, id, parentUuid));
+    };
+
     const sortItems = (
         filteredItems: ChecklistItem[],
         activeTab: Tab,
@@ -593,6 +627,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
             toggleItem,
             prioritizeItem,
             archiveItem,
+            moveItem,
             sortItems,
             reset,
             getSubtasks,

@@ -121,6 +121,7 @@ export interface TaskContextType {
     toggleItem: (id: string, checked: boolean) => void;
     prioritizeItem: (id: string) => void;
     archiveItem: (id: string) => Promise<void> | void;
+    moveItem: (id: string, parentUuid: string | null) => Promise<void> | void;
     sortItems: (filteredItems: ChecklistItem[], activeTab: Tab, activeId: string, overId: string) => void;
     reset: () => void;
     getSubtasks: (parentId: string) => ChecklistItem[];

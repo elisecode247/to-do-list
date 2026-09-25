@@ -48,6 +48,7 @@ import {
 
 import { DEFAULT_CATEGORIES } from "src/category-select/category-constants";
 import { addTasksFromTemplate, type AddTasksFromTemplateRequest } from "src/app/api";
+import { getMovedItems } from "src/app/utilities/get-moved-items";
 import "./templates-page.css";
 
 type TemplateCategoryKey = "housework" | "self-care" | "pets" | "work" | "people" | "leisure";
@@ -214,6 +215,10 @@ export default function TemplatesPage() {
         });
     }
 
+    function moveItem(id: string, parentUuid: string | null) {
+        setPreviewItems(items => getMovedItems(items, id, parentUuid));
+    }
+
     async function addToList() {
         setIsAdding(true);
         try {
@@ -281,6 +286,7 @@ export default function TemplatesPage() {
         toggleItem: (id: string, checked: boolean) => updateItem({ id, done: checked, lastCompleted: checked ? new Date().toISOString() : "" }),
         prioritizeItem: (id: string) => { const item = previewItems.find(candidate => candidate.id === id); if (item) updateItem({ id, isPriority: !item.isPriority }); },
         archiveItem: (id: string) => { const item = previewItems.find(candidate => candidate.id === id); if (item) updateItem({ id, isArchived: !item.isArchived }); },
+        moveItem,
         sortItems,
         getSubtasks: (id: string) => previewItems.filter(item => item.parentUuid === id).sort((a, b) => a.sortOrder - b.sortOrder),
         hideForToday: (id: string) => updateItem({ id, isHidden: true }),

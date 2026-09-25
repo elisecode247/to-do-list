@@ -2,6 +2,7 @@ import { INTERVAL_RECURRENCE, ONE_TIME_RECURRENCE, type ApiRecurrence, type Chec
 import { isDateToday } from 'src/utilities/is-date-today';
 import { type Tab } from 'src/app-toolbar/tabs/types';
 import { getReorderedItems } from 'src/app/utilities/get-reorder-items';
+import { getMovedItems } from 'src/app/utilities/get-moved-items';
 import { ONE_TIME_MODE } from 'src/checklist/constants';
 import type {
     IntervalRecurrence,
@@ -372,6 +373,15 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const moveItem = (id: string, parentUuid: string | null) => {
+        setItems(currentItems => {
+            const movedItems = getMovedItems(currentItems, id, parentUuid);
+            if (movedItems === currentItems) return currentItems;
+            saveTasksToStorage(movedItems);
+            return movedItems;
+        });
+    };
+
     const sortItems = (
         filteredItems: ChecklistItem[],
         activeTab: Tab,
@@ -502,6 +512,7 @@ export const DemoTaskProvider = ({ children }: { children: ReactNode }) => {
             toggleItem,
             prioritizeItem,
             archiveItem,
+            moveItem,
             sortItems,
             clear,
             reset,

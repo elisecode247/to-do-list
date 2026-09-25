@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, type ComponentProps, type ReactNode } from 'react';
 import { SortableItem } from './SortableItem';
 import { TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
-import type { ChoreAccessRole } from 'app/types';
+import type { ChecklistItem, ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
 const { useOnClickOutsideMock } = vi.hoisted(() => ({
@@ -52,7 +52,38 @@ vi.mock('src/user-settings/use-user-settings', () => ({
 }));
 
 const toggleChecked = vi.fn();
+const moveTask = vi.fn();
 let rendered: RenderedUi | undefined;
+
+function checklistItem(
+    id: string,
+    text: string,
+    parentUuid: string | null = null,
+    sortOrder = 0,
+): ChecklistItem {
+    return {
+        itemType: 'checklist-item',
+        isOwner: true,
+        accessRole: 'owner',
+        hasMembers: false,
+        isHidden: false,
+        id,
+        text,
+        done: false,
+        lastCompleted: '',
+        note: '',
+        sortOrder,
+        tabSortOrder: {},
+        category: '',
+        mode: 'one-time',
+        isPriority: false,
+        isArchived: false,
+        hasSubChores: false,
+        parentUuid,
+        recurrence: null,
+        nextDue: null,
+    };
+}
 
 function propsFor(accessRole: ChoreAccessRole): ComponentProps<typeof SortableItem> {
     return {
@@ -93,6 +124,7 @@ function byLabel(container: HTMLElement, label: string): HTMLElement | null {
 afterEach(async () => {
     vi.useRealTimers();
     toggleChecked.mockReset();
+    moveTask.mockReset();
     useOnClickOutsideMock.mockReset();
     await rendered?.unmount();
     rendered = undefined;
@@ -190,6 +222,50 @@ describe('SortableItem role permissions', () => {
         expect(byLabel(rendered.container, 'Archive task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Delete task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Add subtask')).not.toBeNull();
+    });
+
+    it('moves a task to a selected parent from the actions menu', async () => {
+        const movingTask = checklistItem('moving-task', 'Moving task', 'parent-a');
+        const parentA = checklistItem('parent-a', 'Current group');
+        const parentB = checklistItem('parent-b', 'Destination group', null, 1);
+        const itemLookup = new Map(
+            [movingTask, parentA, parentB].map(item => [item.id, item]),
+        );
+        moveTask.mockResolvedValue(undefined);
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                id={movingTask.id}
+                text={movingTask.text}
+                parentUuid={movingTask.parentUuid}
+                itemLookup={itemLookup}
+                onMoveTo={moveTask}
+            />,
+        );
+
+        await click(byLabel(rendered.container, 'More task actions')!);
+        await click(byLabel(rendered.container, 'Move task')!);
+
+        const select = document.querySelector<HTMLSelectElement>(
+            '#move-task-destination-moving-task',
+        );
+        expect(select).not.toBeNull();
+        expect(Array.from(select!.options).map(option => option.textContent)).toEqual([
+            'Top level',
+            'Current group',
+            'Destination group',
+        ]);
+
+        await act(async () => {
+            select!.value = 'parent-b';
+            select!.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        const submit = document.querySelector<HTMLButtonElement>(
+            '.move-task-dialog__button--primary',
+        );
+        await click(submit!);
+
+        expect(moveTask).toHaveBeenCalledWith('moving-task', 'parent-b');
     });
 
     it('moves an upcoming task to today through the hide-button action', async () => {

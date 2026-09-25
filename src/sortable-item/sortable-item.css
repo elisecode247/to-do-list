@@ -578,6 +578,7 @@
 .sortable-item_archive-button,
 .sortable-item_restore-button,
 .sortable-item_edit-button,
+.sortable-item_move-button,
 .sortable-item_hide-button,
 .sortable-item_delete-button,
 .sortable-item_priority-button,
@@ -627,6 +628,14 @@
 .sortable-item_edit-button:hover {
     background-color: var(--color-hover);
     color: var(--color-info);
+}
+
+.sortable-item_move-button {
+    color: var(--color-info);
+}
+
+.sortable-item_move-button:hover {
+    background-color: var(--color-hover);
 }
 
 /* Delete Button */
