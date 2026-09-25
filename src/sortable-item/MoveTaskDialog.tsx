@@ -104,7 +104,11 @@ export function MoveTaskDialog({
                                 </span>
                             </ListboxButton>
                             <ListboxOptions
-                                anchor="bottom start"
+                                anchor={{
+                                    to: 'bottom start',
+                                    gap: 'var(--spacing-xs)',
+                                    padding: 'var(--spacing-sm)',
+                                }}
                                 className="move-task-dialog__options"
                             >
                                 <ListboxOption
