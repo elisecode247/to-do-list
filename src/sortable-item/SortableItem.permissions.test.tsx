@@ -246,20 +246,21 @@ describe('SortableItem role permissions', () => {
         await click(byLabel(rendered.container, 'More task actions')!);
         await click(byLabel(rendered.container, 'Move task')!);
 
-        const select = document.querySelector<HTMLSelectElement>(
+        const destinationButton = document.querySelector<HTMLButtonElement>(
             '#move-task-destination-moving-task',
         );
-        expect(select).not.toBeNull();
-        expect(Array.from(select!.options).map(option => option.textContent)).toEqual([
+        expect(destinationButton).not.toBeNull();
+        await click(destinationButton!);
+
+        const destinationOptions = Array.from(
+            document.querySelectorAll<HTMLElement>('.move-task-dialog__option'),
+        );
+        expect(destinationOptions.map(option => option.textContent)).toEqual([
             'Top level',
             'Current group',
             'Destination group',
         ]);
-
-        await act(async () => {
-            select!.value = 'parent-b';
-            select!.dispatchEvent(new Event('change', { bubbles: true }));
-        });
+        await click(destinationOptions[2]);
         const submit = document.querySelector<HTMLButtonElement>(
             '.move-task-dialog__button--primary',
         );

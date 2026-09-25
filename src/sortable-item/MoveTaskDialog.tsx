@@ -5,6 +5,10 @@ import {
     DialogBackdrop,
     DialogPanel,
     DialogTitle,
+    Listbox,
+    ListboxButton,
+    ListboxOption,
+    ListboxOptions,
 } from '@headlessui/react';
 import type { ChecklistItem } from 'src/app/types';
 import { getMoveTaskOptions } from './utilities/get-move-task-options';
@@ -38,6 +42,9 @@ export function MoveTaskDialog({
         [itemLookup, taskId],
     );
     const hasChanged = selectedParentUuid !== (parentUuid ?? '');
+    const selectedDestination = selectedParentUuid
+        ? options.find(option => option.id === selectedParentUuid)?.label ?? 'Unknown task'
+        : 'Top level';
 
     const handleSubmit = async (event: SyntheticEvent) => {
         event.preventDefault();
@@ -77,23 +84,50 @@ export function MoveTaskDialog({
                         >
                             Move to
                         </label>
-                        <select
-                            id={`move-task-destination-${taskId}`}
-                            className="move-task-dialog__select"
+                        <Listbox
                             value={selectedParentUuid}
-                            onChange={event => {
-                                setSelectedParentUuid(event.target.value);
+                            onChange={(value: string) => {
+                                setSelectedParentUuid(value);
                                 setErrorMessage(null);
                             }}
                             disabled={isMoving}
                         >
-                            <option value="">Top level</option>
-                            {options.map(option => (
-                                <option key={option.id} value={option.id}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
+                            <ListboxButton
+                                id={`move-task-destination-${taskId}`}
+                                className="move-task-dialog__select"
+                            >
+                                <span className="move-task-dialog__selected-value">
+                                    {selectedDestination}
+                                </span>
+                                <span className="move-task-dialog__chevron" aria-hidden="true">
+                                    ▾
+                                </span>
+                            </ListboxButton>
+                            <ListboxOptions
+                                anchor="bottom start"
+                                className="move-task-dialog__options"
+                            >
+                                <ListboxOption
+                                    className={({ active, selected }) =>
+                                        `move-task-dialog__option ${active ? 'is-active' : ''} ${selected ? 'is-selected' : ''}`
+                                    }
+                                    value=""
+                                >
+                                    Top level
+                                </ListboxOption>
+                                {options.map(option => (
+                                    <ListboxOption
+                                        key={option.id}
+                                        className={({ active, selected }) =>
+                                            `move-task-dialog__option ${active ? 'is-active' : ''} ${selected ? 'is-selected' : ''}`
+                                        }
+                                        value={option.id}
+                                    >
+                                        {option.label}
+                                    </ListboxOption>
+                                ))}
+                            </ListboxOptions>
+                        </Listbox>
                         {errorMessage && (
                             <p className="move-task-dialog__error" role="alert">
                                 {errorMessage}
