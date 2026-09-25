@@ -342,6 +342,6 @@
 }
 
 .placeholder {
-    height: var(--spacing-xl);
+    height: 350px;
     flex-shrink: 0;
 }
