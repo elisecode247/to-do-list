@@ -156,6 +156,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [openNewTaskForm, setOpenNewTaskForm] = useState(false);
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ? true : false);
+    const [showSearchNoteEditor, setShowSearchNoteEditor] = useState(false);
     const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState<React.CSSProperties>({});
@@ -803,14 +804,15 @@ export const SortableItem: FC<SortableItemProps> = ({
                             transition={{ duration: 0.22, ease: 'easeOut' }}
                         >
                             <div className="sortable-item_note">
-                                {checklistType === 'search-results' ? (
-                                    <div
+                                {checklistType === 'search-results' && !showSearchNoteEditor ? (
+                                    <button
                                         className="sortable-item_note-preview"
-                                        role="note"
-                                        aria-label={`Note for ${text}`}
+                                        type="button"
+                                        onClick={() => setShowSearchNoteEditor(true)}
+                                        aria-label={`${canEdit ? 'Edit' : 'View'} note for ${text}`}
                                     >
                                         {note}
-                                    </div>
+                                    </button>
                                 ) : (
                                     <NoteEditor
                                         ref={noteRef}

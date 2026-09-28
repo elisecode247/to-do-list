@@ -131,6 +131,27 @@ afterEach(async () => {
 });
 
 describe('SortableItem role permissions', () => {
+    it('switches a search-result note preview to the note editor when clicked', async () => {
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                checklistType="search-results"
+                note="A searchable note"
+                expandedNoteItemIds={new Set(['task-owner'])}
+            />,
+        );
+
+        const preview = byLabel(rendered.container, 'Edit note for owner task');
+
+        expect(preview?.textContent).toBe('A searchable note');
+        expect(rendered.container.querySelector('[data-testid="note-editor"]')).toBeNull();
+
+        await click(preview!);
+
+        expect(byLabel(rendered.container, 'Edit note for owner task')).toBeNull();
+        expect(rendered.container.querySelector('[data-testid="note-editor"]')).not.toBeNull();
+    });
+
     it('shows a priority badge in the metadata for priority tasks', async () => {
         rendered = await renderUi(
             <SortableItem {...propsFor('owner')} isPriority={true} />,

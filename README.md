@@ -15,4 +15,3 @@ Live: https://dailyresetlist.com
 * review landing page language
 * automate encrypted PostgreSQL backups stored outside Railway
 * submit published app to google
-* add note editor to search results
