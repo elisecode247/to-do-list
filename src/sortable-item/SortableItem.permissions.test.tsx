@@ -7,7 +7,8 @@ import { TAB_TODAY, TAB_UPCOMING } from 'src/app-toolbar/tabs/types';
 import type { ChecklistItem, ChoreAccessRole } from 'app/types';
 import { click, renderUi, type RenderedUi } from 'src/test/render-ui';
 
-const { useOnClickOutsideMock } = vi.hoisted(() => ({
+const { showToastMock, useOnClickOutsideMock } = vi.hoisted(() => ({
+    showToastMock: vi.fn(),
     useOnClickOutsideMock: vi.fn(),
 }));
 
@@ -40,11 +41,17 @@ vi.mock('usehooks-ts', () => ({
 }));
 
 vi.mock('src/editor/LazyNoteEditor', () => ({
-    default: () => <div data-testid="note-editor" />,
+    default: ({ onChange }: { onChange?: (markdown: string) => void }) => (
+        <button
+            type="button"
+            data-testid="note-editor"
+            onClick={() => onChange?.('Updated note')}
+        />
+    ),
 }));
 
 vi.mock('src/toast/use-toast', () => ({
-    useToast: () => ({ showToast: vi.fn() }),
+    useToast: () => ({ showToast: showToastMock }),
 }));
 
 vi.mock('src/user-settings/use-user-settings', () => ({
@@ -125,12 +132,83 @@ afterEach(async () => {
     vi.useRealTimers();
     toggleChecked.mockReset();
     moveTask.mockReset();
+    showToastMock.mockReset();
     useOnClickOutsideMock.mockReset();
     await rendered?.unmount();
     rendered = undefined;
 });
 
 describe('SortableItem role permissions', () => {
+    it('shows inline autosave progress and confirmation without a success toast', async () => {
+        vi.useFakeTimers();
+        let finishSaving: (() => void) | undefined;
+        const partialUpdateItem = vi.fn(() => new Promise<void>((resolve) => {
+            finishSaving = resolve;
+        }));
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                note="An editable note"
+                expandedNoteItemIds={new Set(['task-owner'])}
+                partialUpdateItem={partialUpdateItem}
+            />,
+        );
+
+        await click(rendered.container.querySelector('[data-testid="note-editor"]')!);
+
+        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+            .toBe('Saving…');
+
+        await act(async () => {
+            finishSaving?.();
+            await Promise.resolve();
+        });
+
+        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+            .toBe('Saved');
+        expect(showToastMock).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(1600);
+        });
+
+        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+            .toBe('');
+    });
+
+    it('keeps a failed note save visible and lets the user retry it', async () => {
+        const partialUpdateItem = vi.fn()
+            .mockRejectedValueOnce(new Error('Save failed'))
+            .mockResolvedValueOnce(undefined);
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        rendered = await renderUi(
+            <SortableItem
+                {...propsFor('owner')}
+                note="An editable note"
+                expandedNoteItemIds={new Set(['task-owner'])}
+                partialUpdateItem={partialUpdateItem}
+            />,
+        );
+
+        await click(rendered.container.querySelector('[data-testid="note-editor"]')!);
+
+        const retry = byLabel(rendered.container, 'Retry saving note for owner task');
+        expect(retry).not.toBeNull();
+        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+            .toBe('Couldn’t save.Retry');
+        expect(showToastMock).toHaveBeenCalledWith(
+            'Failed to save note. Please try again.',
+            'error',
+        );
+
+        await click(retry!);
+
+        expect(partialUpdateItem).toHaveBeenCalledTimes(2);
+        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+            .toBe('Saved');
+        consoleError.mockRestore();
+    });
+
     it('switches a search-result note preview to the note editor when clicked', async () => {
         rendered = await renderUi(
             <SortableItem

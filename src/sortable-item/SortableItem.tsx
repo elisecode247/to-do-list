@@ -30,6 +30,9 @@ import {
     ChevronRight,
     Users,
     FolderInput,
+    AlertCircle,
+    Check,
+    LoaderCircle,
 } from 'lucide-react';
 import { Checkbox } from '@headlessui/react';
 import { SortableContext } from '@dnd-kit/sortable';
@@ -96,6 +99,8 @@ interface SortableItemProps {
     itemLookup?: ReadonlyMap<string, ChecklistItem>;
 }
 
+type NoteSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 export const SortableItem: FC<SortableItemProps> = ({
     checklistType = 'task',
     id,
@@ -157,6 +162,7 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [inputText, setInputText] = useState("");
     const [showNotes, setShowNotes] = useState(expandedNoteItemIds?.has(id) ? true : false);
     const [showSearchNoteEditor, setShowSearchNoteEditor] = useState(false);
+    const [noteSaveStatus, setNoteSaveStatus] = useState<NoteSaveStatus>('idle');
     const [collapsed, setCollapsed] = useState(checklistType !== 'template');
     const [dropZoneOpen, setDropZoneOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState<React.CSSProperties>({});
@@ -164,6 +170,8 @@ export const SortableItem: FC<SortableItemProps> = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
     const exitTimerRef = useRef<number | null>(null);
+    const noteSavedTimerRef = useRef<number | null>(null);
+    const noteRevisionRef = useRef(0);
     const [showUpcoming, setShowUpcoming] = useState(false);
     const dragWrapperRef = useRef<HTMLDivElement>(null);
     const menuDropdownRef = useRef<HTMLDivElement>(null);
@@ -219,25 +227,52 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     const upcomingTasks = subtasks?.filter((t) => t.upcoming === true);
 
+    const clearNoteSavedTimer = () => {
+        if (noteSavedTimerRef.current === null) return;
+
+        window.clearTimeout(noteSavedTimerRef.current);
+        noteSavedTimerRef.current = null;
+    };
+
     const saveNote = async () => {
         if (!canEdit) return;
 
+        const revision = noteRevisionRef.current;
+        clearNoteSavedTimer();
+        setNoteSaveStatus('saving');
+
         try {
             await partialUpdateItem?.({ id, note: noteRef.current?.getMarkdown() ?? '' });
-            showToast('Notes saved successfully', 'success');
+            if (revision !== noteRevisionRef.current) return;
+
+            setNoteSaveStatus('saved');
+            noteSavedTimerRef.current = window.setTimeout(() => {
+                noteSavedTimerRef.current = null;
+                setNoteSaveStatus('idle');
+            }, 1600);
         } catch (error) {
             console.error('Failed to save note:', error);
+            if (revision !== noteRevisionRef.current) return;
+
+            setNoteSaveStatus('error');
             if (!isChoreAccessChangedError(error)) {
                 showToast('Failed to save note. Please try again.', 'error');
             }
         }
     };
 
-    const debouncedSaveNote = useDebounceCallback(saveNote, 1000);
+    const debouncedSaveNote = useDebounceCallback(saveNote, 2000);
 
     const handleNoteChange = () => {
+        noteRevisionRef.current += 1;
+        clearNoteSavedTimer();
+        setNoteSaveStatus('saving');
         debouncedSaveNote();
     };
+
+    useEffect(() => () => {
+        clearNoteSavedTimer();
+    }, []);
 
     async function handleAdd(id: string) {
         if (!canAddSubtask) return;
@@ -820,6 +855,45 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         onChange={canEdit ? handleNoteChange : undefined}
                                         readOnly={!canEdit}
                                     />
+                                )}
+                                {canEdit && (checklistType !== 'search-results' || showSearchNoteEditor) && (
+                                    <div
+                                        className={`sortable-item_note-save-status sortable-item_note-save-status--${noteSaveStatus}`}
+                                        role="status"
+                                        aria-live="polite"
+                                        aria-atomic="true"
+                                    >
+                                        {noteSaveStatus === 'saving' && (
+                                            <>
+                                                <LoaderCircle
+                                                    className="sortable-item_note-save-spinner"
+                                                    size={14}
+                                                    aria-hidden="true"
+                                                />
+                                                <span>Saving…</span>
+                                            </>
+                                        )}
+                                        {noteSaveStatus === 'saved' && (
+                                            <>
+                                                <Check size={14} aria-hidden="true" />
+                                                <span>Saved</span>
+                                            </>
+                                        )}
+                                        {noteSaveStatus === 'error' && (
+                                            <>
+                                                <AlertCircle size={14} aria-hidden="true" />
+                                                <span>Couldn’t save.</span>
+                                                <button
+                                                    className="sortable-item_note-save-retry"
+                                                    type="button"
+                                                    onClick={() => void saveNote()}
+                                                    aria-label={`Retry saving note for ${text}`}
+                                                >
+                                                    Retry
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </motion.div>
