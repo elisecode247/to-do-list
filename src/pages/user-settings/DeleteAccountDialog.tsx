@@ -1,6 +1,6 @@
 import React from 'react';
 import { Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import './delete-account-Dialog.css';
+import 'src/components/delete-dialog/delete-dialog.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import { deleteAccount, verifyGoogleReauth } from 'src/authentication/authentication-api';
 import { useToast } from 'src/toast/use-toast';

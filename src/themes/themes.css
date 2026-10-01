@@ -188,21 +188,6 @@ body {
     min-height: 44px;
 }
 
-.select-input {
-    padding: var(--spacing-xs) var(--spacing-md);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background-color: transparent;
-    color: inherit;
-    white-space: nowrap;
-    min-width: 150px;
-    min-height: 44px;
-}
-
 .select-input:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import './delete-user-Dialog.css';
+import 'src/components/delete-dialog/delete-dialog.css';
 
 type DeleteUserDialogProps = {
     isOpen: boolean;
