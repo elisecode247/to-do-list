@@ -1,5 +1,5 @@
 .pull-to-refresh-container {
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: contain;
 }
 
 .pull-refresh-icon {
@@ -22,3 +22,4 @@
     opacity: var(--opacity, 0);
     transition: opacity 0.2s ease-out;
 }
+
