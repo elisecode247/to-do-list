@@ -1,0 +1,225 @@
+/* Button Container */
+.sortable-item_button-group-container {
+    grid-area: button-group;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--sortable-item-control-gap);
+    flex-wrap: wrap;
+    margin: 12px 0 0;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button {
+    min-width: var(--sortable-item-touch-target-min);
+    min-height: var(--sortable-item-touch-target-min);
+    padding: 6px 10px;
+    gap: 6px;
+    border-radius: var(--radius-pillowy);
+    font-size: 13px;
+    line-height: 1;
+    backdrop-filter: none;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.sortable-item_button-group-container .sortable-item_main-button:hover {
+    box-shadow: none;
+    border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+}
+
+/* menu wrapper stays inline with the row */
+.sortable-item_menu-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sortable-item_menu-dropdown {
+    position: fixed;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: contrast-color(var(--color-surface));
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: all 0.15s ease;
+
+    z-index: 1000;
+}
+
+/* open menu on hover OR keyboard focus */
+.sortable-item_menu-dropdown--open,
+.sortable-item_menu-wrapper:focus-within {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    z-index: 1000;
+}
+
+.sortable-item_menu-dropdown button {
+    width: 100%;
+    height: auto;
+    padding: var(--spacing-xs) var(--spacing-sm);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+
+    white-space: nowrap;
+}
+
+
+.sortable-item_menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xs);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-pillowy);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.sortable-item_menu-button:focus-visible,
+.sortable-item_menu-button:active,
+.sortable-item_menu-button--active {
+    border: 1px solid var(--color-primary);
+    color: inherit;
+}
+
+.sortable-item_button-text-span {
+    margin-inline-start: 4px;
+}
+
+/* Action Buttons Base */
+.sortable-item_archive-button,
+.sortable-item_restore-button,
+.sortable-item_edit-button,
+.sortable-item_move-button,
+.sortable-item_hide-button,
+.sortable-item_delete-button,
+.sortable-item_priority-button,
+.sortable-item_menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xs);
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pillowy);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+/* Archive Button */
+.sortable-item_archive-button {
+    color: var(--color-success);
+}
+
+.sortable-item_archive-button:hover {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--color-success);
+}
+
+/* Unarchive Button */
+.sortable-item_restore-button {
+    color: var(--color-success);
+}
+
+.sortable-item_restore-button:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+}
+
+
+.sortable-item_hide-button:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Edit Button */
+.sortable-item_edit-button {
+    color: var(--color-info);
+}
+
+.sortable-item_edit-button:hover {
+    background-color: var(--color-hover);
+    color: var(--color-info);
+}
+
+.sortable-item_move-button {
+    color: var(--color-info);
+}
+
+.sortable-item_move-button:hover {
+    background-color: var(--color-hover);
+}
+
+/* Delete Button */
+.sortable-item_delete-button {
+    color: var(--color-danger);
+}
+
+.sortable-item_delete-button:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+}
+
+/* Priority Button */
+.sortable-item_priority-button {
+    color: var(--color-accent-text);
+}
+
+.sortable-item_priority-button:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-accent-border);
+}
+
+/* Disabled  */
+.sortable-item_priority-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/** Subtask Container and Note */
+.sortable-item_no-subtasks {
+    color: inherit;
+    margin: var(--spacing-md) 0;
+    text-align: center;
+    font-size: 14px;
+    padding: var(--spacing-sm);
+    background-color: var(--color-hover);
+    border-radius: var(--radius-pillowy);
+}
+
+.sortable-item_save-note-button {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-pillowy);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    display: inline-block;
+    padding: var(--spacing-sm);
+    margin-block: var(--spacing-xs);
+    margin-inline: 0 var(--spacing-xs);
+}
+

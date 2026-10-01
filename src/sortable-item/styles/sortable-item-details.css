@@ -1,0 +1,247 @@
+/* Subtasks Container */
+.sortable-item_subtasks-container {
+    grid-area: subtasks;
+    /* Indent more for each level */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-block-start: var(--spacing-xs);
+    margin-block-end: var(--spacing-xs);
+}
+
+.sortable-item_subtasks-container--collapsed {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.sortable-item_subtasks-motion-layout {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.sortable-item_subtasks-motion-shell {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 220ms ease-out,
+        transform 220ms ease-out;
+}
+
+.sortable-item_subtasks-list-dropzone {
+    border-radius: var(--radius-xl);
+    transition:
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.sortable-item_subtasks-list-dropzone:has(
+    > .sortable-item_drag-wrapper.sortable-item_drag-over
+) {
+    background: color-mix(in srgb, var(--color-primary) 13%, transparent);
+    box-shadow:
+        inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 76%, white 24%),
+        0 0 0 4px color-mix(in srgb, var(--color-primary) 16%, transparent),
+        var(--shadow-sm);
+}
+
+.sortable-item_subtasks-list-dropzone
+    > .sortable-item_drag-wrapper.sortable-item_drag-over
+    > .sortable-item_container {
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+    box-shadow:
+        0 4px 14px color-mix(in srgb, var(--color-shadow) 28%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-primary) 62%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sortable-item_subtasks-list-dropzone {
+        transition: none;
+    }
+}
+
+@starting-style {
+    .sortable-item_subtasks-motion-shell {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+.sortable-item_show-upcoming-button {
+    margin: var(--spacing-xs) auto;
+    color: inherit;
+}
+
+.sortable-item_note-layout {
+    grid-area: notes;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.sortable-item_note {
+    margin-block-start: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 14px;
+    line-height: 1.5;
+    color: contrast-color(var(--color-hover));
+    background-color: var(--color-hover);
+    border-radius: var(--radius-pillowy);
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 220ms ease-out,
+        transform 220ms ease-out;
+}
+
+@starting-style {
+    .sortable-item_note {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+.sortable-item_note-preview {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    line-height: inherit;
+    text-align: start;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    cursor: text;
+}
+
+.sortable-item_note-preview:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.sortable-item_note-save-status {
+    display: flex;
+    min-height: 20px;
+    margin-block-start: 4px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+}
+
+.sortable-item_note-save-status--saved {
+    color: color-mix(in srgb, var(--color-success) 76%, currentColor);
+    animation: sortable-item-note-save-fade 1600ms ease-out forwards;
+}
+
+.sortable-item_note-save-status--error {
+    color: color-mix(in srgb, var(--color-danger) 82%, currentColor);
+}
+
+.sortable-item_note-save-spinner {
+    animation: sortable-item-note-save-spin 800ms linear infinite;
+}
+
+.sortable-item_note-save-retry {
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.sortable-item_note-save-retry:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+@keyframes sortable-item-note-save-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sortable-item-note-save-fade {
+    0%,
+    65% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sortable-item_note-save-spinner,
+    .sortable-item_note-save-status--saved {
+        animation: none;
+    }
+}
+
+/** New Item Section */
+.sortable-item_new-item-form {
+    position: relative;
+    grid-area: add-task;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--spacing-xs);
+    min-height: 116px;
+    padding: var(--spacing-sm);
+    background-color: var(--color-surface--transparent);
+    border: 0;
+    color: contrast-color(var(--color-surface--transparent));
+    flex-wrap: wrap;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+    gap: var(--spacing-xs);
+    margin: 1px;
+}
+
+.sortable-item_new-item-form:hover {
+    border-color: var(--color-border);
+    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
+    outline: 1px solid var(--color-primary);
+    z-index: 4;
+    background-color: var(--color-surface);
+}
+
+.sortable-item_new-item-input-container {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.sortable-item_new-item-add-button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-pillowy);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.sortable-item_new-item-close-button {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--radius-pillowy);
+    transition: all 0.15s ease;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+}
+

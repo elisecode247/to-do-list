@@ -1,0 +1,87 @@
+/* Preserve the mockup's content-first hierarchy on larger screens. */
+@media (min-width: 900px) {
+    .sortable-item_container {
+        padding: var(--sortable-item-card-padding-block) var(--sortable-item-card-padding-inline);
+        grid-template-columns: 20px minmax(200px, 1fr) minmax(0, auto) var(--sortable-item-touch-target-min);
+        grid-template-areas: "checkbox text button-group drag"
+            "notes notes notes notes"
+            "subtasks subtasks subtasks subtasks"
+            "add-task add-task add-task add-task";
+    }
+
+    @container sortable-item (inline-size < 613px) {
+        .sortable-item_button-group-container {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            margin-block-start: 12px;
+        }
+
+        .sortable-item_note-layout {
+            grid-row: 3;
+        }
+
+        .sortable-item_subtasks-container {
+            grid-row: 4;
+        }
+
+        .sortable-item_new-item-form {
+            grid-row: 5;
+        }
+    }
+
+    .sortable-item_text {
+        font-size: 15px;
+    }
+
+    .sortable-item_button-group-container {
+        margin: 0;
+    }
+
+    .sortable-item_archive-button,
+    .sortable-item_restore-button,
+    .sortable-item_edit-button,
+    .sortable-item_hide-button,
+    .sortable-item_delete-button,
+    .sortable-item_priority-button,
+    .sortable-item_menu-button {
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 899px) {
+    .sortable-item_container {
+        grid-template-columns: 20px minmax(0, 1fr) var(--sortable-item-touch-target-mobile);
+    }
+
+    .sortable-item_drag-handle,
+    .sortable-item_checkbox-container {
+        width: var(--sortable-item-touch-target-mobile);
+        height: var(--sortable-item-touch-target-mobile);
+    }
+
+    .sortable-item_checkbox-container {
+        margin-block-start: calc(
+            (var(--sortable-item-title-line-height) - var(--sortable-item-touch-target-mobile)) / 2
+        );
+        margin-inline-start: -14px;
+    }
+
+    .sortable-item_button-group-container .sortable-item_main-button {
+        min-width: var(--sortable-item-touch-target-mobile);
+        min-height: var(--sortable-item-touch-target-mobile);
+    }
+}
+
+/* Focus styles for accessibility */
+.sortable-item_drag-handle:focus-visible,
+.sortable-item_checkbox:focus-visible,
+.sortable-item_archive-button:focus-visible,
+.sortable-item_restore-button:focus-visible,
+.sortable-item_edit-button:focus-visible,
+.sortable-item_hide-button:focus-visible,
+.sortable-item_delete-button:focus-visible,
+.sortable-item_priority-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+

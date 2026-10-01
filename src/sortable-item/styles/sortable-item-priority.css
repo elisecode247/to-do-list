@@ -1,0 +1,44 @@
+/** Main button override for priority */
+.sortable-item_main-button {
+    display: inline-flex;
+}
+
+/* Priority Mode Task */
+
+.mode-priority {
+    background:
+        linear-gradient(90deg,
+            color-mix(in srgb, var(--color-accent) 10%, var(--color-surface)),
+            var(--color-surface),
+            color-mix(in srgb, var(--color-accent) 6%, var(--color-surface)));
+    border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+    box-shadow: 0 6px 18px rgb(0 0 0 / .25),
+        0 0 22px color-mix(in srgb, var(--color-accent) 18%, transparent);
+    color: contrast-color(color-mix(in srgb, var(--color-accent) 18%, var(--color-surface) 88%));
+}
+
+/* make star the main priority cue */
+.mode-priority .sortable-item_priority-button {
+    background: color-mix(in srgb, var(--color-accent) 24%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+}
+
+.mode-priority .sortable-item_priority-button svg {
+    fill: var(--color-accent);
+    stroke: var(--color-accent);
+}
+
+.sortable-item_container.mode-priority:hover {
+    z-index: 6;
+    border-color: color-mix(in srgb, var(--color-accent) 92%, var(--color-border));
+    background:
+        linear-gradient(90deg,
+            color-mix(in srgb, var(--color-accent) 24%, var(--color-surface)),
+            color-mix(in srgb, var(--color-accent) 8%, var(--color-surface)),
+            color-mix(in srgb, var(--color-primary) 14%, var(--color-surface)));
+    box-shadow:
+        0 16px 34px rgb(0 0 0 / 0.34),
+        0 0 0 2px color-mix(in srgb, var(--color-accent) 48%, transparent),
+        0 0 34px color-mix(in srgb, var(--color-accent) 42%, transparent);
+    transform: translateY(-3px) scale(1.006);
+}
