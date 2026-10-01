@@ -21,12 +21,6 @@
     color: contrast-color(var(--color-hover));
 }
 
-.edit-task-chip:disabled,
-.edit-task-priority:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
-}
-
 .edit-task-read-only-message {
     width: 100%;
     margin: 0;
@@ -59,7 +53,13 @@
     transition: all 0.15s ease;
 }
 
-.edit-task-priority_icon {
+.edit-task-chip:disabled,
+.edit-task-priority:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.edit-task-priority-icon {
     font-size: 14px;
 }
 
@@ -129,7 +129,7 @@
 
 .edit-task-member__email,
 .edit-task-sharing__empty {
-    color: color-mix(in srgb, currentColor 68%, transparent);
+    color: color-mix(in srgb, currentcolor 68%, transparent);
     font-size: 11px;
 }
 
@@ -165,13 +165,13 @@
     font-size: 11px;
 }
 
-.edit-task-member__remove:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--form-error-color) 8%, transparent);
-}
-
 .edit-task-member__remove:disabled {
     cursor: not-allowed;
     opacity: 0.65;
+}
+
+.edit-task-member__remove:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--form-error-color) 8%, transparent);
 }
 
 .edit-task-sharing__empty {

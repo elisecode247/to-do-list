@@ -13,11 +13,11 @@
 
     /** Derived colors */
     --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
-    --color-primary-hover: oklch(from var(--color-primary) calc(l * 0.3) c h);
     --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, light-dark(white, black));
     --color-secondary-light: color-mix(in srgb, var(--color-primary-light) 50%, grey);
     --color-secondary-dark: color-mix(in srgb, var(--color-primary-dark) 50%, grey);
     --color-secondary: light-dark(var(--color-secondary-light), var(--color-secondary-dark));
+
     /* Accent / Priority */
     --color-accent-bg: light-dark(color-mix(in srgb, var(--color-accent) 34%, white),
             color-mix(in srgb, var(--color-accent) 34%, black));
@@ -34,16 +34,16 @@
 
     /* Surfaces */
 
-    --color-background-hover: light-dark(color(from color-mix(in srgb, var(--color-background), black 20%) srgb r g b / 0.4),
-            color(from color-mix(in srgb, var(--color-background), white 20%) srgb r g b / 0.4));
-    --color-surface-light: #ffffff;
+    --color-background-hover: light-dark(color(from color-mix(in srgb, var(--color-background), black 20%) srgb r g b / 40%),
+            color(from color-mix(in srgb, var(--color-background), white 20%) srgb r g b / 40%));
+    --color-surface-light: #fff;
     --color-surface-dark: color-mix(in srgb, var(--color-background) 39%, black);
     --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
-    --color-surface--transparent: light-dark(color(from var(--color-surface) srgb r g b / 0.8),
-            color(from var(--color-surface) srgb r g b / 0.3));
+    --color-surface-transparent: light-dark(color(from var(--color-surface) srgb r g b / 80%),
+            color(from var(--color-surface) srgb r g b / 30%));
     --color-panel-surface: light-dark(#f4f5f7, #181a1f);
     --color-form-surface: var(--color-panel-surface);
-    --color-panel-control-surface: light-dark(#ffffff, #23262d);
+    --color-panel-control-surface: light-dark(#fff, #23262d);
     --color-form-control-surface: var(--color-panel-control-surface);
     --color-panel-border: light-dark(#d7d9de, #3a3e48);
     --color-form-border: var(--color-panel-border);
@@ -66,15 +66,13 @@
     --color-border-light: color-mix(in srgb, var(--color-surface-light) 85%, black);
     --color-border-dark: color-mix(in srgb, var(--color-surface-dark) 60%, white);
     --color-border: light-dark(var(--color-border-light), var(--color-border-dark));
-    --color-shadow: light-dark(rgba(97, 97, 97, 0.328), rgba(3, 3, 3, 0.35));
-
+    --color-shadow: light-dark(rgb(97 97 97 / 32.8%), rgb(3 3 3 / 35%));
     --shadow-sm: 0 1px 4px var(--color-shadow);
     --shadow-md: 0 10px 30px var(--color-shadow);
 
     /* Journal */
     --color-badge-bg: var(--color-accent-bg);
     --color-badge-text: var(--color-accent-text);
-
     --color-distract-row-bg: var(--color-surface);
     --color-distract-row-bg-hover: color-mix(in srgb, var(--color-distract-row-bg) 90%, var(--color-accent-bg) 10%);
     --color-distract-pill-bg: var(--color-accent-bg);
@@ -94,7 +92,7 @@
     --font-size-md: 16px;
     --font-size-lg: 20px;
     --font-family-display: "Manjari", serif;
-    --font-family-body: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-family-body: "Nunito", -apple-system, blinkmacsystemfont, "Segoe UI", sans-serif;
 
     /* Radius */
     --radius-sm: 6px;
@@ -129,7 +127,7 @@ body {
     border-radius: 8px;
 }
 
-.app_h1 {
+.app-h1 {
     letter-spacing: 1px;
     font-size: 28px;
     font-weight: 500;
@@ -140,12 +138,12 @@ body {
     text-align: center;
 }
 
-.app_subtitle_last-updated--fresh {
+.app-subtitle-last-updated--fresh {
     opacity: 1;
     color: contrast-color(var(--color-background));
 }
 
-.app_subtitle_last-updated_fresh_icon {
+.app-subtitle-last-updated-fresh-icon {
     opacity: 1;
     color: contrast-color(var(--color-background));
     display: inline-block;
@@ -189,7 +187,7 @@ body {
 }
 
 .select-input:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgb(0 0 0 / 5%);
 }
 
 .select-input:active {
@@ -222,14 +220,14 @@ textarea {
     transition: border-color var(--transition-fast);
 }
 
+textarea {
+    resize: vertical;
+}
+
 input:focus,
 textarea:focus {
     outline: none;
     border-color: var(--color-primary);
-}
-
-textarea {
-    resize: vertical;
 }
 
 /** Canvas Styles */

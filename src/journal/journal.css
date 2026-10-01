@@ -14,6 +14,7 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
+
      /* full viewport height minus nav height and padding */
     height: calc(100dvh - var(--nav-height) - var(--app-header-height) - var(--mobile-tab-bar-height) - 16px);
 }
@@ -207,7 +208,7 @@ input[type="date"].calendar-jump-input {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 1px solid currentColor;
+    border: 1px solid currentcolor;
     font-size: 10px;
     flex-shrink: 0;
 }
@@ -445,13 +446,13 @@ input[type="time"].time-input {
 }
 
 .journal-empty-state h3 {
-    margin: 0 0 8px 0;
+    margin: 0 0 8px;
     font-size: 18px;
     color: contrast-color(var(--color-background));
 }
 
 .journal-empty-state p {
-    margin: 0 0 16px 0;
+    margin: 0 0 16px;
     font-size: 14px;
 }
 
@@ -476,7 +477,7 @@ input[type="time"].time-input {
 
 /* ── Mobile responsiveness ──────────────────────────── */
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .journal-wrap {
         height: calc(100dvh - var(--nav-height) - var(--app-header-height) - 16px);
     }

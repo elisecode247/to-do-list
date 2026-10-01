@@ -60,11 +60,11 @@ function AccountMenu({
     return (
         <div className="account-menu-container" ref={menuRef}>
             <IconButton
-                className="app_header_menu"
+                className="app-header-menu"
                 onClick={handleClickInside}
                 label="Menu"
                 ariaLabel="Account menu"
-                icon={<Menu className="app_header_menu-icon" size={24} />}
+                icon={<Menu className="app-header-menu-icon" size={24} />}
                 showLabel={false}
             />
 
@@ -73,14 +73,14 @@ function AccountMenu({
                     {isMenuOpen && (
                         <motion.div
                             ref={dropdownRef}
-                            className="app_header_settings"
+                            className="app-header-settings"
                             dir="auto"
                             initial={{ opacity: 0, y: -10, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -8, scale: 0.98 }}
                             transition={{ duration: 0.18, ease: 'easeOut' }}
                         >
-                            <div className="app_header_button-group">
+                            <div className="app-header-button-group">
                                 <GoogleLogoutButton onLogout={handleLogoutClick} email={email} />
                                 {location !== ROUTES.userSettings && (
                                     <Link href={ROUTES.userSettings}

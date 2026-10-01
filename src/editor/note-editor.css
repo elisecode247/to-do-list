@@ -32,7 +32,7 @@
 }
 
 .note-editor-content li[role="checkbox"]::after {
-    top: calc(var(--spacing-0_5) + 0.1875rem);
+    top: calc(var(--spacing-0-5) + 0.1875rem);
 }
 
 .note-editor-content li + li {

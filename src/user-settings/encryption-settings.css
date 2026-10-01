@@ -41,7 +41,7 @@
 .recovery-key-backdrop {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgb(0 0 0 / 90%);
     z-index: 40;
 }
 
@@ -82,8 +82,7 @@
 }
 
 .recovery-key-warning {
-    margin-block-start: var(--spacing-md);
-    margin-block-end: var(--spacing-md);
+    margin-block: var(--spacing-md) var(--spacing-md);
     color: var(--color-danger);
 }
 

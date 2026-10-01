@@ -7,10 +7,10 @@ export const TaskDragOverlay = ({ item }: { item: ChecklistItem }) => (
         className="task-drag-overlay"
         aria-label={`Moving task: ${item.text}`}
     >
-        <span className="task-drag-overlay_handle" aria-hidden="true">
+        <span className="task-drag-overlay-handle" aria-hidden="true">
             <GripVertical size={22} />
         </span>
-        <span className="task-drag-overlay_text">{item.text}</span>
-        <span className="task-drag-overlay_status">Moving</span>
+        <span className="task-drag-overlay-text">{item.text}</span>
+        <span className="task-drag-overlay-status">Moving</span>
     </div>
 );

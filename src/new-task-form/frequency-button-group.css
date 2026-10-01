@@ -39,19 +39,19 @@
         color: inherit;
     }
 
-    .frequency-selector__button:hover:not(.frequency-selector__button--active) {
-        background-color: color-mix(in srgb, currentColor 7%, transparent);
-    }
-
     .frequency-selector__button:active {
         transform: scale(0.98);
+    }
+
+    .frequency-selector__button:hover:not(.frequency-selector__button--active) {
+        background-color: color-mix(in srgb, currentcolor 7%, transparent);
     }
 
     .frequency-selector__button--active {
         font-weight: 600;
         background-color: var(--color-primary);
         color: contrast-color(var(--color-primary));
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 8%);
     }
 
     .frequency-selector__button--active:focus-visible {
@@ -60,7 +60,7 @@
     }
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .frequency-selector__button {
         padding-inline: 12px;
     }

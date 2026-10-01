@@ -138,7 +138,7 @@
 
 .task-form-section-divider {
     width: 100%;
-    color: color-mix(in srgb, currentColor 66%, transparent);
+    color: color-mix(in srgb, currentcolor 66%, transparent);
     font-family: var(--font-family-display);
     font-size: var(--panel-section-label-font-size);
     font-weight: 500;
@@ -168,10 +168,7 @@
 
 .task-form-drawer__footer {
     width: 100%;
-    padding-top: 10px;
-    padding-right: 16px;
-    padding-left: 16px;
-    padding-bottom: 22px;
+    padding: 10px 16px 22px;
     border-top: 1px solid var(--color-form-border);
     background: var(--color-form-surface);
     display: flex;
@@ -228,7 +225,7 @@
     border-radius: 8px;
 }
 
-@media (max-width: 899px) {
+@media (width <= 899px) {
     .task-form-drawer__footer .task-form-action-button {
         flex: 1;
     }

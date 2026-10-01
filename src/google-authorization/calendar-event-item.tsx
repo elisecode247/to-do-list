@@ -27,37 +27,37 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
                 <div>
                     <p className="calendar-event-subtitle">Google Calendar Event</p>
                     <h2 className="calendar-event-title">{event.title}</h2>
-                    <p className="sortable-item_next-due-text calendar-event-time">
+                    <p className="sortable-item-next-due-text calendar-event-time">
                         {dateString}
                     </p>
                 </div>
                 <div className="calendar-event-controls">
                     {!!event.description && (
                         <button
-                            className="sortable-item_main-button sortable-item_hide-button"
+                            className="sortable-item-main-button sortable-item-hide-button"
                             onClick={toggleCollapsed}
                             aria-label={collapsed ? "Expand task" : "Collapse task"}
                             title={`${collapsed ? "Expand task to see details" : "Collapse task details"}`}
                             type="button"
                         >
                             {collapsed ? <BookMinus size={24} /> : <BookPlus size={24} />}
-                            <span className="sortable-item_button-text-span">Notes</span>
+                            <span className="sortable-item-button-text-span">Notes</span>
                         </button>
                     )}
                     <button
-                        className="sortable-item_main-button sortable-item_hide-button"
+                        className="sortable-item-main-button sortable-item-hide-button"
                         onClick={delayHide}
                         aria-label="Skip task"
                         title={event.isHidden ? "Do task for today" : "Skip task for today"}
                         type="button"
                     >
                         {event.isHidden ? <CalendarPlus2 size={24} /> : <Ban size={24} />}
-                        <span className="sortable-item_button-text-span">
+                        <span className="sortable-item-button-text-span">
                             {event.isHidden ? "Do Today" : "Skip"}
                         </span>
                     </button>
                     <button
-                        className="sortable-item_main-button sortable-item_edit-button"
+                        className="sortable-item-main-button sortable-item-edit-button"
                         onClick={() => {
                             onEdit(event.id);
                         }}
@@ -66,7 +66,7 @@ const CalendarEventItem = ({ event, onHideItem, onEdit }: CalendarEventItemProps
                         type="button"
                     >
                         <Edit size={24} />
-                        <span className="sortable-item_button-text-span">Edit</span>
+                        <span className="sortable-item-button-text-span">Edit</span>
                     </button>
                 </div>
             </div>

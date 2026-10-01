@@ -482,10 +482,10 @@ const LoggedIn: React.FC = () => {
             }
             isCopyingDemoTasks={isCopyingDemoTasks}
         />
-        <div className={`app_container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
+        <div className={`app-container ${leftOpen ? "left-open" : ""} ${rightOpen ? "right-open" : ""}`}>
             {(leftOpen || rightOpen || menuOpen) && (
                 <div
-                    className="panel_backdrop"
+                    className="panel-backdrop"
                     onClick={() => {
                         setLeftOpen(false);
                         setRightOpen(false);
@@ -493,7 +493,7 @@ const LoggedIn: React.FC = () => {
                     }}
                 />
             )}
-            <header className="app_header">
+            <header className="app-header">
 
                 <div className="mobile-action-rail">
                     <ViewBreadcrumb
@@ -541,18 +541,18 @@ const LoggedIn: React.FC = () => {
                         isPriority={true}
                         showLabel={false}
                     />) : null}
-                <div className="app_header_brand">
-                    <img className="app_header_logo" src="/android-chrome-192x192.png" role="presentation" alt="" />
-                    <div className="app_header_title">
-                        <h1 className="app_h1">Daily Reset List</h1>
-                        <p className="app_subtitle">
+                <div className="app-header-brand">
+                    <img className="app-header-logo" src="/android-chrome-192x192.png" role="presentation" alt="" />
+                    <div className="app-header-title">
+                        <h1 className="app-h1">Daily Reset List</h1>
+                        <p className="app-subtitle">
                             <span>
                                 {dayOfWeekName}
                                 {now.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                             </span>
-                            <span className={`app_subtitle_last-updated ${isUpdatedDate ? "app_subtitle_last-updated--fresh" : ""}`}>
+                            <span className={`app-subtitle-last-updated ${isUpdatedDate ? "app-subtitle-last-updated--fresh" : ""}`}>
                                 {isUpdatedDate ? "Updated just now" : lastUpdatedDate ? `Updated ${lastUpdatedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
-                                {isUpdatedDate ? <Check className="app_subtitle_last-updated_fresh_icon" size={12} strokeWidth={3} /> : null}
+                                {isUpdatedDate ? <Check className="app-subtitle-last-updated-fresh-icon" size={12} strokeWidth={3} /> : null}
                             </span>
                         </p>
                     </div>
@@ -575,7 +575,7 @@ const LoggedIn: React.FC = () => {
                     />
                 </div>
             </header>
-            <aside className="left_panel">
+            <aside className="left-panel">
                 <AppToolBar
                     activeView={activeView}
                     activeTab={activeTab}
@@ -598,19 +598,19 @@ const LoggedIn: React.FC = () => {
                     listTab={lastListTab}
                 />
             </aside>
-            <main className="main_content">
+            <main className="main-content">
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                         key={activeView}
-                        className="main_content_page"
+                        className="main-content-page"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.22, ease: 'easeOut' }}
                     >
                         {isLoading ? (
-                            <div className="app_loading-container">
-                                <div aria-busy="true" className="app_loading-spinner"></div>
+                            <div className="app-loading-container">
+                                <div aria-busy="true" className="app-loading-spinner"></div>
                                 <p>Loading your tasks...</p>
                             </div>
                         ) : taskError ? (
@@ -652,7 +652,7 @@ const LoggedIn: React.FC = () => {
                     </motion.div>
                 </AnimatePresence>
             </main>
-            <aside className="right_panel">
+            <aside className="right-panel">
                 {rightOpen && editingItem && editingItem.itemType === 'checklist-item' ? (
                     <EditTaskForm
                         categories={categories}

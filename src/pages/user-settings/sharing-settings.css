@@ -1,15 +1,18 @@
 .settings-input {
     width: clamp(100px, 100%, 600px);
 }
+
 .settings-btn:disabled {
     background-color: #f0f0f0;
     color: #a0a0a0;
 }
+
 .settings-error-message {
     border-inline-start: 3px solid var(--color-danger);
     padding: 0 8px;
     margin-top: 8px;
 }
+
 .settings-success-message {
     border-inline-start: 3px solid var(--color-success);
     padding: 0 8px;
@@ -21,6 +24,7 @@
     padding: 0 8px;
     margin-top: 8px;
 }
+
 .shared-user-item {
     display: flex;
     align-items: center;
@@ -32,17 +36,21 @@
     gap: 4px;
     width: fit-content;
 }
+
 .shared-user-status {
     margin: 0 4px;
 }
+
 .shared-user-actions {
     display: flex;
     gap: 8px;
 }
+
 .shared-user-name {
     font-weight: bold;
     margin: 0;
 }
+
 .shared-user-item-accept-btn {
     border: none;
     padding: 4px 8px;
@@ -52,6 +60,7 @@
     background-color: var(--color-success);
     color: contrast-color(var(--color-success));
 }
+
 .shared-user-item-decline-btn {
     border: none;
     padding: 4px 8px;
@@ -61,11 +70,13 @@
     background-color: var(--color-danger);
     color: contrast-color(var(--color-danger));
 }
+
 .shared-users-list {
     margin-top: 16px;
     height: clamp(100px, 100%, 600px);
     overflow-y: auto;
 }
+
 .shared-user-avatar {
     width: 32px;
     height: 32px;
@@ -82,6 +93,7 @@
     background-color: var(--color-secondary);
     color: contrast-color(var(--color-secondary));
 }
+
 .shared-user-item-delete-btn {
     background-color: var(--color-danger);
     color: contrast-color(var(--color-danger));

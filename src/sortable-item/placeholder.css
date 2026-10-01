@@ -1,15 +1,14 @@
-.sortable-item_subtask-dropzone {
+.sortable-item-subtask-dropzone {
     margin-top: var(--spacing-sm);
     border-radius: var(--radius-lg);
     border: 2px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
-    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface--transparent));
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-transparent));
     padding: var(--spacing-sm);
     min-height: 72px;
     display: flex;
     align-self: flex-end;
     align-items: flex-end;
     justify-content: flex-end;
-
     transition:
         background 180ms ease,
         border-color 180ms ease,
@@ -17,7 +16,7 @@
         box-shadow 180ms ease;
 }
 
-.sortable-item_subtask-dropzone-inner {
+.sortable-item-subtask-dropzone-inner {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
@@ -30,39 +29,37 @@
     background: color-mix(in srgb, var(--color-surface) 72%, transparent);
 }
 
-.sortable-item_subtask-dropzone-icon {
+.sortable-item-subtask-dropzone-icon {
     width: 38px;
     height: 38px;
     border-radius: 12px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     flex: 0 0 auto;
     color: var(--color-primary);
     background: color-mix(in srgb, var(--color-primary) 16%, transparent);
 }
 
-.sortable-item_subtask-dropzone-text {
+.sortable-item-subtask-dropzone-text {
     display: flex;
     flex-direction: column;
     gap: 2px;
     text-align: right;
 }
 
-.sortable-item_subtask-dropzone-inner--task-preview {
+.sortable-item-subtask-dropzone-inner--task-preview {
     justify-content: space-between;
     border-style: solid;
     background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
 }
 
-.sortable-item_subtask-dropzone-inner--task-preview .sortable-item_subtask-dropzone-text {
+.sortable-item-subtask-dropzone-inner--task-preview .sortable-item-subtask-dropzone-text {
     flex: 1;
     min-width: 0;
 }
 
-.sortable-item_subtask-dropzone-preview-label {
+.sortable-item-subtask-dropzone-preview-label {
     color: var(--color-primary);
     font-size: 0.72rem;
     font-weight: 700;
@@ -70,7 +67,7 @@
     text-transform: uppercase;
 }
 
-.sortable-item_subtask-dropzone-preview-task {
+.sortable-item-subtask-dropzone-preview-task {
     overflow: hidden;
     color: contrast-color(var(--color-surface));
     font-size: 0.95rem;
@@ -79,20 +76,20 @@
     white-space: nowrap;
 }
 
-.sortable-item_subtask-dropzone-title {
+.sortable-item-subtask-dropzone-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: contrast-color(var(--color-surface));
 }
 
-.sortable-item_subtask-dropzone-subtitle {
+.sortable-item-subtask-dropzone-subtitle {
     font-size: 0.82rem;
     font-weight: 500;
     color: color-mix(in srgb, contrast-color(var(--color-surface)) 72%, transparent);
 }
 
 /* Hover/Active drop state */
-.sortable-item_subtask-dropzone-over {
+.sortable-item-subtask-dropzone-over {
     border-color: var(--color-primary);
     background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
     box-shadow:
@@ -100,21 +97,21 @@
         var(--shadow-sm);
 }
 
-.sortable-item_subtask-dropzone-over .sortable-item_subtask-dropzone-icon {
+.sortable-item-subtask-dropzone-over .sortable-item-subtask-dropzone-icon {
     background: color-mix(in srgb, var(--color-primary) 24%, transparent);
     color: var(--color-primary);
 }
 
-.sortable-item_subtask-dropzone-disabled {
+.sortable-item-subtask-dropzone-disabled {
     border-color: var(--color-border);
     opacity: 0.55;
 }
 
-.sortable-item_subtask-dropzone-over .sortable-item_subtask-dropzone-inner {
-    animation: dropPulse 0.85s ease-in-out infinite;
+.sortable-item-subtask-dropzone-over .sortable-item-subtask-dropzone-inner {
+    animation: drop-pulse 0.85s ease-in-out infinite;
 }
 
-@keyframes dropPulse {
+@keyframes drop-pulse {
     0% {
         transform: scale(1);
     }
@@ -129,8 +126,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sortable-item_subtask-dropzone,
-    .sortable-item_subtask-dropzone-inner {
+    .sortable-item-subtask-dropzone,
+    .sortable-item-subtask-dropzone-inner {
         transition: none;
         animation: none;
     }

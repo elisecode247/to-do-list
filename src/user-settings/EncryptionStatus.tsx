@@ -65,7 +65,7 @@ const EncryptionStatus = () => {
                 </h4>
 
                 <div
-                    className={`encryption-status encryption-status--${encryptionStatus} ${busy && encryptionStatus === 'migrating' ? 'encryption-status--loading' : ''}`
+                    className={`encryption-status encryption-status--${encryptionStatus.replaceAll('_', '-')} ${busy && encryptionStatus === 'migrating' ? 'encryption-status--loading' : ''}`
                     }
                 >
                     {STATUS_ICONS[encryptionStatus]}

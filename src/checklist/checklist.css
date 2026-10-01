@@ -1,6 +1,6 @@
 
 /* List Container */
-.checklist_list-container {
+.checklist-list-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -12,36 +12,41 @@
     overscroll-behavior-y: none;
 }
 
-/* Embedded template previews should use the page's scroll container. */
-.checklist_list-container--template {
-    overflow-y: visible;
-    min-height: 0;
-    height: auto;
-    flex: none;
-}
-
-.checklist_list-container--template .checklist_list-content {
-    min-height: 0;
-}
-
-.checklist_list-container--template .placeholder {
-    display: none;
-}
-
-
-.checklist_list-content {
+.checklist-list-content {
     display: flex;
     flex-direction: column;
     min-height: 100%;
     gap: var(--spacing-xs);
 }
 
-.checklist_list-container--pulling .sortable-item_container {
+.placeholder {
+    height: 350px;
+    flex-shrink: 0;
+}
+
+/* Embedded template previews should use the page's scroll container. */
+.checklist-list-container--template {
+    overflow-y: visible;
+    min-height: 0;
+    height: auto;
+    flex: none;
+}
+
+.checklist-list-container--template .checklist-list-content {
+    min-height: 0;
+}
+
+.checklist-list-container--template .placeholder {
+    display: none;
+}
+
+
+.checklist-list-container--pulling .sortable-item-container {
     opacity: 1;
     background-color: var(--color-surface);
 }
 
-.checklist_list-container--pulling .sortable-item_container.mode-priority {
+.checklist-list-container--pulling .sortable-item-container.mode-priority {
     opacity: 1;
     background-color: var(--color-accent-bg);
 }
@@ -71,10 +76,6 @@
     clip-path: polygon(50% 0, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0 50%, 39% 38%);
     filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-primary) 70%, white 30%));
     animation-name: space-sparkle-fall;
-}
-
-.sparkles .theme-particle:nth-child(3n) {
-    background: #fde68a;
 }
 
 @keyframes space-sparkle-fall {
@@ -107,7 +108,7 @@
     color: color-mix(in srgb, white 88%, var(--color-primary) 12%);
     font-size: calc(var(--particle-size) * 1.45);
     line-height: 1;
-    text-shadow: 0 0 8px rgb(255 255 255 / 0.55);
+    text-shadow: 0 0 8px rgb(255 255 255 / 55%);
     animation-name: snowflake-fall;
 }
 
@@ -148,7 +149,7 @@
     height: var(--particle-size);
     border-radius: 85% 10% 80% 12%;
     background: #65a30d;
-    box-shadow: inset -2px -1px 0 rgb(0 0 0 / 0.12);
+    box-shadow: inset -2px -1px 0 rgb(0 0 0 / 12%);
     transform-origin: 15% 80%;
     animation-name: leaf-fall;
 }
@@ -160,17 +161,9 @@
     inset-block-end: -35%;
     width: 1px;
     height: 55%;
-    background: currentColor;
+    background: currentcolor;
     transform: rotate(34deg);
     transform-origin: top;
-}
-
-.leaves .theme-particle:nth-child(3n + 1) {
-    background: #84cc16;
-}
-
-.leaves .theme-particle:nth-child(3n + 2) {
-    background: #16a34a;
 }
 
 @keyframes leaf-fall {
@@ -215,11 +208,6 @@
     animation-name: breeze-cross;
 }
 
-.breeze .theme-particle:nth-child(even) {
-    height: 1px;
-    opacity: 0.65;
-}
-
 @keyframes breeze-cross {
     0% {
         transform: translate3d(0, 0, 0) scaleX(0.45);
@@ -247,10 +235,10 @@
     bottom: -24px;
     border: 1.5px solid color-mix(in srgb, #c8fbff 82%, var(--color-primary) 18%);
     border-radius: 50%;
-    background: rgb(190 246 255 / 0.09);
+    background: rgb(190 246 255 / 9%);
     box-shadow:
-        inset 2px 2px 3px rgb(255 255 255 / 0.42),
-        0 0 7px rgb(125 238 255 / 0.22);
+        inset 2px 2px 3px rgb(255 255 255 / 42%),
+        0 0 7px rgb(125 238 255 / 22%);
     animation-name: bubble-rise;
 }
 
@@ -262,7 +250,7 @@
     width: 25%;
     height: 25%;
     border-radius: 50%;
-    background: rgb(255 255 255 / 0.65);
+    background: rgb(255 255 255 / 65%);
 }
 
 @keyframes bubble-rise {
@@ -299,6 +287,23 @@
     background: var(--color-primary);
     box-shadow: 0 0 5px color-mix(in srgb, var(--color-primary) 28%, transparent);
     animation-name: confetti-fall;
+}
+
+.sparkles .theme-particle:nth-child(3n) {
+    background: #fde68a;
+}
+
+.leaves .theme-particle:nth-child(3n + 1) {
+    background: #84cc16;
+}
+
+.leaves .theme-particle:nth-child(3n + 2) {
+    background: #16a34a;
+}
+
+.breeze .theme-particle:nth-child(even) {
+    height: 1px;
+    opacity: 0.65;
 }
 
 .confetti .theme-particle:nth-child(3n + 1) {
@@ -339,9 +344,4 @@
     .theme-celebration {
         display: none;
     }
-}
-
-.placeholder {
-    height: 350px;
-    flex-shrink: 0;
 }

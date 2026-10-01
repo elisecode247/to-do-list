@@ -1,5 +1,5 @@
-@import './styles/sortable-item-card.css';
-@import './styles/sortable-item-actions.css';
-@import './styles/sortable-item-responsive.css';
-@import './styles/sortable-item-details.css';
-@import './styles/sortable-item-priority.css';
+@import url('./styles/sortable-item-card.css');
+@import url('./styles/sortable-item-actions.css');
+@import url('./styles/sortable-item-responsive.css');
+@import url('./styles/sortable-item-details.css');
+@import url('./styles/sortable-item-priority.css');

@@ -301,23 +301,23 @@ export default function TemplatesPage() {
             <div className="templates-page">
                 <aside className="templates-sidebar" aria-label="Task templates">
                     <h2>Templates</h2>
-                    <div className="templates-page_filters">
+                    <div className="templates-page-filters">
                         {["all", "housework", "self-care", "pets", "work", "people", "leisure"].map(category => (
                             <button key={category} className={`template-filter ${selectedCategory === category ? "template-filter--active" : ""}`} onClick={() => setSelectedCategory(category as TemplateCategoryKey | "all")} type="button">{category === "all" ? "All" : category}</button>
                         ))}
                     </div>
                     <div className="template-list">
                         {templates.map(template => (
-                            <button key={template.id} type="button" className={`template-list_item ${selectedTemplateId === template.id ? "template-list_item--active" : ""}`} onClick={() => selectTemplate(template)}>
+                            <button key={template.id} type="button" className={`template-list-item ${selectedTemplateId === template.id ? "template-list-item--active" : ""}`} onClick={() => selectTemplate(template)}>
                                 <strong>{template.title}</strong><span>{getSubtaskCount(template)} subtasks · {template.categoryKey}</span>
                             </button>
                         ))}
                     </div>
                 </aside>
                 <main className="template-preview">
-                    <div className="template-preview_header">
-                        <div><p className="template-preview_eyebrow">Preview and customize</p><h2>{previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}</h2><p>Use the task menu to edit, delete, or add subtasks before saving.</p></div>
-                        <button className="template-card_button" type="button" disabled={isAdding || previewItems.length === 0} onClick={addToList}>{isAdding ? "Adding…" : "Add to my Daily Reset List"}</button>
+                    <div className="template-preview-header">
+                        <div><p className="template-preview-eyebrow">Preview and customize</p><h2>{previewItems.find(item => !item.parentUuid)?.text ?? selectedTemplate.title}</h2><p>Use the task menu to edit, delete, or add subtasks before saving.</p></div>
+                        <button className="template-card-button" type="button" disabled={isAdding || previewItems.length === 0} onClick={addToList}>{isAdding ? "Adding…" : "Add to my Daily Reset List"}</button>
                     </div>
                     <Checklist
                         checklistType="template"

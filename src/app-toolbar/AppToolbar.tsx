@@ -94,7 +94,7 @@ const AppToolbar = ({
     ];
 
     return (
-        <div className="checklist_filter-container">
+        <div className="app-toolbar">
             <div className="drawer-header">
                 <div className="drawer-header-content">
                     <span className="drawer-title">Filters</span>

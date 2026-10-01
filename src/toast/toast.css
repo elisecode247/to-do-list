@@ -31,17 +31,16 @@
     box-shadow:
         0 14px 36px color-mix(in srgb, var(--color-shadow) 68%, transparent),
         0 3px 10px color-mix(in srgb, var(--toast-accent) 22%, transparent);
-
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     align-items: center;
     column-gap: 18px;
-    animation: slideDown .32s ease-out;
+    animation: slide-down .32s ease-out;
     z-index: 10001;
     pointer-events: auto;
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
     from {
         transform: translateY(-20px) scale(0.99);
         opacity: 0;
@@ -149,11 +148,10 @@
     transform: scale(0.96);
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .toast {
-        column-gap: var(--spacing-sm);
+        gap: 0 var(--spacing-sm);
         grid-template-columns: auto minmax(0, 1fr) auto auto;
-        row-gap: 0;
         padding: 12px;
         border-radius: var(--radius-lg);
     }

@@ -18,7 +18,7 @@
 }
 
 .icon-button:hover {
-    box-shadow: 0 0px 2px 2px rgba(255, 228, 24, 1);
+    box-shadow: 0 0 2px 2px rgb(255 228 24 / 100%);
 }
 
 .icon-button--priority {
@@ -26,13 +26,10 @@
     color: contrast-color(var(--color-primary));
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .icon-button {
         position: relative;
-        left: auto;
-        right: auto;
-        top: auto;
-        bottom: auto;
+        inset: auto;
         z-index: auto;
     }
 }

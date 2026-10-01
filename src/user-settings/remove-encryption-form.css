@@ -1,13 +1,11 @@
 #headlessui-portal-root {
     z-index: 10001;
 }
+
 .remove-encryption-dialog-container {
     display: flex;
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     justify-content: center;
     align-items: center;
     width: 100vw;
@@ -15,10 +13,7 @@
 
 .remove-encryption-dialog-backdrop {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     background-color: var(--color-danger);
     z-index: 10002;
 }
@@ -46,7 +41,7 @@
 }
 
 .remove-encryption-dialog-error {
-    margin: 8px 0 12px 0;
+    margin: 8px 0 12px;
     color: var(--color-danger);
     font-size: 14px;
 }
@@ -66,7 +61,7 @@ label[for="confirm-deletion"] {
 .spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid rgba(0, 0, 0, 0.1);
+  border: 5px solid rgb(0 0 0 / 10%);
   border-radius: 50%;
   border-top-color: #3498db;
   animation: spin 1s linear infinite;
@@ -88,6 +83,7 @@ label[for="confirm-deletion"] {
     border-radius: var(--radius-md);
     background-color: var(--color-surface);
 }
+
 .skipped-entry li {
     display: inline;
 }

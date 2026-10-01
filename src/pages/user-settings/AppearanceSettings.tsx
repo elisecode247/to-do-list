@@ -12,9 +12,9 @@ function getStored<T extends string>(key: string, fallback: T): T {
 }
 
 const colors = [
-    ["Background", "--color-background", styles.swatchBackground],
-    ["Primary", "--color-primary", styles.swatchPrimary],
-    ["Accent", "--color-accent", styles.swatchAccent],
+    ["Background", "--color-background", styles["swatch-background"]],
+    ["Primary", "--color-primary", styles["swatch-primary"]],
+    ["Accent", "--color-accent", styles["swatch-accent"]],
 ];
 
 const customBackgroundColors = [

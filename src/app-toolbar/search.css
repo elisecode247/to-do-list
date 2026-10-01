@@ -42,7 +42,7 @@
 
 .search-scope-label,
 .search-filter-label {
-    color: color-mix(in srgb, currentColor 72%, transparent);
+    color: color-mix(in srgb, currentcolor 72%, transparent);
     font-size: var(--font-size-sm);
 }
 
@@ -94,7 +94,7 @@
 .hide-archived-checkbox svg {
     width: 12px;
     height: 12px;
-    stroke: currentColor;
+    stroke: currentcolor;
     opacity: 0;
     transform: scale(0.75);
     transition: opacity 0.12s ease, transform 0.12s ease;
@@ -209,7 +209,7 @@
     border: 1px dashed var(--color-border);
     border-radius: 12px;
     text-align: center;
-    color: color-mix(in srgb, currentColor 65%, transparent);
+    color: color-mix(in srgb, currentcolor 65%, transparent);
 }
 
 .search-results {
@@ -218,15 +218,14 @@
     overflow: hidden;
 }
 
-.search-results .checklist_list-container--search-results {
+.search-results .checklist-list-container--search-results {
     min-height: 0;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
     overscroll-behavior-y: contain;
 }
 
-.search-results .checklist_list-content {
+.search-results .checklist-list-content {
     min-height: 0;
 }
 
@@ -250,7 +249,7 @@
     height: 250px;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .search-container {
         padding: var(--spacing-lg);
     }
@@ -261,7 +260,7 @@
 
     .search-description {
         margin-top: var(--spacing-xs);
-        color: color-mix(in srgb, currentColor 68%, transparent);
+        color: color-mix(in srgb, currentcolor 68%, transparent);
         font-size: var(--font-size-md);
     }
 }

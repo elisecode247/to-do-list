@@ -5,7 +5,6 @@ import { API_URL } from 'src/app/constants';
 import { authHeaders } from 'src/authentication/authentication-api';
 import { useToast } from 'src/toast/use-toast';
 import { useEncryptionKey } from 'src/encryption/encryption-key-context';
-import './journal-export-settings.css';
 
 type ExportEntry = {
     id?: string;

@@ -18,12 +18,12 @@
     pointer-events: none;
 }
 
-.task-drag-overlay_handle {
+.task-drag-overlay-handle {
     display: inline-flex;
     color: color-mix(in srgb, contrast-color(var(--color-surface)) 66%, transparent);
 }
 
-.task-drag-overlay_text {
+.task-drag-overlay-text {
     min-width: 0;
     overflow: hidden;
     font-size: 1rem;
@@ -32,7 +32,7 @@
     white-space: nowrap;
 }
 
-.task-drag-overlay_status {
+.task-drag-overlay-status {
     padding: 4px 8px;
     border-radius: 999px;
     color: var(--color-primary);

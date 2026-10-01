@@ -196,7 +196,7 @@ function BulkEdit() {
                     </p>
                 )}
                 <div className="bulk-edit-table-container">
-                    <table className="bulk_table">
+                    <table className="bulk-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -226,7 +226,7 @@ function BulkEdit() {
                                     >
                                         <td>{index + 1}</td>
                                         <td>{task.id}</td>
-                                        <td className={`bulk_task_cell ${canEdit ? 'bulk_task_cell--editable' : ''}`}>
+                                        <td className={`bulk-task-cell ${canEdit ? 'bulk-task-cell--editable' : ''}`}>
                                             {canEdit ? (
                                                 <button
                                                     className="bulk-task-edit-link"
@@ -263,7 +263,7 @@ function BulkEdit() {
                                                         + task.accessRole.slice(1)}
                                             </span>
                                         </td>
-                                        <td className="bulk_checkbox_cell">
+                                        <td className="bulk-checkbox-cell">
                                             <input
                                                 type="checkbox"
                                                 checked={task.isArchived}
@@ -337,7 +337,7 @@ function BulkEdit() {
                         </tbody>
                     </table>
                 </div>
-                <div className="bulk_footer">
+                <div className="bulk-footer">
                     <button
                         className="page-btn page-btn--primary"
                         onClick={handleSaveAll}

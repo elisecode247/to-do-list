@@ -1,46 +1,46 @@
 const SkeletonAppPage = () => {
     return (
-        <div className='app_skeleton' aria-label='Loading app'>
-            <aside className='app_skeleton_left-panel'>
-                <div className='app_skeleton_shimmer app_skeleton_brand' />
-                <div className='app_skeleton_nav'>
-                    <div className='app_skeleton_shimmer app_skeleton_nav-item' />
-                    <div className='app_skeleton_shimmer app_skeleton_nav-item app_skeleton_nav-item-short' />
-                    <div className='app_skeleton_shimmer app_skeleton_nav-item' />
-                    <div className='app_skeleton_shimmer app_skeleton_nav-item app_skeleton_nav-item-mid' />
+        <div className='app-skeleton' aria-label='Loading app'>
+            <aside className='app-skeleton-left-panel'>
+                <div className='app-skeleton-shimmer app-skeleton-brand' />
+                <div className='app-skeleton-nav'>
+                    <div className='app-skeleton-shimmer app-skeleton-nav-item' />
+                    <div className='app-skeleton-shimmer app-skeleton-nav-item app-skeleton-nav-item-short' />
+                    <div className='app-skeleton-shimmer app-skeleton-nav-item' />
+                    <div className='app-skeleton-shimmer app-skeleton-nav-item app-skeleton-nav-item-mid' />
                 </div>
             </aside>
 
-            <main className='app_skeleton_main'>
-                <header className='app_skeleton_header'>
-                    <div className='app_skeleton_shimmer app_skeleton_title' />
-                    <div className='app_skeleton_shimmer app_skeleton_action' />
+            <main className='app-skeleton-main'>
+                <header className='app-skeleton-header'>
+                    <div className='app-skeleton-shimmer app-skeleton-title' />
+                    <div className='app-skeleton-shimmer app-skeleton-action' />
                 </header>
-                <section className='app_skeleton_task-list'>
-                    <div className='app_skeleton_task-row'>
-                        <div className='app_skeleton_shimmer app_skeleton_checkbox' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-text app_skeleton_task-text-long' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-meta' />
+                <section className='app-skeleton-task-list'>
+                    <div className='app-skeleton-task-row'>
+                        <div className='app-skeleton-shimmer app-skeleton-checkbox' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-text app-skeleton-task-text-long' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-meta' />
                     </div>
-                    <div className='app_skeleton_task-row'>
-                        <div className='app_skeleton_shimmer app_skeleton_checkbox' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-text' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-meta' />
+                    <div className='app-skeleton-task-row'>
+                        <div className='app-skeleton-shimmer app-skeleton-checkbox' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-text' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-meta' />
                     </div>
-                    <div className='app_skeleton_task-row'>
-                        <div className='app_skeleton_shimmer app_skeleton_checkbox' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-text app_skeleton_task-text-mid' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-meta' />
+                    <div className='app-skeleton-task-row'>
+                        <div className='app-skeleton-shimmer app-skeleton-checkbox' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-text app-skeleton-task-text-mid' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-meta' />
                     </div>
-                    <div className='app_skeleton_task-row'>
-                        <div className='app_skeleton_shimmer app_skeleton_checkbox' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-text app_skeleton_task-text-short' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-meta' />
+                    <div className='app-skeleton-task-row'>
+                        <div className='app-skeleton-shimmer app-skeleton-checkbox' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-text app-skeleton-task-text-short' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-meta' />
                     </div>
-                    <div className='app_skeleton_task-row'>
-                        <div className='app_skeleton_shimmer app_skeleton_checkbox' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-text app_skeleton_task-text-long' />
-                        <div className='app_skeleton_shimmer app_skeleton_task-meta' />
+                    <div className='app-skeleton-task-row'>
+                        <div className='app-skeleton-shimmer app-skeleton-checkbox' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-text app-skeleton-task-text-long' />
+                        <div className='app-skeleton-shimmer app-skeleton-task-meta' />
                     </div>
                 </section>
             </main>

@@ -4,7 +4,7 @@
     place-items: center;
     padding: 2rem;
     background: radial-gradient(circle at top,
-            rgba(127, 47, 254, 0.12),
+            rgb(127 47 254 / 12%),
             transparent 60%);
 }
 
@@ -48,7 +48,7 @@
     background: var(--color-primary);
     color: inherit;
     border: none;
-    box-shadow: 0 8px 20px rgba(127, 47, 254, 0.25);
+    box-shadow: 0 8px 20px rgb(127 47 254 / 25%);
 }
 
 .btn--secondary {

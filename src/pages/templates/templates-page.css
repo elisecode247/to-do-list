@@ -12,8 +12,8 @@
     padding: var(--spacing-md);
     border: 1px solid var(--color-border);
     border-radius: 16px;
-    background: var(--color-surface--transparent);
-    margin: 0 14px 14px 14px;
+    background: var(--color-surface-transparent);
+    margin: 0 14px 14px;
 }
 
 .templates-sidebar h2 {
@@ -22,7 +22,7 @@
     font-weight: 500;
 }
 
-.templates-page_filters {
+.templates-page-filters {
     display: flex;
     gap: var(--spacing-xs);
     flex-wrap: wrap;
@@ -54,7 +54,7 @@
     flex-wrap: wrap;
 }
 
-.template-list_item {
+.template-list-item {
     width: 100%;
     min-width: 180px;
     padding: var(--spacing-sm);
@@ -66,18 +66,18 @@
     cursor: pointer;
 }
 
-.template-list_item:hover,
-.template-list_item--active {
+.template-list-item:hover,
+.template-list-item--active {
     background: var(--color-hover);
     border-color: var(--color-border);
 }
 
-.template-list_item strong,
-.template-list_item span {
+.template-list-item strong,
+.template-list-item span {
     display: block;
 }
 
-.template-list_item span {
+.template-list-item span {
     margin-top: calc(var(--spacing-xs) / 2);
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
@@ -87,38 +87,38 @@
     min-width: 0;
 }
 
-.template-preview_header {
+.template-preview-header {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
     gap: var(--spacing-md);
-    margin: 0 14px 14px 14px;
+    margin: 0 14px 14px;
     padding: var(--spacing-md) var(--spacing-lg);
     border: 1px solid var(--color-border);
     border-radius: 16px;
-    background: var(--color-surface--transparent);
+    background: var(--color-surface-transparent);
 }
 
-.template-preview_header h2 {
+.template-preview-header h2 {
     margin: calc(var(--spacing-xs) / 4) 0;
     font-size: var(--font-size-lg);
     font-weight: 500;
 }
 
-.template-preview_header p {
+.template-preview-header p {
     margin: 0;
     color: var(--color-text-secondary);
 }
 
-.template-preview_eyebrow {
+.template-preview-eyebrow {
     font-size: var(--font-size-sm);
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
 }
 
-.template-card_button {
+.template-card-button {
     width: 100%;
     border: 1px solid var(--color-primary);
     border-radius: 999px;
@@ -130,7 +130,7 @@
     white-space: nowrap;
 }
 
-.template-card_button:disabled {
+.template-card-button:disabled {
     opacity: .6;
     cursor: wait;
 }
@@ -139,12 +139,12 @@
     position: fixed;
     inset: 0;
     z-index: 30;
-    background: rgb(0 0 0 / .35);
+    background: rgb(0 0 0 / 35%);
     display: flex;
     justify-content: flex-end;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .templates-page {
         grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
     }
@@ -159,16 +159,16 @@
         overflow-x: visible;
     }
 
-    .template-list_item {
+    .template-list-item {
         min-width: 0;
     }
 
-    .template-preview_header {
+    .template-preview-header {
         flex-direction: row;
         align-items: end;
     }
 
-    .template-card_button {
+    .template-card-button {
         width: auto;
     }
 }

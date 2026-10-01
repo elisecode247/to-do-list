@@ -17,12 +17,12 @@
 
 
 /* Filter specific styles */
-.category-select_filter {
+.category-select-filter {
     margin: 0;
     padding: var(--spacing-xs);
 }
 
-.category-select-wrapper_filter {
+.category-select-wrapper-filter {
     margin: 0;
     padding: 0;
 }
@@ -49,7 +49,7 @@
 }
 
 /* Responsive adjustments for larger screens */
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .category-select-wrapper {
         flex-direction: row;
         align-items: baseline;
@@ -64,7 +64,7 @@
 
     /* Filter specific styles */
 
-    .category-select-wrapper_filter {
+    .category-select-wrapper-filter {
         margin: 0;
         padding: 0;
     }

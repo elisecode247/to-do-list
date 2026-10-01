@@ -496,23 +496,23 @@ export const SortableItem: FC<SortableItemProps> = ({
 
     return (
         <div
-            className={`sortable-item_drag-wrapper
-                ${isOver ? 'sortable-item_drag-over' : ''}
-                ${isMenuOpen ? 'sortable-item_drag-wrapper--menu-open' : ''}`}
+            className={`sortable-item-drag-wrapper
+                ${isOver ? 'sortable-item-drag-over' : ''}
+                ${isMenuOpen ? 'sortable-item-drag-wrapper--menu-open' : ''}`}
             ref={setDragWrapperRef}
         >
             <div
-                className={`sortable-item_container
+                className={`sortable-item-container
                     ${isPriority ? 'mode-priority' : ''}
-                    ${isSubChore && !isTopLevel ? 'sortable-item_container--subchore' : ''}
-                    ${isExiting ? 'sortable-item_container--exiting' : ''}
+                    ${isSubChore && !isTopLevel ? 'sortable-item-container--subchore' : ''}
+                    ${isExiting ? 'sortable-item-container--exiting' : ''}
                 `}
             >
                 <button
                     ref={setActivatorNodeRef}
                     {...attributes}
                     {...listeners}
-                    className="sortable-item_drag-handle"
+                    className="sortable-item-drag-handle"
                     aria-label="Hold to move and reorder task"
                     title="Hold to move and reorder task"
                     type="button"
@@ -522,12 +522,12 @@ export const SortableItem: FC<SortableItemProps> = ({
                     <GripVertical size={24} />
                 </button>
                 <label
-                    className={`sortable-item_checkbox-container ${!canComplete ? 'sortable-item_checkbox-container--disabled' : ''}`}
+                    className={`sortable-item-checkbox-container ${!canComplete ? 'sortable-item-checkbox-container--disabled' : ''}`}
                     onPointerDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                 >
                     <Checkbox
-                        className={`sortable-item_checkbox ${!canComplete ? 'sortable-item_checkbox--disabled' : ''}`}
+                        className={`sortable-item-checkbox ${!canComplete ? 'sortable-item-checkbox--disabled' : ''}`}
                         checked={checked}
                         onChange={handleCheck}
                         disabled={!canComplete}
@@ -540,7 +540,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         onTouchStart={(e) => e.stopPropagation()}
                     >
                         <svg
-                            className="sortable-item_checkbox-icon"
+                            className="sortable-item-checkbox-icon"
                             viewBox="0 0 14 14"
                             fill="none"
                             aria-hidden="true"
@@ -554,47 +554,47 @@ export const SortableItem: FC<SortableItemProps> = ({
                         </svg>
                     </Checkbox>
                 </label>
-                <div className="sortable-item_text-container">
+                <div className="sortable-item-text-container">
                     {checklistType === 'search-results' && (
                         <div
-                            className="sortable-item_parent-breadcrumb"
+                            className="sortable-item-parent-breadcrumb"
                             aria-label={!isNotParent ? 'Base Task' :
                                 parentTask?.text ? `Subtask of "${parentTask?.text}"` :
                                 'Subtask of unknown task'}
                         >
-                            <span className="sortable-item_parent-label">
+                            <span className="sortable-item-parent-label">
                                 {isNotParent ? 'Subtask Of' : 'Base Task'}
                             </span>
                             {isNotParent && <ChevronRight size={12} aria-hidden="true" />}
-                            <span className="sortable-item_parent-name">
+                            <span className="sortable-item-parent-name">
                                 {!isNotParent ? '' : parentTask?.text ?? 'Unknown task'}
                             </span>
                             {(parentTask?.isArchived || isArchived) && (
-                                <span className="sortable-item_parent-status">Archived</span>
+                                <span className="sortable-item-parent-status">Archived</span>
                             )}
                             {(parentTask?.isHidden || isHidden) && (
-                                <span className="sortable-item_parent-status">Not today</span>
+                                <span className="sortable-item-parent-status">Not today</span>
                             )}
                         </div>
                     )}
-                    <div className="sortable-item_text">
-                        <h2 className="sortable-item_text-heading">
+                    <div className="sortable-item-text">
+                        <h2 className="sortable-item-text-heading">
                             {categoryDefinition ? (
                                 <span
-                                    className="sortable-item_category-icon"
+                                    className="sortable-item-category-icon"
                                     title={categoryDefinition.name}
                                     aria-hidden="true"
                                 >
                                     <CategoryIcon iconKey={categoryDefinition.icon} size={16} color={categoryDefinition.color} />
                                 </span>
                             ) : null}
-                            <span className="sortable-item_task-label">{text}</span>
+                            <span className="sortable-item-task-label">{text}</span>
                         </h2>
                     </div>
-                    <div className="sortable-item_metadata">
+                    <div className="sortable-item-metadata">
                         {isPriority && (
                             <span
-                                className="sortable-item_metadata-text sortable-item_priority-status"
+                                className="sortable-item-metadata-text sortable-item-priority-status"
                                 title="Priority task"
                             >
                                 <Star aria-hidden="true" size={12} fill="currentColor" />
@@ -603,7 +603,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                         {accessRole && accessRole !== 'owner' && (
                             <span
-                                className="sortable-item_metadata-text sortable-item_sharing-status"
+                                className="sortable-item-metadata-text sortable-item-sharing-status"
                                 title={ownerName
                                     ? `Shared by ${ownerName} with ${accessRole} access`
                                     : `Shared with you as ${accessRole}`}
@@ -614,7 +614,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         )}
                         {accessRole === 'owner' && hasMembers && (
                             <span
-                                className="sortable-item_metadata-text sortable-item_sharing-status"
+                                className="sortable-item-metadata-text sortable-item-sharing-status"
                                 title="Shared by me"
                             >
                                 <Users aria-hidden="true" size={12} />
@@ -624,7 +624,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                         {(effectiveAccessRole === 'doer'
                             || effectiveAccessRole === 'viewer') && (
                                 <span
-                                    className="sortable-item_metadata-text sortable-item_access-status"
+                                    className="sortable-item-metadata-text sortable-item-access-status"
                                     id={accessDescriptionId}
                                 >
                                     {effectiveAccessRole === 'doer'
@@ -633,7 +633,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 </span>
                             )}
                         {(activeTab === TAB_TODAY) && (
-                            <span className="sortable-item_metadata-text sortable-item_recurrence-text">
+                            <span className="sortable-item-metadata-text sortable-item-recurrence-text">
                                 {mode === 'one-time' ?
                                     (<Calendar1 aria-hidden="true" size={12} />) :
                                     (<RefreshCw aria-hidden="true" size={12} />)
@@ -642,21 +642,21 @@ export const SortableItem: FC<SortableItemProps> = ({
                             </span>
                         )}
                         {showLastCompleted && (
-                            <span className="sortable-item_metadata-text">
+                            <span className="sortable-item-metadata-text">
                                 {lastCompletedDate}
                             </span>
                         )}
                         {(activeTab === TAB_UPCOMING && nextDue) || (isUpcomingSubtask && nextDue) ? (
-                            <span className="sortable-item_metadata-text">
+                            <span className="sortable-item-metadata-text">
                                 {nextDueDate}
                             </span>
                         ) : null}
                     </div>
                 </div>
-                <div className="sortable-item_button-group-container">
+                <div className="sortable-item-button-group-container">
                     {canEdit && (
                         <IconButton
-                            className="sortable-item_main-button sortable-item_priority-button"
+                            className="sortable-item-main-button sortable-item-priority-button"
                             onClick={() => prioritizeItem(id)}
                             aria-label={priorityBtnTitle}
                             title={priorityBtnTitle}
@@ -667,7 +667,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                     {activeTab === TAB_ARCHIVED || checklistType === 'template' ? null : (
                         <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
+                            className="sortable-item-main-button sortable-item-hide-button"
                             onClick={activeTab === TAB_UPCOMING ? delayDoToday : delayHide}
                             aria-label={activeTab === TAB_UPCOMING || isHidden ? "Do task today" : "Skip task today"}
                             title={activeTab === TAB_UPCOMING || isHidden ? "Do task today" : "Skip task today"}
@@ -677,7 +677,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                     {hasSubChores && (
                         <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
+                            className="sortable-item-main-button sortable-item-hide-button"
                             onClick={toggleCollapsed}
                             aria-label={collapsed ? "Show subtasks" : "Collapse task"}
                             title={collapsed ? "Show subtasks" : "Collapse task"}
@@ -688,7 +688,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                     {!!note?.length && (
                         <IconButton
-                            className="sortable-item_main-button sortable-item_hide-button"
+                            className="sortable-item-main-button sortable-item-hide-button"
                             onClick={toggleNotes}
                             aria-label="Show notes"
                             title={showNotes ? "Hide notes" : "Show notes"}
@@ -698,7 +698,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                     {canEdit && (
                         <IconButton
-                            className="sortable-item_main-button sortable-item_edit-button"
+                            className="sortable-item-main-button sortable-item-edit-button"
                             onClick={() => {
                                 handleEdit(id);
                             }}
@@ -710,10 +710,10 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
 
                     {hasMenuActions && (
-                        <div className="sortable-item_menu-wrapper">
+                        <div className="sortable-item-menu-wrapper">
                             <IconButton
-                                className={`sortable-item_main-button sortable-item_menu-button
-                                ${isMenuOpen ? 'sortable-item_menu-button--active' : ''}`}
+                                className={`sortable-item-main-button sortable-item-menu-button
+                                ${isMenuOpen ? 'sortable-item-menu-button--active' : ''}`}
                                 aria-label="More task actions"
                                 ref={buttonRef}
                                 onClick={toggleMenuOpen}
@@ -725,26 +725,26 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {isMenuOpen && typeof document !== 'undefined' && createPortal(
                                 <div
                                     ref={menuDropdownRef}
-                                    className={`sortable-item_menu-dropdown
-                            ${isMenuOpen ? 'sortable-item_menu-dropdown--open' : ''}`}
+                                    className={`sortable-item-menu-dropdown
+                            ${isMenuOpen ? 'sortable-item-menu-dropdown--open' : ''}`}
                                     style={menuPosition}
                                 >
                                     {canAddSubtask && (
                                         <button
-                                            className="sortable-item_edit-button sortable-item_add-subtask-button"
+                                            className="sortable-item-edit-button sortable-item-add-subtask-button"
                                             onClick={handleOpenTaskForm}
                                             aria-label="Add subtask"
                                             title="Add subtask"
                                             type="button"
                                         >
                                             <PlusCircle size={24} />
-                                            <span className="sortable-item_button-text-span">Add Subtask</span>
+                                            <span className="sortable-item-button-text-span">Add Subtask</span>
                                         </button>
                                     )}
 
                                     {canEdit && !hasSubChores && (
                                         <button
-                                            className="sortable-item_hide-button"
+                                            className="sortable-item-hide-button"
                                             onClick={() => {
                                                 setDropZoneOpen(!dropZoneOpen);
                                                 setIsMenuOpen(false);
@@ -752,7 +752,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             aria-label={dropZoneOpen ? "Close subtask dropzone" : "Open subtask dropzone"}
                                         >
                                             {dropZoneOpen ? <Minimize2 size={24} /> : <Expand size={24} />}
-                                            <span className="sortable-item_button-text-span">
+                                            <span className="sortable-item-button-text-span">
                                                 {dropZoneOpen ? "Close Subtask Dropzone" : "Drag and Drop Tasks Here"}
                                             </span>
                                         </button>
@@ -760,7 +760,7 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                                     {canEdit && onMoveTo && itemLookup && (
                                         <button
-                                            className="sortable-item_edit-button sortable-item_move-button"
+                                            className="sortable-item-edit-button sortable-item-move-button"
                                             onClick={() => {
                                                 setIsMenuOpen(false);
                                                 setIsMoveDialogOpen(true);
@@ -770,44 +770,44 @@ export const SortableItem: FC<SortableItemProps> = ({
                                             type="button"
                                         >
                                             <FolderInput size={24} />
-                                            <span className="sortable-item_button-text-span">Move to…</span>
+                                            <span className="sortable-item-button-text-span">Move to…</span>
                                         </button>
                                     )}
 
                                     {!canEdit || checklistType === 'template' ? null : activeTab !== TAB_ARCHIVED ? (
                                         <button
-                                            className="sortable-item_archive-button"
+                                            className="sortable-item-archive-button"
                                             onClick={() => onMoveItem(id, false)}
                                             aria-label="Archive task"
                                             title="Archive task"
                                             type="button"
                                         >
                                             <Archive size={24} />
-                                            <span className="sortable-item_button-text-span">Archive</span>
+                                            <span className="sortable-item-button-text-span">Archive</span>
                                         </button>
                                     ) : (
                                         <button
-                                            className="sortable-item_restore-button"
+                                            className="sortable-item-restore-button"
                                             onClick={() => onMoveItem(id, true)}
                                             aria-label="Unarchive task"
                                             title="Unarchive task"
                                             type="button"
                                         >
                                             <ListPlus size={24} />
-                                            <span className="sortable-item_button-text-span">Unarchive</span>
+                                            <span className="sortable-item-button-text-span">Unarchive</span>
                                         </button>
                                     )}
 
                                     {canDelete && (
                                         <button
-                                            className="sortable-item_delete-button"
+                                            className="sortable-item-delete-button"
                                             onClick={handleDeleteTask}
                                             aria-label="Delete task"
                                             title="Delete task"
                                             type="button"
                                         >
                                             <Trash size={24} />
-                                            <span className="sortable-item_button-text-span">Delete</span>
+                                            <span className="sortable-item-button-text-span">Delete</span>
                                         </button>
                                     )}
                                 </div>
@@ -819,7 +819,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                     ref={setActivatorNodeRef}
                     {...attributes}
                     {...listeners}
-                    className="sortable-item_drag-handle"
+                    className="sortable-item-drag-handle"
                     aria-label="Hold to move and reorder task"
                     title="Hold to move and reorder task"
                     type="button"
@@ -832,16 +832,16 @@ export const SortableItem: FC<SortableItemProps> = ({
                     {showNotes && (
                         <motion.div
                             key={`notes-${id}`}
-                            className="sortable-item_note-layout"
+                            className="sortable-item-note-layout"
                             initial={{ height: 0 }}
                             animate={{ height: 'auto' }}
                             exit={{ height: 0, opacity: 0, y: -4 }}
                             transition={{ duration: 0.22, ease: 'easeOut' }}
                         >
-                            <div className="sortable-item_note">
+                            <div className="sortable-item-note">
                                 {checklistType === 'search-results' && !showSearchNoteEditor ? (
                                     <button
-                                        className="sortable-item_note-preview"
+                                        className="sortable-item-note-preview"
                                         type="button"
                                         onClick={() => setShowSearchNoteEditor(true)}
                                         aria-label={`${canEdit ? 'Edit' : 'View'} note for ${text}`}
@@ -858,7 +858,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 )}
                                 {canEdit && (checklistType !== 'search-results' || showSearchNoteEditor) && (
                                     <div
-                                        className={`sortable-item_note-save-status sortable-item_note-save-status--${noteSaveStatus}`}
+                                        className={`sortable-item-note-save-status sortable-item-note-save-status--${noteSaveStatus}`}
                                         role="status"
                                         aria-live="polite"
                                         aria-atomic="true"
@@ -866,7 +866,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {noteSaveStatus === 'saving' && (
                                             <>
                                                 <LoaderCircle
-                                                    className="sortable-item_note-save-spinner"
+                                                    className="sortable-item-note-save-spinner"
                                                     size={14}
                                                     aria-hidden="true"
                                                 />
@@ -884,7 +884,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                                 <AlertCircle size={14} aria-hidden="true" />
                                                 <span>Couldn’t save.</span>
                                                 <button
-                                                    className="sortable-item_note-save-retry"
+                                                    className="sortable-item-note-save-retry"
                                                     type="button"
                                                     onClick={() => void saveNote()}
                                                     aria-label={`Retry saving note for ${text}`}
@@ -900,20 +900,20 @@ export const SortableItem: FC<SortableItemProps> = ({
                     )}
                 </AnimatePresence>
                 {/* RECURSIVE SUBTASKS */}
-                <div className={`sortable-item_subtasks-container ${collapsed ? 'sortable-item_subtasks-container--collapsed' : ''}`}>
+                <div className={`sortable-item-subtasks-container ${collapsed ? 'sortable-item-subtasks-container--collapsed' : ''}`}>
 
                     <SortableContext items={filteredTasks?.map(i => i.id) || []}>
                         <AnimatePresence initial={false}>
                             {canEdit && !hasSubChores && dropZoneOpen && (
                                 <motion.div
                                     key={`placeholder-${id}`}
-                                    className="sortable-item_subtasks-motion-layout"
+                                    className="sortable-item-subtasks-motion-layout"
                                     initial={{ height: 0 }}
                                     animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_subtasks-motion-shell">
+                                    <div className="sortable-item-subtasks-motion-shell">
                                         <SortableItemPlaceholder id={id as string} />
                                     </div>
                                 </motion.div>
@@ -922,14 +922,14 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {!collapsed && hasSubChores && filteredTasks?.length === 0 && (
                                 <motion.div
                                     key={`empty-subtasks-${id}`}
-                                    className="sortable-item_subtasks-motion-layout"
+                                    className="sortable-item-subtasks-motion-layout"
                                     initial={{ height: 0 }}
                                     animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_subtasks-motion-shell">
-                                        <div className="sortable-item_no-subtasks">
+                                    <div className="sortable-item-subtasks-motion-shell">
+                                        <div className="sortable-item-no-subtasks">
                                             No subtasks to show. You have hidden or completed subtasks.<br />
                                             Adjust filters or go to "Not Today" tab to see all subtasks.
                                         </div>
@@ -940,13 +940,13 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {!collapsed && (filteredTasks?.length ?? 0) > 0 && (
                                 <motion.div
                                     key={`subtasks-${id}`}
-                                    className="sortable-item_subtasks-motion-layout"
+                                    className="sortable-item-subtasks-motion-layout"
                                     initial={{ height: 0 }}
                                     animate={{ height: 'auto' }}
                                     exit={{ height: 0, opacity: 0, y: -4 }}
                                     transition={{ duration: 0.22, ease: 'easeOut' }}
                                 >
-                                    <div className="sortable-item_subtasks-motion-shell sortable-item_subtasks-list-dropzone">
+                                    <div className="sortable-item-subtasks-motion-shell sortable-item-subtasks-list-dropzone">
                                         {filteredTasks?.map((subtask) => (
                                             <SortableItem
                                                 checklistType={checklistType}
@@ -995,7 +995,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                             {!collapsed && activeTab === TAB_TODAY && upcomingTasks && upcomingTasks?.length > 0 && (
                                 <motion.div
                                     key={`upcoming-subtasks-${id}`}
-                                    className="sortable-item_upcoming-subtasks"
+                                    className="sortable-item-upcoming-subtasks"
                                     initial={{ height: 0, opacity: 0, y: -4 }}
                                     animate={{ height: 'auto', opacity: 1, y: 0 }}
                                     exit={{ height: 0, opacity: 0, y: -4 }}
@@ -1003,7 +1003,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 >
                                     <IconButton
                                         icon={showUpcoming ? (<ListChevronsUpDown />) : (<ListChevronsDownUp />)}
-                                        className="sortable-item_show-upcoming-button"
+                                        className="sortable-item-show-upcoming-button"
                                         aria-label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
                                         label={showUpcoming ? "Hide upcoming subtasks" : "Show upcoming subtasks"}
                                         onClick={() => setShowUpcoming(!showUpcoming)}
@@ -1013,13 +1013,13 @@ export const SortableItem: FC<SortableItemProps> = ({
                                         {showUpcoming && (
                                             <motion.div
                                                 key={`upcoming-list-${id}`}
-                                                className="sortable-item_subtasks-motion-layout"
+                                                className="sortable-item-subtasks-motion-layout"
                                                 initial={{ height: 0 }}
                                                 animate={{ height: 'auto' }}
                                                 exit={{ height: 0, opacity: 0, y: -4 }}
                                                 transition={{ duration: 0.22, ease: 'easeOut' }}
                                             >
-                                                <div className="sortable-item_subtasks-motion-shell">
+                                                <div className="sortable-item-subtasks-motion-shell">
                                                     {upcomingTasks.map((subtask) => (
                                                         <SortableItem
                                                             checklistType={checklistType}
@@ -1073,10 +1073,10 @@ export const SortableItem: FC<SortableItemProps> = ({
 
                 </div>
                 {canAddSubtask && openNewTaskForm ? (
-                    <div className="sortable-item_new-item-form">
+                    <div className="sortable-item-new-item-form">
                         <h3>New Task</h3>
                         <button
-                            className="sortable-item_new-item-close-button"
+                            className="sortable-item-new-item-close-button"
                             onClick={handleOpenTaskForm}
                             aria-label="Close"
                         >
@@ -1084,9 +1084,9 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                             </svg>
                         </button>
-                        <div className="sortable-item_new-item-input-container">
+                        <div className="sortable-item-new-item-input-container">
                             <input
-                                className="sortable-item_new-item-input"
+                                className="sortable-item-new-item-input"
                                 type="text"
                                 placeholder="Task details..."
                                 value={inputText}
@@ -1099,7 +1099,7 @@ export const SortableItem: FC<SortableItemProps> = ({
                                 }}
                             />
                             <button
-                                className="sortable-item_new-item-add-button"
+                                className="sortable-item-new-item-add-button"
                                 onClick={() => handleAdd(id)}
                             >
                                 Add

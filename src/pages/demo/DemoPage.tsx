@@ -292,12 +292,12 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
                 ))}
             </div>
-            <div className={["app_container", leftOpen ? "left-open" : "", rightOpen ? "right-open" : ""].filter(Boolean).join(" ")}>
+            <div className={["app-container", leftOpen ? "left-open" : "", rightOpen ? "right-open" : ""].filter(Boolean).join(" ")}>
                 {(leftOpen || rightOpen) && (
-                    <div className="panel_backdrop" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />
+                    <div className="panel-backdrop" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />
                 )}
 
-                <header className="app_header demo-app_header">
+                <header className="app-header demo-app-header">
                     <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
                         <ViewBreadcrumb
                             activeView={activeView}
@@ -349,14 +349,14 @@ const DemoPage: React.FC<DemoPageProps> = ({
                             />
                     )}
 
-                    <div className="app_header_brand">
-                        <img className="app_header_logo" src="/android-chrome-192x192.png" role="presentation" alt="" />
-                        <div className="app_header_title">
-                            <h1 className="app_h1">
+                    <div className="app-header-brand">
+                        <img className="app-header-logo" src="/android-chrome-192x192.png" role="presentation" alt="" />
+                        <div className="app-header-title">
+                            <h1 className="app-h1">
                                 Daily Reset List
                             </h1>
 
-                            <p className="app_subtitle">
+                            <p className="app-subtitle">
                                 <span>
                                     {
                                         dayOfWeekName
@@ -372,7 +372,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                                     )}
                                 </span>
 
-                                <span className="app_subtitle_last-updated">
+                                <span className="app-subtitle-last-updated">
                                     {lastUpdatedDate
                                         ? `Updated ${lastUpdatedDate.toLocaleTimeString(
                                             [],
@@ -387,7 +387,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
 
                                     {lastUpdatedDate && (
                                         <Check
-                                            className="app_subtitle_last-updated_fresh_icon"
+                                            className="app-subtitle-last-updated-fresh-icon"
                                             size={12}
                                             strokeWidth={
                                                 3
@@ -440,7 +440,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     </div>
                 </header>
 
-                <aside className="left_panel">
+                <aside className="left-panel">
                     <AppToolBar
                         categories={DEFAULT_CATEGORIES}
                         activeView={activeView}
@@ -458,11 +458,11 @@ const DemoPage: React.FC<DemoPageProps> = ({
                     />
                 </aside>
 
-                <main className="main_content">
+                <main className="main-content">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
                             key={activeView}
-                            className="main_content_page"
+                            className="main-content-page"
                             initial={{
                                 opacity: 0,
                                 y: 10,
@@ -481,10 +481,10 @@ const DemoPage: React.FC<DemoPageProps> = ({
                             }}
                         >
                             {isLoading ? (
-                                <div className="app_loading-container">
+                                <div className="app-loading-container">
                                     <div
                                         aria-busy="true"
-                                        className="app_loading-spinner"
+                                        className="app-loading-spinner"
                                     />
                                     <p>Loading your tasks...</p>
                                 </div>
@@ -561,7 +561,7 @@ const DemoPage: React.FC<DemoPageProps> = ({
                         </motion.div>
                     </AnimatePresence>
                 </main>
-                <aside className="right_panel">
+                <aside className="right-panel">
                     {rightOpen && editingItem ? (
                         <EditTaskForm categories={DEFAULT_CATEGORIES} key={editingItem.id} isSaving={isSaving} formData={editingItem} onSave={handleSave} onClose={handleCloseEditForm} />
                     ) : rightOpen ? (

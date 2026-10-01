@@ -392,8 +392,8 @@ const Checklist: FC<ChecklistProps> = ({
 
     if (isLoading) {
         return (
-            <div className="app_loading-container">
-                <div aria-busy="true" className="app_loading-spinner"></div>
+            <div className="app-loading-container">
+                <div aria-busy="true" className="app-loading-spinner"></div>
                 <p>Loading your tasks...</p>
             </div>
         );
@@ -411,16 +411,16 @@ const Checklist: FC<ChecklistProps> = ({
             >
                 <div
                     className={
-                        `checklist_list-container
-                        checklist_list-container--${checklistType}
+                        `checklist-list-container
+                        checklist-list-container--${checklistType}
                         ${pullRefreshContainerClassName} ${pullDistance ?
-                        "checklist_list-container--pulling" : ""}`
+                        "checklist-list-container--pulling" : ""}`
                     }
                     ref={refreshContainerRef}
                 >
                     <PullToRefresh />
                     <div
-                        className="checklist_list-content"
+                        className="checklist-list-content"
                         ref={listContentRef}
                     >
                         <SortableContext items={allItems.map(i => i.id)}>

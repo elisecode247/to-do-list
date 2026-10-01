@@ -1,4 +1,4 @@
-.checklist_filter-container {
+.app-toolbar {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -13,6 +13,12 @@
     color: contrast-color(var(--color-filter-panel));
     font-family: inherit;
     overscroll-behavior: contain;
+
+    @media (width >=900px) {
+        .app-toolbar {
+            min-height: 560px;
+        }
+    }
 }
 
 .drawer-header {
@@ -21,6 +27,7 @@
     justify-content: space-between;
     min-height: 36px;
 }
+
 .drawer-header-content {
     display: flex;
     align-items: center;
@@ -177,7 +184,7 @@
     outline-offset: 2px;
 }
 
-.mode-filter-button-group > option {
+.mode-filter-button-group>option {
     background: var(--color-filter-surface);
     color: contrast-color(var(--color-filter-surface));
     text-transform: capitalize;
@@ -222,7 +229,7 @@
     height: 14px;
     border-radius: 50%;
     background: contrast-color(var(--color-filter-selected));
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
     transition: inset-inline-start 0.2s ease, inset-inline-end 0.2s ease;
 }
 
@@ -232,18 +239,11 @@
 }
 
 .drawer-toggle.off .drawer-toggle-thumb {
-    inset-inline-end: auto;
-    inset-inline-start: 3px;
+    inset-inline: 3px auto;
     background: var(--color-filter-muted);
 }
 
 .drawer-toggle:focus-visible {
     outline: 2px solid var(--color-filter-selected);
     outline-offset: 2px;
-}
-
-@media (min-width: 900px) {
-    .checklist_filter-container {
-        min-height: 560px;
-    }
 }

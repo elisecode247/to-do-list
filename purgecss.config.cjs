@@ -4,7 +4,7 @@ const purgecssConfig = {
     css: ['./src/**/*.css'],
     safelist: [
         'headlessui-portal-root',
-        'encryption-status--not_encrypted',
+        'encryption-status--not-encrypted',
         'encryption-status--migrating',
         'encryption-status--encrypted',
         'encryption-status--error',

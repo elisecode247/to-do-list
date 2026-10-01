@@ -33,8 +33,8 @@ function Page({ title, children, privacyLink = true }: PageProps) {
         setIsMenuOpen(prev => !prev);
     }
     return (
-        <div className="page_container">
-            <header className="page_header">
+        <div className="page-container">
+            <header className="page-header">
                 {isDemoFlow ? (
                     <Link href={ROUTES.demo} className="page-btn page-btn--primary page-demo-back-link">
                         <ArrowLeft size={18} aria-hidden="true" />
@@ -45,7 +45,7 @@ function Page({ title, children, privacyLink = true }: PageProps) {
                         <Home size={24} />
                     </Link>
                 )}
-                <h1 className="page_h1">Daily Reset List</h1>
+                <h1 className="page-h1">Daily Reset List</h1>
                 <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)} />
             </header>
             <div className="page-content">

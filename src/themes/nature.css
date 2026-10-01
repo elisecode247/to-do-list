@@ -1,13 +1,12 @@
 /* Nature: forest green + golden yellow */
 :root[data-theme-style="nature"] {
-
     color-scheme: light dark;
 
     /* user-defined colors */
     --color-primary-light: #15803d;
     --color-primary-dark: #22c55e;
     --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
-    --color-accent-light: #ffcc00;
+    --color-accent-light: #fc0;
     --color-accent-dark: #d7ac00;
     --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
     --color-background-light: #d6ffe2;

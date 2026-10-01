@@ -45,7 +45,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-rounded);
     background: color-mix(in srgb, var(--color-surface) 82%, transparent);
-    color: color-mix(in srgb, currentColor 72%, transparent);
+    color: color-mix(in srgb, currentcolor 72%, transparent);
     font-size: 13px;
     line-height: 1.25;
 }
@@ -62,7 +62,7 @@
 
 .privacy-policy-intro {
     margin: 20px auto 0;
-    color: color-mix(in srgb, currentColor 78%, transparent);
+    color: color-mix(in srgb, currentcolor 78%, transparent);
     font-size: clamp(1rem, 2vw, 1.1rem);
     line-height: 1.75;
     text-wrap: pretty;
@@ -118,8 +118,8 @@
     content: "";
     width: 8px;
     height: 8px;
-    border-inline-end: 2px solid currentColor;
-    border-block-end: 2px solid currentColor;
+    border-inline-end: 2px solid currentcolor;
+    border-block-end: 2px solid currentcolor;
     transform: rotate(45deg) translateY(-2px);
     transition: transform var(--transition-fast);
 }
@@ -153,6 +153,12 @@
     gap: 6px;
     margin-block-start: 7px;
     padding-inline-start: 1.1rem;
+}
+
+.privacy-policy-page a {
+    color: var(--color-primary);
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
 }
 
 .privacy-policy-toc a {
@@ -217,12 +223,6 @@
     color: var(--color-primary);
 }
 
-.privacy-policy-page a {
-    color: var(--color-primary);
-    text-underline-offset: 0.2em;
-    overflow-wrap: anywhere;
-}
-
 .privacy-policy-page strong {
     font-weight: 700;
 }
@@ -231,7 +231,7 @@
     scroll-margin-top: 20px;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .privacy-policy-layout {
         grid-template-columns: minmax(220px, 260px) minmax(0, 780px);
         justify-content: center;
@@ -263,7 +263,7 @@
     }
 }
 
-@media (max-width: 899px) {
+@media (width <= 899px) {
     .privacy-policy-header {
         text-align: left;
     }
@@ -273,7 +273,7 @@
     }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
     .privacy-policy-page {
         padding-block-start: 2px;
     }

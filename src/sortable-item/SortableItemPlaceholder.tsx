@@ -20,52 +20,52 @@ const SortableItemPlaceholder = ({ id }: { id: string }) => {
             role="region"
             aria-label="Subtask drop target"
             aria-disabled={isDraggingParent}
-            className={`sortable-item_subtask-dropzone${isOver ? " sortable-item_subtask-dropzone-over" : ""}${isDraggingParent ? " sortable-item_subtask-dropzone-disabled" : ""}`}
+            className={`sortable-item-subtask-dropzone${isOver ? " sortable-item-subtask-dropzone-over" : ""}${isDraggingParent ? " sortable-item-subtask-dropzone-disabled" : ""}`}
         >
-            <div className={`sortable-item_subtask-dropzone-inner${showTaskPreview ? " sortable-item_subtask-dropzone-inner--task-preview" : ""}`}>
-                <div className="sortable-item_subtask-dropzone-text" aria-live="polite">
+            <div className={`sortable-item-subtask-dropzone-inner${showTaskPreview ? " sortable-item-subtask-dropzone-inner--task-preview" : ""}`}>
+                <div className="sortable-item-subtask-dropzone-text" aria-live="polite">
                     {isDraggingParent ? (
                         <>
-                            <span className="sortable-item_subtask-dropzone-title">
+                            <span className="sortable-item-subtask-dropzone-title">
                                 Choose another task
                             </span>
-                            <span className="sortable-item_subtask-dropzone-subtitle">
+                            <span className="sortable-item-subtask-dropzone-subtitle">
                                 A task can’t be its own subtask.
                             </span>
                         </>
                     ) : showTaskPreview ? (
                         <>
-                            <span className="sortable-item_subtask-dropzone-preview-label">
+                            <span className="sortable-item-subtask-dropzone-preview-label">
                                 New subtask
                             </span>
-                            <span className="sortable-item_subtask-dropzone-preview-task">
+                            <span className="sortable-item-subtask-dropzone-preview-task">
                                 {activeTaskText}
                             </span>
-                            <span className="sortable-item_subtask-dropzone-subtitle">
+                            <span className="sortable-item-subtask-dropzone-subtitle">
                                 Release to place it here.
                             </span>
                         </>
                     ) : isOver ? (
                         <>
-                            <span className="sortable-item_subtask-dropzone-title">
+                            <span className="sortable-item-subtask-dropzone-title">
                                 Release to make a subtask
                             </span>
-                            <span className="sortable-item_subtask-dropzone-subtitle">
+                            <span className="sortable-item-subtask-dropzone-subtitle">
                                 It will be grouped under this task.
                             </span>
                         </>
                     ) : (
                         <>
-                            <span className="sortable-item_subtask-dropzone-title">
+                            <span className="sortable-item-subtask-dropzone-title">
                                 Drop a task here
                             </span>
-                            <span className="sortable-item_subtask-dropzone-subtitle">
+                            <span className="sortable-item-subtask-dropzone-subtitle">
                                 It will become this task’s first subtask.
                             </span>
                         </>
                     )}
                 </div>
-                <div className="sortable-item_subtask-dropzone-icon">
+                <div className="sortable-item-subtask-dropzone-icon">
                     {isOver ? <Sparkles size={18} /> : <ArrowDownToLine size={18} />}
                 </div>
             </div>

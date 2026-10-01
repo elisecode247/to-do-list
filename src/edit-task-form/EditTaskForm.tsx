@@ -624,7 +624,7 @@ export const EditTaskForm: FC<EditTaskFormProps> = ({
                             className={`edit-task-priority ${isPriority ? 'edit-task-priority--active' : ''}`}
                             title="Prioritize this task"
                         >
-                            <span className="edit-task-priority_icon">{isPriority ? '★' : '☆'}</span>
+                            <span className="edit-task-priority-icon">{isPriority ? '★' : '☆'}</span>
                             Priority
                         </button>
                     </div>

@@ -9,7 +9,7 @@
 
 .bulk-edit-access-summary {
     margin-block: calc(var(--spacing-xs) * -1) var(--spacing-sm);
-    color: color-mix(in srgb, currentColor 70%, transparent);
+    color: color-mix(in srgb, currentcolor 70%, transparent);
     font-size: 13px;
 }
 
@@ -31,7 +31,7 @@
    Table Layout
 ========================= */
 
-.bulk_table {
+.bulk-table {
     width: 100%;
     border-collapse: collapse;
     background: var(--color-surface);
@@ -45,7 +45,7 @@
    Header
 ========================= */
 
-.bulk_table th {
+.bulk-table th {
     text-align: center;
     font-weight: 600;
     border: 1px solid var(--color-border);
@@ -54,7 +54,7 @@
     padding: var(--spacing-sm);
 }
 
-.bulk_table tbody {
+.bulk-table tbody {
     overflow: auto;
 }
 
@@ -62,24 +62,28 @@
    Rows
 ========================= */
 
-.bulk_table td {
+.bulk-table td {
     border-bottom: 1px solid var(--color-border);
     vertical-align: middle;
 }
 
-.bulk_table tbody tr:last-child td {
+.bulk-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-.bulk_table tbody tr:hover {
+.bulk-table tr:not([data-depth="0"]) {
+    background-color: var(--color-background);
+}
+
+.bulk-table tbody tr:hover {
     background: var(--color-muted);
 }
 
-.bulk_task_cell {
+.bulk-task-cell {
     font-weight: 500;
 }
 
-.bulk_task_cell--editable {
+.bulk-task-cell--editable {
     cursor: pointer;
 }
 
@@ -99,7 +103,7 @@
 .bulk-access-badge {
     display: inline-flex;
     padding: 2px 7px;
-    border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    border: 1px solid color-mix(in srgb, currentcolor 25%, transparent);
     border-radius: var(--radius-rounded);
     font-size: 11px;
     white-space: nowrap;
@@ -124,15 +128,11 @@
     box-sizing: border-box;
 }
 
-.bulk_table tr:not([data-depth="0"]) {
-    background-color: var(--color-background);
-}
-
 /* =========================
    Inputs
 ========================= */
 
-.bulk_table select {
+.bulk-table select {
     width: 100%;
     min-width: 80px;
     border-radius: var(--radius-sm);
@@ -141,34 +141,34 @@
     color: contrast-color(var(--color-background));
 }
 
-.bulk_table select:focus,
-.bulk_table input[type="text"]:focus {
+.bulk-table select:focus,
+.bulk-table input[type="text"]:focus {
     outline: none;
     border-color: var(--color-primary);
 }
 
-.bulk_table select:disabled,
-.bulk_checkbox_cell input:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
-}
-
 /* Checkbox alignment */
-.bulk_checkbox_cell {
+.bulk-checkbox-cell {
     text-align: center;
 }
 
-.bulk_checkbox_cell input {
+.bulk-checkbox-cell input {
     width: 16px;
     height: 16px;
     cursor: pointer;
+}
+
+.bulk-table select:disabled,
+.bulk-checkbox-cell input:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
 }
 
 /* =========================
    Footer
 ========================= */
 
-.bulk_footer {
+.bulk-footer {
     display: flex;
     justify-content: flex-end;
     padding: var(--spacing-md) 0;

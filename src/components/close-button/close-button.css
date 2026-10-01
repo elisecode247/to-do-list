@@ -13,7 +13,7 @@
 }
 
 .drawer-close-button:hover {
-    background: color-mix(in srgb, currentColor 8%, transparent);
+    background: color-mix(in srgb, currentcolor 8%, transparent);
 }
 
 .drawer-close-icon {

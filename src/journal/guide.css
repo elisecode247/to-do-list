@@ -2,10 +2,7 @@
 
 .guide-popup-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: color-mix(in srgb, contrast-color(var(--color-white-black)) 80%, var(--color-white-black) 90%);
     display: flex;
     align-items: center;
@@ -24,7 +21,7 @@
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 25px rgb(0 0 0 / 15%);
 }
 
 .guide-popup-close {
@@ -165,7 +162,7 @@
   line-height: 1.4;
 }
 
-@media (max-width: 700px) {
+@media (width <= 700px) {
     .guide {
         grid-template-columns: 1fr;
     }

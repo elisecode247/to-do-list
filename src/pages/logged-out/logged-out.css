@@ -1,14 +1,14 @@
 .logged-out-root {
     --landing-ink: #f7f8ff;
     --landing-muted: #aeb4cf;
-    --landing-line: rgba(193, 202, 255, 0.16);
+    --landing-line: rgb(193 202 255 / 16%);
     --landing-accent-bright: #dce1ff;
     --landing-scroll-position: 0px;
+
     position: relative;
     isolation: isolate;
     height: 100dvh;
-    overflow-x: clip;
-    overflow-y: auto;
+    overflow: clip auto;
     color: var(--landing-ink);
     font-family: var(--font-family-body);
     scroll-behavior: smooth;
@@ -22,7 +22,7 @@
     left: 0;
     width: 100%;
     min-width: 1200px;
-    opacity: 20%;
+    opacity: 0.2;
     max-width: none;
     height: auto;
     pointer-events: none;
@@ -82,7 +82,7 @@
 
 .landing-nav .landing-nav-demo {
     padding: 9px 17px;
-    border: 1px solid rgba(220, 225, 255, 0.34);
+    border: 1px solid rgb(220 225 255 / 34%);
     border-radius: 999px;
     color: var(--landing-ink);
 }
@@ -102,17 +102,16 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 0 14px;
     color: var(--landing-accent-bright);
     font-size: 0.72rem;
     font-weight: 650;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     margin: 16px 0 0;
-    border: 1px solid rgba(196, 177, 255, 0.2);
+    border: 1px solid rgb(196 177 255 / 20%);
     border-radius: 999px;
     padding: 9px 16px;
-    background-color: rgba(0, 0, 0, 0.42);
+    background-color: rgb(0 0 0 / 42%);
 }
 
 .landing-hero h1 {
@@ -142,11 +141,11 @@
     align-items: center;
     gap: 9px;
     margin: 16px 0 0;
-    border: 1px solid rgba(196, 177, 255, 0.2);
+    border: 1px solid rgb(196 177 255 / 20%);
     border-radius: 999px;
     padding: 9px 16px;
     color: #c4b5fd;
-    background: #663399;
+    background: #639;
     box-shadow: none;
     font-size: 0.86rem;
     font-weight: 600;
@@ -160,7 +159,7 @@
     place-items: center;
     border-radius: 50%;
     color: #ddd4ff;
-    background: rgba(177, 153, 255, 0.16);
+    background: rgb(177 153 255 / 16%);
 }
 
 .landing-lede {
@@ -198,23 +197,23 @@
 .landing-primary-action {
     color: #11152d;
     background: var(--landing-accent-bright);
-    box-shadow: 0 12px 40px rgba(113, 127, 255, 0.2);
+    box-shadow: 0 12px 40px rgb(113 127 255 / 20%);
 }
 
 .landing-primary-action:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 46px rgba(113, 127, 255, 0.3);
+    box-shadow: 0 16px 46px rgb(113 127 255 / 30%);
 }
 
 .landing-secondary-action {
-    color: rgba(233, 235, 255, 0.82);
-    border-color: rgba(220, 225, 255, 0.2);
-    background: rgba(220, 225, 255, 0.055);
+    color: rgb(233 235 255 / 82%);
+    border-color: rgb(220 225 255 / 20%);
+    background: rgb(220 225 255 / 5.5%);
 }
 
 .landing-secondary-action:hover {
-    border-color: rgba(220, 225, 255, 0.34);
-    background: rgba(220, 225, 255, 0.09);
+    border-color: rgb(220 225 255 / 34%);
+    background: rgb(220 225 255 / 9%);
     transform: translateY(-2px);
 }
 
@@ -223,11 +222,11 @@
     gap: 7px;
     min-width: 234px;
     justify-items: center;
-    border: 1px solid rgba(220, 225, 255, 0.38);
+    border: 1px solid rgb(220 225 255 / 38%);
     border-radius: 24px;
     padding: 9px 7px 7px;
     background: var(--landing-accent-bright);
-    box-shadow: 0 12px 40px rgba(113, 127, 255, 0.2);
+    box-shadow: 0 12px 40px rgb(113 127 255 / 20%);
 }
 
 .landing-sign-in-label {
@@ -245,13 +244,13 @@
     min-height: 44px;
     padding: 3px;
     border-radius: 999px;
-    background: rgba(17, 21, 45, 0.08);
+    background: rgb(17 21 45 / 8%);
     color-scheme: light;
 }
 
 .landing-reassurance {
     margin: 18px 0 0;
-    color: rgba(215, 219, 240, 0.62);
+    color: rgb(215 219 240 / 62%);
     font-size: 0.82rem;
 }
 
@@ -264,21 +263,21 @@
     position: absolute;
     inset: 3% -2%;
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(137, 146, 255, 0.2) 0%, rgba(107, 119, 255, 0.1) 46%, transparent 74%);
+    background: radial-gradient(ellipse, rgb(137 146 255 / 20%) 0%, rgb(107 119 255 / 10%) 46%, transparent 74%);
     filter: blur(112px);
 }
 
 .landing-preview-window {
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(206, 214, 255, 0.22);
+    border: 1px solid rgb(206 214 255 / 22%);
     border-radius: 28px;
     padding: 27px;
     background:
-        linear-gradient(145deg, rgba(31, 37, 77, 0.92), rgba(12, 15, 34, 0.95));
+        linear-gradient(145deg, rgb(31 37 77 / 92%), rgb(12 15 34 / 95%));
     box-shadow:
-        0 44px 100px rgba(0, 0, 0, 0.42),
-        inset 0 1px rgba(255, 255, 255, 0.08);
+        0 44px 100px rgb(0 0 0 / 42%),
+        inset 0 1px rgb(255 255 255 / 8%);
     transform: rotateY(-4deg) rotateX(2deg);
 }
 
@@ -287,7 +286,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.05), transparent 30%);
+    background: linear-gradient(120deg, rgb(255 255 255 / 5%), transparent 30%);
 }
 
 .landing-preview-checklist {
@@ -295,14 +294,14 @@
     box-sizing: border-box;
     width: min(420px, 100%);
     height: auto;
-    border: 1px solid rgba(199, 206, 255, 0.11);
+    border: 1px solid rgb(199 206 255 / 11%);
     border-radius: 15px;
     padding: 12px 14px;
-    background: rgba(255, 255, 255, 0.035);
+    background: rgb(255 255 255 / 3.5%);
     margin: auto;
 }
 
-@media (min-width: 921px) {
+@media (width >= 921px) {
     .landing-hero {
         height: calc(100vh - 84px);
         height: calc(100dvh - 84px);
@@ -327,7 +326,7 @@
     }
 }
 
-@media (min-width: 921px) and (max-height: 800px) {
+@media (width >= 921px) and (height <= 800px) {
     .landing-hero {
         height: calc(100vh - 84px);
         height: calc(100dvh - 84px);
@@ -340,7 +339,7 @@
     }
 }
 
-@media (max-width: 920px) {
+@media (width <= 920px) {
     body:has(.logged-out-root) {
         display: block;
     }
@@ -403,7 +402,7 @@
 
 }
 
-@media (max-width: 680px) {
+@media (width <= 680px) {
     .landing-header,
     .landing-hero {
         width: min(100% - 28px, 1180px);

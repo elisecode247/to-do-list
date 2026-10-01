@@ -156,7 +156,7 @@ describe('SortableItem role permissions', () => {
 
         await click(rendered.container.querySelector('[data-testid="note-editor"]')!);
 
-        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+        expect(rendered.container.querySelector('.sortable-item-note-save-status')?.textContent)
             .toBe('Saving…');
 
         await act(async () => {
@@ -164,7 +164,7 @@ describe('SortableItem role permissions', () => {
             await Promise.resolve();
         });
 
-        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+        expect(rendered.container.querySelector('.sortable-item-note-save-status')?.textContent)
             .toBe('Saved');
         expect(showToastMock).not.toHaveBeenCalled();
 
@@ -172,7 +172,7 @@ describe('SortableItem role permissions', () => {
             await vi.advanceTimersByTimeAsync(1600);
         });
 
-        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+        expect(rendered.container.querySelector('.sortable-item-note-save-status')?.textContent)
             .toBe('');
     });
 
@@ -194,7 +194,7 @@ describe('SortableItem role permissions', () => {
 
         const retry = byLabel(rendered.container, 'Retry saving note for owner task');
         expect(retry).not.toBeNull();
-        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+        expect(rendered.container.querySelector('.sortable-item-note-save-status')?.textContent)
             .toBe('Couldn’t save.Retry');
         expect(showToastMock).toHaveBeenCalledWith(
             'Failed to save note. Please try again.',
@@ -204,7 +204,7 @@ describe('SortableItem role permissions', () => {
         await click(retry!);
 
         expect(partialUpdateItem).toHaveBeenCalledTimes(2);
-        expect(rendered.container.querySelector('.sortable-item_note-save-status')?.textContent)
+        expect(rendered.container.querySelector('.sortable-item-note-save-status')?.textContent)
             .toBe('Saved');
         consoleError.mockRestore();
     });
@@ -235,7 +235,7 @@ describe('SortableItem role permissions', () => {
             <SortableItem {...propsFor('owner')} isPriority={true} />,
         );
 
-        const badge = rendered.container.querySelector('.sortable-item_priority-status');
+        const badge = rendered.container.querySelector('.sortable-item-priority-status');
 
         expect(badge?.textContent).toContain('Priority');
         expect(badge?.getAttribute('title')).toBe('Priority task');
@@ -246,7 +246,7 @@ describe('SortableItem role permissions', () => {
             <SortableItem {...propsFor('owner')} isSubChore={true} />,
         );
 
-        expect(rendered.container.querySelector('.sortable-item_container--subchore'))
+        expect(rendered.container.querySelector('.sortable-item-container--subchore'))
             .toBeNull();
 
         await rendered.unmount();
@@ -258,7 +258,7 @@ describe('SortableItem role permissions', () => {
             />,
         );
 
-        expect(rendered.container.querySelector('.sortable-item_container--subchore'))
+        expect(rendered.container.querySelector('.sortable-item-container--subchore'))
             .not.toBeNull();
     });
 
@@ -302,7 +302,7 @@ describe('SortableItem role permissions', () => {
         expect(menu).not.toBeNull();
         await click(menu!);
 
-        expect(document.querySelector('.sortable-item_menu-dropdown')?.parentElement)
+        expect(document.querySelector('.sortable-item-menu-dropdown')?.parentElement)
             .toBe(document.body);
         expect(byLabel(rendered.container, 'Edit task')).not.toBeNull();
         expect(byLabel(rendered.container, 'Archive task')).not.toBeNull();
@@ -415,7 +415,7 @@ describe('SortableItem role permissions', () => {
             toJSON: () => ({}),
         });
         await click(menu);
-        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+        expect(document.querySelector('.sortable-item-menu-dropdown--open'))
             .not.toBeNull();
 
         menu.getBoundingClientRect = () => ({
@@ -433,7 +433,7 @@ describe('SortableItem role permissions', () => {
             window.dispatchEvent(new Event('scroll'));
         });
 
-        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+        expect(document.querySelector('.sortable-item-menu-dropdown--open'))
             .toBeNull();
     });
 
@@ -446,21 +446,21 @@ describe('SortableItem role permissions', () => {
         ) as HTMLButtonElement;
         await click(menu);
 
-        const taskHeading = rendered.container.querySelector('.sortable-item_text-heading');
+        const taskHeading = rendered.container.querySelector('.sortable-item-text-heading');
         const handleClickOutsideMenu = useOnClickOutsideMock.mock.calls.at(-1)?.[1] as
             | ((event: MouseEvent | TouchEvent | FocusEvent) => void)
             | undefined;
 
         expect(taskHeading).not.toBeNull();
         expect(handleClickOutsideMenu).toBeTypeOf('function');
-        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+        expect(document.querySelector('.sortable-item-menu-dropdown--open'))
             .not.toBeNull();
 
         await act(async () => {
             handleClickOutsideMenu?.({ target: taskHeading } as unknown as MouseEvent);
         });
 
-        expect(document.querySelector('.sortable-item_menu-dropdown--open'))
+        expect(document.querySelector('.sortable-item-menu-dropdown--open'))
             .not.toBeNull();
     });
 });

@@ -28,7 +28,7 @@
     gap: 8px;
 }
 
-.encryption-status--not_encrypted {
+.encryption-status--not-encrypted {
     background-color: var(--color-surface);
     color: var(--color-warning);
     border: 1px solid var(--color-warning);
@@ -96,7 +96,7 @@
     -webkit-overflow-scrolling: touch;
 }
 
-@media (min-width: 650px) {
+@media (width >= 650px) {
     .table-overflow-container {
         width: 600px;
     }

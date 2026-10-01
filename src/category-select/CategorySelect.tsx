@@ -34,12 +34,12 @@ const CategorySelect = ({
     });
 
     return (
-        <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper_filter' : ''}`}>
+        <div className={`category-select-wrapper ${isFilter ? 'category-select-wrapper-filter' : ''}`}>
             <select
                 name="category"
                 {...registration}
                 id={`category-select-${id}`}
-                className={`select-input ${isFilter ? 'category-select_filter' : ''}`}
+                className={`select-input ${isFilter ? 'category-select-filter' : ''}`}
                 disabled={disabled}
                 aria-describedby={ariaDescribedBy}
                 {...(selectedCategory !== undefined ? { value: selectedCategory } : {})}

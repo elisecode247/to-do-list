@@ -48,8 +48,8 @@
 
 .filters-applied__chip {
     font-size: 12px;
-    color: contrast-color(var(--color-surface--transparent));
-    background: var(--color-surface--transparent);
+    color: contrast-color(var(--color-surface-transparent));
+    background: var(--color-surface-transparent);
     border: 1px solid var(--color-border);
     padding: 5px var(--spacing-sm);
     border-radius: var(--radius-pillowy);

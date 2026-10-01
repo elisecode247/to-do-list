@@ -38,7 +38,7 @@ describe('SortableItemPlaceholder', () => {
         rendered = await renderUi(<SortableItemPlaceholder id="parent-task" />);
 
         const preview = rendered.container.querySelector(
-            '.sortable-item_subtask-dropzone-inner--task-preview',
+            '.sortable-item-subtask-dropzone-inner--task-preview',
         );
 
         expect(preview).not.toBeNull();
@@ -51,7 +51,7 @@ describe('SortableItemPlaceholder', () => {
         rendered = await renderUi(<SortableItemPlaceholder id="parent-task" />);
 
         expect(rendered.container.querySelector(
-            '.sortable-item_subtask-dropzone-inner--task-preview',
+            '.sortable-item-subtask-dropzone-inner--task-preview',
         )).toBeNull();
         expect(rendered.container.textContent).toContain('Choose another task');
     });

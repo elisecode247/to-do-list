@@ -268,7 +268,7 @@ const DemoChecklist: FC<ChecklistProps> = ({
                 onDragCancel={() => setActiveDragItem(null)}
                 sensors={sensors}
             >
-                <div className="checklist_list-container">
+                <div className="checklist-list-container">
                     <SortableContext items={allItems.map(i => i.id)}>
                         {!allItems.length && (
                             <EmptyStateFilters

@@ -1,25 +1,24 @@
 /* Subtasks Container */
-.sortable-item_subtasks-container {
+.sortable-item-subtasks-container {
     grid-area: subtasks;
+
     /* Indent more for each level */
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    margin-block-start: var(--spacing-xs);
-    margin-block-end: var(--spacing-xs);
+    margin-block: var(--spacing-xs) var(--spacing-xs);
 }
 
-.sortable-item_subtasks-container--collapsed {
-    margin-block-start: 0;
-    margin-block-end: 0;
+.sortable-item-subtasks-container--collapsed {
+    margin-block: 0;
 }
 
-.sortable-item_subtasks-motion-layout {
+.sortable-item-subtasks-motion-layout {
     min-width: 0;
     overflow: hidden;
 }
 
-.sortable-item_subtasks-motion-shell {
+.sortable-item-subtasks-motion-shell {
     opacity: 1;
     transform: none;
     transition:
@@ -27,15 +26,15 @@
         transform 220ms ease-out;
 }
 
-.sortable-item_subtasks-list-dropzone {
+.sortable-item-subtasks-list-dropzone {
     border-radius: var(--radius-xl);
     transition:
         background-color 160ms ease,
         box-shadow 160ms ease;
 }
 
-.sortable-item_subtasks-list-dropzone:has(
-    > .sortable-item_drag-wrapper.sortable-item_drag-over
+.sortable-item-subtasks-list-dropzone:has(
+    > .sortable-item-drag-wrapper.sortable-item-drag-over
 ) {
     background: color-mix(in srgb, var(--color-primary) 13%, transparent);
     box-shadow:
@@ -44,9 +43,9 @@
         var(--shadow-sm);
 }
 
-.sortable-item_subtasks-list-dropzone
-    > .sortable-item_drag-wrapper.sortable-item_drag-over
-    > .sortable-item_container {
+.sortable-item-subtasks-list-dropzone
+    > .sortable-item-drag-wrapper.sortable-item-drag-over
+    > .sortable-item-container {
     background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
     box-shadow:
         0 4px 14px color-mix(in srgb, var(--color-shadow) 28%, transparent),
@@ -54,30 +53,30 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sortable-item_subtasks-list-dropzone {
+    .sortable-item-subtasks-list-dropzone {
         transition: none;
     }
 }
 
 @starting-style {
-    .sortable-item_subtasks-motion-shell {
+    .sortable-item-subtasks-motion-shell {
         opacity: 0;
         transform: translateY(-4px);
     }
 }
 
-.sortable-item_show-upcoming-button {
+.sortable-item-show-upcoming-button {
     margin: var(--spacing-xs) auto;
     color: inherit;
 }
 
-.sortable-item_note-layout {
+.sortable-item-note-layout {
     grid-area: notes;
     min-width: 0;
     overflow: hidden;
 }
 
-.sortable-item_note {
+.sortable-item-note {
     margin-block-start: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 14px;
@@ -93,13 +92,13 @@
 }
 
 @starting-style {
-    .sortable-item_note {
+    .sortable-item-note {
         opacity: 0;
         transform: translateY(-4px);
     }
 }
 
-.sortable-item_note-preview {
+.sortable-item-note-preview {
     display: block;
     width: 100%;
     padding: 0;
@@ -114,37 +113,37 @@
     cursor: text;
 }
 
-.sortable-item_note-preview:focus-visible {
+.sortable-item-note-preview:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
-.sortable-item_note-save-status {
+.sortable-item-note-save-status {
     display: flex;
     min-height: 20px;
     margin-block-start: 4px;
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
-    color: color-mix(in srgb, currentColor 68%, transparent);
+    color: color-mix(in srgb, currentcolor 68%, transparent);
     font-size: var(--font-size-sm);
     line-height: 20px;
 }
 
-.sortable-item_note-save-status--saved {
-    color: color-mix(in srgb, var(--color-success) 76%, currentColor);
+.sortable-item-note-save-status--saved {
+    color: color-mix(in srgb, var(--color-success) 76%, currentcolor);
     animation: sortable-item-note-save-fade 1600ms ease-out forwards;
 }
 
-.sortable-item_note-save-status--error {
-    color: color-mix(in srgb, var(--color-danger) 82%, currentColor);
+.sortable-item-note-save-status--error {
+    color: color-mix(in srgb, var(--color-danger) 82%, currentcolor);
 }
 
-.sortable-item_note-save-spinner {
+.sortable-item-note-save-spinner {
     animation: sortable-item-note-save-spin 800ms linear infinite;
 }
 
-.sortable-item_note-save-retry {
+.sortable-item-note-save-retry {
     padding: 0;
     border: 0;
     color: inherit;
@@ -156,7 +155,7 @@
     cursor: pointer;
 }
 
-.sortable-item_note-save-retry:focus-visible {
+.sortable-item-note-save-retry:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
@@ -179,47 +178,44 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sortable-item_note-save-spinner,
-    .sortable-item_note-save-status--saved {
+    .sortable-item-note-save-spinner,
+    .sortable-item-note-save-status--saved {
         animation: none;
     }
 }
 
 /** New Item Section */
-.sortable-item_new-item-form {
-    position: relative;
+.sortable-item-new-item-form {
     grid-area: add-task;
     display: flex;
-    flex-direction: column;
+    flex-flow: column wrap;
     align-items: stretch;
     justify-content: flex-start;
-    gap: var(--spacing-xs);
     min-height: 116px;
     padding: var(--spacing-sm);
-    background-color: var(--color-surface--transparent);
+    background-color: var(--color-surface-transparent);
     border: 0;
-    color: contrast-color(var(--color-surface--transparent));
-    flex-wrap: wrap;
+    color: contrast-color(var(--color-surface-transparent));
     position: relative;
     transition: box-shadow 0.3s ease;
     gap: var(--spacing-xs);
     margin: 1px;
 }
 
-.sortable-item_new-item-form:hover {
+.sortable-item-new-item-form:hover {
     border-color: var(--color-border);
-    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.4);
+    box-shadow: 2px 2px 8px rgb(255 255 255 / 40%);
     outline: 1px solid var(--color-primary);
     z-index: 4;
     background-color: var(--color-surface);
 }
 
-.sortable-item_new-item-input-container {
+.sortable-item-new-item-input-container {
     display: flex;
     gap: var(--spacing-xs);
 }
 
-.sortable-item_new-item-add-button {
+.sortable-item-new-item-add-button {
     padding: var(--spacing-sm) var(--spacing-lg);
     background-color: var(--color-primary);
     color: var(--color-surface);
@@ -232,7 +228,7 @@
     white-space: nowrap;
 }
 
-.sortable-item_new-item-close-button {
+.sortable-item-new-item-close-button {
     background: transparent;
     border: none;
     color: inherit;
