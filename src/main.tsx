@@ -1,6 +1,6 @@
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import type { ComponentType, ReactNode } from 'react';
-import 'src/index.css';
+import 'src/main.css';
 import App from 'app/App';
 import { ToastProvider } from 'src/toast/toast-provider';
 import { AuthenticationProvider } from 'src/authentication/authentication-provider';

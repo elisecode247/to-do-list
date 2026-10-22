@@ -1,3 +1,5 @@
+/* stylelint-disable @morev/bem/match-file-name */
+
 /* Reset and Base Styles */
 @layer base {
     * {

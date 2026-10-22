@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, type FC } from 'react';
-import './app.css';
+import './app-container.css';
 import { useAuthentication } from 'src/authentication/use-authentication';
 import LoggedOut from 'src/pages/logged-out/LoggedOut';
 import { Redirect, Route, Switch, useLocation } from "wouter";

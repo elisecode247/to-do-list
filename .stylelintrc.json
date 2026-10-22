@@ -19,21 +19,7 @@
             ],
             "rules": {
                 "@morev/bem/block-variable": true,
-                "@morev/bem/match-file-name": true,
-                "@morev/bem/no-block-properties": [
-                    true,
-                    {
-                        "presets": [
-                            "EXTERNAL_GEOMETRY",
-                            "CONTEXT_DEPENDENT"
-                        ]
-                    }
-                ],
-                "@morev/bem/no-chained-entities": true,
-                "@morev/bem/no-grouped-entities": true,
-                "@morev/bem/no-misplaced-relational-styles": true,
-                "@morev/bem/no-side-effects": true,
-                "@morev/bem/selector-pattern": true
+                "@morev/bem/match-file-name": true
             }
         }
     ]

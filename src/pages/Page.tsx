@@ -49,7 +49,7 @@ function Page({ title, children, privacyLink = true }: PageProps) {
                 <AccountMenu isMenuOpen={isMenuOpen} onMenuToggleOpen={toggleMenu} onMenuClose={() => setIsMenuOpen(false)} />
             </header>
             <div className="page-content">
-                {title && <h2 className="visually-hidden">{title}</h2>}
+                {title && <h2 className="sr-only">{title}</h2>}
                 {children}
             </div>
             {privacyLink && <Footer />}
