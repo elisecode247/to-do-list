@@ -7,17 +7,6 @@
 @import url('../themes/skeleton.css');
 @import url('../themes/custom.css');
 
-
-
-/* App Container */
-.app-container {
-    display: block;
-    max-width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
-    height: 100vh;
-}
-
 /* Backdrop default hidden */
 .panel-backdrop {
     position: fixed;
@@ -115,10 +104,6 @@
 
 /* Responsive adjustments for larger screens */
 @media (width >= 900px) {
-    .app-container {
-        margin: 0 auto;
-    }
-
     .panel-backdrop {
         display: none;
     }

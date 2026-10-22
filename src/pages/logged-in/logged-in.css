@@ -6,6 +6,9 @@
     grid-template-areas:
         "header"
         "main";
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
     height: 100vh;
     position: relative;
 }
@@ -318,7 +321,7 @@
 
 .main-content-page {
     height: 100%;
-    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
     min-height: 0;
 }
 
@@ -560,7 +563,7 @@
     }
 
     .main-content-page {
-        margin-top: 0;
+        padding-top: 0;
     }
 
     /* Independent collapse behavior */
