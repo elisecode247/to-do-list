@@ -1,5 +1,5 @@
 .pull-to-refresh-container {
-    overscroll-behavior-y: contain;
+    overscroll-behavior-y: none;
 }
 
 .pull-refresh-icon {

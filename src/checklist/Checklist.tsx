@@ -411,16 +411,16 @@ const Checklist: FC<ChecklistProps> = ({
             >
                 <div
                     className={
-                        `checklist-list-container
-                        checklist-list-container--${checklistType}
+                        `checklist__list-container
+                        checklist__list-container--${checklistType}
                         ${pullRefreshContainerClassName} ${pullDistance ?
-                        "checklist-list-container--pulling" : ""}`
+                        "checklist__list-container--pulling" : ""}`
                     }
                     ref={refreshContainerRef}
                 >
                     <PullToRefresh />
                     <div
-                        className="checklist-list-content"
+                        className="checklist__list-content"
                         ref={listContentRef}
                     >
                         <SortableContext items={allItems.map(i => i.id)}>
@@ -503,7 +503,7 @@ const Checklist: FC<ChecklistProps> = ({
                                 return null;
                             })}
                             {/* Placeholder div to ensure proper spacing at the end of the list */}
-                            <div className="placeholder" />
+                            <div className="checklist__placeholder" />
                         </SortableContext>
                     </div>
                 </div>

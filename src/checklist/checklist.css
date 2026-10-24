@@ -1,6 +1,6 @@
 
 /* List Container */
-.checklist-list-container {
+.checklist__list-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -9,44 +9,45 @@
     height: 100%;
     flex: 1;
     width: 100%;
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: chain;
 }
 
-.checklist-list-content {
+.checklist__list-content {
     display: flex;
     flex-direction: column;
     min-height: 100%;
     gap: var(--spacing-xs);
+    overscroll-behavior-y: chain;
 }
 
-.placeholder {
-    height: var(--spacing-xl);
+.checklist__placeholder {
+    height: 150px;
     flex-shrink: 0;
 }
 
 /* Embedded template previews should use the page's scroll container. */
-.checklist-list-container--template {
+.checklist__list-container--template {
     overflow-y: visible;
     min-height: 0;
     height: auto;
     flex: none;
 }
 
-.checklist-list-container--template .checklist-list-content {
+.checklist__list-container--template .checklist__list-content {
     min-height: 0;
 }
 
-.checklist-list-container--template .placeholder {
+.checklist__list-container--template .checklist__placeholder {
     display: none;
 }
 
 
-.checklist-list-container--pulling .sortable-item-container {
+.checklist__list-container--pulling .sortable-item-container {
     opacity: 1;
     background-color: var(--color-surface);
 }
 
-.checklist-list-container--pulling .sortable-item-container.mode-priority {
+.checklist__list-container--pulling .sortable-item-container.mode-priority {
     opacity: 1;
     background-color: var(--color-accent-bg);
 }
