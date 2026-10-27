@@ -130,7 +130,7 @@ body {
 .app-h1 {
     letter-spacing: 1px;
     font-size: 28px;
-    font-weight: 500;
+    font-weight: 700;
     color: color-mix(in srgb,
             contrast-color(var(--color-background)) 92%,
             var(--color-primary));

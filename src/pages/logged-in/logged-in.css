@@ -499,8 +499,8 @@
         border-radius: var(--radius-pillowy);
         background: transparent;
         color: inherit;
-        font-family: inherit;
         font-size: 12px;
+        font-family: var(--font-family-body);
         font-weight: 600;
         line-height: 1.2;
         letter-spacing: 0.35px;
