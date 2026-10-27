@@ -501,7 +501,7 @@
         color: inherit;
         font-size: 12px;
         font-family: var(--font-family-body);
-        font-weight: 600;
+        font-weight: 500;
         line-height: 1.2;
         letter-spacing: 0.35px;
         box-shadow: none;
@@ -523,7 +523,7 @@
     }
 
     .app-container {
-        grid-template: "left header header" 100px "left main   right" 1fr / var(--filters-panel-width) minmax(0, 1fr) 420px;
+        grid-template: "left header header" var(--app-header-height) "left main   right" 1fr / var(--filters-panel-width) minmax(0, 1fr) 420px;
         transition: grid-template-columns 0.15s ease;
     }
 
