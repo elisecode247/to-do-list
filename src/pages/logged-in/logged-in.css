@@ -2,7 +2,7 @@
 
 .app-container {
     display: grid;
-    grid-template-rows: minmax(var(--app-header-height), auto) 1fr;
+    grid-template-rows: 172px 1fr;
     grid-template-areas:
         "header"
         "main";
@@ -16,12 +16,13 @@
 .app-header {
     display: grid;
     grid-template:
-        "title menu" minmax(68px, auto)
-        "actions actions" minmax(52px, auto)
-        / minmax(0, 1fr) auto;
+        "menu" 52px
+        "title" 68px
+        "actions" 52px
+        / minmax(0, 1fr);
     align-items: center;
     column-gap: var(--spacing-sm);
-    height: var(--app-header-height);
+    height: 172px;
     padding: 0 16px;
     width: 100%;
     margin: auto;
@@ -601,10 +602,13 @@
     .app-header {
         grid-area: header;
         display: grid;
-        grid-template: "filter title create menu" 100px / auto 1fr auto auto;
+        grid-template:
+            "filter blank create menu" 60px
+            "title title title title" 1fr
+            / auto 1fr minmax(0, auto) minmax(0, auto);
         align-items: center;
-        gap: var(--spacing-md);
-        height: 100px;
+        gap: 8px;
+        height: var(--app-header-height);
         padding: 0 16px;
         width: 100%;
         margin: auto;
@@ -628,5 +632,39 @@
 @media (width >= 1100px) {
     .app-container {
         grid-template-rows: 100px 1fr;
+    }
+
+    .app-header {
+        grid-template: "filter title create menu" 100px / auto 1fr minmax(0, auto) minmax(0, auto);
+        height: 100px;
+    }
+
+    .app-container.left-open {
+        grid-template-rows: 128px 1fr;
+    }
+
+    .app-container.left-open > .app-header {
+        grid-template:
+            "title menu" 68px
+            "filter create" 60px
+            / minmax(0, 1fr) auto;
+        gap: 0 12px;
+        height: 128px;
+    }
+
+    .app-container.left-open > .app-header .app-header-brand {
+        justify-self: start;
+    }
+
+    .app-container.left-open > .app-header .app-header-title {
+        align-items: flex-start;
+    }
+
+    .app-container.left-open > .app-header .app-subtitle {
+        justify-content: flex-start;
+    }
+
+    .app-container.left-open > .app-header .mobile-action-rail {
+        justify-self: start;
     }
 }

@@ -495,7 +495,7 @@ const LoggedIn: React.FC = () => {
             )}
             <header className="app-header">
 
-                <div className="mobile-action-rail">
+                <div className={`mobile-action-rail ${(leftOpen || rightOpen) && !isDesktop ? "mobile-action-rail--hidden" : ""}`}>
                     <ViewBreadcrumb
                         activeView={activeView}
                         activeTab={activeTab}
