@@ -318,12 +318,14 @@
     grid-area: main;
     min-height: 0;
     overflow: hidden;
+    overscroll-behavior: chain;
 }
 
 .main-content-page {
     height: 100%;
     padding-top: var(--spacing-sm);
     min-height: 0;
+    overscroll-behavior: chain;
 }
 
 /* Shared bottom-sheet styles */
@@ -561,10 +563,12 @@
         grid-area: main;
         overflow: hidden;
         transition: width 100ms ease-in;
+        overscroll-behavior: chain;
     }
 
     .main-content-page {
         padding-top: 0;
+        overscroll-behavior: chain;
     }
 
     /* Independent collapse behavior */
