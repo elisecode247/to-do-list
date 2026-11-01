@@ -325,7 +325,8 @@
     height: 100%;
     padding-top: var(--spacing-sm);
     min-height: 0;
-    overscroll-behavior: chain;
+    overflow-y: auto;
+    overscroll-behavior: none;
 }
 
 /* Shared bottom-sheet styles */
