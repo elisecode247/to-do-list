@@ -2,7 +2,7 @@
 @media (width >= 900px) {
     .sortable-item-container {
         padding: var(--sortable-item-card-padding-block) var(--sortable-item-card-padding-inline);
-        grid-template-columns: 20px minmax(200px, 1fr) minmax(0, auto) var(--sortable-item-touch-target-min);
+        grid-template-columns: 20px minmax(200px, 1fr) minmax(0, 1fr) var(--sortable-item-touch-target-min);
         grid-template-areas: "checkbox text button-group drag"
             "notes notes notes notes"
             "subtasks subtasks subtasks subtasks"
