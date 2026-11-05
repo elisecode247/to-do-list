@@ -250,6 +250,10 @@
 }
 
 @media (width >= 900px) {
+    .search-results .checklist__placeholder {
+        height: calc(48px + var(--spacing-xs));
+    }
+
     .search-container {
         padding: var(--spacing-lg);
     }
