@@ -20,6 +20,15 @@
     overscroll-behavior: chain;
 }
 
+/* Match the demo: the page owns task-list scrolling, not a nested scroller. */
+.checklist__list-container--task {
+    overflow-y: visible;
+    min-height: 100%;
+    height: auto;
+    flex: none;
+    overscroll-behavior: auto;
+}
+
 .checklist__placeholder {
     height: 300px;
     flex-shrink: 0;
