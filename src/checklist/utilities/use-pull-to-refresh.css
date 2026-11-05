@@ -9,7 +9,7 @@
 
 .pull-to-refresh-icon-container {
     position: fixed;
-    top: 120px;
+    top: calc(12px + var(--app-header-height));
     left: 50%;
     transform: translateX(-50%);
     width: 50px;

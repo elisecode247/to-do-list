@@ -1,8 +1,13 @@
+/* ===== MOBILE DEFAULT ===== */
+:root {
+    --app-header-height: 172px;
+}
+
 .demo-app-header {
     display: grid;
     grid-template: "demo-actions" 52px "title" 68px "toolbar" 52px / minmax(0, 1fr);
     align-items: center;
-    height: 172px;
+    height: var(--app-header-height);
     padding: 0 16px;
     width: 100%;
 }
@@ -230,7 +235,7 @@
 
 @media (width <= 899px) {
     .app-container:has(> .demo-app-header) {
-        grid-template-rows: 172px 1fr;
+        grid-template-rows: var(--app-header-height) 1fr;
     }
 }
 
