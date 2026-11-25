@@ -21,6 +21,7 @@ import { useTheme } from 'src/themes/use-theme';
 import { compareCompletedTasksLast } from 'src/checklist/utilities/compare-completed-tasks';
 import { taskCollisionDetection } from 'src/checklist/utilities/task-collision-detection';
 import { TaskDragOverlay } from 'src/sortable-item/TaskDragOverlay';
+import useIsDesktop from 'src/pages/use-is-desktop';
 
 function eventIncludesToday(startDate: Date | string, endDate: Date | string) {
     const start = new Date(startDate);
@@ -108,6 +109,7 @@ const Checklist: FC<ChecklistProps> = ({
     const completedDayRef = useRef(false);
     const hasInitializedCompletedDayRef = useRef(false);
     const { toggleSortCompleted } = useTheme();
+    const isDesktop = useIsDesktop();
     const sortCompletedTasksLast = toggleSortCompleted === 'true';
     const effectiveItemLookup = useMemo(
         () => itemLookup ?? new Map(items.map(item => [item.id, item])),
@@ -120,7 +122,7 @@ const Checklist: FC<ChecklistProps> = ({
         pullDistance
       } = usePullToRefresh(
         loadTasks,
-        (enablePullToRefresh ?? checklistType !== 'template') && !isDragging
+        (enablePullToRefresh ?? checklistType !== 'template') && !isDesktop && !isDragging
       );
 
     const filteredItems = filterTasks({

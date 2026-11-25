@@ -13,27 +13,19 @@
     --sortable-item-shadow-clearance-inline: 16px;
 }
 
-/* Item Container */
-.sortable-item-drag-wrapper {
-    content-visibility: auto;
-    contain-intrinsic-block-size: auto 96px;
-}
 
 .sortable-item-drag-wrapper--menu-open,
 .sortable-item-drag-wrapper:has(.sortable-item-menu-dropdown--open) {
-    content-visibility: visible;
     position: relative;
     z-index: 10;
 }
 
 .sortable-item-drag-wrapper:has(> .sortable-item-container.mode-priority) {
-    content-visibility: visible;
     position: relative;
     z-index: 2;
 }
 
 .sortable-item-drag-wrapper:has(> .sortable-item-container:hover) {
-    content-visibility: visible;
     position: relative;
     z-index: 5;
 }
